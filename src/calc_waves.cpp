@@ -40,6 +40,8 @@ using std::setiosflags;
 using std::resetiosflags;
 using std::setw;
 
+#include <sstream>
+
 #include <algorithm>
 using std::sort;
 using std::remove;
@@ -2313,36 +2315,89 @@ int CSimulation::InterpolateWavePropertiesToCellsGdal(string strFileName)
                 <GeometryField encoding="PointFromColumns" x="field_1" y="field_2" z="field_3"/>
         </OGRVRTLayer>
    </OGRVRTDataSource>*/
+
+   std::stringstream ststrTmp;
+   string strTmp;   
     
    if (strFileName.compare(WAVEENERGYFLUX) == 0)
    {
+      // Copy files
       string strCopycsvX = "cp " + WAVEHEIGHTX + " temp.csv";
       system(strCopycsvX.c_str());
       
-      system("gdal_grid -l temp temp.vrt tempX.tiff -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q");
-      system("gdal_translate -of XYZ -tr 1 1 tempX.tiff tempX.xyz -q");
+      // Put together the string which will invoke gdal_grid
+      strTmp = "gdal_grid -txe 0 ";
+      ststrTmp.str("");
+      ststrTmp << m_nXGridMax;
+      strTmp += ststrTmp.str();
+      strTmp += " -tye 0 ";
+      ststrTmp.str("");
+      ststrTmp << m_nYGridMax;
+      strTmp += ststrTmp.str();
+      strTmp += " -l temp  -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt tempX.tiff";
       
+      // Run gdal_grid
+      system(strTmp.c_str());      
+//       system("gdal_grid -l temp temp.vrt tempX.tiff -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q");
+      
+      // Run gdal_translate
+      system("gdal_translate -of XYZ -tr 1 1 tempX.tiff tempX.xyz -q");
+
+      // Copy some files
       string strCopyxyz1 = "cp tempX.xyz " + WAVEHEIGHTX.substr(0, WAVEHEIGHTX.length()-4) + ".xyz" ;
       system(strCopyxyz1.c_str());
       
       string strCopycsvY = "cp " + WAVEHEIGHTY + " temp.csv";
       system(strCopycsvY.c_str());
       
-      system("gdal_grid -l temp temp.vrt tempY.tiff -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q");
+      // Put together the string which will invoke gdal_grid
+      strTmp = "gdal_grid -txe 0 ";
+      ststrTmp.str("");
+      ststrTmp << m_nXGridMax;
+      strTmp += ststrTmp.str();
+      strTmp += " -tye 0 ";
+      ststrTmp.str("");
+      ststrTmp << m_nYGridMax;
+      strTmp += ststrTmp.str();
+      strTmp += " -l temp  -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt tempY.tiff";
+      
+      // Run gdal_grid
+      system(strTmp.c_str());      
+//       system("gdal_grid -l temp temp.vrt tempY.tiff -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q");
+      
+      // Run gdal_translate
       system("gdal_translate -of XYZ -tr 1 1 tempY.tiff tempY.xyz -q");
       
+      // Copy files
       string strCopyxyz2 = "cp tempY.xyz " + WAVEHEIGHTY.substr(0, WAVEHEIGHTY.length()-4) + ".xyz" ;
       system(strCopyxyz2.c_str());
    }
    
    else if (strFileName.compare(ACTIVEZONE) == 0)
    {
+      // Copy files
       string strCopycsv = "cp " + strFileName + " temp.csv";
       system(strCopycsv.c_str());
       
-      system("gdal_grid -l temp temp.vrt temp.tiff -a nearest::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q");
+      // Put together the string which will invoke gdal_grid
+      strTmp = "gdal_grid -txe 0 ";
+      ststrTmp.str("");
+      ststrTmp << m_nXGridMax;
+      strTmp += ststrTmp.str();
+      strTmp += " -tye 0 ";
+      ststrTmp.str("");
+      ststrTmp << m_nYGridMax;
+      strTmp += ststrTmp.str();
+      strTmp += " -l temp  -a linear::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt temp.tiff";
+      
+      // Run gdal_grid
+      system(strTmp.c_str());      
+//       system("gdal_grid -l temp temp.vrt temp.tiff -a nearest::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q");
+
+      // Run gdal_translate
       system("gdal_translate -of XYZ -tr 1 1 temp.tiff temp.xyz -q");   // Translate generated tiff file into xyz and save it in the cshore/out folder 
       
+      // Copy files
       string strCopyxyz3 = "cp temp.xyz " + ACTIVEZONE.substr(0, ACTIVEZONE.length()-4) + ".xyz";
       system(strCopyxyz3.c_str()); // Save the xyz file for the record 
    }
