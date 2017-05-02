@@ -1901,15 +1901,15 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
             nX = pProfile->pPtiGetCellInProfile(nProfilePoint)->nGetX(),
             nY = pProfile->pPtiGetCellInProfile(nProfilePoint)->nGetY();
          
-         VdWaveHeight.at(nProfilePoint) = sqrt(8) * VdFreeSurfaceStd.at(nProfilePoint);
+         VdWaveHeight[nProfilePoint] = sqrt(8) * VdFreeSurfaceStd[nProfilePoint];
          
-         double dAlpha = asin(VdSinWaveAngleRadians.at(nProfilePoint)) * (180/PI);
+         double dAlpha = asin(VdSinWaveAngleRadians[nProfilePoint]) * (180/PI);
          if (nSeaHand == LEFT_HANDED)
-            VdWaveDirection.at(nProfilePoint) = dKeepWithin360(dAlpha + 90 + dFluxOrientationThis);
+            VdWaveDirection[nProfilePoint] = dKeepWithin360(dAlpha + 90 + dFluxOrientationThis);
          else
-            VdWaveDirection.at(nProfilePoint) = dKeepWithin360(dAlpha + 270 + dFluxOrientationThis);
+            VdWaveDirection[nProfilePoint] = dKeepWithin360(dAlpha + 270 + dFluxOrientationThis);
       
-         if ((VdFractionBreakingWaves.at(nProfilePoint) >= 0.99) & (! bBreaking)) 
+         if ((VdFractionBreakingWaves[nProfilePoint] >= 0.99) & (! bBreaking)) 
          {
             bBreaking = true;
             dBreakingWaveHeight = dWaveHeight;
@@ -1918,7 +1918,7 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
             nBreakingDist = nProfilePoint;
          }
            
-         VbWaveIsBreaking.at(nProfilePoint) = bBreaking;
+         VbWaveIsBreaking[nProfilePoint] = bBreaking;
       }
       
     }
@@ -2090,7 +2090,7 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
  Create the CShore input file
 
 ===============================================================================================================================*/
-int CSimulation::CreateCShoreinfile(double dtimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, double dWaveFriction, vector<double>& vdXdist, vector<double>& vdBottomElevation)
+int CSimulation::CreateCShoreinfile(double dtimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, double dWaveFriction, vector<double>& VdXdist, vector<double>& VdBottomElevation)
 {
    // Initialize inifile from infileTemplate
    system("cp infileTemplate infile");       // The infileTemplate must be in the working directory
@@ -2104,20 +2104,20 @@ int CSimulation::CreateCShoreinfile(double dtimestep, double dWavePeriod, double
       cerr << ERR << "cannot open " << strFName << " for output" << endl;
 
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << 0.0;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) <<  dWaveAngle << std::endl;
+   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) <<  dWaveAngle << endl;
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dtimestep;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) <<  dWaveAngle << std::endl;
+   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) <<  dWaveAngle << endl;
    
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << 0.0;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dSurgeLevel << std::endl;
+   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dSurgeLevel << endl;
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dtimestep;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dSurgeLevel << std::endl;
+   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dSurgeLevel << endl;
    
-   file << setw(8) << vdXdist.size() << "                        -> NBINP" << std::endl;
+   file << setw(8) << VdXdist.size() << "                        -> NBINP" << endl;
    file << setiosflags(ios::fixed) << setprecision(4);
-   for (unsigned i = 0; i < vdXdist.size(); i++)
+   for (unsigned i = 0; i < VdXdist.size(); i++)
    {
-      file << setw(11) << vdXdist.at(i) << setw(11) << 	vdBottomElevation.at(i)<< setw(11) << dWaveFriction << std::endl;
+      file << setw(11) << VdXdist[i] << setw(11) << VdBottomElevation[i] << setw(11) << dWaveFriction << endl;
    }
    return RTN_OK;
 }
@@ -2128,7 +2128,7 @@ int CSimulation::CreateCShoreinfile(double dtimestep, double dWavePeriod, double
  Get profile horizontal distance and bottom elevation vectors in CShore units
 
 ===============================================================================================================================*/
-int CSimulation::GetThisProfilePointsElevationVectors(int const nCoast, int const nProfile, int const &nProfSize, vector<double>& VdDistXY, vector<double>& vdVZ)
+int CSimulation::GetThisProfilePointsElevationVectors(int const nCoast, int const nProfile, int const &nProfSize, vector<double>& VdDistXY, vector<double>& VdVZ)
 {
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
    double 
@@ -2173,8 +2173,7 @@ int CSimulation::GetThisProfilePointsElevationVectors(int const nCoast, int cons
 
       // Get the elevation for both consolidated and unconsolidated sediment on this cell
       double VdProfileZ = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() - m_dThisTimestepSWL;
-      vdVZ.push_back(VdProfileZ); 
-      //vdVZ.at(i) = VdProfileZ;
+      VdVZ.push_back(VdProfileZ); 
 
       // And store the X-Y plane distance from the start of the profile
       VdDistXY.push_back(dProfileDistXY);
@@ -2254,9 +2253,9 @@ int CSimulation::dLookUpCShoreouputs(string const strCShoreFilename, unsigned co
    }
 
    // Change the origin of the across-shore distance from the CShore convention to the one used here (i.e. with the origin at the shoreline)
-   vector<double>  vdXYDistCME(nReadRows,0);
-   for (unsigned i=0; i < nReadRows; i++)
-      vdXYDistCME.at(i) = vdXYDistCShore.at(nReadRows-1)-vdXYDistCShore.at(i);
+   vector<double>  vdXYDistCME(nReadRows, 0);
+   for (unsigned int i = 0; i < nReadRows; i++)
+      vdXYDistCME[i] = vdXYDistCShore[nReadRows-1] - vdXYDistCShore[i];
      
    // Reverse the cshore XYdistance and value vectors (i.e. first point is at the shoreline and must be in strictly ascending order)
    std::reverse(vdXYDistCME.begin(),vdXYDistCME.end());
@@ -2270,12 +2269,12 @@ int CSimulation::dLookUpCShoreouputs(string const strCShoreFilename, unsigned co
       double dX;  // Horizontal distance increment between two adjacent points (not always the same distance because it depend on profile-cells centroid location)
       for (unsigned int i = 1; i < nReadRows-1; i++)
       {
-         dX = vdXYDistCME.at(i+1) - vdXYDistCME.at(i-1);   // is always positive 
-         VdValuesCShoreDeriv.at(i) = (VdValuesCShore.at(i+1) - VdValuesCShore.at(i-1) ) / (2 * dX);
+         dX = vdXYDistCME[i+1] - vdXYDistCME[i-1];    // This is always positive 
+         VdValuesCShoreDeriv[i] = (VdValuesCShore[i+1] - VdValuesCShore[i-1]) / (2 * dX);
       }
       
-      VdValuesCShoreDeriv.at(0) = VdValuesCShoreDeriv.at(1);
-      VdValuesCShoreDeriv.at(nReadRows-1) = VdValuesCShoreDeriv.at(nReadRows-2);
+      VdValuesCShoreDeriv[0] = VdValuesCShoreDeriv[1];
+      VdValuesCShoreDeriv[nReadRows-1] = VdValuesCShoreDeriv[nReadRows-2];
    
       // Interpolate the CShore values at the  
       int nSize = VdDistXY.size();
