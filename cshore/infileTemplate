@@ -1,0 +1,17 @@
+3 
+------------------------------------------------------------ 
+CSHORE applied to idealized planar slope 
+------------------------------------------------------------ 
+1                                         ->ILINE
+0                                         ->IPROFL
+0                                         ->IPERM
+0                                         ->IOVER
+0                                         ->IWCINT
+0                                         ->IROLL 
+0                                         ->IWIND 
+0                                         ->ITIDE 
+     1.0000                                ->DXC
+     0.8000                                ->GAMMA 
+0                                         ->ILAB
+1                                         ->NWAVE 
+1                                         ->NSURGE
