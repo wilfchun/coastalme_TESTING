@@ -1863,7 +1863,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          VdProfileDistXY;             // Along-profile distance measured from the seaward limit, in CShore units
      
       // The elevation of each of these profile points is the elevation of the centroid of the cell that is 'under' the point. However we cannot always be confident that this is the 'true' elevation of the point on the vector since (unless the profile runs planview N-S or W-E) the vector does not always run exactly through the centroid of the cell
-      GetThisProfilePointsElevationVectors(nCoast, nProfile, nProfileSize, VdProfileDistXY, VdProfileZ);
+      nGetThisProfilePointsElevationVectors(nCoast, nProfile, nProfileSize, VdProfileDistXY, VdProfileZ);
       
       if (VdProfileDistXY.empty())
       {
@@ -2135,23 +2135,22 @@ int CSimulation::nCreateCShoreInfile(double dtimestep, double dWavePeriod, doubl
  Get profile horizontal distance and bottom elevation vectors in CShore units
 
 ===============================================================================================================================*/
-int CSimulation::GetThisProfilePointsElevationVectors(int const nCoast, int const nProfile, int const &nProfSize, vector<double>& VdDistXY, vector<double>& VdVZ)
+int CSimulation::nGetThisProfilePointsElevationVectors(int const nCoast, int const nProfile, int const &nProfSize, vector<double>& VdDistXY, vector<double>& VdVZ)
 {
-   CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
+   int 
+      nX1 = 0,
+      nY1 = 0;
    double 
       dXDist,
       dYDist,
       dProfileDistXY = 0;
-   int 
-      nX = 0,
-      nY = 0,
-      nX1 = 0,
-      nY1 = 0;
+   CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
 
    for (int i = nProfSize-1; i >= 0; i--)
    {
-      nX = pProfile->pPtiVGetCellsInProfile()->at(i).nGetX(),
-      nY = pProfile->pPtiVGetCellsInProfile()->at(i).nGetY();
+      int 
+         nX = pProfile->pPtiVGetCellsInProfile()->at(i).nGetX(),
+         nY = pProfile->pPtiVGetCellsInProfile()->at(i).nGetY();
 
       // Calculate the horizontal distance relative to the most seaward point
       if (i == nProfSize-1)
@@ -2273,17 +2272,17 @@ int CSimulation::dLookUpCShoreouputs(string const strCShoreFilename, unsigned co
    {
       // Using the hermite cubic approach: calculate the first derivative of CShore values (needed for the hermite interpolant)
       vector<double> VdValuesCShoreDeriv(nReadRows, 0);
-      double dX;  // Horizontal distance increment between two adjacent points (not always the same distance because it depend on profile-cells centroid location)
       for (unsigned int i = 1; i < nReadRows-1; i++)
       {
-         dX = vdXYDistCME[i+1] - vdXYDistCME[i-1];    // This is always positive 
+         // Calculate the horizontal distance increment between two adjacent points (not always the same distance because it depend on profile-cells centroid location)
+         double dX = vdXYDistCME[i+1] - vdXYDistCME[i-1];    // This is always positive 
          VdValuesCShoreDeriv[i] = (VdValuesCShore[i+1] - VdValuesCShore[i-1]) / (2 * dX);
       }
       
       VdValuesCShoreDeriv[0] = VdValuesCShoreDeriv[1];
       VdValuesCShoreDeriv[nReadRows-1] = VdValuesCShoreDeriv[nReadRows-2];
    
-      // Interpolate the CShore values at the  
+      // Interpolate the CShore values
       int nSize = VdDistXY.size();
       vector<double>
          VdDistXYCopy(VdDistXY.begin(), VdDistXY.end()),

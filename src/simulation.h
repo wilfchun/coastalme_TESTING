@@ -534,9 +534,9 @@ private:
    int nGetCoastNormalEndPoint(int const, int const, int const, CGeom2DPoint const*, double const, CGeom2DPoint*);
    int nLandformToGrid(int const, int const);
    int nCalcWavePropertiesOnProfile(int const, int const, int const); 
-   int GetThisProfilePointsElevationVectors(int const,int const, int const&, vector<double>&, vector<double>&); // used to run CShore
-   int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double>&, vector<double>&); // used to run CShore
-   int dLookUpCShoreouputs(string const, unsigned const, unsigned const, vector<double> const , vector<double>& vdMyInterpolatedValues); // used to run CShore
+   int nGetThisProfilePointsElevationVectors(int const,int const, int const&, vector<double>&, vector<double>&);
+   int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double>&, vector<double>&);
+   static int dLookUpCShoreouputs(string const, unsigned const, unsigned const, vector<double> const, vector<double>&);
    double dCalcWaveAngleToCoastNormal(double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);
