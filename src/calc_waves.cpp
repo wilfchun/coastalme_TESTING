@@ -84,7 +84,11 @@ int CSimulation::nDoAllPropagateWaves(void)
 
       // Calculate wave properties at every point along each valid profile, and for the cells under the profiles. Do this in the original (curvature-related) profile sequence
       for (int nProfile = 0; nProfile < nNumProfiles; nProfile++)
-         CalcWavePropertiesOnProfile(nCoast, nCoastSize, nProfile);
+      {
+         int nRet = nCalcWavePropertiesOnProfile(nCoast, nCoastSize, nProfile);
+         if (nRet != RTN_OK)
+            return nRet;
+      }
          
       // Next, interpolate these wave properties for all remaining coastline points. Do this in along-coastline sequence
       for (int n = 0; n < nNumProfiles; n++)
@@ -1708,10 +1712,10 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
 
 /*===============================================================================================================================
 
- Calculates wave properties along a coastline-normal profile using either the COVE approach or the external CShore model
+ Calculates wave properties along a coastline-normal profile using either the COVE linear wave theory approach or the external CShore model
  
 ===============================================================================================================================*/
-void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoastSize, int const nProfile)
+int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoastSize, int const nProfile)
 {
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
 
@@ -1721,7 +1725,7 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 
    // Only do this for profiles without problems. Still do start- and end-of-coast profiles however
    if (! pProfile->bOKIncStartAndEndOfCoast())
-      return;
+      return RTN_OK;
 
    int
       nSeaHand = m_VCoast[nCoast].nGetSeaHandedness(),
@@ -1757,7 +1761,7 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    {
       // They are so, do nothing (each cell under the profile has already been initialised with deep water wave height and wave direction)
 //      LogStream << m_ulTimestep << ": THIS profile = " << nProfile << " sea is to " << (m_VCoast[nCoast].nGetSeaHandedness() == RIGHT_HANDED ? "right" : "left") << " dWaveToNormalAngle = " << dWaveToNormalAngle << " which is off-shore" << endl;
-      return;
+      return RTN_OK;
    }
 
 //   LogStream << m_ulTimestep << ": THIS profile = " << nProfile << " sea is to " << (m_VCoast[nCoast].nGetSeaHandedness() == RIGHT_HANDED ? "right" : "left") << " dWaveToNormalAngle = " << dWaveToNormalAngle << " which is " << (dWaveToNormalAngle < 0 ? "DOWN" : "UP") << "-coast" << endl;
@@ -1861,11 +1865,12 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // The elevation of each of these profile points is the elevation of the centroid of the cell that is 'under' the point. However we cannot always be confident that this is the 'true' elevation of the point on the vector since (unless the profile runs planview N-S or W-E) the vector does not always run exactly through the centroid of the cell
       GetThisProfilePointsElevationVectors(nCoast, nProfile, nProfileSize, VdProfileDistXY, VdProfileZ);
       
-      // For some reason, VdProfileDistXY is not populated, then exit this routine
       if (VdProfileDistXY.empty())
       {
-         cout << "VdProfileDistXY is empty" << endl;
-         return;
+         // VdProfileDistXY has not been populated
+         LogStream << m_ulTimestep << ": VdProfileDistXY is empty for profile " << nProfile << endl;
+         
+         return RTN_ERR_CSHORE_EMPTY_PROFILE;
       }
      
       // Move to the CShore folder
@@ -1930,8 +1935,7 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // We are using COVE's linear wave theory to propoagate the waves
       double dDepthLookupMax = m_dWaveDepthRatioForWaveCalcs * m_dDeepWaterWaveHeight;
          
-      // Go landwards along the profile, calculating wave height and wave angle for every inundated point on the profile (don't do point zero, this is on the coastline) 
-      // until the waves start to break  after breaking wave height is assumed to decrease linearly to zero at the shoreline and wave angle is equalt to wave angle at breaking
+      // Go landwards along the profile, calculating wave height and wave angle for every inundated point on the profile (don't do point zero, this is on the coastline) until the waves start to break  after breaking wave height is assumed to decrease linearly to zero at the shoreline and wave angle is equalt to wave angle at breaking
       for (int nProfilePoint = (nProfileSize-1); nProfilePoint > 0; nProfilePoint--)
       {
          int
@@ -2002,8 +2006,9 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    if (! OutStreamWAVEHEIGHTX)
    {
       // Error, cannot open file
-      cerr << ERR << "cannot open " << WAVEHEIGHTX << " for output" << endl;
-      return;
+      LogStream << m_ulTimestep << ": " << ERR << "cannot open " << WAVEHEIGHTX << " for output" << endl;
+      
+      return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
    }
    
    ofstream OutStreamWAVEHEIGHTY;
@@ -2011,8 +2016,8 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    if (! OutStreamWAVEHEIGHTY)
    {
       // Error, cannot open file
-      cerr << ERR << "cannot open " << WAVEHEIGHTY << " for output" << endl;
-      return;
+      LogStream << m_ulTimestep << ": " << ERR << "cannot open " << WAVEHEIGHTY << " for output" << endl;
+      return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
    }
     
    ofstream OutStreamACTIVEZONE;
@@ -2020,8 +2025,8 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    if (! OutStreamACTIVEZONE)
    {
       // Error, cannot open file
-      cerr << ERR << "cannot open " << ACTIVEZONE << " for output" << endl;
-      return;
+      LogStream << m_ulTimestep << ": " << ERR << "cannot open " << ACTIVEZONE << " for output" << endl;
+      return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
    }
    
    // Go landwards along the profile, fetching the calculated wave height and wave angle for every inundated point on this profile
@@ -2078,7 +2083,7 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 //       LogStream << "nCoastPoint = " << nCoastPoint << " NOT in active zone" << endl;
    }
 
-   return;
+   return RTN_OK;
 }
 
 
@@ -2298,7 +2303,7 @@ int CSimulation::dLookUpCShoreouputs(string const strCShoreFilename, unsigned co
 
 /*===============================================================================================================================
 
- Interpolates wave properties from a profile to the cells between the profile using gdal_grid. Uses the WaveAttribute CSV files generated by CalcWavePropertiesOnProfile to produce a tiff --> xyz and update the raster grid attributes. All operations are done in the temp directory
+ Interpolates wave properties from a profile to the cells between the profile using gdal_grid. Uses the WaveAttribute CSV files generated by nCalcWavePropertiesOnProfile to produce a tiff --> xyz and update the raster grid attributes. All operations are done in the temp directory
 
 ===============================================================================================================================*/
 int CSimulation::InterpolateWavePropertiesToCellsGdal(string strFileName)

@@ -1942,8 +1942,11 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT:
       strErr = "could not find start point for flood fill of wave shadow zone";
       break;
-   case RTN_ERR_CShore_LOOKUP:
-      strErr = "error during CShore lookup";
+   case RTN_ERR_CSHORE_EMPTY_PROFILE:
+      strErr = "empty profile during during CShore wave propagation";
+      break;
+   case RTN_ERR_WAVE_INTERPOLATION_LOOKUP:
+      strErr = "error during wave interpolation lookup";
       break;
    default:
       // should never get here
