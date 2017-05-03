@@ -2413,7 +2413,9 @@ int CSimulation::nInterpolateWavePropertiesToCells(string const* strFileName)
    }
 
    // Update the raster grid with the interpolated values  
-   bReadWaveAttributesXYZ(strFileName);
+   int nRet = nReadAndUpdateWaveAttributes(strFileName);
+   if (nRet != RTN_OK)
+      return nRet;
  
    return RTN_OK;
 }
@@ -2424,7 +2426,7 @@ int CSimulation::nInterpolateWavePropertiesToCells(string const* strFileName)
  Reads the xyz files with the interpolated wave properties and updates the raster grid values
 
 ==============================================================================================================================*/
-bool CSimulation::bReadWaveAttributesXYZ(string const* strFileName)
+int CSimulation::nReadAndUpdateWaveAttributes(string const* strFileName)
 {
    if (*strFileName == ACTIVEZONE)
    {
@@ -2439,8 +2441,9 @@ bool CSimulation::bReadWaveAttributesXYZ(string const* strFileName)
       if (! InStream.is_open())
       {
          // Error: cannot open xyz file for input
-         cerr << m_ulTimestep << ": " << ERR << "cannot open " << strMyCshoreXYZ << " for input" << endl;
-         return false;
+         LogStream << m_ulTimestep << ": " << ERR << "cannot open " << strMyCshoreXYZ << " for input" << endl;
+         
+         return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
       }
 
       // Opened OK
@@ -2499,16 +2502,18 @@ bool CSimulation::bReadWaveAttributesXYZ(string const* strFileName)
       if (! InStreamX.is_open())
       {
          // Error: cannot open xyz file for input
-         cerr << m_ulTimestep << ": " << ERR << "cannot open " << strMyCshoreXYZx << " for input" << endl;
-         return false;
+         LogStream << m_ulTimestep << ": " << ERR << "cannot open " << strMyCshoreXYZx << " for input" << endl;
+         
+         return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
       }
       
       // Did the secoond file open OK
       if (! InStreamY.is_open())
       {
          // Error: cannot xyz  file for input
-         cerr << m_ulTimestep << ": " << ERR << "cannot open " << strMyCshoreXYZy << " for input" << endl;
-         return false;
+         LogStream << m_ulTimestep << ": " << ERR << "cannot open " << strMyCshoreXYZy << " for input" << endl;
+         
+         return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
       }
 
       // Both files opened OK
@@ -2548,7 +2553,12 @@ bool CSimulation::bReadWaveAttributesXYZ(string const* strFileName)
 
          // Check that both points are at the same grid location
          if ((nXx != nXy) || (nYx != nYy))
-            return false;
+         {
+            // Problem: they are not
+            LogStream << m_ulTimestep << ": " << ERR << "points not identical (nXx = " << nXx << ", nXy = " << nXy << ", nYx = " << nYx << ", nYy = " << nYy << ") during wave interpolation" << endl;
+            
+            return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
+         }
          
          // They are the same location so calculate the wave height and direction 
          double 
@@ -2567,5 +2577,5 @@ bool CSimulation::bReadWaveAttributesXYZ(string const* strFileName)
       InStreamY.close();
    }
    
-   return true;
+   return RTN_OK;
 }

@@ -480,7 +480,7 @@ private:
    void GetRasterOutputMinMax(int const, double&, double&, int const, double const);
    void SetRasterFileCreationDefaults(void);
    int nInterpolateWavePropertiesToCells(string const*);
-   bool bReadWaveAttributesXYZ(string const*);
+   int nReadAndUpdateWaveAttributes(string const*);
 
    // Initialization
    bool bCreateErosionPotentialLookUp(vector<double>*, vector<double>*, vector<double>*);
