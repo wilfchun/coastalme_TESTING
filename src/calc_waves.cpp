@@ -208,7 +208,10 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
 
    // If both this profile and the next profile are not in the active zone, then do no more
    if ((dThisBreakingWaveHeight == DBL_NODATA) && (dNextBreakingWaveHeight == DBL_NODATA))
+   {
+//       LogStream << m_ulTimestep << ": both profile " << nProfile << " at coast point " << nThisCoastPoint << ", and profile " << nNextProfile << " at coast point " << nNextCoastPoint << ", are not in the active zone" << endl;
       return;
+   }
 
    // OK, at least one of the two profiles is in the active zone
    if (dThisBreakingWaveHeight == DBL_NODATA)
@@ -415,7 +418,6 @@ int CSimulation::nDoAllShadowZones(void)
       if (tAbs(dStdCurvature) < TOLERANCE)
          return RTN_OK;
       
-      // TODO if the waves are off-shore, should we again do nothing?
       // TODO What about shadow zones created if we have more than one coast?
       
       // Sort this pair vector in ascending order, so that the most convex points are first
@@ -1938,15 +1940,16 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          if ((VdFractionBreakingWaves[nProfilePoint] >= 0.99) & (! bBreaking)) 
          {
             bBreaking = true;
-            dBreakingWaveHeight = dWaveHeight;
-            dBreakingWaveOrientation = dWaveOrientation;
+            dBreakingWaveHeight = VdWaveHeight[nProfilePoint];
+            dBreakingWaveOrientation = VdWaveDirection[nProfilePoint];             
             dBreakingDepth = m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();  // Water depth for the cell 'under' this point in the profile
             nBreakingDist = nProfilePoint;
+            
+//             LogStream << m_ulTimestep << ": CShore breaking at [" << nX << "][" << nY << "] {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} nProfile = " << nProfile << ", nProfilePoint = " << nProfilePoint << ", dBreakingWaveHeight = " << dBreakingWaveHeight << ", dBreakingWaveOrientation = " << dBreakingWaveOrientation << ", dBreakingDepth = " << dBreakingDepth << ", nBreakingDist = " << nBreakingDist << endl;            
          }
            
          VbWaveIsBreaking[nProfilePoint] = bBreaking;
-      }
-      
+      }      
     }
     
     else if (m_nWavePropagationModel == MODEL_COVE)
@@ -1969,9 +1972,9 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          
          if (dSeaDepth > dDepthLookupMax) 
          {
-            // Sea depth is too large relative to wave height to feel the bottom, so do nothing aince each cell under the profile has already been initialised with deep water wave height and wave direction
-            dWaveHeight       = m_dDeepWaterWaveHeight;
-            dWaveOrientation  = m_dDeepWaterWaveOrientation;
+            // Sea depth is too large relative to wave height to feel the bottom, so do nothing since each cell under the profile has already been initialised with deep water wave height and wave direction
+            dWaveHeight = m_dDeepWaterWaveHeight;
+            dWaveOrientation = m_dDeepWaterWaveOrientation;
          }
          else  
          {
@@ -2005,8 +2008,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
             else   
             {
                // Wave has already broken
-               dWaveOrientation = dBreakingWaveOrientation;   // wave orientation remains equal to wave orientation at breaking
-               dWaveHeight      = dBreakingWaveHeight * (nProfilePoint/nBreakingDist); // wave height decreases linearly to zero at shoreline 
+               dWaveOrientation = dBreakingWaveOrientation;                            // Wave orientation remains equal to wave orientation at breaking
+               dWaveHeight = dBreakingWaveHeight * (nProfilePoint / nBreakingDist);    // Wave height decreases linearly to zero at shoreline 
             }
          }
      
@@ -2090,7 +2093,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       m_VCoast[nCoast].SetBreakingWaveOrientation(nCoastPoint, dBreakingWaveOrientation);
       m_VCoast[nCoast].SetDepthOfBreaking(nCoastPoint, dBreakingDepth);
       m_VCoast[nCoast].SetBreakingDistance(nCoastPoint, nBreakingDist);
-//       LogStream << "nCoastPoint = " << nCoastPoint << " in active zone" << endl;
+      
+//       LogStream << m_ulTimestep << ": nProfile = " << nProfile << ", nCoastPoint = " << nCoastPoint << " in active zone, dBreakingWaveHeight = " << dBreakingWaveHeight << endl;
    }
    else
    {
@@ -2099,7 +2103,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       m_VCoast[nCoast].SetBreakingWaveOrientation(nCoastPoint, DBL_NODATA);
       m_VCoast[nCoast].SetDepthOfBreaking(nCoastPoint, DBL_NODATA);
       m_VCoast[nCoast].SetBreakingDistance(nCoastPoint, INT_NODATA);
-//       LogStream << "nCoastPoint = " << nCoastPoint << " NOT in active zone" << endl;
+      
+//       LogStream << m_ulTimestep << ": nProfile = " << nProfile << ", nCoastPoint = " << nCoastPoint << " NOT in active zone" << endl;
    }
 
    return RTN_OK;
