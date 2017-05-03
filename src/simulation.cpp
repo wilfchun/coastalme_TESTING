@@ -150,6 +150,11 @@ CSimulation::CSimulation(void)
    m_nWavePropagationModel                         = 0;
    
    m_nMissingValue                                 = INT_NODATA;
+   
+   m_nXMinBoundingBox                              = INT_MAX;
+   m_nXMaxBoundingBox                              = INT_MIN;
+   m_nYMinBoundingBox                              = INT_MAX;
+   m_nYMaxBoundingBox                              = INT_MIN;
 
    m_GDALWriteIntDataType                          =
    m_GDALWriteFloatDataType                        = GDT_Unknown;

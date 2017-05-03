@@ -159,7 +159,11 @@ private:
       m_nGlobalPolygonID,                    // There are m_nGlobalPolygonID + 1 polygons at any time (all coasts)
       m_nUnconsSedimentHandlingAtGridEdges,
       m_nBeachErosionDepositionEquation,
-      m_nMissingValue;
+      m_nMissingValue,
+      m_nXMinBoundingBox,
+      m_nXMaxBoundingBox,
+      m_nYMinBoundingBox,
+      m_nYMaxBoundingBox;      
 
    GDALDataType
       m_GDALWriteIntDataType,

@@ -46,7 +46,12 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
    m_VCoast.clear();
    m_pVCoastPolygon.clear();
 
-   // Do some per-timestep initialization
+   // Do some every-timestep initialization
+   m_nXMinBoundingBox                              = INT_MAX;
+   m_nXMaxBoundingBox                              = INT_MIN;
+   m_nYMinBoundingBox                              = INT_MAX;
+   m_nYMaxBoundingBox                              = INT_MIN;
+   
    m_ulThisTimestepNumSeaCells                      =
    m_ulThisTimestepNumCoastCells                    =
    m_ulThisTimestepNumPotentialPlatformErosionCells =

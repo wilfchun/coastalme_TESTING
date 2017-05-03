@@ -2049,11 +2049,6 @@ void CSimulation::CalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       OutStreamWAVEHEIGHTX << nX << "," << nY << "," << dWaveHeight * sin(dWaveOrientation * PI/180) << endl;
       OutStreamWAVEHEIGHTY << nX << "," << nY << "," << dWaveHeight * cos(dWaveOrientation * PI/180) << endl;
       OutStreamACTIVEZONE  << nX << "," << nY << "," << bBreaking << endl;
-      
-      if (m_ulTimestep == 4)
-         LogStream << m_ulTimestep << ": cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} written to " << ACTIVEZONE << " as breaking" << endl;
-
-      
    }
 
    OutStreamWAVEHEIGHTY.close();
@@ -2316,28 +2311,31 @@ int CSimulation::InterpolateWavePropertiesToCellsGdal(string strFileName)
         </OGRVRTLayer>
    </OGRVRTDataSource>*/
 
+   // Put together the first part of the string which will invoke gdal_grid
    std::stringstream ststrTmp;
-   string strTmp;   
-    
+   string strTmp = "gdal_grid -txe ";
+   ststrTmp.str("");
+   ststrTmp << m_nXMinBoundingBox << " " << m_nXMaxBoundingBox;
+   strTmp += ststrTmp.str();
+   strTmp += " -tye ";
+   ststrTmp.str("");
+   ststrTmp << m_nYMinBoundingBox << " " << m_nYMaxBoundingBox;
+   strTmp += ststrTmp.str();
+   
+   string strTmp1;
+   
    if (strFileName.compare(WAVEENERGYFLUX) == 0)
    {
       // Copy files
       string strCopycsvX = "cp " + WAVEHEIGHTX + " temp.csv";
       system(strCopycsvX.c_str());
       
-      // Put together the string which will invoke gdal_grid
-      strTmp = "gdal_grid -txe 0 ";
-      ststrTmp.str("");
-      ststrTmp << m_nXGridMax;
-      strTmp += ststrTmp.str();
-      strTmp += " -tye 0 ";
-      ststrTmp.str("");
-      ststrTmp << m_nYGridMax;
-      strTmp += ststrTmp.str();
-      strTmp += " -l temp  -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt tempX.tiff";
+      // Put together the second part of the string for gdal_grid
+      strTmp1 = strTmp;
+      strTmp1 += " -l temp  -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt tempX.tiff";
       
       // Run gdal_grid
-      system(strTmp.c_str());      
+      system(strTmp1.c_str());      
 //       system("gdal_grid -l temp temp.vrt tempX.tiff -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q");
       
       // Run gdal_translate
@@ -2349,20 +2347,13 @@ int CSimulation::InterpolateWavePropertiesToCellsGdal(string strFileName)
       
       string strCopycsvY = "cp " + WAVEHEIGHTY + " temp.csv";
       system(strCopycsvY.c_str());
-      
-      // Put together the string which will invoke gdal_grid
-      strTmp = "gdal_grid -txe 0 ";
-      ststrTmp.str("");
-      ststrTmp << m_nXGridMax;
-      strTmp += ststrTmp.str();
-      strTmp += " -tye 0 ";
-      ststrTmp.str("");
-      ststrTmp << m_nYGridMax;
-      strTmp += ststrTmp.str();
-      strTmp += " -l temp  -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt tempY.tiff";
+
+      // Put together the second part of the string for gdal_grid
+      strTmp1 = strTmp;      
+      strTmp1 += " -l temp  -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt tempY.tiff";
       
       // Run gdal_grid
-      system(strTmp.c_str());      
+      system(strTmp1.c_str());      
 //       system("gdal_grid -l temp temp.vrt tempY.tiff -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q");
       
       // Run gdal_translate
@@ -2379,19 +2370,12 @@ int CSimulation::InterpolateWavePropertiesToCellsGdal(string strFileName)
       string strCopycsv = "cp " + strFileName + " temp.csv";
       system(strCopycsv.c_str());
       
-      // Put together the string which will invoke gdal_grid
-      strTmp = "gdal_grid -txe 0 ";
-      ststrTmp.str("");
-      ststrTmp << m_nXGridMax;
-      strTmp += ststrTmp.str();
-      strTmp += " -tye 0 ";
-      ststrTmp.str("");
-      ststrTmp << m_nYGridMax;
-      strTmp += ststrTmp.str();
-      strTmp += " -l temp  -a linear::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt temp.tiff";
+      // Put together the second part of the string for gdal_grid
+      strTmp1 = strTmp;
+      strTmp1 += " -l temp  -a linear::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt temp.tiff";
       
       // Run gdal_grid
-      system(strTmp.c_str());      
+      system(strTmp1.c_str());      
 //       system("gdal_grid -l temp temp.vrt temp.tiff -a nearest::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q");
 
       // Run gdal_translate
@@ -2465,9 +2449,6 @@ bool CSimulation::bReadWaveAttributesXYZ(string strFileName)
             // It is, so convert the string to a bool and set the cell's active zone value
             bool bActiveZone = std::stoi(strTmp[2], &sz);
             m_pRasterGrid->m_Cell[nX][nY].SetInActiveZone(bActiveZone);
-            
-            if (m_ulTimestep == 4)
-               LogStream << m_ulTimestep << ": cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} set as active zone" << endl;
          }
       }
       

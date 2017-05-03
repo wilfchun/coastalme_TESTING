@@ -307,6 +307,19 @@ int CSimulation::nLandformToGrid(int const nCoast, int const nPoint)
          // All the sediment is gone from this cliff object via cliff collapse, so this cell is no longer a cliff
          m_pRasterGrid->m_Cell[nX][nY].SetInContiguousSea();
 
+         // Check the x-y extremities of the contiguous sea for the bounding box (used later in wave propagation)
+         if (nX < m_nXMinBoundingBox)
+            m_nXMinBoundingBox = nX;
+                                    
+         if (nX > m_nXMaxBoundingBox)
+            m_nXMaxBoundingBox = nX;
+         
+         if (nY < m_nYMinBoundingBox)
+            m_nYMinBoundingBox = nY;
+                                    
+         if (nY > m_nYMaxBoundingBox)
+            m_nYMaxBoundingBox = nY;
+
 //          LogStream << m_ulTimestep << ": CLIFF REMOVED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} is no longer a cliff landform" << endl;
 
          int nTopLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopLayerAboveBasement();

@@ -202,6 +202,20 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
          m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(m_dDeepWaterWaveOrientation);
          m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(m_dDeepWaterWaveHeight);
          
+         // Now sort out the x-y extremities of the contiguous sea for the bounding box (used later in wave propagation)
+         if (nX < m_nXMinBoundingBox)
+            m_nXMinBoundingBox = nX;
+                                    
+         if (nX > m_nXMaxBoundingBox)
+            m_nXMaxBoundingBox = nX;
+         
+         if (nY < m_nYMinBoundingBox)
+            m_nYMinBoundingBox = nY;
+                                    
+         if (nY > m_nYMaxBoundingBox)
+            m_nYMaxBoundingBox = nY;
+         
+         // Update count
          nFilled++;
 
          if ((! bSpanAbove) && (nY > 0) && (m_pRasterGrid->m_Cell[nX][nY-1].bIsInundated()) && (m_pRasterGrid->m_Cell[nX][nY-1].dGetSeaDepth() == 0))
