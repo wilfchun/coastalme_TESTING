@@ -1948,6 +1948,9 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_CSHORE_OUTPUT_FILE:
       strErr = "error creating CShore output file";
       break;
+   case RTN_ERR_CSHORE_INPUT_FILE:
+      strErr = "error reading CShore input file";
+      break;
    case RTN_ERR_WAVE_INTERPOLATION_LOOKUP:
       strErr = "error during wave interpolation lookup";
       break;

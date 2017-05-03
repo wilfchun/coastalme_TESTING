@@ -479,8 +479,8 @@ private:
    bool bWriteVectorGIS(int const, string const*);
    void GetRasterOutputMinMax(int const, double&, double&, int const, double const);
    void SetRasterFileCreationDefaults(void);
-   int  InterpolateWavePropertiesToCellsGdal(string);
-   bool  bReadWaveAttributesXYZ(string);
+   int nInterpolateWavePropertiesToCells(string const*);
+   bool bReadWaveAttributesXYZ(string const*);
 
    // Initialization
    bool bCreateErosionPotentialLookUp(vector<double>*, vector<double>*, vector<double>*);
@@ -536,7 +536,7 @@ private:
    int nCalcWavePropertiesOnProfile(int const, int const, int const); 
    int nGetThisProfilePointsElevationVectors(int const,int const, int const&, vector<double>&, vector<double>&);
    int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double>&, vector<double>&);
-   static int dLookUpCShoreouputs(string const, unsigned const, unsigned const, vector<double> const, vector<double>&);
+   int nLookUpCShoreOutputs(string const, unsigned const, unsigned const, vector<double> const, vector<double>&);
    double dCalcWaveAngleToCoastNormal(double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);
