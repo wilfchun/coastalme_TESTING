@@ -1870,7 +1870,9 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          VdProfileDistXY;             // Along-profile distance measured from the seaward limit, in CShore units
      
       // The elevation of each of these profile points is the elevation of the centroid of the cell that is 'under' the point. However we cannot always be confident that this is the 'true' elevation of the point on the vector since (unless the profile runs planview N-S or W-E) the vector does not always run exactly through the centroid of the cell
-      nGetThisProfilePointsElevationVectors(nCoast, nProfile, nProfileSize, VdProfileDistXY, VdProfileZ);
+      int nRet = nGetThisProfilePointsElevationVectors(nCoast, nProfile, nProfileSize, VdProfileDistXY, VdProfileZ);
+      if (nRet != RTN_OK)
+         return nRet;
       
       if (VdProfileDistXY.empty())
       {
@@ -1884,7 +1886,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       chdir("cshore");
    
       // Create the CShore input file  
-      int nRet = nCreateCShoreInfile(dCShoreTimeStep, m_dWavePeriod, m_dDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, dWaveFriction, VdProfileDistXY, VdProfileZ);
+      nRet = nCreateCShoreInfile(dCShoreTimeStep, m_dWavePeriod, m_dDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, dWaveFriction, &VdProfileDistXY, &VdProfileZ);
       if (nRet != RTN_OK)
          return nRet;
      
@@ -1902,15 +1904,15 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          strOYVELO = "OYVELO",
          strOPARAM = "OPARAM";
       
-      nRet = nLookUpCShoreOutputs(strOSETUP, 4, 4, VdProfileDistXY, VdFreeSurfaceStd);
+      nRet = nLookUpCShoreOutputs(&strOSETUP, 4, 4, &VdProfileDistXY, VdFreeSurfaceStd);
       if (nRet != RTN_OK)
          return nRet;
       
-      nRet = nLookUpCShoreOutputs(strOYVELO, 4, 2, VdProfileDistXY, VdSinWaveAngleRadians);
+      nRet = nLookUpCShoreOutputs(&strOYVELO, 4, 2, &VdProfileDistXY, VdSinWaveAngleRadians);
       if (nRet != RTN_OK)
          return nRet;
 
-      nRet = nLookUpCShoreOutputs(strOPARAM, 4, 3, VdProfileDistXY, VdFractionBreakingWaves);
+      nRet = nLookUpCShoreOutputs(&strOPARAM, 4, 3, &VdProfileDistXY, VdFractionBreakingWaves);
       if (nRet != RTN_OK)
          return nRet;
       
@@ -2109,7 +2111,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
  Create the CShore input file
 
 ===============================================================================================================================*/
-int CSimulation::nCreateCShoreInfile(double dtimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, double dWaveFriction, vector<double>& VdXdist, vector<double>& VdBottomElevation)
+int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, double dWaveFriction, vector<double> const* pVdXdist, vector<double> const* pVdBottomElevation)
 {
    // Initialize inifile from infileTemplate
    system("cp infileTemplate infile");       // The infileTemplate must be in the working directory
@@ -2128,18 +2130,18 @@ int CSimulation::nCreateCShoreInfile(double dtimestep, double dWavePeriod, doubl
    // OK, write to the file
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << 0.0;
    file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) <<  dWaveAngle << endl;
-   file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dtimestep;
+   file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dTimestep;
    file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) <<  dWaveAngle << endl;
    
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << 0.0;
    file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dSurgeLevel << endl;
-   file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dtimestep;
+   file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dTimestep;
    file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dSurgeLevel << endl;
    
-   file << setw(8) << VdXdist.size() << "                        -> NBINP" << endl;
+   file << setw(8) << pVdXdist->size() << "                        -> NBINP" << endl;
    file << setiosflags(ios::fixed) << setprecision(4);
-   for (unsigned int i = 0; i < VdXdist.size(); i++)
-      file << setw(11) << VdXdist[i] << setw(11) << VdBottomElevation[i] << setw(11) << dWaveFriction << endl;
+   for (unsigned int i = 0; i < pVdXdist->size(); i++)
+      file << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << dWaveFriction << endl;
    
    return RTN_OK;
 }
@@ -2209,7 +2211,7 @@ int CSimulation::nGetThisProfilePointsElevationVectors(int const nCoast, int con
  The CShore lookup: it returns a vector with the the interpolated values on column # of the CShore output file. The interpolation may be simple linear or a more advanced hermite cubic method
 
 ==============================================================================================================================*/
-int CSimulation::nLookUpCShoreOutputs(string const strCShoreFilename, unsigned const nExpectedColumns, unsigned const nCShorecolumn, vector<double> const VdDistXY, vector<double>& dVMyInterpolatedValues)
+int CSimulation::nLookUpCShoreOutputs(string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>& VdMyInterpolatedValues)
 {
    // TODO Make this a user input
    // Select the interpolation method to be used: 0 for simple linear or 1 for hermite cubic
@@ -2218,19 +2220,19 @@ int CSimulation::nLookUpCShoreOutputs(string const strCShoreFilename, unsigned c
    
    // Read in the first column (contains XY distance relative to seaward limit) and CShore column from the CShore output file
    std::ifstream InStream; 
-   InStream.open(strCShoreFilename.c_str(), ios::in);
+   InStream.open(strCShoreFilename->c_str(), ios::in);
     
    // Did it open OK?
    if (! InStream.is_open())
    {
       // Error: cannot open CShore file for input
-      LogStream << m_ulTimestep << ": " << ERR << "cannot open " << strCShoreFilename << " for input" << endl;
+      LogStream << m_ulTimestep << ": " << ERR << "cannot open " << *strCShoreFilename << " for input" << endl;
       
       return RTN_ERR_CSHORE_INPUT_FILE;
    }
    
    // Opened OK
-   unsigned int nExpectedRows; 
+   int nExpectedRows; 
    double 
       dValue,
       dDummy;
@@ -2247,7 +2249,7 @@ int CSimulation::nLookUpCShoreOutputs(string const strCShoreFilename, unsigned c
    {
       VdValue.push_back(dValue);
       
-      if (VdValue.size() == nExpectedColumns)
+      if (static_cast<int>(VdValue.size()) == nExpectedColumns)
       {
          VdData.push_back(VdValue);
          VdValue.clear();
@@ -2256,17 +2258,17 @@ int CSimulation::nLookUpCShoreOutputs(string const strCShoreFilename, unsigned c
    
    // Set up the vectors to hold the input data
    vector<double> 
-      vdXYDistCShore,
+      VdXYDistCShore,
       VdValuesCShore;
    
    for (unsigned int i = 0; i < VdData.size(); i++)
    {
-      vdXYDistCShore.push_back(VdData[i][0]);
+      VdXYDistCShore.push_back(VdData[i][0]);
       VdValuesCShore.push_back(VdData[i][nCShorecolumn-1]);
    }
 
    // Check that we have read all the expected nExpectedRows
-   unsigned nReadRows = vdXYDistCShore.size();
+   int nReadRows = VdXYDistCShore.size();
    if (nReadRows != nExpectedRows)
    {
       // Error: we expect nExpected CShore output rows but actually read nReadRows
@@ -2277,8 +2279,8 @@ int CSimulation::nLookUpCShoreOutputs(string const strCShoreFilename, unsigned c
 
    // Change the origin of the across-shore distance from the CShore convention to the one used here (i.e. with the origin at the shoreline)
    vector<double>  vdXYDistCME(nReadRows, 0);
-   for (unsigned int i = 0; i < nReadRows; i++)
-      vdXYDistCME[i] = vdXYDistCShore[nReadRows-1] - vdXYDistCShore[i];
+   for (int i = 0; i < nReadRows; i++)
+      vdXYDistCME[i] = VdXYDistCShore[nReadRows-1] - VdXYDistCShore[i];
      
    // Reverse the cshore XYdistance and value vectors (i.e. first point is at the shoreline and must be in strictly ascending order)
    std::reverse(vdXYDistCME.begin(),vdXYDistCME.end());
@@ -2289,7 +2291,7 @@ int CSimulation::nLookUpCShoreOutputs(string const strCShoreFilename, unsigned c
    {
       // Using the hermite cubic approach: calculate the first derivative of CShore values (needed for the hermite interpolant)
       vector<double> VdValuesCShoreDeriv(nReadRows, 0);
-      for (unsigned int i = 1; i < nReadRows-1; i++)
+      for (int i = 1; i < nReadRows-1; i++)
       {
          // Calculate the horizontal distance increment between two adjacent points (not always the same distance because it depend on profile-cells centroid location)
          double dX = vdXYDistCME[i+1] - vdXYDistCME[i-1];    // This is always positive 
@@ -2300,22 +2302,22 @@ int CSimulation::nLookUpCShoreOutputs(string const strCShoreFilename, unsigned c
       VdValuesCShoreDeriv[nReadRows-1] = VdValuesCShoreDeriv[nReadRows-2];
    
       // Interpolate the CShore values
-      int nSize = VdDistXY.size();
+      int nSize = pVdDistXY->size();
       vector<double>
-         VdDistXYCopy(VdDistXY.begin(), VdDistXY.end()),
+         VdDistXYCopy(pVdDistXY->begin(), pVdDistXY->end()),
 	    //dVInter(nSize,0.),
          VdDeriv(nSize, 0.),        // First derivative at the sample points: calculated by the spline function but not subsequently used
          VdDeriv2(nSize, 0.),       // Second derivative at the sample points, ditto
          VdDeriv3(nSize, 0.);       // Third derivative at the sample points, ditto
 
       // Calculate the value of erosion potential (is a -ve value) for each of the sample values of DepthOverDB, and store it for use in the look-up function
-      hermite_cubic_spline_value(nReadRows, &(vdXYDistCME.at(0)), &(VdValuesCShore.at(0)), &(VdValuesCShoreDeriv.at(0)), nSize, &(VdDistXYCopy[0]), &(dVMyInterpolatedValues[0]), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
+      hermite_cubic_spline_value(nReadRows, &(vdXYDistCME.at(0)), &(VdValuesCShore.at(0)), &(VdValuesCShoreDeriv.at(0)), nSize, &(VdDistXYCopy[0]), &(VdMyInterpolatedValues[0]), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
    }
    else
    {
       // Using the simple linear approach
-      vector<double> VdDistXYCopy(VdDistXY.begin(), VdDistXY.end());
-      dVMyInterpolatedValues = interp1(vdXYDistCME, VdValuesCShore, VdDistXYCopy);
+      vector<double> VdDistXYCopy(pVdDistXY->begin(), pVdDistXY->end());
+      VdMyInterpolatedValues = interp1(vdXYDistCME, VdValuesCShore, VdDistXYCopy);
    }
    
    return RTN_OK;

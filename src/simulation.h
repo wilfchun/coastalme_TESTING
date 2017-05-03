@@ -535,8 +535,8 @@ private:
    int nLandformToGrid(int const, int const);
    int nCalcWavePropertiesOnProfile(int const, int const, int const); 
    int nGetThisProfilePointsElevationVectors(int const,int const, int const&, vector<double>&, vector<double>&);
-   int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double>&, vector<double>&);
-   int nLookUpCShoreOutputs(string const, unsigned const, unsigned const, vector<double> const, vector<double>&);
+   int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double> const*, vector<double> const*);
+   int nLookUpCShoreOutputs(string const*, int const, int const, vector<double> const*, vector<double>&);
    double dCalcWaveAngleToCoastNormal(double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);
