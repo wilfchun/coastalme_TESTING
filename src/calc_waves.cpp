@@ -1887,6 +1887,11 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // Move to the CShore folder
       chdir("cshore");
    
+      // TODO Andres check this re. CShore input requirements
+      // Constrain the wave to normal angle to be betwee -80 and 80 degrees, this is a requirement of CShore
+      dWaveToNormalAngle = tMax(dWaveToNormalAngle, -80.0);
+      dWaveToNormalAngle = tMin(dWaveToNormalAngle, 80.0);
+      
       // Create the CShore input file  
       nRet = nCreateCShoreInfile(dCShoreTimeStep, m_dWavePeriod, m_dDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, dWaveFriction, &VdProfileDistXY, &VdProfileZ);
       if (nRet != RTN_OK)
@@ -2134,9 +2139,9 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
 
    // OK, write to the file
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << 0.0;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) <<  dWaveAngle << endl;
+   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dTimestep;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) <<  dWaveAngle << endl;
+   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
    
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << 0.0;
    file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dSurgeLevel << endl;

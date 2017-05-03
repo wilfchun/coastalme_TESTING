@@ -1946,17 +1946,17 @@ string CSimulation::strGetErrorText(int const nErr)
       strErr = "empty profile during during CShore wave propagation";
       break;
    case RTN_ERR_CSHORE_OUTPUT_FILE:
-      strErr = "error creating CShore output file";
+      strErr = "creating CShore output file";
       break;
    case RTN_ERR_CSHORE_INPUT_FILE:
-      strErr = "error reading CShore input file";
+      strErr = "reading CShore input file";
       break;
    case RTN_ERR_WAVE_INTERPOLATION_LOOKUP:
-      strErr = "error during wave interpolation lookup";
+      strErr = "during wave interpolation lookup";
       break;
    default:
       // should never get here
-      strErr = "unknown error";
+      strErr = "unknown cause";
    }
 
    return strErr;
