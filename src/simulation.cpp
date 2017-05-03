@@ -780,7 +780,6 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 
       // Update grand totals
       UpdateGrandTotals();
-
    }  // ================================================ End of main loop ======================================================
 
    // =================================================== post-loop tidying =====================================================

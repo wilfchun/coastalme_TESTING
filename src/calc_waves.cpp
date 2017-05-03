@@ -81,7 +81,7 @@ int CSimulation::nDoAllPropagateWaves(void)
       int
          nCoastSize = m_VCoast[nCoast].nGetCoastlineSize(),
          nNumProfiles = m_VCoast[nCoast].nGetNumProfiles();
-
+         
       // Calculate wave properties at every point along each valid profile, and for the cells under the profiles. Do this in the original (curvature-related) profile sequence
       for (int nProfile = 0; nProfile < nNumProfiles; nProfile++)
       {
@@ -108,8 +108,8 @@ int CSimulation::nDoAllPropagateWaves(void)
             m_VCoast[nCoast].SetWaveEnergy(nCoastPoint, dWaveEnergy);
          }
       }
-    }
-    
+   }
+      
    // Interpolate wave properties for the cells between the profiles using gdal_grid
    chdir("temp");
    
@@ -128,10 +128,9 @@ int CSimulation::nDoAllPropagateWaves(void)
    nRet = nDoAllShadowZones();
    if (nRet != RTN_OK)
       return nRet;
-   
    // Finally, fill in artefactual 'holes' in active zone and wave property patterns
    CalcD50AndFillWaveCalcHoles();      
-   
+      
    return RTN_OK;
 }
 
@@ -1888,7 +1887,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       chdir("cshore");
    
       // TODO Andres check this re. CShore input requirements
-      // Constrain the wave to normal angle to be betwee -80 and 80 degrees, this is a requirement of CShore
+      // Constrain the wave to normal angle to be between -80 and 80 degrees, this is a requirement of CShore
       dWaveToNormalAngle = tMax(dWaveToNormalAngle, -80.0);
       dWaveToNormalAngle = tMin(dWaveToNormalAngle, 80.0);
       
@@ -2364,6 +2363,15 @@ int CSimulation::nInterpolateWavePropertiesToCells(string const* strFileName)
    
    if (*strFileName == WAVEENERGYFLUX)
    {
+      LogStream << "********************************" << endl;
+      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][0].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][0].dGetWaveOrientation() << endl;
+      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][0].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][0].dGetWaveOrientation() << endl;
+      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][3].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][3].dGetWaveOrientation() << endl;
+      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][3].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][3].dGetWaveOrientation() << endl;
+      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][5].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][5].dGetWaveOrientation() << endl;
+      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][5].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][5].dGetWaveOrientation() << endl;
+      LogStream << "********************************" << endl;
+
       // Copy files
       string strCopycsvX = "cp " + WAVEHEIGHTX + " temp.csv";
       system(strCopycsvX.c_str());
@@ -2428,7 +2436,16 @@ int CSimulation::nInterpolateWavePropertiesToCells(string const* strFileName)
    int nRet = nReadAndUpdateWaveAttributes(strFileName);
    if (nRet != RTN_OK)
       return nRet;
- 
+   
+   LogStream << "********************************" << endl;
+   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][0].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][0].dGetWaveOrientation() << endl;
+   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][0].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][0].dGetWaveOrientation() << endl;
+   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][3].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][3].dGetWaveOrientation() << endl;
+   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][3].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][3].dGetWaveOrientation() << endl;
+   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][5].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][5].dGetWaveOrientation() << endl;
+   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][5].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][5].dGetWaveOrientation() << endl;
+   LogStream << "********************************" << endl;
+
    return RTN_OK;
 }
 
