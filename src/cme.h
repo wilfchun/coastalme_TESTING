@@ -668,7 +668,8 @@ int const      RTN_ERR_CANNOT_ASSIGN_COASTAL_LANDFORM = 46;
 int const      RTN_ERR_SHADOW_ZONE_FLOOD_FILL_NOGRID  = 47;
 int const      RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT  = 48;
 int const      RTN_ERR_CSHORE_EMPTY_PROFILE           = 49;
-int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 50;
+int const      RTN_ERR_CSHORE_OUTPUT_FILE             = 50;
+int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 51;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                    = -1;

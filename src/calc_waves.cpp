@@ -1877,7 +1877,9 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       chdir("cshore");
    
       // Create the CShore input file  
-      CreateCShoreinfile(dCShoreTimeStep, m_dWavePeriod, m_dDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, dWaveFriction, VdProfileDistXY, VdProfileZ);
+      int nRet = nCreateCShoreInfile(dCShoreTimeStep, m_dWavePeriod, m_dDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, dWaveFriction, VdProfileDistXY, VdProfileZ);
+      if (nRet != RTN_OK)
+         return nRet;
      
       // Run CShore for this profile
       system("./cshore.out > scr.txt"); 
@@ -2092,7 +2094,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
  Create the CShore input file
 
 ===============================================================================================================================*/
-int CSimulation::CreateCShoreinfile(double dtimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, double dWaveFriction, vector<double>& VdXdist, vector<double>& VdBottomElevation)
+int CSimulation::nCreateCShoreInfile(double dtimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, double dWaveFriction, vector<double>& VdXdist, vector<double>& VdBottomElevation)
 {
    // Initialize inifile from infileTemplate
    system("cp infileTemplate infile");       // The infileTemplate must be in the working directory
@@ -2102,9 +2104,13 @@ int CSimulation::CreateCShoreinfile(double dtimestep, double dWavePeriod, double
    std::ofstream file;
    file.open(strFName.c_str(), ios::out | ios::app);
    if (file.fail())
-      // Error, cannot open file
-      cerr << ERR << "cannot open " << strFName << " for output" << endl;
+   {
+      // Error, cannot open CShore input file
+      LogStream << m_ulTimestep << ": " << ERR << "cannot open " << strFName << " for output" << endl;
+      return RTN_ERR_CSHORE_OUTPUT_FILE;
+   }
 
+   // OK, write to the file
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << 0.0;
    file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) <<  dWaveAngle << endl;
    file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dtimestep;
@@ -2117,10 +2123,9 @@ int CSimulation::CreateCShoreinfile(double dtimestep, double dWavePeriod, double
    
    file << setw(8) << VdXdist.size() << "                        -> NBINP" << endl;
    file << setiosflags(ios::fixed) << setprecision(4);
-   for (unsigned i = 0; i < VdXdist.size(); i++)
-   {
+   for (unsigned int i = 0; i < VdXdist.size(); i++)
       file << setw(11) << VdXdist[i] << setw(11) << VdBottomElevation[i] << setw(11) << dWaveFriction << endl;
-   }
+   
    return RTN_OK;
 }
 
