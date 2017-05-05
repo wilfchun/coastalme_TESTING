@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 3 May 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 5 May 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 

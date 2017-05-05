@@ -2418,7 +2418,8 @@ int CSimulation::nInterpolateWavePropertiesToCells(string const* strFileName)
       
       // Put together the second part of the string for gdal_grid
       strTmp1 = strTmp;
-      strTmp1 += " -l temp  -a linear::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt temp.tiff";
+      strTmp1 += " -l temp  -a nearest::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt temp.tiff";
+//       strTmp1 += " -l temp  -a linear::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt temp.tiff";
       
       // Run gdal_grid
       system(strTmp1.c_str());      
