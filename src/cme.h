@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 5 May 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 10 May 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -671,6 +671,7 @@ int const      RTN_ERR_CSHORE_EMPTY_PROFILE           = 49;
 int const      RTN_ERR_CSHORE_OUTPUT_FILE             = 50;
 int const      RTN_ERR_CSHORE_INPUT_FILE              = 51;
 int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 52;
+int const      RTN_ERR_GRIDCREATE                     = 53;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                    = -1;

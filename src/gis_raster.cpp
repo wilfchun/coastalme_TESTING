@@ -30,10 +30,14 @@ using std::cerr;
 using std::endl;
 using std::ios;
 
+#include <fstream>
+using std::ifstream;
+
 #include <sstream>
 using std::stringstream;
 
 #include <gdal_priv.h>
+#include <gdal_alg.h>
 
 #include "cme.h"
 #include "simulation.h"
@@ -1065,7 +1069,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (PLOT_WAVE_HEIGHT):
             {
-               if ((! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()) || m_pRasterGrid->m_Cell[nX][nY].bIsInActiveZone())
+               if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
                   dTmp = m_dMissingValue;
                else
                   dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
@@ -1802,3 +1806,282 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
 
    return true;
 }
+
+
+/*===============================================================================================================================
+
+ Interpolates wave properties from all profiles to all sea cells outside the active zone using GDALGridCreate(), the library version of external utility gdal_grid
+
+===============================================================================================================================*/
+int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<double> const* pVdHeightX, vector<double> const* pVdHeightY)
+{
+   // Do the cells outside the active zone
+   int
+      nXSize = 0,
+      nYSize = 0;
+      
+   vector<double> 
+      VdOutX,
+      VdOutY;
+   
+   unsigned int nPoints = pVnX->size();
+   
+   for (int nDirection = 0; nDirection < 2; nDirection++)
+   {      
+      // It is necessary to transfer the data from the pVnX, pVnY, pVdHeightX and pVdHeightY vectors into c-style arrays, because GDALGridCreate() will only accept c-style arrays of doubles
+      double* dX = new double[nPoints];
+      double* dY = new double[nPoints];
+      double* dZ = new double[nPoints];
+      
+      for (unsigned int n = 0; n < nPoints; n++)
+      {
+         dX[n] = pVnX->at(n);
+         dY[n] = pVnY->at(n);
+         if (nDirection == 0)
+            dZ[n] = pVdHeightY->at(n);
+         else
+            dZ[n] = pVdHeightX->at(n);
+      }
+      
+//          // TEST
+//          m_nXMaxBoundingBox = m_nXGridMax-1;
+//          m_nYMaxBoundingBox = m_nYGridMax-1;     
+//          m_nXMinBoundingBox = 0;
+//          m_nYMinBoundingBox = 0;
+//          // TEST
+      
+      nXSize = m_nXMaxBoundingBox - m_nXMinBoundingBox + 1;
+      nYSize = m_nYMaxBoundingBox - m_nYMinBoundingBox + 1;
+      int nGridSize = nXSize * nYSize;
+      
+//          LogStream << "nDirection = " << nDirection << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl; 
+
+      // Use the GDALGridCreate() linear interpolation algorithm: this computes a Delaunay triangulation of the point cloud, finding in which triangle of the triangulation the point is, and by doing linear interpolation from its barycentric coordinates within the triangle. If the point is not in any triangle, depending on the radius, the algorithm will use the value of the nearest point or the nodata value. Only available in GDAL 2.1 and later
+      GDALGridLinearOptions options;
+      memset(&options, 0, sizeof(options));
+      options.dfNoDataValue = DBL_NODATA;    // No data marker to fill empty points
+      options.dfRadius = -1;                 // Set the search radius to infinite
+      
+      // For the gridded output, must be a c-style array
+      double* dOut = new double[nGridSize];
+
+      // Call GDALGridCreate()
+      int nRet = GDALGridCreate(GGA_Linear, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Float64, dOut, NULL, NULL);
+                     
+      if (nRet == CE_Failure)
+         return RTN_ERR_GRIDCREATE;
+
+      // The output from GDALGridCreate() is in dOut but must be reversed
+      int n = 0;
+      for (int nY = nYSize-1; nY >= 0; nY--)
+      {
+         for (int nX = 0; nX < nXSize; nX++)
+         {
+            if (nDirection == 1)
+               VdOutX.push_back(dOut[n]);
+            else
+               VdOutY.push_back(dOut[n]);
+
+//                LogStream << "nDirection = " << nDirection << " nX = " << nX << " nY = " << nY << " n = "  << n << " n+nX = " << n+nX << " dOut[n + nX] = " << dOut[n + nX] << endl;
+            n++;
+         }
+      }
+      
+      delete[] dOut;
+      
+//          // TEST ===========================================
+//          string strOutFile;
+//          if (nDirection == 1)
+//             strOutFile = "testX.tif";
+//          else
+//             strOutFile = "testY.tif";
+//          
+//          GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//          GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), nXSize, nYSize, 1, GDT_Float64, m_papszGDALRasterOptions);
+//          pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//          pDataSet->SetGeoTransform(m_dGeoTransform);
+//          double* pdRaster = new double[nGridSize];
+//          n = 0;
+//          for (int nY = 0; nY < nYSize; nY++)
+//          {
+//             for (int nX = 0; nX < nXSize; nX++)
+//             {
+//                // Write this value to the array
+//                if (nDirection == 1)
+//                {
+//                   pdRaster[n] = VdOutX[n];
+// //                   LogStream << "nDirection = " << nDirection << " [" << nX << "][" << nY << "] = " << VdOutX[n] << endl;
+//                }
+//                else
+//                {
+//                   pdRaster[n] = VdOutY[n];
+// //                   LogStream << "nDirection = " << nDirection << " [" << nX << "][" << nY << "] = " << VdOutY[n] << endl;
+//                }
+//                   
+//                n++;
+//             }
+//          }
+// 
+//          GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+//          pBand->SetNoDataValue(m_dMissingValue);      
+//          nRet = pBand->RasterIO(GF_Write, 0, 0, nXSize, nYSize, pdRaster, nXSize, nYSize, GDT_Float64, 0, 0);
+//          
+//          if (nRet == CE_Failure)
+//             return RTN_ERR_GRIDCREATE;
+// 
+//          GDALClose(pDataSet);
+//          delete[] pdRaster;
+//          // TEST ===========================================
+   }
+   
+   // Now put the x and y directions together and update the raster cells
+   int n = 0;
+   for (int nY = 0; nY < nYSize; nY++)
+   {
+      for (int nX = 0; nX < nXSize; nX++)
+      {
+         int
+            nActualX = nX + m_nXMinBoundingBox,
+            nActualY = nY + m_nYMinBoundingBox;
+            
+         if (m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea())
+         {
+            // Calculate the wave height and direction 
+            double 
+               dWaveHeightX = VdOutX[n],
+               dWaveHeightY = VdOutY[n],
+               dWaveHeight = sqrt((dWaveHeightX * dWaveHeightX) + (dWaveHeightY * dWaveHeightY)),
+               dWaveDir = atan2(dWaveHeightX, dWaveHeightY) * (180/PI);
+
+            // Update the cell's wave attributes
+            m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveHeight(dWaveHeight);       
+            m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveOrientation(dKeepWithin360(dWaveDir));
+            
+//             LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] waveheight = " << dWaveHeight << " dWaveDir = " << dWaveDir << " dKeepWithin360(dWaveDir) = " << dKeepWithin360(dWaveDir) << endl;
+         }            
+         n++;
+      }
+   }      
+
+   return RTN_OK;
+}
+
+/*===============================================================================================================================
+
+ Interpolates wave properties from all profiles to all active zone sea cells using GDALGridCreate(), the library version of external utility gdal_grid
+
+===============================================================================================================================*/
+int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<bool> const* pVbBreaking)
+{
+   unsigned int nPoints = pVnX->size();
+   
+   // It is necessary to transfer the data from the pVnX, pVnY and pVbBreaking vectors into c-style arrays, because GDALGridCreate will only accept c-style arrays
+   double* dX = new double[nPoints];
+   double* dY = new double[nPoints];
+   double* dZ = new double[nPoints];
+   
+   for (unsigned int n = 0; n < nPoints; n++)
+   {
+      dX[n] = pVnX->at(n);
+      dY[n] = pVnY->at(n);
+      dZ[n] = pVbBreaking->at(n);
+   }
+   
+//       // TEST
+//       m_nXMaxBoundingBox = m_nXGridMax-1;
+//       m_nYMaxBoundingBox = m_nYGridMax-1;     
+//       m_nXMinBoundingBox = 0;
+//       m_nYMinBoundingBox = 0;
+//       // TEST
+      
+   int
+      nXSize = m_nXMaxBoundingBox - m_nXMinBoundingBox + 1,
+      nYSize = m_nYMaxBoundingBox - m_nYMinBoundingBox + 1,
+      nGridSize = nXSize * nYSize;
+//       LogStream << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl; 
+   
+   // Call GDALGridCreate() with the nearest neighbour interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0).
+   GDALGridNearestNeighborOptions options;
+   memset(&options, 0, sizeof(options));
+   options.dfNoDataValue = INT_NODATA;
+   
+   // For the gridded output, must be a c-style array
+   int* nOut = new int[nGridSize];
+   
+   // Call GDALGridCreate()
+   int nRet = GDALGridCreate(GGA_NearestNeighbor, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Int32, nOut, NULL, NULL);
+                  
+   if (nRet == CE_Failure)
+      return RTN_ERR_GRIDCREATE;
+
+   // The output from GDALGridCreate() is in nOut but must be reversed
+   vector<bool> VbOut;
+   int n = 0;
+   for (int nY = nYSize-1; nY >= 0; nY--)
+   {
+      for (int nX = 0; nX < nXSize; nX++)
+      {
+         VbOut.push_back(nOut[n]);
+//             LogStream << " nX = " << nX << " nY = " << nY << " n = " << n << " nOut[n] = " << nOut[n] << endl;            
+         n++;
+      }
+   }
+   
+   delete[] nOut;
+   
+//       // TEST ===========================================
+//       string strOutFile = "testactive.tif";
+//       GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//       GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), nXSize, nYSize, 1, GDT_Int32, m_papszGDALRasterOptions);
+//       pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//       pDataSet->SetGeoTransform(m_dGeoTransform);
+//       int* pnRaster = new int[nGridSize];
+//       n = 0;
+//       for (int nY = 0; nY < nYSize; nY++)
+//       {
+//          for (int nX = 0; nX < nXSize; nX++)
+//          {
+//             // Write this value to the array
+//             pnRaster[n] = VbOut[n];
+//                
+//             n++;
+//          }
+//       }
+// 
+//       GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+//       pBand->SetNoDataValue(m_nMissingValue);      
+//       nRet = pBand->RasterIO(GF_Write, 0, 0, nXSize, nYSize, pnRaster, nXSize, nYSize, GDT_Int32, 0, 0);
+//       
+//       if (nRet == CE_Failure)
+//          return RTN_ERR_GRIDCREATE;
+// 
+//       GDALClose(pDataSet);
+//       delete[] pnRaster;
+//       // TEST ===========================================
+   
+   // Now update the raster cells
+   n = 0;
+   for (int nY = 0; nY < nYSize; nY++)
+   {
+      for (int nX = 0; nX < nXSize; nX++)
+      {
+         int
+            nActualX = nX + m_nXMinBoundingBox,
+            nActualY = nY + m_nYMinBoundingBox;
+            
+         if (m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea())
+         {
+//                LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] active zone  = " << (VbOut[n] ? "true" : "false") << endl;
+            
+            m_pRasterGrid->m_Cell[nActualX][nActualY].SetInActiveZone(VbOut[n]);
+         }
+         
+         n++;
+      }
+   }
+
+   return RTN_OK;
+}
+
+
+

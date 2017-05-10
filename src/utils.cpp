@@ -1954,6 +1954,9 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_WAVE_INTERPOLATION_LOOKUP:
       strErr = "during wave interpolation lookup";
       break;
+   case RTN_ERR_GRIDCREATE:
+      strErr = "while running GDALGridCreate()";
+      break;
    default:
       // should never get here
       strErr = "unknown cause";

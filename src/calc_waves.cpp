@@ -63,19 +63,21 @@ using std::stack;
 
 /*===============================================================================================================================
 
- Simulates wave propagation along all coastline-normal profiles, based on a routine by Martin Hurst
+ Simulates wave propagation along all coastline-normal profiles
 
 ===============================================================================================================================*/
 int CSimulation::nDoAllPropagateWaves(void)
 {
-   // Remove the csv files where the profile data will be stored
-   chdir("temp");
-   remove(WAVEHEIGHTX.c_str());
-   remove(WAVEHEIGHTY.c_str());
-   remove(ACTIVEZONE.c_str());
-   chdir("..");
+   // Set up vectors to hold the wave attribute data at every profile point
+   vector<int> 
+      VnX,
+      VnY;
+   vector<double> 
+      VdHeightX,
+      VdHeightY;
+   vector<bool>VbBreaking;
    
-   // Do this for each coast
+   // Calculate wave properties for every coast
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
       int
@@ -85,12 +87,47 @@ int CSimulation::nDoAllPropagateWaves(void)
       // Calculate wave properties at every point along each valid profile, and for the cells under the profiles. Do this in the original (curvature-related) profile sequence
       for (int nProfile = 0; nProfile < nNumProfiles; nProfile++)
       {
-         int nRet = nCalcWavePropertiesOnProfile(nCoast, nCoastSize, nProfile);
+         int nRet = nCalcWavePropertiesOnProfile(nCoast, nCoastSize, nProfile, &VnX, &VnY, &VdHeightX, &VdHeightY, &VbBreaking);
          if (nRet != RTN_OK)
             return nRet;
-      }
-         
-      // Next, interpolate these wave properties for all remaining coastline points. Do this in along-coastline sequence
+      }         
+   }
+      
+   // Interpolate the wave attributes from all profile points to all sea cells outside the active zone
+   int nRet = nInterpolateWavePropertiesToSeaCells(&VnX, &VnY, &VdHeightX, &VdHeightY);
+   if (nRet != RTN_OK)
+      return nRet;
+   
+   // Interpolate the wave attributes from all profile points to all sea cells in the active zone
+   nRet = nInterpolateWavePropertiesToActiveZoneCells(&VnX, &VnY, &VbBreaking);
+   if (nRet != RTN_OK)
+      return nRet;
+
+   // Find the shadow zones and then modify waves in and adjacent to them
+   nRet = nDoAllShadowZones();
+   if (nRet != RTN_OK)
+      return nRet;
+   
+   // Fill in artefactual 'holes' in active zone and wave property patterns
+   CalcD50AndFillWaveCalcHoles();   
+   
+   // Modify the wave breaking properties (wave height, wave dir, breaking depth, breaking distance) for coastline points within the shadow zone
+   for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
+   {
+      int nNumProfiles = m_VCoast[nCoast].nGetNumProfiles();         
+
+      for (int nProfile = 0; nProfile < nNumProfiles; nProfile++)
+         ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(nCoast, nProfile);
+   }
+   
+   // Interpolate these wave properties for all remaining coastline points. Do this in along-coastline sequence
+   for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
+   {
+      int
+         nCoastSize = m_VCoast[nCoast].nGetCoastlineSize(),
+         nNumProfiles = m_VCoast[nCoast].nGetNumProfiles();
+
+      // Interpolate these wave properties for all remaining coastline points. Do this in along-coastline sequence
       for (int n = 0; n < nNumProfiles; n++)
          InterpolateWavePropertiesToCoastline(nCoast, n, nNumProfiles);
 
@@ -109,27 +146,6 @@ int CSimulation::nDoAllPropagateWaves(void)
          }
       }
    }
-      
-   // Interpolate wave properties for the cells between the profiles using gdal_grid
-   chdir("temp");
-   
-   int nRet = nInterpolateWavePropertiesToCells(&WAVEENERGYFLUX);
-   if (nRet != RTN_OK)
-      return nRet;
-   
-   nRet = nInterpolateWavePropertiesToCells(&ACTIVEZONE);
-   if (nRet != RTN_OK)
-      return nRet;
-
-   system("./clean.sh");
-   chdir("..");
-   
-   // Find the shadow zones and then modify waves in and adjacent to them
-   nRet = nDoAllShadowZones();
-   if (nRet != RTN_OK)
-      return nRet;
-   // Finally, fill in artefactual 'holes' in active zone and wave property patterns
-   CalcD50AndFillWaveCalcHoles();      
       
    return RTN_OK;
 }
@@ -1723,7 +1739,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
  Calculates wave properties along a coastline-normal profile using either the COVE linear wave theory approach or the external CShore model
  
 ===============================================================================================================================*/
-int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoastSize, int const nProfile)
+int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoastSize, int const nProfile, vector<int>* pVnX, vector<int>* pVnY, vector<double>* pVdHeightX, vector<double>* pVdHeightY, vector<bool>* pVbBreaking)
 {
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
 
@@ -1871,7 +1887,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          VdProfileDistXY;             // Along-profile distance measured from the seaward limit, in CShore units
      
       // The elevation of each of these profile points is the elevation of the centroid of the cell that is 'under' the point. However we cannot always be confident that this is the 'true' elevation of the point on the vector since (unless the profile runs planview N-S or W-E) the vector does not always run exactly through the centroid of the cell
-      int nRet = nGetThisProfilePointsElevationVectors(nCoast, nProfile, nProfileSize, VdProfileDistXY, VdProfileZ);
+      int nRet = nGetThisProfileElevationVectorsForCShore(nCoast, nProfile, nProfileSize, &VdProfileDistXY, &VdProfileZ);
       if (nRet != RTN_OK)
          return nRet;
       
@@ -1910,15 +1926,15 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          strOYVELO = "OYVELO",
          strOPARAM = "OPARAM";
       
-      nRet = nLookUpCShoreOutputs(&strOSETUP, 4, 4, &VdProfileDistXY, VdFreeSurfaceStd);
+      nRet = nLookUpCShoreOutputs(&strOSETUP, 4, 4, &VdProfileDistXY, &VdFreeSurfaceStd);
       if (nRet != RTN_OK)
          return nRet;
       
-      nRet = nLookUpCShoreOutputs(&strOYVELO, 4, 2, &VdProfileDistXY, VdSinWaveAngleRadians);
+      nRet = nLookUpCShoreOutputs(&strOYVELO, 4, 2, &VdProfileDistXY, &VdSinWaveAngleRadians);
       if (nRet != RTN_OK)
          return nRet;
 
-      nRet = nLookUpCShoreOutputs(&strOPARAM, 4, 3, &VdProfileDistXY, VdFractionBreakingWaves);
+      nRet = nLookUpCShoreOutputs(&strOPARAM, 4, 3, &VdProfileDistXY, &VdFractionBreakingWaves);
       if (nRet != RTN_OK)
          return nRet;
       
@@ -2024,37 +2040,6 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       }
    }
     
-   // Open the csv files for each wave attribute that will be interpolated
-   chdir("temp");
-
-   ofstream OutStreamWAVEHEIGHTX;
-   OutStreamWAVEHEIGHTX.open(WAVEHEIGHTX.c_str(), ios::out | ios::app);
-   if (! OutStreamWAVEHEIGHTX)
-   {
-      // Error, cannot open file
-      LogStream << m_ulTimestep << ": " << ERR << "cannot open " << WAVEHEIGHTX << " for output" << endl;
-      
-      return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
-   }
-   
-   ofstream OutStreamWAVEHEIGHTY;
-   OutStreamWAVEHEIGHTY.open(WAVEHEIGHTY.c_str(), ios::out | ios::app);
-   if (! OutStreamWAVEHEIGHTY)
-   {
-      // Error, cannot open file
-      LogStream << m_ulTimestep << ": " << ERR << "cannot open " << WAVEHEIGHTY << " for output" << endl;
-      return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
-   }
-    
-   ofstream OutStreamACTIVEZONE;
-   OutStreamACTIVEZONE.open(ACTIVEZONE.c_str(), ios::out | ios::app);
-   if (! OutStreamACTIVEZONE)
-   {
-      // Error, cannot open file
-      LogStream << m_ulTimestep << ": " << ERR << "cannot open " << ACTIVEZONE << " for output" << endl;
-      return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
-   }
-   
    // Go landwards along the profile, fetching the calculated wave height and wave angle for every inundated point on this profile
    for (int nProfilePoint = (nProfileSize-1); nProfilePoint > 0; nProfilePoint--)
    {
@@ -2075,20 +2060,15 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       m_pRasterGrid->m_Cell[nX][nY].SetInActiveZone(bBreaking);
       m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
       m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveOrientation);
-      
-      // Write the profile wave attributes to CSV files for interpolation between profiles
-      OutStreamWAVEHEIGHTX << nX << "," << nY << "," << dWaveHeight * sin(dWaveOrientation * PI/180) << endl;
-      OutStreamWAVEHEIGHTY << nX << "," << nY << "," << dWaveHeight * cos(dWaveOrientation * PI/180) << endl;
-      OutStreamACTIVEZONE  << nX << "," << nY << "," << bBreaking << endl;
+
+      // And store the wave properties for this point in the all-profiles vectors
+      pVnX->push_back(nX);
+      pVnY->push_back(nY);
+      pVdHeightX->push_back(dWaveHeight * sin(dWaveOrientation * PI/180));
+      pVdHeightY->push_back(dWaveHeight * cos(dWaveOrientation * PI/180));
+      pVbBreaking->push_back(bBreaking);
    }
 
-   OutStreamWAVEHEIGHTY.close();
-   OutStreamWAVEHEIGHTX.close();
-   OutStreamACTIVEZONE.close();
-   
-   // Back to main folder
-   chdir(".."); 
-   
    // Update wave attributes along the coastline object
    if (nBreakingDist > 0)
    {
@@ -2161,7 +2141,7 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
  Get profile horizontal distance and bottom elevation vectors in CShore units
 
 ===============================================================================================================================*/
-int CSimulation::nGetThisProfilePointsElevationVectors(int const nCoast, int const nProfile, int const &nProfSize, vector<double>& VdDistXY, vector<double>& VdVZ)
+int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int const nProfile, int const nProfSize, vector<double>* VdDistXY, vector<double>* VdVZ)
 {
    int 
       nX1 = 0,
@@ -2188,7 +2168,7 @@ int CSimulation::nGetThisProfilePointsElevationVectors(int const nCoast, int con
          dProfileDistXY = dProfileDistXY + hypot(dXDist, dYDist);
       }
       
-      // Update the cell indexes. Initial cell is now the previous one
+      // Update the cell indexes, the initial cell is now the previous one
       nX1 = nX;
       nY1 = nY; 
 
@@ -2205,10 +2185,10 @@ int CSimulation::nGetThisProfilePointsElevationVectors(int const nCoast, int con
 
       // Get the elevation for both consolidated and unconsolidated sediment on this cell
       double VdProfileZ = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() - m_dThisTimestepSWL;
-      VdVZ.push_back(VdProfileZ); 
+      VdVZ->push_back(VdProfileZ); 
 
       // And store the X-Y plane distance from the start of the profile
-      VdDistXY.push_back(dProfileDistXY);
+      VdDistXY->push_back(dProfileDistXY);
    }
    
    return RTN_OK;
@@ -2220,7 +2200,7 @@ int CSimulation::nGetThisProfilePointsElevationVectors(int const nCoast, int con
  The CShore lookup: it returns a vector with the the interpolated values on column # of the CShore output file. The interpolation may be simple linear or a more advanced hermite cubic method
 
 ==============================================================================================================================*/
-int CSimulation::nLookUpCShoreOutputs(string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>& VdMyInterpolatedValues)
+int CSimulation::nLookUpCShoreOutputs(string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>* pVdMyInterpolatedValues)
 {
    // TODO Make this a user input
    // Select the interpolation method to be used: 0 for simple linear or 1 for hermite cubic
@@ -2314,19 +2294,19 @@ int CSimulation::nLookUpCShoreOutputs(string const* strCShoreFilename, int const
       int nSize = pVdDistXY->size();
       vector<double>
          VdDistXYCopy(pVdDistXY->begin(), pVdDistXY->end()),
-	    //dVInter(nSize,0.),
-         VdDeriv(nSize, 0.),        // First derivative at the sample points: calculated by the spline function but not subsequently used
-         VdDeriv2(nSize, 0.),       // Second derivative at the sample points, ditto
-         VdDeriv3(nSize, 0.);       // Third derivative at the sample points, ditto
+	    //dVInter(nSize, 0.),
+         VdDeriv(nSize, 0),         // First derivative at the sample points: calculated by the spline function but not subsequently used
+         VdDeriv2(nSize, 0),        // Second derivative at the sample points, ditto
+         VdDeriv3(nSize, 0);        // Third derivative at the sample points, ditto
 
       // Calculate the value of erosion potential (is a -ve value) for each of the sample values of DepthOverDB, and store it for use in the look-up function
-      hermite_cubic_spline_value(nReadRows, &(vdXYDistCME.at(0)), &(VdValuesCShore.at(0)), &(VdValuesCShoreDeriv.at(0)), nSize, &(VdDistXYCopy[0]), &(VdMyInterpolatedValues[0]), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
+      hermite_cubic_spline_value(nReadRows, &(vdXYDistCME.at(0)), &(VdValuesCShore.at(0)), &(VdValuesCShoreDeriv.at(0)), nSize, &(VdDistXYCopy[0]), &(pVdMyInterpolatedValues->at(0)), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
    }
    else
    {
       // Using the simple linear approach
       vector<double> VdDistXYCopy(pVdDistXY->begin(), pVdDistXY->end());
-      VdMyInterpolatedValues = interp1(vdXYDistCME, VdValuesCShore, VdDistXYCopy);
+      *pVdMyInterpolatedValues = interp1(vdXYDistCME, VdValuesCShore, VdDistXYCopy);
    }
    
    return RTN_OK;
@@ -2335,277 +2315,84 @@ int CSimulation::nLookUpCShoreOutputs(string const* strCShoreFilename, int const
 
 /*===============================================================================================================================
 
- Interpolates wave properties from a profile to the cells between the profile using gdal_grid. Uses the WaveAttribute CSV files generated by nCalcWavePropertiesOnProfile to produce a tiff --> xyz and update the raster grid attributes. All operations are done in the temp directory
+ Modifies the wave breaking properties at coastline points of profiles within the shadow zone.
 
 ===============================================================================================================================*/
-int CSimulation::nInterpolateWavePropertiesToCells(string const* strFileName)
+void CSimulation::ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(int const nCoast, int const nProfIndex)
 {
-   // Create the Virtual Raster file
-   /* <OGRVRTDataSource>
-        <OGRVRTLayer name= "temp">
-                <SrcDataSource>temp.csv</SrcDataSource>
-                <GeometryField encoding="PointFromColumns" x="field_1" y="field_2" z="field_3"/>
-        </OGRVRTLayer>
-   </OGRVRTDataSource>*/
+   int nProfile = m_VCoast[nCoast].nGetProfileAtAlongCoastlinePosition(nProfIndex);
+   CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
 
-   // Put together the first part of the string which will invoke gdal_grid
-   std::stringstream ststrTmp;
-   string strTmp = "gdal_grid -txe ";
-   ststrTmp.str("");
-   ststrTmp << m_nXMinBoundingBox << " " << m_nXMaxBoundingBox;
-   strTmp += ststrTmp.str();
-   strTmp += " -tye ";
-   ststrTmp.str("");
-   ststrTmp << m_nYMinBoundingBox << " " << m_nYMaxBoundingBox;
-   strTmp += ststrTmp.str();
-   
-   string strTmp1;
-   
-   if (*strFileName == WAVEENERGYFLUX)
+   // Only do this for profiles without problems, including the start and end-of-coast profile 
+   if (! pProfile->bOKIncStartAndEndOfCoast())
+      return;
+
+   int 
+      nThisCoastPoint = pProfile->nGetNumCoastPoint(),
+      nProfileSize = pProfile->nGetNumCellsInProfile();
+    
+   int nThisBreakingDist = m_VCoast[nCoast].nGetBreakingDistance(nThisCoastPoint);
+   double
+      dThisBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nThisCoastPoint),       // This could be DBL_NODATA
+      dThisBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nThisCoastPoint),
+      dThisBreakingDepth = m_VCoast[nCoast].dGetDepthOfBreaking(nThisCoastPoint);
+   bool 
+      bModfiedWaveHeightisBreaking = false,
+      bProfileIsinShadowZone = false;
+
+   // Traverse the profile landwards, checking if any profile cell is within the shadow zone
+   for (int nProfilePoint = (nProfileSize-1); nProfilePoint >= 0; nProfilePoint--)
    {
-      LogStream << "********************************" << endl;
-      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][0].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][0].dGetWaveOrientation() << endl;
-      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][0].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][0].dGetWaveOrientation() << endl;
-      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][3].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][3].dGetWaveOrientation() << endl;
-      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][3].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][3].dGetWaveOrientation() << endl;
-      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][5].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][5].dGetWaveOrientation() << endl;
-      LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][5].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][5].dGetWaveOrientation() << endl;
-      LogStream << "********************************" << endl;
+      int
+         nX = pProfile->pPtiGetCellInProfile(nProfilePoint)->nGetX(),
+         nY = pProfile->pPtiGetCellInProfile(nProfilePoint)->nGetY();
 
-      // Copy files
-      string strCopycsvX = "cp " + WAVEHEIGHTX + " temp.csv";
-      system(strCopycsvX.c_str());
-      
-      // Put together the second part of the string for gdal_grid
-      strTmp1 = strTmp;
-      strTmp1 += " -l temp  -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt tempX.tiff";
-      
-      // Run gdal_grid
-      system(strTmp1.c_str());      
-//       system("gdal_grid -l temp temp.vrt tempX.tiff -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q");
-      
-      // Run gdal_translate
-      system("gdal_translate -of XYZ -tr 1 1 tempX.tiff tempX.xyz -q");
-
-      // Copy some files
-      string strCopyxyz1 = "cp tempX.xyz " + WAVEHEIGHTX.substr(0, WAVEHEIGHTX.length()-4) + ".xyz" ;
-      system(strCopyxyz1.c_str());
-      
-      string strCopycsvY = "cp " + WAVEHEIGHTY + " temp.csv";
-      system(strCopycsvY.c_str());
-
-      // Put together the second part of the string for gdal_grid
-      strTmp1 = strTmp;      
-      strTmp1 += " -l temp  -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt tempY.tiff";
-      
-      // Run gdal_grid
-      system(strTmp1.c_str());      
-//       system("gdal_grid -l temp temp.vrt tempY.tiff -a linear::radius=-1 -ot Float32 --config GDAL_NUM_THREADS ALL_CPUS -q");
-      
-      // Run gdal_translate
-      system("gdal_translate -of XYZ -tr 1 1 tempY.tiff tempY.xyz -q");
-      
-      // Copy files
-      string strCopyxyz2 = "cp tempY.xyz " + WAVEHEIGHTY.substr(0, WAVEHEIGHTY.length()-4) + ".xyz" ;
-      system(strCopyxyz2.c_str());
-   }
-   
-   else if (*strFileName == ACTIVEZONE)
-   {
-      // Copy files
-      string strCopycsv = "cp " + *strFileName + " temp.csv";
-      system(strCopycsv.c_str());
-      
-      // Put together the second part of the string for gdal_grid
-      strTmp1 = strTmp;
-      strTmp1 += " -l temp  -a nearest::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt temp.tiff";
-//       strTmp1 += " -l temp  -a linear::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q temp.vrt temp.tiff";
-      
-      // Run gdal_grid
-      system(strTmp1.c_str());      
-//       system("gdal_grid -l temp temp.vrt temp.tiff -a nearest::radius=-1 -ot Int16 --config GDAL_NUM_THREADS ALL_CPUS -q");
-
-      // Run gdal_translate
-      system("gdal_translate -of XYZ -tr 1 1 temp.tiff temp.xyz -q");   // Translate generated tiff file into xyz and save it in the cshore/out folder 
-      
-      // Copy files
-      string strCopyxyz3 = "cp temp.xyz " + ACTIVEZONE.substr(0, ACTIVEZONE.length()-4) + ".xyz";
-      system(strCopyxyz3.c_str()); // Save the xyz file for the record 
-   }
-
-   // Update the raster grid with the interpolated values  
-   int nRet = nReadAndUpdateWaveAttributes(strFileName);
-   if (nRet != RTN_OK)
-      return nRet;
-   
-   LogStream << "********************************" << endl;
-   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][0].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][0].dGetWaveOrientation() << endl;
-   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][0].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][0].dGetWaveOrientation() << endl;
-   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][3].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][3].dGetWaveOrientation() << endl;
-   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][3].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][3].dGetWaveOrientation() << endl;
-   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-1][5].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-1][5].dGetWaveOrientation() << endl;
-   LogStream << m_ulTimestep << ": m_pRasterGrid->m_Cell[m_nXGridMax-5][5].dGetWaveOrientation() = " << m_pRasterGrid->m_Cell[m_nXGridMax-5][5].dGetWaveOrientation() << endl;
-   LogStream << "********************************" << endl;
-
-   return RTN_OK;
-}
-
-
-/*==============================================================================================================================
-
- Reads the xyz files with the interpolated wave properties and updates the raster grid values
-
-==============================================================================================================================*/
-int CSimulation::nReadAndUpdateWaveAttributes(string const* strFileName)
-{
-   if (*strFileName == ACTIVEZONE)
-   {
-      // Create an ifstream object
-      string strMyCshoreXYZ = "temp.xyz";
-      std::ifstream InStream;
-
-      // Try to open the xyz file for input
-      InStream.open(strMyCshoreXYZ.c_str(), ios::in);
-
-      // Did it open OK?
-      if (! InStream.is_open())
+      // If there is any cell profile  within the shadow zone and waves are breaking then modify wave breaking properties otherwise continue 
+      if (m_pRasterGrid->m_Cell[nX][nY].bIsinShadowZone())
       {
-         // Error: cannot open xyz file for input
-         LogStream << m_ulTimestep << ": " << ERR << "cannot open " << strMyCshoreXYZ << " for input" << endl;
+         bProfileIsinShadowZone = true;
          
-         return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
-      }
-
-      // Opened OK
-      char szRec[BUF_SIZE] = "";
-      string strRec;
-
-      // Now read the data from the file, line by line
-      while (InStream.getline(szRec, BUF_SIZE, '\n'))
-      {
-         strRec = szRec;
-
-         // Trim off leading and trailing whitespace
-         strRec = strTrimLeft(&strRec);
-         strRec = strTrimRight(&strRec);
-
-         // If it is a blank line, ignore it
-         if (strRec.empty())
-            continue;
-
-         // Split the string
-         vector<string> strTmp = strSplit(&strRec, SPACE);
-         
-         // Get the grid coordinates
-         std::string::size_type sz;
-         int 
-            nX = std::stoi(strTmp[0], &sz),
-            nY = std::stoi(strTmp[1], &sz);
-
-         // Is this a sea cell?
-         if (m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
-         {
-            // It is, so convert the string to a bool and set the cell's active zone value
-            bool bActiveZone = std::stoi(strTmp[2], &sz);
-            m_pRasterGrid->m_Cell[nX][nY].SetInActiveZone(bActiveZone);
-         }
-      }
-      
-      // Close file
-      InStream.close();
-   }
-   
-   else if (*strFileName == WAVEENERGYFLUX)
-   {
-      // Create two ifstream objects
-      string 
-         strMyCshoreXYZx = "tempX.xyz",
-         strMyCshoreXYZy = "tempY.xyz";
-      std::ifstream InStreamX;
-      std::ifstream InStreamY;
-
-      // Try to open the two files for input
-      InStreamX.open(strMyCshoreXYZx.c_str(), ios::in);
-      InStreamY.open(strMyCshoreXYZy.c_str(), ios::in);
-      
-      // Did the first file open OK?
-      if (! InStreamX.is_open())
-      {
-         // Error: cannot open xyz file for input
-         LogStream << m_ulTimestep << ": " << ERR << "cannot open " << strMyCshoreXYZx << " for input" << endl;
-         
-         return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
-      }
-      
-      // Did the secoond file open OK
-      if (! InStreamY.is_open())
-      {
-         // Error: cannot xyz  file for input
-         LogStream << m_ulTimestep << ": " << ERR << "cannot open " << strMyCshoreXYZy << " for input" << endl;
-         
-         return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
-      }
-
-      // Both files opened OK
-      char 
-         szRecX[BUF_SIZE] = "",
-         szRecY[BUF_SIZE] = "";
-      
-      // Now read the data from both files, line by line (assumes both files are the same size)
-      while (InStreamX.getline(szRecX, BUF_SIZE, '\n') && InStreamY.getline(szRecY, BUF_SIZE, '\n'))
-      {
-         string 
-            strRecX = szRecX,
-            strRecY = szRecY;
-
-         // Trim off leading and trailing whitespace
-         strRecX = strTrimLeft(&strRecX);
-         strRecX = strTrimRight(&strRecX);
-         strRecY = strTrimLeft(&strRecY);
-         strRecY = strTrimRight(&strRecY);
-
-         // If either is a blank line then ignore both lines
-         if (strRecX.empty() || strRecY.empty())
-            continue;
-
-         // Split both strings
-         vector<string> 
-            strTmpX = strSplit(&strRecX, SPACE),
-            strTmpY = strSplit(&strRecY, SPACE);
-         
-         // Get the grid coordinates from both files
-         std::string::size_type sz;
-         int 
-            nXx = std::stoi(strTmpX[0], &sz),
-            nYx = std::stoi(strTmpX[1], &sz),
-            nXy = std::stoi(strTmpY[0], &sz),
-            nYy = std::stoi(strTmpY[1], &sz);
-
-         // Check that both points are at the same grid location
-         if ((nXx != nXy) || (nYx != nYy))
-         {
-            // Problem: they are not
-            LogStream << m_ulTimestep << ": " << ERR << "points not identical (nXx = " << nXx << ", nXy = " << nXy << ", nYx = " << nYx << ", nYy = " << nYy << ") during wave interpolation" << endl;
-            
-            return RTN_ERR_WAVE_INTERPOLATION_LOOKUP;
-         }
-         
-         // They are the same location so calculate the wave height and direction 
+         // Check if the new wave height is breaking
          double 
-            dWaveHeightX = strtod(strTmpX[2].c_str(), NULL),
-            dWaveHeightY = strtod(strTmpY[2].c_str(), NULL),
-            dWaveHeight = sqrt((dWaveHeightX * dWaveHeightX) + (dWaveHeightY * dWaveHeightY)),
-            dWaveDir = atan2(dWaveHeightX, dWaveHeightY) * (180/PI);
+            dSeaDepth = m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth(),
+            dWaveHeight = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight(),
+            dWaveOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
          
-         // Update the cell's wave attributes
-         m_pRasterGrid->m_Cell[nXx][nYx].SetWaveHeight(dWaveHeight);       
-         m_pRasterGrid->m_Cell[nXx][nYx].SetWaveOrientation(dKeepWithin360(dWaveDir));
+         if (dWaveHeight > (dSeaDepth * WAVEHEIGHT_OVER_WATERDEPTH_AT_BREAKING) && (! bModfiedWaveHeightisBreaking))
+         {
+             // It is breaking
+            bModfiedWaveHeightisBreaking = true;
+            
+            dThisBreakingWaveHeight = dWaveHeight;
+            dThisBreakingWaveOrientation = dWaveOrientation;
+            dThisBreakingDepth = dSeaDepth;
+            nThisBreakingDist = nProfilePoint;
+         }
       }
-      
-      // Close file
-      InStreamX.close();
-      InStreamY.close();
    }
    
-   return RTN_OK;
+   // Update breaking wave properties along coastal line object (Wave height, dir, distance). TODO update the active zone cells
+   if (bProfileIsinShadowZone && bModfiedWaveHeightisBreaking) // Modified wave height is still breaking
+   {
+      // This coast point is in the active zone, so set breaking wave height, breaking wave angle, and depth of breaking for the coast point
+      m_VCoast[nCoast].SetBreakingWaveHeight(nThisCoastPoint, dThisBreakingWaveHeight);
+      m_VCoast[nCoast].SetBreakingWaveOrientation(nThisCoastPoint, dThisBreakingWaveOrientation);
+      m_VCoast[nCoast].SetDepthOfBreaking(nThisCoastPoint, dThisBreakingDepth);
+      m_VCoast[nCoast].SetBreakingDistance(nThisCoastPoint, nThisBreakingDist);
+      
+//       LogStream << m_ulTimestep << ": nProfile = " << nProfile << ", nCoastPoint = " << nCoastPoint << " in active zone, dBreakingWaveHeight = " << dBreakingWaveHeight << endl;
+   }
+   /*else if (bProfileIsinShadowZone && !bModfiedWaveHeightisBreaking)
+   {
+      // This coast point is no longer in the active zone
+      m_VCoast[nCoast].SetBreakingWaveHeight(nThisCoastPoint, DBL_NODATA);
+      m_VCoast[nCoast].SetBreakingWaveOrientation(nThisCoastPoint, DBL_NODATA);
+      m_VCoast[nCoast].SetDepthOfBreaking(nThisCoastPoint, DBL_NODATA);
+      m_VCoast[nCoast].SetBreakingDistance(nThisCoastPoint, INT_NODATA);
+      
+//       LogStream << m_ulTimestep << ": nProfile = " << nProfile << ", nCoastPoint = " << nCoastPoint << " NOT in active zone" << endl;
+   }*/
+   
+   return;   
 }
+   

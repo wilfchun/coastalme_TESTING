@@ -243,6 +243,8 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
    }
    
    LogStream << m_ulTimestep << ": with SWL = " << m_dThisTimestepSWL << ", " << nFilled << " cells marked as sea, out of " << m_ulNumCells << " total (" <<  setiosflags(ios::fixed) << setprecision(2) << 100.0 * nFilled / m_ulNumCells << " %)" << endl << endl;
+   
+//    LogStream << " m_nXMinBoundingBox = " << m_nXMinBoundingBox << " m_nXMaxBoundingBox = " << m_nXMaxBoundingBox << " m_nYMinBoundingBox = " << m_nYMinBoundingBox << " m_nYMaxBoundingBox = " << m_nYMaxBoundingBox << endl;
 }
 
 

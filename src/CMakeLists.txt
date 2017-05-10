@@ -4,11 +4,11 @@
 #
 #########################################################################################
 # Set CMake defaults
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
 
 #########################################################################################
-# Detect the environment, and set up compiler-independent stuff
+# Detect the build environment
 if (UNIX)
    message("Creating Linux-Unix Makefile for CoastalME")
 endif (UNIX)
@@ -24,9 +24,8 @@ if (MINGW)
    message("NOTE: CShore is not yet set up for MinGW")
 endif (MINGW)
 
-# Set up some c++ and architecture defaults
+# We are using c++
 enable_language(CXX)
-set(FIND_LIBRARY_USE_LIB64_PATHS true)
 
 # Set up project-specific defaults
 project(CME)
@@ -35,40 +34,46 @@ set(CME_EXECUTABLE cme)
 #set(CME_INSTALL_DIR "$ENV{HOME}/coast/CoastalME")          # May be changed by the user
 set(CME_INSTALL_DIR "${CMAKE_SOURCE_DIR}/..")               # May be changed by the user
 
+# Use 64-bit libraries
+set(FIND_LIBRARY_USE_LIB64_PATHS true)
+
+# Set the c++11 flag (note that later on we check the compiler for c++11 capability)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+
+# Set the CPU flag
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCPU -Dx86")       # TODO Need to change this for different CPU architectures
+
 if (NOT CMAKE_BUILD_TYPE)
    set(CMAKE_BUILD_TYPE Debug)                              # If not specified, assume a Debug build
 endif (NOT CMAKE_BUILD_TYPE)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
-   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_DEBUG})
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS}")
    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CME_BINARY_DIR}/Debug CACHE PATH "Directory for Debug builds" FORCE)
    # For Debug builds on any platform, add the model's "internal" debug flag (used for extra logging) etc.
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_DEBUG")
 endif (CMAKE_BUILD_TYPE MATCHES Debug)
 
 if (CMAKE_BUILD_TYPE MATCHES Release)
-   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_RELEASE})
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS}")
    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CME_BINARY_DIR}/Release CACHE PATH "Directory for Release builds" FORCE)
 endif (CMAKE_BUILD_TYPE MATCHES Release)
 
 if (CMAKE_BUILD_TYPE MATCHES gcov)
-#   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_RELEASE})
-   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_DEBUG})
+#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS}")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS}")
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 --coverage")
    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CME_BINARY_DIR}/gcov CACHE PATH "Directory for gcov builds" FORCE)
 endif (CMAKE_BUILD_TYPE MATCHES gcov)
 
 if (CMAKE_BUILD_TYPE MATCHES Callgrind)
-#   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_RELEASE})
-   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_DEBUG})
+#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS}")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS}")
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CME_BINARY_DIR}/Callgrind CACHE PATH "Directory for Callgrind builds" FORCE)
 endif (CMAKE_BUILD_TYPE MATCHES Callgrind)
-
-# Set up compiler-independent flags and build directories for the various build types
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCPU -Dx86")          # TODO Need to change this for different CPU architectures
 
 
 #########################################################################################
@@ -145,30 +150,19 @@ if (GDAL_CONFIG)
 #message("DBG GDAL_VERSION_MAJOR ${GDAL_VERSION_MAJOR}")
 #message("DBG GDAL_VERSION_MINOR ${GDAL_VERSION_MINOR}")
 
-   # Now check the GDAL version, and copy the appropriate files into the source folder
-   if (GDAL_VERSION_MAJOR GREATER 1)
-      if (UNIX OR CYGWIN)
-         execute_process(COMMAND cp -f "${CMAKE_SOURCE_DIR}/gdal_versions/gis_vector_gdal_version_2.cpp" "${CMAKE_SOURCE_DIR}/gis_vector.cpp")
-         execute_process(COMMAND cp -f "${CMAKE_SOURCE_DIR}/gdal_versions/gis_utils_gdal_version_2.cpp" "${CMAKE_SOURCE_DIR}/gis_utils.cpp")
-         execute_process(COMMAND cp -f "${CMAKE_SOURCE_DIR}/gdal_versions/gis_raster_gdal_version_2.cpp" "${CMAKE_SOURCE_DIR}/gis_raster.cpp")
-      else (UNIX OR CYGWIN)
-         execute_process(COMMAND copy "${CMAKE_SOURCE_DIR}/gdal_versions/gis_vector_gdal_version_2.cpp" "${CMAKE_SOURCE_DIR}/gis_vector.cpp")
-         execute_process(COMMAND copy "${CMAKE_SOURCE_DIR}/gdal_versions/gis_utils_gdal_version_2.cpp" "${CMAKE_SOURCE_DIR}/gis_utils.cpp")
-         execute_process(COMMAND copy "${CMAKE_SOURCE_DIR}/gdal_versions/gis_raster_gdal_version_2.cpp" "${CMAKE_SOURCE_DIR}/gis_raster.cpp")
-      endif (UNIX OR CYGWIN)
-   else (GDAL_VERSION_MAJOR GREATER 1)
-      if (UNIX OR CYGWIN)
-         execute_process(COMMAND cp -f "${CMAKE_SOURCE_DIR}/gdal_versions/gis_vector_gdal_version_1.cpp" "${CMAKE_SOURCE_DIR}/gis_vector.cpp")
-         execute_process(COMMAND cp -f "${CMAKE_SOURCE_DIR}/gdal_versions/gis_utils_gdal_version_1.cpp" "${CMAKE_SOURCE_DIR}/gis_utils.cpp")
-         execute_process(COMMAND cp -f "${CMAKE_SOURCE_DIR}/gdal_versions/gis_raster_gdal_version_1.cpp" "${CMAKE_SOURCE_DIR}/gis_raster.cpp")
-      else (UNIX OR CYGWIN)
-         execute_process(COMMAND copy "${CMAKE_SOURCE_DIR}/gdal_versions/gis_vector_gdal_version_1.cpp" "${CMAKE_SOURCE_DIR}/gis_vector.cpp")
-         execute_process(COMMAND copy "${CMAKE_SOURCE_DIR}/gdal_versions/gis_utils_gdal_version_1.cpp" "${CMAKE_SOURCE_DIR}/gis_utils.cpp")
-         execute_process(COMMAND copy "${CMAKE_SOURCE_DIR}/gdal_versions/gis_raster_gdal_version_1.cpp" "${CMAKE_SOURCE_DIR}/gis_raster.cpp")
-      endif (UNIX OR CYGWIN)
-   endif (GDAL_VERSION_MAJOR GREATER 1)
 
+   # Now check the GDAL version: CoastalME can only be built with GDAL 2.1 or above
+   if (GDAL_VERSION_MAJOR LESS 2)
+      message(FATAL_ERROR, "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
+   endif (GDAL_VERSION_MAJOR LESS 2)
+
+   if (GDAL_VERSION_MAJOR GREATER 2)
+      if (GDAL_VERSION_MINOR LESS 1)
+         message(FATAL_ERROR, "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
+      endif (GDAL_VERSION_MINOR LESS 1)
+   endif (GDAL_VERSION_MAJOR GREATER 2)
 endif (GDAL_CONFIG)
+
 
 #########################################################################################
 # Sort out CShore for Linux and Windows
@@ -188,8 +182,15 @@ message("Writing Makefile")
 include_directories(SYSTEM ${CMAKE_INCLUDE_PATH})
 include_directories(${CME_SOURCE_DIR})
 add_executable(${CME_EXECUTABLE} ${CME_SOURCE_FILES})
+
+# We need c++11
+set_property(TARGET ${CME_EXECUTABLE} PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${CME_EXECUTABLE} PROPERTY CXX_STANDARD_REQUIRED ON)
+
+
 target_link_libraries(${CME_EXECUTABLE} ${LIBS})
 install(TARGETS ${CME_EXECUTABLE} RUNTIME DESTINATION ${CME_INSTALL_DIR})
+
 
 # Tell the user what has happened
 message(STATUS "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")

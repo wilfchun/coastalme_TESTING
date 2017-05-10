@@ -468,7 +468,6 @@ private:
    int nSaveParProfile(int const, int const, int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
    bool bWriteParProfileData(int const, int const, int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
    void WriteLookUpData(void);
-   bool bWriteRasterGridWaveData2CSV(string&);
 
    // GIS input and output stuff
    int nReadBasementDEMData(void);
@@ -479,8 +478,8 @@ private:
    bool bWriteVectorGIS(int const, string const*);
    void GetRasterOutputMinMax(int const, double&, double&, int const, double const);
    void SetRasterFileCreationDefaults(void);
-   int nInterpolateWavePropertiesToCells(string const*);
-   int nReadAndUpdateWaveAttributes(string const*);
+   int nInterpolateWavePropertiesToSeaCells(vector<int> const*, vector<int> const*, vector<double> const*, vector<double> const*);
+   int nInterpolateWavePropertiesToActiveZoneCells(vector<int> const*, vector<int> const*, vector<bool> const*);
 
    // Initialization
    bool bCreateErosionPotentialLookUp(vector<double>*, vector<double>*, vector<double>*);
@@ -533,14 +532,15 @@ private:
    static CGeom2DPoint PtChooseEndPoint(int const, CGeom2DPoint const*, CGeom2DPoint const*, double const, double const, double const, double const);
    int nGetCoastNormalEndPoint(int const, int const, int const, CGeom2DPoint const*, double const, CGeom2DPoint*);
    int nLandformToGrid(int const, int const);
-   int nCalcWavePropertiesOnProfile(int const, int const, int const); 
-   int nGetThisProfilePointsElevationVectors(int const,int const, int const&, vector<double>&, vector<double>&);
+   int nCalcWavePropertiesOnProfile(int const, int const, int const, vector<int>*, vector<int>*, vector<double>*, vector<double>*, vector<bool>*); 
+   int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*);
    int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double> const*, vector<double> const*);
-   int nLookUpCShoreOutputs(string const*, int const, int const, vector<double> const*, vector<double>&);
+   int nLookUpCShoreOutputs(string const*, int const, int const, vector<double> const*, vector<double>*);
    double dCalcWaveAngleToCoastNormal(double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);
    void InterpolateWavePropertiesToCells(int const, int const, int const);
+   void ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(int const, int const);
    static double dCalcCurvature(int const, CGeom2DPoint const*, CGeom2DPoint const*, CGeom2DPoint const*);
    void CalcD50AndFillWaveCalcHoles(void);
    int nDoAllShadowZones(void);

@@ -435,13 +435,15 @@ void CSimulation::KeepWithinGrid(int const nX0, int const nY0, int& nX1, int& nY
 double CSimulation::dKeepWithin360(double const dAngle)
 {
    double dNewAngle = dAngle;
-
+   
    // Sort out -ve angles
    while (dNewAngle < 0)
       dNewAngle += 360;
    
-   dNewAngle = fmod(dAngle, 360);
-
+   // Sort out angles > 360
+   while (dNewAngle > 360)
+      dNewAngle -= 360;
+   
    return dNewAngle;
 }
 
@@ -1274,7 +1276,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
 
             case (PLOT_WAVE_HEIGHT):
             {
-               if ((! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()) || m_pRasterGrid->m_Cell[nX][nY].bIsInActiveZone())
+               if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
                   dTmp = DBL_NODATA;
                else
                   dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
