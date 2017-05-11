@@ -160,7 +160,7 @@ void CSimulation::StartClock(void)
 bool CSimulation::bFindExeDir(char* pcArg)
 {
    string strTmp;
-   char szBuf[BUF_SIZE];
+   char szBuf[BUF_SIZE] = "";
 
 #ifdef _WIN32
    if (0 != GetModuleFileName(NULL, szBuf, BUF_SIZE))

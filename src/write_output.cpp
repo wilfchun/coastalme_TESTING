@@ -679,7 +679,7 @@ void CSimulation::WriteLookUpData(void)
  Save a coastline-normal profile
 
 ==============================================================================================================================*/
-int CSimulation::nSaveProfile(int const nProfile, int const nCoast, int const nProfSize, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVSCAPEXY)
+int CSimulation::nSaveProfile(int const nProfile, int const nCoast, int const nProfSize, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    // TODO make this more efficient, also give warnings if no profiles will be output
    for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
@@ -688,7 +688,7 @@ int CSimulation::nSaveProfile(int const nProfile, int const nCoast, int const nP
       {
          if ((m_ulTimestep == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {
-            if (! bWriteProfileData(nCoast, nProfile, nProfSize, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVSCAPEXY))
+            if (! bWriteProfileData(nCoast, nProfile, nProfSize, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVScapeXY))
                return RTN_ERR_PROFILEWRITE;
          }
       }
@@ -703,7 +703,7 @@ int CSimulation::nSaveProfile(int const nProfile, int const nCoast, int const nP
  Writes values for a single profile, for checking purposes
 
 ==============================================================================================================================*/
-bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int const nProfSize, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVSCAPEXY)
+bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int const nProfSize, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    string strFName = m_strOutPath;
    strFName.append("profile_");
@@ -730,7 +730,7 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
       double dX = dGridCentroidXToExtCRSX(pPtVGridProfile->at(i).nGetX());
       double dY = dGridCentroidYToExtCRSY(pPtVGridProfile->at(i).nGetY());
 
-      OutProfStream << pdVDistXY->at(i) << ",\t" << dX << ",\t" << dY << ",\t" << pdVZ->at(i) << ",\t" << pdVDepthOverDB->at(i) << ",\t" << pdVErosionPotentialFunc->at(i) << ",\t" << pdVSlope->at(i) << ",\t" << pdVRecessionXY->at(i) << ",\t" << pdVChangeElevZ->at(i) << ",\t" <<  pPtVGridProfile->at(i).nGetX() <<  ",\t" << pPtVGridProfile->at(i).nGetY() <<  ", \t" << pdVSCAPEXY->at(i) << endl;
+      OutProfStream << pdVDistXY->at(i) << ",\t" << dX << ",\t" << dY << ",\t" << pdVZ->at(i) << ",\t" << pdVDepthOverDB->at(i) << ",\t" << pdVErosionPotentialFunc->at(i) << ",\t" << pdVSlope->at(i) << ",\t" << pdVRecessionXY->at(i) << ",\t" << pdVChangeElevZ->at(i) << ",\t" <<  pPtVGridProfile->at(i).nGetX() <<  ",\t" << pPtVGridProfile->at(i).nGetY() <<  ", \t" << pdVScapeXY->at(i) << endl;
    }
 
    OutProfStream.close();
@@ -744,7 +744,7 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
  Save a coastline-normal parallel profile
 
 ==============================================================================================================================*/
-int CSimulation::nSaveParProfile(int const nProfile, int const nCoast, int const nParProfSize, int const nDirection, int const nDistFromProfile, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVSCAPEXY)
+int CSimulation::nSaveParProfile(int const nProfile, int const nCoast, int const nParProfSize, int const nDirection, int const nDistFromProfile, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    // TODO make this more efficient, also give warnings if no profiles will be output
    for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
@@ -753,7 +753,7 @@ int CSimulation::nSaveParProfile(int const nProfile, int const nCoast, int const
       {
          if ((m_ulTimestep == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {
-            if (! bWriteParProfileData(nCoast, nProfile, nParProfSize, nDirection, nDistFromProfile, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVSCAPEXY))
+            if (! bWriteParProfileData(nCoast, nProfile, nParProfSize, nDirection, nDistFromProfile, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVScapeXY))
                return RTN_ERR_PROFILEWRITE;
          }
       }
@@ -768,7 +768,7 @@ int CSimulation::nSaveParProfile(int const nProfile, int const nCoast, int const
  Writes values for a single parallel profile, for checking purposes
 
 ==============================================================================================================================*/
-bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int const nProfSize, int const nDirection, int const nDistFromProfile, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVSCAPEXY)
+bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int const nProfSize, int const nDirection, int const nDistFromProfile, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    string strFName = m_strOutPath;
    strFName.append("profile_");
@@ -799,7 +799,7 @@ bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int
       double dX = dGridCentroidXToExtCRSX(pPtVGridProfile->at(i).nGetX());
       double dY = dGridCentroidYToExtCRSY(pPtVGridProfile->at(i).nGetY());
 
-      OutProfStream << pdVDistXY->at(i) << ",\t" << dX << ",\t" << dY << ",\t" << pdVZ->at(i) << ",\t" << pdVDepthOverDB->at(i) << ",\t" << pdVErosionPotentialFunc->at(i) << ",\t" << pdVSlope->at(i) << ",\t" << pdVRecessionXY->at(i) << ",\t" << pdVChangeElevZ->at(i) << ",\t" <<  pPtVGridProfile->at(i).nGetX() <<  ",\t" << pPtVGridProfile->at(i).nGetY() <<  ", \t" << pdVSCAPEXY->at(i) << endl;
+      OutProfStream << pdVDistXY->at(i) << ",\t" << dX << ",\t" << dY << ",\t" << pdVZ->at(i) << ",\t" << pdVDepthOverDB->at(i) << ",\t" << pdVErosionPotentialFunc->at(i) << ",\t" << pdVSlope->at(i) << ",\t" << pdVRecessionXY->at(i) << ",\t" << pdVChangeElevZ->at(i) << ",\t" <<  pPtVGridProfile->at(i).nGetX() <<  ",\t" << pPtVGridProfile->at(i).nGetY() <<  ", \t" << pdVScapeXY->at(i) << endl;
    }
 
    OutProfStream.close();

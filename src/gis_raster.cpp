@@ -1867,6 +1867,10 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
 
       // Call GDALGridCreate()
       int nRet = GDALGridCreate(GGA_Linear, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Float64, dOut, NULL, NULL);
+      
+      delete[] dX;
+      delete[] dY;
+      delete[] dZ;
                      
       if (nRet == CE_Failure)
          return RTN_ERR_GRIDCREATE;
@@ -2010,6 +2014,10 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
    
    // Call GDALGridCreate()
    int nRet = GDALGridCreate(GGA_NearestNeighbor, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Int32, nOut, NULL, NULL);
+   
+   delete[] dX;
+   delete[] dY;
+   delete[] dZ;
                   
    if (nRet == CE_Failure)
       return RTN_ERR_GRIDCREATE;
