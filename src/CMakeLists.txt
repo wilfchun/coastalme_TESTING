@@ -3,7 +3,7 @@
 # CMakeLists.txt for CoastalME (Coastal Modelling Environment)
 #
 #########################################################################################
-# Set CMake defaults
+# Set CMake required version
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
 
@@ -24,9 +24,16 @@ if (MINGW)
    message("NOTE: CShore is not yet set up for MinGW")
 endif (MINGW)
 
+message("")
+
 # We are using c++
 enable_language(CXX)
 
+# Set the path for our own cmake modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+
+#########################################################################################
 # Set up project-specific defaults
 project(CME)
 file(GLOB CME_SOURCE_FILES *.cpp)
@@ -37,16 +44,22 @@ set(CME_INSTALL_DIR "${CMAKE_SOURCE_DIR}/..")               # May be changed by 
 # Use 64-bit libraries
 set(FIND_LIBRARY_USE_LIB64_PATHS true)
 
-# Set the c++11 flag (note that later on we check the compiler for c++11 capability)
+
+#########################################################################################
+# We need c++11, first set the c++11 flag (note that later on we check the compiler for c++11 capability)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
-# Set the CPU flag
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCPU -Dx86")       # TODO Need to change this for different CPU architectures
+# Set the CoastalME CPU flag TODO Need to change this for different CPU architectures
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCPU -Dx86")
 
+
+#########################################################################################
+# If not specified, assume a Debug build
 if (NOT CMAKE_BUILD_TYPE)
-   set(CMAKE_BUILD_TYPE Debug)                              # If not specified, assume a Debug build
+   set(CMAKE_BUILD_TYPE Debug)
 endif (NOT CMAKE_BUILD_TYPE)
 
+# Sort out build types
 if (CMAKE_BUILD_TYPE MATCHES Debug)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS}")
    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CME_BINARY_DIR}/Debug CACHE PATH "Directory for Debug builds" FORCE)
@@ -112,6 +125,8 @@ if (MSVC)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
 endif (MSVC)
 
+message("")
+
 
 #########################################################################################
 # Find libraries
@@ -146,7 +161,7 @@ if (GDAL_CONFIG)
    string(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
    string(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
 
-   message ("GDAL is version ${GDAL_VERSION}")
+   message (STATUS "GDAL is version ${GDAL_VERSION}")
 #message("DBG GDAL_VERSION_MAJOR ${GDAL_VERSION_MAJOR}")
 #message("DBG GDAL_VERSION_MINOR ${GDAL_VERSION_MINOR}")
 
@@ -165,34 +180,48 @@ endif (GDAL_CONFIG)
 
 
 #########################################################################################
-# Sort out CShore for Linux and Windows
-set(CSHORE_DIR "${CME_INSTALL_DIR}/cshore")
-#message(STATUS "CSHORE_DIR=${CSHORE_DIR}")
-if (WIN32)
-   execute_process(COMMAND copy "${CSHORE_DIR}/cshore_usace_win.out" "${CSHORE_DIR}/cshore.out")
-endif (WIN32)
-if (UNIX)
-   execute_process(COMMAND cp -f "${CSHORE_DIR}/cshore_usace_linux.out" "${CSHORE_DIR}/cshore.out")
-endif (UNIX)
-
-
-#########################################################################################
-# Finally, the important bits
-message("Writing Makefile")
+# Some important bits
 include_directories(SYSTEM ${CMAKE_INCLUDE_PATH})
 include_directories(${CME_SOURCE_DIR})
 add_executable(${CME_EXECUTABLE} ${CME_SOURCE_FILES})
 
-# We need c++11
+# Check to see if the compiler supports c++11
 set_property(TARGET ${CME_EXECUTABLE} PROPERTY CXX_STANDARD 11)
 set_property(TARGET ${CME_EXECUTABLE} PROPERTY CXX_STANDARD_REQUIRED ON)
 
-
-target_link_libraries(${CME_EXECUTABLE} ${LIBS})
+#target_link_libraries(${CME_EXECUTABLE} ${LIBS})
 install(TARGETS ${CME_EXECUTABLE} RUNTIME DESTINATION ${CME_INSTALL_DIR})
 
 
-# Tell the user what has happened
+#########################################################################################
+# Sort out CShore
+# OLD used when running cshore as an external process
+# for Linux and Windows
+# set(CSHORE_DIR "${CME_INSTALL_DIR}/cshore")
+# #message(STATUS "CSHORE_DIR=${CSHORE_DIR}")
+# if (WIN32)
+#    execute_process(COMMAND copy "${CSHORE_DIR}/cshore_usace_win.out" "${CSHORE_DIR}/cshore.out")
+# endif (WIN32)
+# if (UNIX)
+#    execute_process(COMMAND cp -f "${CSHORE_DIR}/cshore_usace_linux.out" "${CSHORE_DIR}/cshore.out")
+# endif (UNIX)
+
+# Link with the cshore library
+target_link_libraries(${CME_EXECUTABLE} ${LIBS}  ${CME_SOURCE_DIR}/lib/libcshore.a)
+
+# The cshore library needs gfortran on Linux TODO What about Windows?
+if (UNIX)
+   find_package(GFortranLibs REQUIRED)
+   include_directories(${GFORTRAN_INCLUDE_DIR})
+   target_link_libraries(${CME_EXECUTABLE} ${LIBS} ${LIBGFORTRAN_LIBRARIES})
+   target_link_libraries(${CME_EXECUTABLE} ${LIBS} ${LIBQUADMATH_LIBRARIES})
+endif (UNIX)
+
+
+#########################################################################################
+# Tell the user what we have found
+message("")
+message("Writing Makefile")
 message(STATUS "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
 message(STATUS "CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
 message(STATUS "CMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}")
@@ -202,6 +231,8 @@ message(STATUS "CMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "CME_INSTALL_DIR=${CME_INSTALL_DIR}")
 #message(STATUS "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
+
+#########################################################################################
 # Some extra messages
 if (CMAKE_BUILD_TYPE MATCHES Callgrind)
    message("")

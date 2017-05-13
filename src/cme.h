@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 11 May 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 13 May 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -776,6 +776,15 @@ extern "C"
    // And one of my own
 //    char* pszRemoveSubstr(char* string, char* substr, char* subpos);
 }
+
+namespace cshore
+{
+   extern "C"
+   {
+      void cshore(void);
+   }
+}
+
 
 //================================================= debugging stuff =============================================================
 //#define CLOCKCHECK          // Uncomment to check CPU clock rollover settings

@@ -1,0 +1,62 @@
+ CSHORE USACE version 2011, last edit 2015-11-09                       
+ ------------------------------------------------------------          
+ CShore input file created by CoastalME                                
+ ------------------------------------------------------------          
+COMPUTATION OPTION ILINE=  1
+Alongshore gradient IQYDY=  0
+ILINE cross-shore lines are computed together
+
+COMPUTATION OPTION IPROFL =  0
+Bottom profile is fixed and No sediment transport            is computed
+
+NO ROLLER is included in computation
+
+NO wave and current interaction included
+
+NO wave overtopping, overflow and seepage
+
+IMPERMEABLE BOTTOM assumed
+
+NO wind shear stresses included
+
+BREAKER RATIO PARAMETER
+Input Gamma = 0.80
+
+
+INPUT WAVE AND WATER LEVEL:NTIME=     1 from TIME=0.0
+Output lines are limited to first and last  1000 lines
+End Time(sec) Tp (sec)  Hrms(m) Wave Setup(m)Storm tide(m) ANGLE(deg)
+
+     3600.0    10.0000     3.0000     0.0000     0.0000    40.0000
+
+INPUT BEACH AND STRUCTURE GEOMETRY
+Cross-shore line number               L=    1
+Alongshore coordinate             YLINE=         0.0000
+Depth at seaward boundary (m)          =      31.190000
+Number of input points            NBINP=        79
+Output lines are limited to first and last 5 lines
+Node spaceing (m)                    DX=       1.000000
+Shoreline location (m) of Zb=0       Xs=            NaN
+Maximum landward node              JMAX=      79
+
+X  (m)        Zb  (m)    Fric.factor
+     0.000   -31.190
+     1.000   -30.998     0.015
+     2.000   -30.805     0.015
+     3.000   -30.612     0.015
+     4.000   -30.419     0.015
+    74.000   -16.926     0.015
+    75.000   -16.733     0.015
+    76.000   -16.541     0.015
+    77.000   -16.348     0.015
+    78.000   -16.155     0.015
+
+**********COMPUTED CROSS-SHORE VARIATIONS**********
+on input bottom profile at TIME =     3600.0  Line L=  1
+
+LANDWARD WET COMPUTATION LIMIT
+Most landward node of wet zone computation    JR=      79
+X-coordinate at JR (m)                        XR=      78.000000
+Bottom elevation at JR (m)                    ZR=     -16.155019
+Mean water depth at this node (m)          H(JR)=      16.141698
+
