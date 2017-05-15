@@ -1904,7 +1904,6 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       
       char szBuf[BUF_SIZE] = "";
       string strCWD = getcwd(szBuf, BUF_SIZE);
-
    
       // TODO Andres check this re. CShore input requirements
       // Constrain the wave to normal angle to be between -80 and 80 degrees, this is a requirement of CShore
@@ -1933,7 +1932,6 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          strOPARAM = "OPARAM";
 
       strCWD = getcwd(szBuf, BUF_SIZE);
-
          
       nRet = nLookUpCShoreOutputs(&strOSETUP, 4, 4, &VdProfileDistXY, &VdFreeSurfaceStd);
       if (nRet != RTN_OK)
@@ -1948,8 +1946,14 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          return nRet;
       
       // Clean up the CShore outputs
+#ifdef _WIN32
+      system("./clean.bat")
+#else
       system("./clean.sh");
-      chdir("..");
+#endif
+      
+      // And return to the CoastalME folder
+      chdir(m_strCMEDir.c_str());
      
       // Convert CShore outputs to wave height and wave direction and update wave profile attributes
       for (int nProfilePoint = (nProfileSize-1); nProfilePoint >= 0; nProfilePoint--)
