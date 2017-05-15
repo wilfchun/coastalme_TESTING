@@ -1931,7 +1931,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          strOYVELO = "OYVELO",
          strOPARAM = "OPARAM";
 
-      strCWD = getcwd(szBuf, BUF_SIZE);
+//       strCWD = getcwd(szBuf, BUF_SIZE);
          
       nRet = nLookUpCShoreOutputs(&strOSETUP, 4, 4, &VdProfileDistXY, &VdFreeSurfaceStd);
       if (nRet != RTN_OK)

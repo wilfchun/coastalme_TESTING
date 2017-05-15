@@ -168,12 +168,12 @@ if (GDAL_CONFIG)
 
    # Now check the GDAL version: CoastalME can only be built with GDAL 2.1 or above
    if (GDAL_VERSION_MAJOR LESS 2)
-      message(FATAL_ERROR, "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
+      message(FATAL_ERROR "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
    endif (GDAL_VERSION_MAJOR LESS 2)
 
    if (GDAL_VERSION_MAJOR GREATER 2)
       if (GDAL_VERSION_MINOR LESS 1)
-         message(FATAL_ERROR, "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
+         message(FATAL_ERROR "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
       endif (GDAL_VERSION_MINOR LESS 1)
    endif (GDAL_VERSION_MAJOR GREATER 2)
 endif (GDAL_CONFIG)
