@@ -89,14 +89,14 @@ bool CSimulation::bReadIni(void)
          if (nPos == string::npos)
          {
             // Error: badly formatted line (no colon)
-            cerr << ERR << "badly formatted line (no ':') in " << strFilePathName << endl << szRec << endl;
+            cerr << ERR << "badly formatted line (no ':') in " << strFilePathName << endl << "'" << szRec << "'" << endl;
             return false;
          }
 
          if (nPos == strRec.size()-1)
          {
             // Error: badly formatted line (colon with nothing following)
-            cerr << ERR << "badly formatted line (nothing following ':') in " << strFilePathName << endl << szRec << endl;
+            cerr << ERR << "badly formatted line (nothing following ':') in " << strFilePathName << endl << "'" << szRec << "'" << endl;
             return false;
          }
 
@@ -1878,7 +1878,8 @@ int CSimulation::nReadShapeFunction()
 {
    // Sort out the path and filename
    m_strShapeFunctionFile = m_strCMEDir;
-   m_strShapeFunctionFile.append(SHAPEFUNCTIONFILE);
+   m_strShapeFunctionFile.append(SCAPEDIR);
+   m_strShapeFunctionFile.append(SCAPESHAPEFUNCTIONFILE);
 
    // Create an ifstream object
    ifstream InStream;
@@ -1891,7 +1892,7 @@ int CSimulation::nReadShapeFunction()
    {
       // Error: cannot open shape function file for input
       cerr << ERR << "cannot open " << m_strShapeFunctionFile << " for input" << endl;
-      return RTN_ERR_SHAPEFUNCTIONFILE;
+      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
    }
 
    // Opened OK
@@ -1942,14 +1943,14 @@ int CSimulation::nReadShapeFunction()
    if (nExpected != nRead)
    {
       cout << ERR << "read in " << nRead << " lines from " << m_strShapeFunctionFile << " but " << nExpected << " lines expected" << endl;
-      return RTN_ERR_SHAPEFUNCTIONFILE;
+      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
    }
 
    // OK, now use this data to create a look-up table to be used for the rest of the simulation
    if (! bCreateErosionPotentialLookUp(&VdDepthOverDB, &VdErosionPotential, &VdErosionPotentialFirstDeriv))
    {
       cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function is unbounded for high values of depth over DB" << endl;
-      return RTN_ERR_SHAPEFUNCTIONFILE;
+      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
    }
 
    return RTN_OK;

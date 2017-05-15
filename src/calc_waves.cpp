@@ -1900,7 +1900,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       }
      
       // Move to the CShore folder
-      chdir("./cshore");
+      chdir(CSHOREDIR.c_str());
       
       char szBuf[BUF_SIZE] = "";
       string strCWD = getcwd(szBuf, BUF_SIZE);
@@ -1918,7 +1918,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
      
       // Run CShore for this profile
       cshore::cshore();
-//       system("./cshore.out > scr.txt"); 
+//       string strTmp = CSHOREDIR + "cshore.out > scr.txt";
+//       system(strTmp.c_str()); 
      
       // Fetch the CShore results
       vector<double> 

@@ -597,7 +597,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //    }
 
    // Read in the erosion potential shape function data
-   AnnounceReadShapeFunctionFile();
+   AnnounceReadSCAPEShapeFunctionFile();
    nRet = nReadShapeFunction();
    if (nRet != RTN_OK)
       return (nRet);

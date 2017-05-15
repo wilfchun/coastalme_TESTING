@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 13 May 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 15 May 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -181,7 +181,7 @@ string const   READISCSFILE                  = "    - Consolidated sand sediment
 string const   READICCSFILE                  = "    - Consolidated coarse sediment (layer ";
 string const   READVECTORFILES               = "  - Reading vector GIS files";
 string const   READICVFILE                   = "    - Coastline: ";
-string const   READSHAPEFUNCTIONFILE         = "  - Reading shape function file";
+string const   READSCAPESHAPEFUNCTIONFILE    = "  - Reading SCAPE shape function file";
 string const   READTIDEDATAFILE              = "  - Reading tide data file: ";
 string const   ALLOCATEMEMORY                = "  - Allocating memory for raster grid";
 string const   ADDLAYERS                     = "  - Adding sediment layers to raster grid";
@@ -196,8 +196,11 @@ string const   PRESSKEY                      = "Press any key to continue...";
 string const   ERRORNOTICE                   = "- Run ended with error code ";
 string const   EMAILERROR                    = "Could not send email";
 
-string const   SHAPEFUNCTIONFILE             = "in/ShapeFunction.dat";
+string const   SCAPEDIR                      = "scape/";
+string const   SCAPESHAPEFUNCTIONFILE        = "ShapeFunction.dat";
 string const   EROSIONPOTENTIALLOOKUPFILE    = "ErosionPotential.csv";
+
+string const   CSHOREDIR                     = "cshore/";
 
 char const     PATH_SEPARATOR                = '/';               // Works for Windows too!
 char const     SPACE                         = ' ';
@@ -625,7 +628,7 @@ int const      RTN_ERR_BADPARAM                       = 4;
 int const      RTN_ERR_INI                            = 5;
 int const      RTN_ERR_CMEDIR                         = 6;
 int const      RTN_ERR_RUNDATA                        = 7;
-int const      RTN_ERR_SHAPEFUNCTIONFILE              = 8;
+int const      RTN_ERR_SCAPESHAPEFUNCTIONFILE         = 8;
 int const      RTN_ERR_TIDEDATAFILE                   = 9;
 int const      RTN_ERR_LOGFILE                        = 10;
 int const      RTN_ERR_OUTFILE                        = 11;

@@ -617,7 +617,7 @@ private:
    void AnnounceReadInitialSandConsSedGIS(int const) const;
    void AnnounceReadInitialCoarseConsSedGIS(int const) const;
 //    void AnnounceReadTideData(void) const;
-   static void AnnounceReadShapeFunctionFile(void);
+   static void AnnounceReadSCAPEShapeFunctionFile(void);
    static void AnnounceAllocateMemory(void);
    static void AnnounceIsRunning(void);
    static void AnnounceSimEnd(void);

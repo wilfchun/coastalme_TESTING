@@ -572,12 +572,12 @@ void CSimulation::AnnounceReadInitialCoarseConsSedGIS(int const nLayer) const
 
 /*==============================================================================================================================
 
- Now reading shape function file
+ Now reading the SCAPE shape function file
 
 ==============================================================================================================================*/
-void CSimulation::AnnounceReadShapeFunctionFile(void)
+void CSimulation::AnnounceReadSCAPEShapeFunctionFile(void)
 {
-   cout << READSHAPEFUNCTIONFILE << endl;
+   cout << READSCAPESHAPEFUNCTIONFILE << endl;
 }
 
 /*==============================================================================================================================
@@ -1819,8 +1819,8 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_RUNDATA:
       strErr = "error reading run details file";
       break;
-   case RTN_ERR_SHAPEFUNCTIONFILE:
-      strErr = "error reading shape function file";
+   case RTN_ERR_SCAPESHAPEFUNCTIONFILE:
+      strErr = "error reading SCAPE shape function file";
       break;
    case RTN_ERR_TIDEDATAFILE:
       strErr = "error reading tide data file";
