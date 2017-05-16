@@ -14,6 +14,7 @@ if (UNIX)
 endif (UNIX)
 if (WIN32)
    message("Creating Windows Makefile for CoastalME")
+   message("NOTE: CShore is not yet set up for Windows")
 endif(WIN32)
 if (CYGWIN)
    message("Creating Cygwin Makefile for CoastalME")
@@ -26,26 +27,28 @@ endif (MINGW)
 
 message("")
 
-# We are using c++
-enable_language(CXX)
-
-# Set the path for our own cmake modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-
-
 #########################################################################################
 # Set up project-specific defaults
 project(CME)
+
+set(CMAKE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")      # Assume that we are in the src folder
+set(CMAKE_INSTALL_DIR "${CMAKE_SOURCE_DIR}/..")
+#set(CMAKE_INSTALL_DIR "$ENV{HOME}/coast/CoastalME")      # May be changed by the user
+
 file(GLOB CME_SOURCE_FILES *.cpp)
 set(CME_EXECUTABLE cme)
-#set(CME_INSTALL_DIR "$ENV{HOME}/coast/CoastalME")          # May be changed by the user
-set(CME_INSTALL_DIR "${CMAKE_SOURCE_DIR}/..")               # May be changed by the user
+
+
+#########################################################################################
+# We are using c++
+enable_language(CXX)
 
 # Use 64-bit libraries
 set(FIND_LIBRARY_USE_LIB64_PATHS true)
 
+# Set the path for our own cmake modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-#########################################################################################
 # We need c++11, first set the c++11 flag (note that later on we check the compiler for c++11 capability)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
@@ -165,7 +168,6 @@ if (GDAL_CONFIG)
 #message("DBG GDAL_VERSION_MAJOR ${GDAL_VERSION_MAJOR}")
 #message("DBG GDAL_VERSION_MINOR ${GDAL_VERSION_MINOR}")
 
-
    # Now check the GDAL version: CoastalME can only be built with GDAL 2.1 or above
    if (GDAL_VERSION_MAJOR LESS 2)
       message(FATAL_ERROR "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
@@ -180,17 +182,16 @@ endif (GDAL_CONFIG)
 
 
 #########################################################################################
-# Some important bits
+# The important bits
 include_directories(SYSTEM ${CMAKE_INCLUDE_PATH})
 include_directories(${CME_SOURCE_DIR})
 add_executable(${CME_EXECUTABLE} ${CME_SOURCE_FILES})
 
+install(TARGETS ${CME_EXECUTABLE} RUNTIME DESTINATION ${CMAKE_INSTALL_DIR})
+
 # Check to see if the compiler supports c++11
 set_property(TARGET ${CME_EXECUTABLE} PROPERTY CXX_STANDARD 11)
 set_property(TARGET ${CME_EXECUTABLE} PROPERTY CXX_STANDARD_REQUIRED ON)
-
-#target_link_libraries(${CME_EXECUTABLE} ${LIBS})
-install(TARGETS ${CME_EXECUTABLE} RUNTIME DESTINATION ${CME_INSTALL_DIR})
 
 
 #########################################################################################
@@ -206,8 +207,6 @@ install(TARGETS ${CME_EXECUTABLE} RUNTIME DESTINATION ${CME_INSTALL_DIR})
 #    execute_process(COMMAND cp -f "${CSHORE_DIR}/cshore_usace_linux.out" "${CSHORE_DIR}/cshore.out")
 # endif (UNIX)
 
-# Link with the cshore library
-target_link_libraries(${CME_EXECUTABLE} ${LIBS}  ${CME_SOURCE_DIR}/lib/libcshore.a)
 
 # The cshore library needs gfortran on Linux TODO What about Windows?
 if (UNIX)
@@ -215,6 +214,9 @@ if (UNIX)
    include_directories(${GFORTRAN_INCLUDE_DIR})
    target_link_libraries(${CME_EXECUTABLE} ${LIBS} ${LIBGFORTRAN_LIBRARIES})
    target_link_libraries(${CME_EXECUTABLE} ${LIBS} ${LIBQUADMATH_LIBRARIES})
+
+   # Link with the cshore library
+   target_link_libraries(${CME_EXECUTABLE} ${LIBS} ${CME_SOURCE_DIR}/lib/libcshore.a)
 endif (UNIX)
 
 
@@ -225,10 +227,11 @@ message("Writing Makefile")
 message(STATUS "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
 message(STATUS "CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
 message(STATUS "CMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}")
+message(STATUS "CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
+message(STATUS "CMAKE_INSTALL_DIR = ${CMAKE_INSTALL_DIR}")
 #message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 #message(STATUS "CMAKE_INCLUDE_PATH=${CMAKE_INCLUDE_PATH}")
 #message(STATUS "LIBS=${LIBS}")
-message(STATUS "CME_INSTALL_DIR=${CME_INSTALL_DIR}")
 #message(STATUS "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
 
