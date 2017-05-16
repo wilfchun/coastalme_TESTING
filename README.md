@@ -16,9 +16,7 @@ INSTRUCTIONS
 
 5. Edit cme.ini to tell CoastalME which input file you wish to use (for example, in/CliffFineBays/CliffFineBays.dat)
 
-6. Run cme (or cme.exe on Windows). The output will appear in the out/ folder
-
-7. If using QGIS to visualize the output, look for a QGIS project file (e.g. CliffFineBays.qgs) somewhere in the in/ folder
+6. Run cme (or cme.exe on Windows). Output will appear in the out/ folder
 
 8. Enjoy!
 
