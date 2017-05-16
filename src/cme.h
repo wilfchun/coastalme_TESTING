@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 15 May 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 16 May 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -257,25 +257,6 @@ string const   WARN                                   = "WARNING ";
 
 int const      INT_NODATA                             = -999;
 double const   DBL_NODATA                             = -999;
-
-
-// From stdint.h, which is only available using the ISO C++ 2011 standard (would need the -std=c++11 or -std=gnu++11 compiler options)
-/* Minimum of signed integral types.  */
-# define INT8_MIN    (-128)
-# define INT16_MIN      (-32767-1)
-# define INT32_MIN      (-2147483647-1)
-# define INT64_MIN      (-__INT64_C(9223372036854775807)-1)
-/* Maximum of signed integral types.  */
-# define INT8_MAX    (127)
-# define INT16_MAX      (32767)
-# define INT32_MAX      (2147483647)
-# define INT64_MAX      (__INT64_C(9223372036854775807))
-
-/* Maximum of unsigned integral types.  */
-# define UINT8_MAX      (255)
-# define UINT16_MAX     (65535)
-# define UINT32_MAX     (4294967295U)
-# define UINT64_MAX     (__UINT64_C(18446744073709551615))
 
 
 string const   PERITERHEAD1 =
