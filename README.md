@@ -10,10 +10,7 @@ INSTRUCTIONS
 
 2. At a command-line prompt, change to the coastalme-master folder, then to the src folder
 
-3. If using Linux: copy run_cmake.sh.LINUX to run_cmake.sh, then run run_cmake.sh
-   If using Windows: copy run_cmake.bat.MSCV2013 to run_cmake.bat, then run run_cmake.bat
-   If using Cygwin under Windows: copy run_cmake.CYGWIN to run_cmake.sh, then tun tun_run_cmake.sh
-   Should you see error messages re. missing software (if, for example, it tells you that CMake cannot be found or is too old, or GDAL cannot be found or is too old) then you need to install the missing software
+3. If using Linux: copy run_cmake.sh.LINUX to run_cmake.sh, then run run_cmake.sh OR if using Windows: copy run_cmake.bat.MSCV2013 to run_cmake.bat, then run run_cmake.bat OR if using Cygwin under Windows: copy run_cmake.CYGWIN to run_cmake.sh, then run run_cmake.sh. Should you see error messages re. missing software (if, for example, it tells you that CMake cannot be found or is too old, or GDAL cannot be found or is too old) then you need to install the missing software
 
 4. Run make install. This will create an executable file called cme (on Linux or Cygwin) or cme.exe (on Windows) in the coastalme-master folder
 
