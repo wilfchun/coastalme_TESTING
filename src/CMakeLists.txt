@@ -21,14 +21,14 @@ if (UNIX)
    endif (CYGWIN)
 
    if (APPLE)
-      message(FATAL_ERROR "CoatallME cannot be built on OSX... yet")
+      message(FATAL_ERROR "CoastalME cannot be built on OSX... yet")
    endif (APPLE)
 endif (UNIX)
 
 if (WIN32)
    message("Creating Windows Makefile for CoastalME")
    message("NOTE: CShore is not yet set up for Windows")
-endif(WIN32)
+endif (WIN32)
 
 if (MINGW)
    message("Creating MinGW Makefile for CoastalME")
@@ -206,17 +206,6 @@ set_property(TARGET ${CME_EXECUTABLE} PROPERTY CXX_STANDARD_REQUIRED ON)
 
 #########################################################################################
 # Sort out CShore
-# OLD used when running cshore as an external process
-# for Linux and Windows
-# set(CSHORE_DIR "${CME_INSTALL_DIR}/cshore")
-# #message(STATUS "CSHORE_DIR=${CSHORE_DIR}")
-# if (WIN32)
-#    execute_process(COMMAND copy "${CSHORE_DIR}/cshore_usace_win.out" "${CSHORE_DIR}/cshore.out")
-# endif (WIN32)
-# if (UNIX)
-#    execute_process(COMMAND cp -f "${CSHORE_DIR}/cshore_usace_linux.out" "${CSHORE_DIR}/cshore.out")
-# endif (UNIX)
-
 
 # The cshore library needs gfortran on Linux TODO What about Windows?
 if (UNIX)
@@ -241,9 +230,17 @@ if (UNIX)
       endif (CMAKE_BUILD_TYPE MATCHES Debug)
    endif (CYGWIN)
 
+   if (APPLE)
+      # TODO
+   endif (APPLE)
+
    # Link with the cshore library
    target_link_libraries(${CME_EXECUTABLE} ${LIBS} ${CME_SOURCE_DIR}/lib/libcshore.a)
 endif (UNIX)
+
+if (WIN32)
+   # TODO
+endif (WIN32)
 
 
 #########################################################################################
