@@ -17,7 +17,6 @@ if (UNIX)
 
    if (CYGWIN)
       message("Creating Cygwin Makefile for CoastalME")
-      message("NOTE: CShore is not yet set up for Cygwin")
    endif (CYGWIN)
 
    if (APPLE)
@@ -26,13 +25,11 @@ if (UNIX)
 endif (UNIX)
 
 if (WIN32)
-   message("Creating Windows Makefile for CoastalME")
-   message("NOTE: CShore is not yet set up for Windows")
+   message(FATAL_ERROR "CoastalME cannot be built on Windows, using the Visual Studio compiler... yet")
 endif (WIN32)
 
 if (MINGW)
-   message("Creating MinGW Makefile for CoastalME")
-   message("NOTE: CShore is not yet set up for MinGW")
+   message(FATAL_ERROR "CoastyalME cannot be built on Windows, using the MinGW compiler... yet")
 endif (MINGW)
 
 message("")
@@ -48,10 +45,12 @@ set(CMAKE_INSTALL_DIR "${CMAKE_SOURCE_DIR}/..")
 file(GLOB CME_SOURCE_FILES *.cpp)
 set(CME_EXECUTABLE cme)
 
-
-#########################################################################################
 # Set the path for our own cmake modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+#########################################################################################
+# Detect the compiler and set compiler-specific flags etc.
+message("Checking compiler")
 
 # We are using c++
 enable_language(CXX)
@@ -65,6 +64,39 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCPU -Dx86")
 # Use 64-bit libraries
 set(FIND_LIBRARY_USE_LIB64_PATHS true)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+   message("C++ compiler is ${CMAKE_CXX_COMPILER_ID} g++ ${CMAKE_CXX_COMPILER_VERSION}")
+
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -W -Wall -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls")
+
+   # For Debug builds under gcc
+   if (CMAKE_BUILD_TYPE MATCHES Debug)
+      if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.8")
+         # Undefined behaviour sanitizer introduced with gcc 4.9, see http://developerblog.redhat.com/2014/10/16/gcc-undefined-behavior-sanitizer-ubsan/
+#         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -fsanitize=shift -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=null -fsanitize=return -fsanitize=address")
+      endif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.8")
+
+      # TODO I think these were introduced in a later gcc version, need to check
+      if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.0")
+         # Undefined behaviour sanitizer introduced with gcc 4.9, see http://developerblog.redhat.com/2014/10/16/gcc-undefined-behavior-sanitizer-ubsan/
+#         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=vla-bound -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fsanitize=bounds -fsanitize=alignment -fsanitize=object-size -fsanitize=vptr")
+         # TODO not yet working
+#         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmpx -fcheck-pointer-bounds -fsanitize-blacklist=blacklist.txt")
+      endif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.0")
+
+#      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
+   endif (CMAKE_BUILD_TYPE MATCHES Debug)
+
+   # Finally set some gcc-specific linker flags
+   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed -Wl,--no-undefined")
+endif(CMAKE_COMPILER_IS_GNUCC)
+
+if (MSVC)
+   message("Compiler is Visual Studio")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
+endif (MSVC)
+
+message("")
 
 #########################################################################################
 # If not specified, assume a Debug build
@@ -103,45 +135,6 @@ endif (CMAKE_BUILD_TYPE MATCHES Callgrind)
 
 
 #########################################################################################
-# Detect the compiler and set compiler-specific flags etc. TODO This isn't finished
-message("Checking compiler")
-
-if (CMAKE_COMPILER_IS_GNUCC)
-   message("C++ compiler is ${CMAKE_CXX_COMPILER_ID} g++ ${CMAKE_CXX_COMPILER_VERSION}")
-
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -W -Wall -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls")
-
-   # For Debug builds under gcc
-   if (CMAKE_BUILD_TYPE MATCHES Debug)
-      if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.8")
-         # Undefined behaviour sanitizer introduced with gcc 4.9, see http://developerblog.redhat.com/2014/10/16/gcc-undefined-behavior-sanitizer-ubsan/
-#         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -fsanitize=shift -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=null -fsanitize=return -fsanitize=address")
-      endif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.8")
-
-      # TODO I think these were introduced in a later gcc version, need to check
-      if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.0")
-         # Undefined behaviour sanitizer introduced with gcc 4.9, see http://developerblog.redhat.com/2014/10/16/gcc-undefined-behavior-sanitizer-ubsan/
-#         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=vla-bound -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fsanitize=bounds -fsanitize=alignment -fsanitize=object-size -fsanitize=vptr")
-         # TODO not yet working
-#         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmpx -fcheck-pointer-bounds -fsanitize-blacklist=blacklist.txt")
-      endif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "5.0")
-
-#      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
-   endif (CMAKE_BUILD_TYPE MATCHES Debug)
-
-   # Finally set some gcc-specific linker flags
-   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed -Wl,--no-undefined")
-endif(CMAKE_COMPILER_IS_GNUCC)
-
-if (MSVC)
-   message("Compiler is Visual Studio")
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
-endif (MSVC)
-
-message("")
-
-
-#########################################################################################
 # Find libraries
 message("Finding libraries")
 
@@ -155,15 +148,15 @@ set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${GDAL_INCLUDE_DIRS})
 #message(STATUS "CMAKE_INCLUDE_PATH=${CMAKE_INCLUDE_PATH}")
 
 # Added by DFM, stolen from https://github.com/qgis/QGIS/blob/master/cmake/FindGDAL.cmake
-set(GDAL_CONFIG_PREFER_PATH "$ENV{GDAL_HOME}/bin" CACHE STRING "preferred path to GDAL (gdal-config)")
-set(GDAL_CONFIG_PREFER_FWTOOLS_PATH "$ENV{FWTOOLS_HOME}/bin_safe" CACHE STRING "preferred path to GDAL (gdal-config) from FWTools")
+set(GDAL_CONFIG_PREFER_PATH "$ENV{GDAL_HOME}/bin" CACHE STRING "preferred path to GDAL (gdal_config)")
+set(GDAL_CONFIG_PREFER_FWTOOLS_PATH "$ENV{FWTOOLS_HOME}/bin_safe" CACHE STRING "preferred path to GDAL (gdal_config) from FWTools")
 find_program(GDAL_CONFIG gdal-config
    ${GDAL_CONFIG_PREFER_PATH}
    ${GDAL_CONFIG_PREFER_FWTOOLS_PATH}
    /usr/local/bin/
    /usr/bin/
 )
-#message("DBG GDAL_CONFIG ${GDAL_CONFIG}")
+#message("GDAL_CONFIG=${GDAL_CONFIG}")
 
 if (GDAL_CONFIG)
    # Extract the GDAL version
@@ -175,8 +168,8 @@ if (GDAL_CONFIG)
    string(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
 
    message (STATUS "GDAL is version ${GDAL_VERSION}")
-#message("DBG GDAL_VERSION_MAJOR ${GDAL_VERSION_MAJOR}")
-#message("DBG GDAL_VERSION_MINOR ${GDAL_VERSION_MINOR}")
+#message("GDAL_VERSION_MAJOR=${GDAL_VERSION_MAJOR}")
+#message("GDAL_VERSION_MINOR=${GDAL_VERSION_MINOR}")
 
    # Now check the GDAL version: CoastalME can only be built with GDAL 2.1 or above
    if (GDAL_VERSION_MAJOR LESS 2)
@@ -188,6 +181,8 @@ if (GDAL_CONFIG)
          message(FATAL_ERROR "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
       endif (GDAL_VERSION_MINOR LESS 1)
    endif (GDAL_VERSION_MAJOR GREATER 2)
+else (GDAL_CONFIG)
+   message(FATAL_ERROR "${GDAL_CONFIG} not found, cannot determine GDAL version. Check your GDAL installation")
 endif (GDAL_CONFIG)
 
 
