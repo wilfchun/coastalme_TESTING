@@ -35,6 +35,9 @@ using std::resetiosflags;
 using std::setprecision;
 using std::setw;
 
+#include <sstream>
+using std::stringstream;
+
 #include "cme.h"
 #include "simulation.h"
 
@@ -703,16 +706,21 @@ int CSimulation::nSaveProfile(int const nProfile, int const nCoast, int const nP
  Writes values for a single profile, for checking purposes
 
 ==============================================================================================================================*/
-bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int const nProfSize, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
+bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int const nProfSize, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY) const
 {
    string strFName = m_strOutPath;
+   stringstream ststrTmp;
+
    strFName.append("profile_");
-   char szNumTmp[4] = "";
-   pszLongToSz(nProfile, szNumTmp, 4);          // Pad with zeros
-   strFName.append(pszTrimLeft(szNumTmp));
+   ststrTmp << FillToWidth('0', 3) << nProfile;
+   strFName.append(ststrTmp.str()); 
+   
    strFName.append("_timestep_");
-   pszLongToSz(m_ulTimestep, szNumTmp, 4);           // Pad with zeros
-   strFName.append(pszTrimLeft(szNumTmp));
+   ststrTmp.clear();
+   ststrTmp.str(std::string());
+   ststrTmp << FillToWidth('0', 4) << m_ulTimestep;
+   strFName.append(ststrTmp.str());
+   
    strFName.append(".csv");
 
    ofstream OutProfStream;
@@ -768,20 +776,29 @@ int CSimulation::nSaveParProfile(int const nProfile, int const nCoast, int const
  Writes values for a single parallel profile, for checking purposes
 
 ==============================================================================================================================*/
-bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int const nProfSize, int const nDirection, int const nDistFromProfile, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
+bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int const nProfSize, int const nDirection, int const nDistFromProfile, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY) const
 {
    string strFName = m_strOutPath;
+   stringstream ststrTmp;
+
    strFName.append("profile_");
-   char szNumTmp[4] = "";
-   pszLongToSz(nProfile, szNumTmp, 4);          // Pad with zeros
-   strFName.append(pszTrimLeft(szNumTmp));
+   ststrTmp << FillToWidth('0', 3) << nProfile;
+   strFName.append(ststrTmp.str());
+
    strFName.append("_parallel_");
-   pszLongToSz(nDistFromProfile, szNumTmp, 4);  // Pad with zeros
-   strFName.append(pszTrimLeft(szNumTmp));
+   ststrTmp.clear();
+   ststrTmp.str(std::string());
+   ststrTmp << FillToWidth('0', 3) << nDistFromProfile;
+   strFName.append(ststrTmp.str());
+
    strFName.append((nDirection == 0 ? "_F" : "_B"));
+   
    strFName.append("_timestep_");
-   pszLongToSz(m_ulTimestep, szNumTmp, 4);          // Pad with zeros
-   strFName.append(pszTrimLeft(szNumTmp));
+   ststrTmp.clear();
+   ststrTmp.str(std::string());
+   ststrTmp << FillToWidth('0', 4) << m_ulTimestep;
+   strFName.append(ststrTmp.str());
+   
    strFName.append(".csv");
 
    ofstream OutProfStream;

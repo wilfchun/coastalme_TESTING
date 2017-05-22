@@ -36,6 +36,8 @@ using std::ifstream;
 #include <sstream>
 using std::stringstream;
 
+#include <string>
+
 #include <gdal_priv.h>
 #include <gdal_alg.h>
 
@@ -323,7 +325,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       // If we have reference units, then check that they are in meters (note US spelling)
    //   if (! strProjection.empty())
    //   {
-   //      string strTmp = strToLower(strProjection);
+   //      string strTmp = strToLower(&strProjection);
          // TODO this is causing problems with the test data
    //      if ((strTmp.find("kilometer") != string::npos) || (strTmp.find("meter") == string::npos))
    //      {
@@ -723,9 +725,8 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
    // Begin constructing the file name for this save
    string strFilePathName(m_strOutPath);
 
-   char szNumTmp[4] = "";
    string strLayer = "_layer_";
-   strLayer.append(pszTrimLeft(pszLongToSz(nLayer+1, szNumTmp, 4)));
+   strLayer.append(std::to_string(nLayer+1));
 
    switch (nDataItem)
    {
@@ -929,21 +930,11 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
       
    }
 
-   // Append the 'save number' to the filename
+   // Append the 'save number' to the filename, and prepend zeros to the save number
    strFilePathName.append("_");
-   if (m_nGISSave > 99)
-   {
-      // For save numbers of three or more digits, don't prepend zeros (note 10 digits is max)
-      char szNumTmp[10] = "";
-      strFilePathName.append(pszTrimLeft(pszLongToSz(m_nGISSave, szNumTmp, 10)));
-   }
-   else
-   {
-      // Prepend zeros to the save number
-      char szNumTmp[4] = "";
-      pszLongToSz(m_nGISSave, szNumTmp, 4, 10);
-      strFilePathName.append(pszTrimLeft(szNumTmp));
-   }
+   stringstream ststrTmp;
+   ststrTmp << FillToWidth('0', MAX_SAVE_DIGITS) << m_nGISSave;
+   strFilePathName.append(ststrTmp.str());
 
    // Finally, maybe append the extension
    if (! m_strGDALRasterOutputDriverExtension.empty())
@@ -1438,21 +1429,12 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
       }      
    }
 
-   // Append the 'save number' to the filename
+   // Append the 'save number' to the filename, and prepend zeros to the save number
    strFilePathName.append("_");
-   if (m_nGISSave > 99)
-   {
-      // For save numbers of three or more digits, don't prepend zeros (note 10 digits is max)
-      char szNumTmp[10] = "";
-      strFilePathName.append(pszTrimLeft(pszLongToSz(m_nGISSave, szNumTmp, 10)));
-   }
-   else
-   {
-      // Prepend zeros to the save number
-      char szNumTmp[3] = "";
-      pszLongToSz(m_nGISSave, szNumTmp, 3);
-      strFilePathName.append(pszTrimLeft(szNumTmp));
-   }
+   ststrTmp.clear();
+   ststrTmp.str(std::string());
+   ststrTmp << FillToWidth('0', MAX_SAVE_DIGITS) << m_nGISSave;
+   strFilePathName.append(ststrTmp.str());
 
    // Finally, maybe append the extension
    if (! m_strGDALRasterOutputDriverExtension.empty())

@@ -1069,8 +1069,6 @@ bool CSimulation::bReadRunData(void)
             // Read 6 x sediment files for each layer
             for (int nLayer = 0; nLayer < m_nLayers; nLayer++)
             {
-//               char szNumTmp[4] = "";
-//               string strLayer = pszTrimLeft(pszLongToSz(nLayer+1, szNumTmp, 4));
                for (int j = 1; j <= 6; j++)
                {
                   if (! bFirst)

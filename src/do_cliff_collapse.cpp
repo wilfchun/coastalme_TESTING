@@ -841,7 +841,8 @@ int CSimulation::nRasterizeCliffCollapseProfile(vector<CGeom2DPoint> const* pVPo
       dY = dYStart;
 
    // Process each interpolated point
-   for (int m = 0; m <= static_cast<int>(dRound(dLength)); m++)
+   int nLength = static_cast<int>(dRound(dLength));
+   for (int m = 0; m <= nLength; m++)
    {
       int
          nX = static_cast<int>(dX),

@@ -44,6 +44,18 @@ using std::resetiosflags;
 using std::setprecision;
 using std::setw;
 
+#include <string>
+
+#include <sstream>
+using std::stringstream;
+
+#include <algorithm>
+using std::transform;
+
+#include <numeric>
+using std::accumulate;
+using std::inner_product;
+
 #include <gdal_priv.h>
 
 #include "cme.h"
@@ -1417,8 +1429,7 @@ string CSimulation::strDispSimTime(const double dTimeIn)
       unsigned long ulYears = static_cast<unsigned long>(dRound(ulTimeIn / dHoursInYear));
       ulTimeIn -= static_cast<unsigned long>(dRound(ulYears * dHoursInYear));
 
-      char szTmp[6] = "";
-      strTime = pszTrimLeft(pszLongToSz(ulYears, szTmp, 6));
+      strTime = std::to_string(ulYears);
       strTime.append("y ");
    }
    else
@@ -1430,18 +1441,18 @@ string CSimulation::strDispSimTime(const double dTimeIn)
       unsigned long ulJDays = ulTimeIn / ulHoursInDay;
       ulTimeIn -= (ulJDays * ulHoursInDay);
 
-      char szTmp[4] = "";
-      pszLongToSz(ulJDays, szTmp, 4);              // Pad with zeros
-      strTime.append(szTmp);
+      stringstream ststrTmp;
+      ststrTmp << FillToWidth('0', 3) << ulJDays;
+      strTime.append(ststrTmp.str());
       strTime.append("d ");
    }
    else
       strTime.append("000 d ");
 
    // Display hours
-   char szTmp[3] = "";
-   pszLongToSz(ulTimeIn, szTmp, 3);                // Pad with zeros
-   strTime.append(szTmp);
+   stringstream ststrTmp;
+   ststrTmp << FillToWidth('0', 2) << ulTimeIn;
+   strTime.append(ststrTmp.str());
    strTime.append("h");
 
    return strTime;
@@ -1473,8 +1484,7 @@ string CSimulation::strDispTime(const double dTimeIn, const bool bRound, const b
       unsigned long ulHours = ulTimeIn / 3600ul;
       ulTimeIn -= (ulHours * 3600ul);
 
-      char szTmp[6] = "";
-      strTime = pszTrimLeft(pszLongToSz(ulHours, szTmp, 6, 10));
+      strTime = std::to_string(ulHours);
       strTime.append(":");
    }
    else
@@ -1487,25 +1497,27 @@ string CSimulation::strDispTime(const double dTimeIn, const bool bRound, const b
       unsigned long ulMins = ulTimeIn / 60ul;
       ulTimeIn -= (ulMins * 60ul);
 
-      char szTmp[3] = "";
-      pszLongToSz(ulMins, szTmp, 3);            // Pad with zeros
-      strTime.append(szTmp);
+      stringstream ststrTmp;
+      ststrTmp << FillToWidth('0', 2) << ulMins;
+      strTime.append(ststrTmp.str());
       strTime.append(":");
    }
    else
       strTime.append("00:");
 
    // Seconds
-   char szTmp[3] = "";
-   pszLongToSz(ulTimeIn, szTmp, 3);             // Pad with zeros
-   strTime.append(szTmp);
+   stringstream ststrTmp;
+   ststrTmp << FillToWidth('0', 2) << ulTimeIn;
+   strTime.append(ststrTmp.str());
 
    if (bFrac)
    {
       // Fractions of a second
-      pszLongToSz(static_cast<unsigned long>(dTime * 100), szTmp, 3);
       strTime.append(".");
-      strTime.append(szTmp);
+      ststrTmp.clear();
+      ststrTmp.str(std::string());
+      ststrTmp << FillToWidth('0', 2) << static_cast<unsigned long>(dTime * 100);
+      strTime.append(ststrTmp.str());
    }
 
    return strTime;
@@ -2044,15 +2056,11 @@ void CSimulation::DoSimulationEnd(int const nRtn)
             strCmd.append(", running on ");
             strCmd.append(strGetComputerName());
             strCmd.append(", aborted with error code ");
-            char szTmp[15] = "";
-            pszLongToSz(nRtn, szTmp, 3);
-            strCmd.append(szTmp);
+            strCmd.append(std::to_string(nRtn));
             strCmd.append(": ");
             strCmd.append(strGetErrorText(nRtn));
             strCmd.append(" at timestep ");
-            szTmp[0] = '\0';
-            strcpy(szTmp, pszLongToSz(m_ulTimestep, szTmp, 14));
-            strCmd.append(szTmp);
+            strCmd.append(std::to_string(m_ulTimestep));
             strCmd.append(" (");
             strCmd.append(strDispSimTime(m_dSimElapsed));
             strCmd.append(").\n\nThis message sent ");
@@ -2069,3 +2077,212 @@ void CSimulation::DoSimulationEnd(int const nRtn)
    }
 #endif
 }
+
+
+/*==============================================================================================================================
+
+ For comparison of two floating-point numbers, with a specified accuracy
+
+==============================================================================================================================*/
+bool CSimulation::bFPIsEqual(double const d1, double const d2, double const dEpsilon)
+{
+   // Since the accuracy of floating-point numbers varies with their magnitude, we must compare them by using an accuracy threshold which is relative to the magnitude of the two numbers being compared. This is a blend of an example from Knuth's 'The Art of Computer Programming. Volume 1. Fundamental Algorithms' and a posting dated 18 Nov 93 by rmartin@rcmcon.com (Robert Martin), archived in cpp_tips
+   if ((0 == d1) && (tAbs(d2) < dEpsilon))
+      return true;
+   else if ((0 == d2) && (tAbs(d1) < dEpsilon))
+      return true;
+   else
+      return ((tAbs(d1 - d2) < (dEpsilon * tAbs(d1))) ? true : false);
+}
+
+
+/*==============================================================================================================================
+
+ Changes all forward slashes in the input string to backslashes, leaving the original unchanged
+
+==============================================================================================================================*/
+string CSimulation::pstrChangeToBackslash(string const* strIn)
+{
+   string strOut(*strIn);
+   strOut.replace(strOut.begin(), strOut.end(), '/', '\\');
+   return strOut;
+}
+
+/*==============================================================================================================================
+
+ Swaps all backslashes in the input string to forward slashes, leaving the original unchanged
+
+==============================================================================================================================*/
+string CSimulation::pstrChangeToForwardSlash(string const* strIn)
+{
+   string strOut(*strIn);
+   strOut.replace(strOut.begin(), strOut.end(), '\\', '/');
+   return strOut;
+}
+
+
+/*==============================================================================================================================
+
+ Trims whitespace from the left side of a string, does not change the original string
+
+==============================================================================================================================*/
+string CSimulation::strTrimLeft(string const* strIn)
+{
+   // Trim leading spaces
+   size_t nStartpos = strIn->find_first_not_of(" \t");
+   if (nStartpos == string::npos)
+      return *strIn;
+   else
+      return strIn->substr(nStartpos);
+}
+
+/*==============================================================================================================================
+
+ Trims whitespace from the right side of a string, does not change the original string
+
+==============================================================================================================================*/
+string CSimulation::strTrimRight(string const* strIn)
+{
+   // Trim trailing spaces
+   size_t nEndpos = strIn->find_last_not_of(" \t");
+   if (nEndpos == string::npos)
+      return *strIn;
+   else
+      return strIn->substr(0, nEndpos+1);
+}
+
+/*==============================================================================================================================
+
+ Trims whitespace from both sides of a string, does not change the original string
+
+==============================================================================================================================*/
+string CSimulation::strTrim(string const* strIn)
+{
+   string strTmp = *strIn;
+
+   // Trim trailing spaces
+   size_t nPos = strTmp.find_last_not_of(" \t");
+
+   if (nPos != string::npos)
+      strTmp = strTmp.substr(0, nPos+1);
+
+   // Trim leading spaces
+   nPos = strTmp.find_first_not_of(" \t");
+
+   if (nPos != string::npos)
+      strTmp = strTmp.substr(nPos);
+
+   return strTmp;
+}
+
+/*==============================================================================================================================
+
+ Returns the lower case version of an string, leaving the original unchanged
+
+==============================================================================================================================*/
+string CSimulation::strToLower(string const* strIn)
+{
+   string strOut = *strIn;
+   std::transform(strIn->begin(), strIn->end(), strOut.begin(), ::tolower);
+   return strOut;
+}
+
+/*==============================================================================================================================
+
+ Returns the upper case version of an string, leaving the original unchanged
+
+==============================================================================================================================*/
+// string CSimulation::strToUpper(string const* strIn)
+// {
+//    string strOut = *strIn;
+//    std::transform(strIn->begin(), strIn->end(), strOut.begin(), ::toupper);
+//    return strOut;
+// }
+
+/*==============================================================================================================================
+
+ Returns a string with a substring removed
+
+==============================================================================================================================*/
+string CSimulation::strRemoveSubstr(string* strIn, string const* strSub)
+{
+   size_t nPos = strIn->find(*strSub);
+
+   // If not found, return the string unchanged
+   if (nPos != string::npos)
+      strIn->replace(nPos, strSub->size(), "");
+
+   return *strIn;
+}
+
+/*==============================================================================================================================
+
+ These two functions are from http://stackoverflow.com/questions/236129/split-a-string-in-c They implement (approximately) Python's split() function. This first version puts the results into a pre-constructed string vector. It ignores empty items
+
+==============================================================================================================================*/
+vector<string>* CSimulation::strSplit(string const* s, char const delim, vector<string>* elems)
+{
+   stringstream ss(*s);
+   string item;
+   while (getline(ss, item, delim))
+   {
+      if (! item.empty())
+         elems->push_back(item);
+   }
+   return elems;
+}
+
+/*==============================================================================================================================
+
+ This second version returns a new string vector (it calls the first version)
+
+==============================================================================================================================*/
+vector<string> CSimulation::strSplit(string const* s, char const delim)
+{
+   vector<string> elems;
+   strSplit(s, delim, &elems);
+   return elems;
+}
+
+
+/*==============================================================================================================================
+
+ Calculates the vector cross product of three points
+
+==============================================================================================================================*/
+double CSimulation::dCrossProduct(double const dX1, double const dY1, double const dX2, double const dY2, double const dX3, double const dY3)
+{
+   // Based on code at http://debian.fmi.uni-sofia.bg/~sergei/cgsr/docs/clockwise.htm
+   return (dX2 - dX1) * (dY3 - dY2) - ((dY2 - dY1) * (dX3 - dX2));
+}
+
+
+/*==============================================================================================================================
+
+ Calculates the mean of a pointer to a vector of doubles
+
+==============================================================================================================================*/
+double CSimulation::dGetMean(vector<double> const* pV)
+{
+   double dSum = std::accumulate(pV->begin(), pV->end(), 0.0);
+   double dMean = dSum / pV->size();
+   return dMean;
+}
+
+
+/*==============================================================================================================================
+
+ Calculates the standard deviation of a pointer to a vector of doubles. From http://stackoverflow.com/questions/7616511/calculate-mean-and-standard-deviation-from-a-vector-of-samples-in-c-using-boos
+
+==============================================================================================================================*/
+double CSimulation::dGetStdDev(vector<double> const* pV)
+{
+   double dSum = std::accumulate(pV->begin(), pV->end(), 0.0);
+   double dMean = dSum / pV->size();
+
+   double dSqSum = std::inner_product(pV->begin(), pV->end(), pV->begin(), 0.0);
+   double dStdDev = std::sqrt(dSqSum / pV->size() - dMean * dMean);
+
+   return dStdDev;
+}
+

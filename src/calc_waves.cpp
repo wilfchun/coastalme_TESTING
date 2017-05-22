@@ -395,7 +395,7 @@ void CSimulation::CalcCoastTangents(int const nCoast)
  Function used to sort coastline curvature values for shadow zone calcs
  
 ===============================================================================================================================*/
-bool bCurvaturePairCompareAscending(const pair<int, double> &prLeft, const pair<int, double> &prRight)
+bool CSimulation::bCurvaturePairCompareAscending(const pair<int, double>& prLeft, const pair<int, double>& prRight)
 {
    // Sort in ascending order (i.e. most convex first)
    return prLeft.second < prRight.second;

@@ -415,7 +415,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    return RTN_OK;
 #endif
 
-   // ================================================== initialization section ================================================
+   // ================================================== initialization section ================================================   
    // Hello, World!
    AnnounceStart();
 

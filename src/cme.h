@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 18 May 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 22 May 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -209,6 +209,7 @@ char const     QUOTE2                        = '#';
 string const   SPACESTR                      = " ";
 
 int const      BUF_SIZE                      = 2048;              // Max length (inc. terminating NULL) of any C-type string
+int const      MAX_SAVE_DIGITS               = 3;                 // Maximum number of digits for GIS save number
 int const      CLOCK_CHECK_ITERATION         = 5000;
 int const      SAVGOL_POLYNOMIAL_MAX_ORDER   = 6;                 // Maximum order of Savitsky-Golay smoothing polynomial
 int const      COAST_LENGTH_MAX              = 1000;              // For safety check when tracing coast
@@ -216,7 +217,6 @@ int const      COAST_LENGTH_MIN_X_PROF_SPACE = 2;                 // Ignore very
 int const      MAX_NUM_SHADOW_ZONES          = 10;                // Consider at most this number of shadow zones
 int const      GRID_MARGIN                   = 10;                // Ignore this many along-coast grid-edge points re. shadow zone calcs
 
-// TODO does this still work on 64-bit platforms?
 unsigned long const  MASK                             = 0xfffffffful;
 
 // Physically-based constants
@@ -728,39 +728,22 @@ template <typename T> string strNumToStr(const T& t)
 }
 
 // Definitions are in utilsglobal.cpp
-bool bFPIsEqual(double const, double const, double const);
+double dRound(double const);
 // bool bIsWhole(double const);
 bool bIsNumber(double const);
 // bool bIsFinite(double const);
-extern double dRound(double const);
-extern double dCrossProduct(double const, double const, double const, double const, double const, double const);
-extern double dGetMean(vector<double> const*);
-extern double dGetStdDev(vector<double> const*);
-extern string strTrim(string*);
-extern string strTrimLeft(string const*);
-extern string strTrimRight(string const*);
-extern string strToLower(string*);
-// extern string strToUpper(string*);
-extern string strRemoveSubstr(string*, string const*);
-extern vector<string>* strSplit(string const*, char const, vector<string>*);
-extern vector<string> strSplit(string const*, char const);
-extern string pstrChangeToBackslash(string const*);
-extern string pstrChangeToForwardSlash(string const*);
-
-// Some public domain utility routines, definitions are in utilsglobal.cpp
-extern "C"
+struct FillToWidth
 {
-   void* MoveStr(char* dest, char* const source);
-//    char* pszToLower(char* string);
-//    char* pszToUpper(char* string);
-   char* pszTrimLeft(char* string);
-//    char* pszTrimRight(char* string);
-   char* pszLongToSz(long num, char* string, int max_chars, int base = 10);
+   FillToWidth(char f, int w) : chFill(f), nWidth(w) 
+   {
+   }
 
-   // And one of my own
-//    char* pszRemoveSubstr(char* string, char* substr, char* subpos);
-}
+   char chFill;
+   int nWidth;
+};
+extern std::ostream& operator<<(std::ostream&, const FillToWidth&);
 
+//============================================= Globally-available Fortran function =============================================
 namespace cshore
 {
    extern "C"
@@ -768,7 +751,6 @@ namespace cshore
       void cshore(void);
    }
 }
-
 
 //================================================= debugging stuff =============================================================
 //#define CLOCKCHECK          // Uncomment to check CPU clock rollover settings

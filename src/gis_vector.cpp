@@ -28,6 +28,9 @@ using std::cerr;
 using std::endl;
 using std::ios;
 
+#include <sstream>
+using std::stringstream;
+
 #include <gdal_priv.h>
 #include <ogrsf_frmts.h>
 
@@ -406,21 +409,11 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
       }
    }
 
-   // Append the 'save number' to the filename
+   // Append the 'save number' to the filename, and prepend zeros to the save number
    strFilePathName.append("_");
-   if (m_nGISSave > 99)
-   {
-      // For save numbers of three or more digits, don't prepend zeros (note 10 digits is max)
-      char szNumTmp[10] = "";
-      strFilePathName.append(pszTrimLeft(pszLongToSz(m_nGISSave, szNumTmp, 10)));
-   }
-   else
-   {
-      // Prepend zeros to the save number
-      char szNumTmp[4] = "";
-      pszLongToSz(m_nGISSave, szNumTmp, 4);
-      strFilePathName.append(pszTrimLeft(szNumTmp));
-   }
+   stringstream ststrTmp;
+   ststrTmp << FillToWidth('0', MAX_SAVE_DIGITS) << m_nGISSave;
+   strFilePathName.append(ststrTmp.str());
 
    // Make a copy of the filename without any extension
    string strFilePathNameNoExt = strFilePathName;

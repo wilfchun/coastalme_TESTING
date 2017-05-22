@@ -464,9 +464,9 @@ private:
    int nReadShapeFunction(void);
 //    int nReadTideData(void);
    int nSaveProfile(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
-   bool bWriteProfileData(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
+   bool bWriteProfileData(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*) const;
    int nSaveParProfile(int const, int const, int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
-   bool bWriteParProfileData(int const, int const, int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
+   bool bWriteParProfileData(int const, int const, int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*) const;
    void WriteLookUpData(void);
 
    // GIS input and output stuff
@@ -543,6 +543,7 @@ private:
    void ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(int const, int const);
    static double dCalcCurvature(int const, CGeom2DPoint const*, CGeom2DPoint const*, CGeom2DPoint const*);
    void CalcD50AndFillWaveCalcHoles(void);
+   static bool bCurvaturePairCompareAscending(const pair<int, double>&, const pair<int, double>&);
    int nDoAllShadowZones(void);
    int nFindAllShadowZones(void);   
    int nFloodFillShadowZone(int const, int const, CGeom2DIPoint const*, int const, CGeom2DIPoint const*);
@@ -648,6 +649,20 @@ private:
    vector<double> dVSmoothProfileSavitzkyGolay(vector<double>*, vector<double>*);
    vector<double> dVSmoothProfileRunningMean(vector<double>*);
    void CalcSavitzkyGolay(double[], int const, int const, int const, int const, int const);
+   static bool bFPIsEqual(double const, double const, double const);
+   static string pstrChangeToBackslash(string const*);
+   static string pstrChangeToForwardSlash(string const*);
+   static string strTrim(string const*);
+   static string strTrimLeft(string const*);
+   static string strTrimRight(string const*);
+   static string strToLower(string const*);
+//  static string strToUpper(string const*);
+   static string strRemoveSubstr(string*, string const*);
+   static vector<string>* strSplit(string const*, char const, vector<string>*);
+   static vector<string> strSplit(string const*, char const);
+   static double dCrossProduct(double const, double const, double const, double const, double const, double const);
+   static double dGetMean(vector<double> const*);
+   static double dGetStdDev(vector<double> const*);
 
    // Random number stuff
    static unsigned long ulGetTausworthe(unsigned long const, unsigned long const, unsigned long const, unsigned long const, unsigned long const);
