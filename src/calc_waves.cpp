@@ -1879,7 +1879,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       double 
          dCShoreTimeStep = 3600,     // In seconds, not important because we are not using CShore to erode the profile, just to get the hydrodynamics
          dSurgeLevel = 0.0,          // Not used, but in the future we might include surge in the calculations
-         dWaveFriction = 0.015;      // TODO Let the user define the wave friction factor
+         dWaveFriction = CSHORE_FRICTION_FACTOR;
         
       // Set up vectors for the coastline-normal profile elevations. The length of this vector line is given by the number of cells 'under' the profile. Thus each point on the vector relates to a single cell in the grid. This assumes that all points on the profile vector are equally spaced (not quite true, depends on the orientation of the line segments which comprise the profile)   
       vector<double>

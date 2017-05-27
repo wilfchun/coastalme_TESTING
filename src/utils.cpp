@@ -25,12 +25,19 @@
 //#include <assert.h>
 
 #ifdef _WIN32
-   #include <windows.h>             // needed for CalcProcessStats()
-   #include <psapi.h>               // not available if compiling under Win?
-   #include <io.h>                  // for isatty()
-#else
-   #include <sys/resource.h>        // needed for CalcProcessStats()
+   #include <windows.h>             // Needed for CalcProcessStats()
+   #include <psapi.h>               // TODO Not available sometimes?
+   #include <io.h>                  // For isatty()
+#elif defined __GNUG__
+   #include <sys/resource.h>        // Needed for CalcProcessStats()
+   #include <unistd.h>              // For isatty()
 #endif
+
+#include <ctime>
+using std::time;
+using std::localtime;
+using std::clock;
+using std::difftime;
 
 #include <iostream>
 using std::cout;
@@ -43,6 +50,7 @@ using std::setiosflags;
 using std::resetiosflags;
 using std::setprecision;
 using std::setw;
+using std::put_time;
 
 #include <string>
 
@@ -146,7 +154,7 @@ void CSimulation::AnnounceStart(void)
 void CSimulation::StartClock(void)
 {
    // First start the 'CPU time' clock ticking
-   if (static_cast<clock_t>(-1) == clock())
+   if (static_cast<std::clock_t>(-1) == std::clock())
    {
       // There's a problem with the clock, but continue anyway
       LogStream << WARN << "CPU time not available" << endl;
@@ -155,12 +163,12 @@ void CSimulation::StartClock(void)
    else
    {
       // All OK, so get the time in m_dClkLast (this is needed to check for clock rollover on long runs)
-      m_dClkLast = static_cast<double>(clock());
+      m_dClkLast = static_cast<double>(std::clock());
       m_dClkLast -= CLOCK_T_MIN;       // necessary if clock_t is signed to make m_dClkLast unsigned
    }
 
    // And now get the actual time we started
-   time(&m_tSysStartTime);
+   m_tSysStartTime = std::time(nullptr);
 }
 
 
@@ -219,8 +227,7 @@ void CSimulation::AnnounceLicence(void)
    cout << DISCLAIMER6 << endl;
    cout << LINE << endl << endl;
 
-   // Note endl not needed, ctime() seems to always output a trailing <cr>
-   cout << STARTNOTICE << strGetComputerName() << " on " << ctime(&m_tSysStartTime);
+   cout << STARTNOTICE << strGetComputerName() << " at " << std::put_time(std::localtime(&m_tSysStartTime), "%T on %A %d %B %Y") << endl;
    cout << INITNOTICE << endl;
 }
 
@@ -1341,7 +1348,7 @@ void CSimulation::CalcTime(double const dRunLength)
    if (m_dCPUClock != -1)
    {
       // Calculate CPU time in secs
-      double dDuration = m_dCPUClock/CLOCKS_PER_SEC;
+      double dDuration = m_dCPUClock / CLOCKS_PER_SEC;
 
       // And write CPU time out to OutStream and LogStream
       OutStream << "CPU time elapsed: " << strDispTime(dDuration, false, true);
@@ -1371,11 +1378,8 @@ void CSimulation::CalcTime(double const dRunLength)
       }
    }
 
-   // Now calculate actual time of run (only really useful if run is a background batch job e.g. under Unix)
-   time(&m_tSysEndTime);
-
    // Calculate run time
-   double dDuration = difftime(m_tSysEndTime, m_tSysStartTime);
+   double dDuration = std::difftime(m_tSysEndTime, m_tSysStartTime);
 
    // And write run time out to OutStream and LogStream
    OutStream << "Run time elapsed: " << strDispTime(dDuration, false, false);
@@ -1447,7 +1451,7 @@ string CSimulation::strDispSimTime(const double dTimeIn)
       strTime.append("d ");
    }
    else
-      strTime.append("000 d ");
+      strTime.append("000d ");
 
    // Display hours
    stringstream ststrTmp;
@@ -1558,11 +1562,10 @@ void CSimulation::AnnounceProgress(void)
       static double sdToGo = 0;
 
       // Update time elapsed and time remaining every nInterval timesteps
-      time_t tNow;
-      time(&tNow);
+      std::time_t tNow = std::time(nullptr);
 
       // Calculate time elapsed and remaining
-      sdElapsed = difftime(tNow, m_tSysStartTime);
+      sdElapsed = std::difftime(tNow, m_tSysStartTime);
       sdToGo = (sdElapsed * m_dSimDuration / m_dSimElapsed) - sdElapsed;
 
       // Tell the user about progress (note need to make several separate calls to cout here, or MS VC++ compiler appears to get confused)
@@ -1674,7 +1677,10 @@ void CSimulation::CalcProcessStats(void)
             OutStream << "Windows 7 ";
          else if (6 == osvi.dwMajorVersion && 2 == osvi.dwMinorVersion)
             OutStream << "Windows 8 ";
-         // TODO add info for other Windows version
+         else if (6 == osvi.dwMajorVersion && 3 == osvi.dwMinorVersion)
+            OutStream << "Windows 8.1 ";
+         else if (10 == osvi.dwMajorVersion && 0 == osvi.dwMinorVersion)
+            OutStream << "Windows 10 ";
          else
             OutStream << "unknown Windows version ";
 
@@ -1984,12 +1990,16 @@ string CSimulation::strGetErrorText(int const nErr)
 
 ==============================================================================================================================*/
 void CSimulation::DoSimulationEnd(int const nRtn)
-{
+{   
+   // If we don't know the time that the run ended (e.g. because it did not finish correctly), get it now
+   if (m_tSysEndTime == 0)
+      m_tSysEndTime = std::time(nullptr);
+
    switch (nRtn)
    {
    case (RTN_OK):
       // normal ending
-      cout << RUNENDNOTICE << ctime(&m_tSysEndTime);
+      cout << RUNENDNOTICE << std::put_time(std::localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
       break;
 
    case (RTN_HELPONLY):
@@ -1998,24 +2008,23 @@ void CSimulation::DoSimulationEnd(int const nRtn)
 
    default:
       // Aborting because of some error
-      time(&m_tSysEndTime);
-      cerr << ERRORNOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << ctime(&m_tSysEndTime);
+      cerr << ERRORNOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << std::put_time(std::localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
 
       if (LogStream && LogStream.is_open())
       {
-         LogStream << ERR << strGetErrorText(nRtn) << " (error code " << nRtn << ") on " << ctime(&m_tSysEndTime);
+         LogStream << ERR << strGetErrorText(nRtn) << " (error code " << nRtn << ") on " << std::put_time(std::localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
          LogStream.flush();
       }
 
       if (OutStream && OutStream.is_open())
       {
-         OutStream << ERR << strGetErrorText(nRtn) << " (error code " << nRtn << ") on " << ctime(&m_tSysEndTime);
+         OutStream << ERR << strGetErrorText(nRtn) << " (error code " << nRtn << ") on " << std::put_time(std::localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
          OutStream.flush();
       }
    }
 
 #ifdef __GNUG__
-   if (isatty(1))
+   if (isatty(fileno(stdout)))
    {
       // Stdout is connected to a tty, so not running as a background job
       cout << endl << PRESSKEY;
@@ -2030,8 +2039,9 @@ void CSimulation::DoSimulationEnd(int const nRtn)
          cout << SENDEMAIL << m_strMailAddress << endl;
 
          string strCmd("echo \"");
-         time_t tNow;
-         time(&tNow);
+         
+         stringstream ststrTmp;
+         ststrTmp << std::put_time(std::localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;
 
          // Send an email using Linux/Unix mail command
          if (RTN_OK == nRtn)
@@ -2041,8 +2051,8 @@ void CSimulation::DoSimulationEnd(int const nRtn)
             strCmd.append(m_strRunName);
             strCmd.append(", running on ");
             strCmd.append(strGetComputerName());
-            strCmd.append(", completed normally on ");
-            strCmd.append(ctime(&tNow));
+            strCmd.append(", completed normally at ");
+            strCmd.append(ststrTmp.str());
             strCmd.append("\" | mail -s \"");
             strCmd.append(PROGNAME);
             strCmd.append(": normal completion\" ");
@@ -2063,8 +2073,8 @@ void CSimulation::DoSimulationEnd(int const nRtn)
             strCmd.append(std::to_string(m_ulTimestep));
             strCmd.append(" (");
             strCmd.append(strDispSimTime(m_dSimElapsed));
-            strCmd.append(").\n\nThis message sent ");
-            strCmd.append(ctime(&tNow));
+            strCmd.append(").\n\nThis message sent at ");
+            strCmd.append(ststrTmp.str());
             strCmd.append("\" | mail -s \"");
             strCmd.append(PROGNAME);
             strCmd.append(": ERROR\" ");

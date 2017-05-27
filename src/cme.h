@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 22 May 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 27 May 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -190,7 +190,7 @@ string const   RUNNOTICE                     = "- Running simulation";
 string const   SIMULATING                    = "\r  - Simulating ";
 string const   FINALOUTPUT                   = "- Writing final output";
 string const   SENDEMAIL                     = "  - Sending email to ";
-string const   RUNENDNOTICE                  = "- Run ended on ";
+string const   RUNENDNOTICE                  = "- Run ended at ";
 string const   PRESSKEY                      = "Press any key to continue...";
 
 string const   ERRORNOTICE                   = "- Run ended with error code ";
@@ -231,7 +231,8 @@ double const   WALKDEN_HALL_PARAM_2                   = 0.75;              // Se
 double const   DEPTH_OVER_DB_INCREMENT                = 0.001;             // Depth Over DB increment for erosion potential look-up function
 double const   INVERSE_DEPTH_OVER_DB_INCREMENT        = 1000;              // Inverse of the above
 
-double const   CShore_FRICTION_FACTOR                 = 0.015;             // friction factor for CShore model
+// TODO Let the user define the CShore wave friction factor
+double const   CSHORE_FRICTION_FACTOR                 = 0.015;             // Friction factor for CShore model
 
 // Arbitrary constants
 bool const     USE_DEEP_WATER_FOR_SHADOW_LINE         = true;              // Use deep water wave orintation in determining shadow line orientation?

@@ -27,6 +27,10 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ===============================================================================================================================*/
+#include <ctime>
+using std::time;
+using std::localtime;
+
 #include <fstream>
 using std::ofstream;
 
@@ -378,7 +382,7 @@ private:
       unsigned long s1, s2, s3;
    } m_ulRState[NRNG];
 
-   time_t
+   std::time_t
       m_tSysStartTime,
       m_tSysEndTime;
 

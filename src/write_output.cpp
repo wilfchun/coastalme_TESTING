@@ -23,6 +23,8 @@
 
 ==============================================================================================================================*/
 #include <ctime>
+using std::localtime;
+
 #include <iostream>
 using std::cout;
 using std::cerr;
@@ -34,6 +36,7 @@ using std::setiosflags;
 using std::resetiosflags;
 using std::setprecision;
 using std::setw;
+using std::put_time;
 
 #include <sstream>
 using std::stringstream;
@@ -49,9 +52,10 @@ using std::stringstream;
 ==============================================================================================================================*/
 void CSimulation::WriteStartRunDetails(void)
 {
-   // Set default output format to fixed point
+   // Set the Out file output format to fixed point
    OutStream << setiosflags(ios::fixed);
-
+   
+   // Start outputting stuff
    OutStream << PROGNAME << " for " << PLATFORM << " " << strGetBuild() << " on " << strGetComputerName() << endl << endl;
 
    LogStream << PROGNAME << " for " << PLATFORM << " " << strGetBuild() << " on " << strGetComputerName() << endl << endl;
@@ -59,10 +63,10 @@ void CSimulation::WriteStartRunDetails(void)
    // ----------------------------------------------- Run Information ----------------------------------------------------------
    OutStream << "RUN DETAILS" << endl;
    OutStream << " Name                                                      \t: " << m_strRunName << endl;
-   OutStream << " Started on                                                \t: " << ctime(&m_tSysStartTime);   //  << endl;
+   OutStream << " Started                                                   \t: " << std::put_time(std::localtime(&m_tSysStartTime), "%T %A %d %B %Y") << endl;
 
    // Same info. for Log file
-   LogStream << m_strRunName << " run started on " << ctime(&m_tSysStartTime) << endl;
+   LogStream << m_strRunName << " run started at " << std::put_time(std::localtime(&m_tSysStartTime), "%T on %A %d %B %Y") << endl << endl;
 
    // Contine with Out file
    OutStream << " Initialization file                                       \t: "
@@ -957,6 +961,11 @@ int CSimulation::nWriteEndRunDetails(void)
 
    // Finally calculate performance details
    OutStream << PERFORMHEAD << endl;
+   
+   // Get the time that the run dended
+   m_tSysEndTime = std::time(nullptr);
+   
+   OutStream << "Run ended at " << std::put_time(std::localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;
    OutStream << "Time simulated: " << strDispSimTime(m_dSimDuration) << endl << endl;
 
    // Output averages for on-profile and between-profile potential shore platform erosion, ideally these are roughly equal
