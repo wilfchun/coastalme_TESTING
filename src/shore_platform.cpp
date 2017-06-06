@@ -100,7 +100,7 @@ int CSimulation::nDoAllShorePlatFormErosion(void)
       }
    }
    
-   LogStream << endl << m_ulTimestep << ": potential platform erosion = " << m_dThisTimestepPotentialPlatformErosion << " (on profiles = " << m_dTotPotErosionOnProfiles << ", between profiles = " << m_dTotPotErosionBetweenProfiles << ")" << endl;
+   LogStream << m_ulTimestep << ": potential platform erosion = " << m_dThisTimestepPotentialPlatformErosion << " (on profiles = " << m_dTotPotErosionOnProfiles << ", between profiles = " << m_dTotPotErosionBetweenProfiles << ")" << endl;
    LogStream << m_ulTimestep << ": actual platform erosion = " << m_dThisTimestepActualFinePlatformErosion + m_dThisTimestepActualSandPlatformErosion + m_dThisTimestepActualCoarsePlatformErosion << " (fine = " << m_dThisTimestepActualFinePlatformErosion << ", sand = " << m_dThisTimestepActualSandPlatformErosion << ", coarse = " << m_dThisTimestepActualCoarsePlatformErosion << ")" << endl;
 
    return RTN_OK;
@@ -790,12 +790,12 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       if (nPolyID == INT_NODATA)
       {
          // Can get occasional problems with polygon rasterization near the coastline, so also search the eight adjacent cells
-         int nDirection[] = {ORIENTATION_NORTH, ORIENTATION_NORTH_EAST, ORIENTATION_EAST, ORIENTATION_SOUTH_EAST, ORIENTATION_SOUTH, ORIENTATION_SOUTH_WEST, ORIENTATION_WEST, ORIENTATION_NORTH_WEST};
+         int nDirection[] = {NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST};
          Rand1Shuffle(nDirection, 8);
 
          for (int n = 0; n < 8; n++)
          {
-            if (nDirection[n] == ORIENTATION_NORTH)
+            if (nDirection[n] == NORTH)
             {
                int
                   nXAdj = nX,
@@ -807,7 +807,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
                      break;
                }
             }
-            else if (nDirection[n] == ORIENTATION_NORTH_EAST)
+            else if (nDirection[n] == NORTH_EAST)
             {
                int
                   nXAdj = nX+1,
@@ -819,7 +819,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
                      break;
                }
             }
-            else if (nDirection[n] == ORIENTATION_EAST)
+            else if (nDirection[n] == EAST)
             {
                int
                   nXAdj = nX+1,
@@ -831,7 +831,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
                      break;
                }
             }
-            else if (nDirection[n] == ORIENTATION_SOUTH_EAST)
+            else if (nDirection[n] == SOUTH_EAST)
             {
                int
                   nXAdj = nX+1,
@@ -843,7 +843,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
                      break;
                }
             }
-            else if (nDirection[n] == ORIENTATION_SOUTH)
+            else if (nDirection[n] == SOUTH)
             {
                int
                   nXAdj = nX,
@@ -855,7 +855,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
                      break;
                }
             }
-            else if (nDirection[n] == ORIENTATION_SOUTH_WEST)
+            else if (nDirection[n] == SOUTH_WEST)
             {
                int
                   nXAdj = nX-1,
@@ -867,7 +867,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
                      break;
                }
             }
-            else if (nDirection[n] == ORIENTATION_WEST)
+            else if (nDirection[n] == WEST)
             {
                int
                   nXAdj = nX-1,
@@ -879,7 +879,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
                      break;
                }
             }
-            else if (nDirection[n] == ORIENTATION_NORTH_WEST)
+            else if (nDirection[n] == NORTH_WEST)
             {
                int
                   nXAdj = nX-1,

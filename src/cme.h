@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 27 May 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 5 June 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -212,7 +212,7 @@ int const      BUF_SIZE                      = 2048;              // Max length 
 int const      MAX_SAVE_DIGITS               = 3;                 // Maximum number of digits for GIS save number
 int const      CLOCK_CHECK_ITERATION         = 5000;
 int const      SAVGOL_POLYNOMIAL_MAX_ORDER   = 6;                 // Maximum order of Savitsky-Golay smoothing polynomial
-int const      COAST_LENGTH_MAX              = 1000;              // For safety check when tracing coast
+int const      COAST_LENGTH_MAX              = 100;               // For safety check when tracing coast
 int const      COAST_LENGTH_MIN_X_PROF_SPACE = 2;                 // Ignore very short coasts less than this x profile spacing
 int const      MAX_NUM_SHADOW_ZONES          = 10;                // Consider at most this number of shadow zones
 int const      GRID_MARGIN                   = 10;                // Ignore this many along-coast grid-edge points re. shadow zone calcs
@@ -238,12 +238,12 @@ double const   CSHORE_FRICTION_FACTOR                 = 0.015;             // Fr
 bool const     USE_DEEP_WATER_FOR_SHADOW_LINE         = true;              // Use deep water wave orintation in determining shadow line orientation?
 bool const     CREATE_SHADOW_ZONE_IF_HITS_GRID_EDGE   = true;              // If shadow line tracing hits grid edge, create shadow zone?
 
-int const      ROUND_LOOP_MAX                         = 50000;             // In coastline tracing, give up if round loop more than this
 int const      MIN_PROFILE_SPACING                    = 30;                // In cells: profile creation does not work well if profiles are too closely spaced
 int const      CAPE_POINT_MIN_SPACING                 = 10;                // In cells: for shadow zone stuff, cape points must not be closer than this
 int const      FLOOD_FILL_START_OFFSET                = 2;                 // In cells: flood fill starts this distance inside polygon
 int const      SHADOW_LINE_MIN_SINCE_HIT_SEA          = 5;
 int const      MAX_LEN_SHADOW_LINE_TO_IGNORE          = 200;               // In cells: if can't find flood fill start point, continue if short shadow line
+int const      MAX_EDGE_SEARCH_DIST                   = 30;                // In cells: search for edge cells this far in from grid edge
 
 double const   TOLERANCE                              = 1e-4;              // For bFPIsEqual, if too small (e.g. 1e-10), get spurious "rounding" errors
 double const   SEDIMENT_ELEV_TOLERANCE                = 1e-10;             // Throughout, differences in depth-equivalent sediment amount (m) less than this are ignored
@@ -253,11 +253,11 @@ double const   MIN_SEA_LENGTH_OF_SHADOW_ZONE_LINE     = 10;                // Us
 double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE    = 10;                // Used in shadow line tracing
 
 // Error/warning, NODATA etc.
-string const   ERR                                    = "*** ERROR ";
+string const   ERR                                    = "ERROR ";
 string const   WARN                                   = "WARNING ";
 
 int const      INT_NODATA                             = -999;
-double const   DBL_NODATA                             = -999;
+double const   DBL_NODATA                             = -9999;
 
 
 string const   PERITERHEAD1 =
@@ -286,15 +286,15 @@ string const   OUTEXT                              = ".out";
 string const   LOGEXT                              = ".log";
 string const   CSVEXT                              = ".csv";
 
-int const      ORIENTATION_NONE                    = 0;
-int const      ORIENTATION_NORTH                   = 1;
-int const      ORIENTATION_NORTH_EAST              = 2;
-int const      ORIENTATION_EAST                    = 3;
-int const      ORIENTATION_SOUTH_EAST              = 4;
-int const      ORIENTATION_SOUTH                   = 5;
-int const      ORIENTATION_SOUTH_WEST              = 6;
-int const      ORIENTATION_WEST                    = 7;
-int const      ORIENTATION_NORTH_WEST              = 8;
+int const      NO_DIRECTION                        = 0;
+int const      NORTH                               = 1;
+int const      NORTH_EAST                          = 2;
+int const      EAST                                = 3;
+int const      SOUTH_EAST                          = 4;
+int const      SOUTH                               = 5;
+int const      SOUTH_WEST                          = 6;
+int const      WEST                                = 7;
+int const      NORTH_WEST                          = 8;
 
 int const      DIRECTION_DOWNCOAST                 = 0;        // Down-coast, i.e. along the coast so that the index of coastline points INCREASES
 int const      DIRECTION_UPCOAST                   = 1;        // Up-coast, i.e. along the coast so that the index of coastline points DECREASES
@@ -326,7 +326,7 @@ int const      LF_NONE                             = 0;
 
 // Landform category codes for cells and coast landform objects (see old source for full list, to be used eventually)
 int const      LF_CAT_HINTERLAND                   = 1;
-int const      LF_CAT_SEA                          = 2;     // Note: no cells actually have this set as a landform category, is used only for output
+int const      LF_CAT_SEA                          = 2;
 int const      LF_CAT_CLIFF                        = 3;
 int const      LF_CAT_DRIFT                        = 4;
 int const      LF_CAT_INTERVENTION                 = 5;
@@ -557,10 +557,10 @@ int const      PLOT_INVALID_NORMALS                         = 3;
 string const   PLOT_INVALID_NORMALS_TITLE                   = "INVALID Coastline-normal profiles";
 int const      PLOT_COAST_CURVATURE                         = 4;
 string const   PLOT_COAST_CURVATURE_TITLE                   = "Coastline curvature";
-int const      PLOT_WAVE_ORIENTATION_AND_HEIGHT             = 5;
-string const   PLOT_WAVE_ORIENTATION_AND_HEIGHT_TITLE       = "Wave orientation and height";
-int const      PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT         = 6;
-string const   PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT_TITLE   = "Average wave orientation and height";
+int const      PLOT_WAVE_AND_HEIGHT             = 5;
+string const   PLOT_WAVE_AND_HEIGHT_TITLE       = "Wave orientation and height";
+int const      PLOT_AVG_WAVE_AND_HEIGHT         = 6;
+string const   PLOT_AVG_WAVE_AND_HEIGHT_TITLE   = "Average wave orientation and height";
 int const      PLOT_WAVE_ENERGY_SINCE_COLLAPSE              = 7;
 string const   PLOT_WAVE_ENERGY_SINCE_COLLAPSE_TITLE        = "Wave energy since collapse";
 int const      PLOT_MEAN_WAVE_ENERGY                        = 8;
@@ -657,6 +657,7 @@ int const      RTN_ERR_CSHORE_OUTPUT_FILE             = 50;
 int const      RTN_ERR_CSHORE_INPUT_FILE              = 51;
 int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 52;
 int const      RTN_ERR_GRIDCREATE                     = 53;
+int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 54;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                    = -1;

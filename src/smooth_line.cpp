@@ -115,15 +115,15 @@ CGeomLine CSimulation::LSmoothCoastSavitzkyGolay(CGeomLine* pLineIn, int const n
 
          switch (nStartEdge)
          {
-            case ORIENTATION_NORTH:
-            case ORIENTATION_SOUTH:
+            case NORTH:
+            case SOUTH:
                // Don't apply the filter in the Y direction
                LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
                LTemp.SetYAt(i, pLineIn->dGetYAt(i));
                break;
 
-            case ORIENTATION_EAST:
-            case ORIENTATION_WEST:
+            case EAST:
+            case WEST:
                // Don't apply the filter in the X direction
                LTemp.SetXAt(i, pLineIn->dGetXAt(i));
                LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
@@ -149,15 +149,15 @@ CGeomLine CSimulation::LSmoothCoastSavitzkyGolay(CGeomLine* pLineIn, int const n
 
          switch (nEndEdge)
          {
-            case ORIENTATION_NORTH:
-            case ORIENTATION_SOUTH:
+            case NORTH:
+            case SOUTH:
                // Don't apply the filter in the Y direction
                LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
                LTemp.SetYAt(i, pLineIn->dGetYAt(i));
                break;
 
-            case ORIENTATION_EAST:
-            case ORIENTATION_WEST:
+            case EAST:
+            case WEST:
                // Don't apply the filter in the X direction
                LTemp.SetXAt(i, pLineIn->dGetXAt(i));
                LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
@@ -237,14 +237,14 @@ CGeomLine CSimulation::LSmoothCoastRunningMean(CGeomLine* pLineIn, int const nSt
          // We are near the start edge
          switch (nStartEdge)
          {
-            case ORIENTATION_NORTH:
-            case ORIENTATION_SOUTH:
+            case NORTH:
+            case SOUTH:
                // Don't apply the filter in the y direction
                LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
                break;
 
-            case ORIENTATION_EAST:
-            case ORIENTATION_WEST:
+            case EAST:
+            case WEST:
                // Don't apply the filter in the x direction
                LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
                break;
@@ -255,14 +255,14 @@ CGeomLine CSimulation::LSmoothCoastRunningMean(CGeomLine* pLineIn, int const nSt
          // We are near the end edge
          switch (nEndEdge)
          {
-            case ORIENTATION_NORTH:
-            case ORIENTATION_SOUTH:
+            case NORTH:
+            case SOUTH:
                // Don't apply the filter in the y direction
                LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
                break;
 
-            case ORIENTATION_EAST:
-            case ORIENTATION_WEST:
+            case EAST:
+            case WEST:
                // Don't apply the filter in the x direction
                LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
                break;

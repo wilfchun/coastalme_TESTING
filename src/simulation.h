@@ -190,7 +190,8 @@ private:
       m_ulThisTimestepNumActualBeachErosionCells,
       m_ulThisTimestepNumBeachDepositionCells,
       m_ulTotPotentialPlatformErosionOnProfiles,
-      m_ulTotPotentialPlatformErosionBetweenProfiles;
+      m_ulTotPotentialPlatformErosionBetweenProfiles,
+      m_ulMissingValueBasementCells;
 
    double
       m_dDurationUnitsMult,
@@ -453,6 +454,12 @@ private:
 
    // Pointers to coast polygon objects
    vector<CGeomCoastPolygon*> m_pVCoastPolygon;
+   
+   // Edge cells
+   vector<CGeom2DIPoint> m_VEdgeCell;
+   
+   // And the grid edge that each edge cell belongs to
+   vector<int> m_VEdgeCellEdge;
 
 private:
    // Input and output routines
@@ -515,7 +522,7 @@ private:
    void CreateRestOfNormals(int const, int&, int const, double const, vector<bool>*, vector<pair<int, double> > const*);
    void CreateInterventionProfiles(int const, int&, int const);
    int nCreateNormalProfile(int const, int const, int&);
-   void CreateGridEdgeProfile(bool const, int const, int&);
+   int nCreateGridEdgeProfile(bool const, int const, int&);
    int nPutAllProfilesOntoGrid(void);
    int nModifyAllIntersectingProfiles(void);
    static bool bCheckForIntersection(CGeomProfile* const, CGeomProfile* const, int&, int&, double&, double&, double&, double&);
@@ -570,6 +577,7 @@ private:
    int nDoBeachDepositionOnCells(int const, int const, double const);
 
    // GIS utility routines
+   void MarkEdgeCells(void);
    bool bCheckRasterGISOutputFormat(void);
    bool bCheckVectorGISOutputFormat(void);
    bool bSaveAllRasterGISFiles(void);
@@ -602,6 +610,7 @@ private:
    static CGeom2DIPoint PtiAverage(CGeom2DIPoint const*, CGeom2DIPoint const*);
    static CGeom2DIPoint PtiWeightedAverage(CGeom2DIPoint const*, CGeom2DIPoint const*, double const);
    static double dAngleSubtended(CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
+   int nGetOppositeDirection(int const);
 
    // Utility routines
    static void AnnounceStart(void);
@@ -667,6 +676,7 @@ private:
    static double dCrossProduct(double const, double const, double const, double const, double const, double const);
    static double dGetMean(vector<double> const*);
    static double dGetStdDev(vector<double> const*);
+   void AppendEnsureNoGap(vector<CGeom2DIPoint>*, int const, int const);
 
    // Random number stuff
    static unsigned long ulGetTausworthe(unsigned long const, unsigned long const, unsigned long const, unsigned long const, unsigned long const);
@@ -691,6 +701,9 @@ public:
 
    CSimulation(void);
    ~CSimulation(void);
+   
+   //! Returns the NODATA value
+   double dGetMissingValue(void) const;
 
    //! Returns this timestep's still water level
    double dGetThisTimestepSWL(void) const;

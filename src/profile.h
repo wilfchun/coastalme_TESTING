@@ -91,7 +91,7 @@ public:
    bool bOKIncStartAndEndOfCoast(void) const;
    bool bOKIncStartOfCoast(void) const;
 
-   void SetAllPointsInProfile(vector<CGeom2DPoint>*);
+   void SetAllPointsInProfile(vector<CGeom2DPoint> const*);
    void SetPointInProfile(int const, double const, double const);
    void AppendPointInProfile(double const, double const);
    void AppendPointInProfile(CGeom2DPoint const*);
@@ -116,7 +116,7 @@ public:
 //    void SetCoastPolyToRight(int const, int const);
 //    int nGetCoastPolyToRight(int const);
 
-   void AppendCellInProfile(CGeom2DIPoint*);
+   void AppendCellInProfile(CGeom2DIPoint const*);
    void AppendCellInProfile(int const, int const);
 //    void SetCellsInProfile(vector<CGeom2DIPoint>*);
    vector<CGeom2DIPoint>* pPtiVGetCellsInProfile(void);
@@ -124,9 +124,10 @@ public:
    int nGetNumCellsInProfile(void) const;
 
    void AppendCellInProfileExtCRS(double const, double const);
+   void AppendCellInProfileExtCRS(CGeom2DPoint const*);
 //    vector<CGeom2DPoint>* PtVGetCellsInProfileExtCRS(void);
 
-   int nGetCellGivenDepth(CGeomRasterGrid* const, double const);
+   int nGetCellGivenDepth(CGeomRasterGrid const*, double const);
 };
 #endif //PROFILE_H
 

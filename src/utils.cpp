@@ -1975,6 +1975,9 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_GRIDCREATE:
       strErr = "while running GDALGridCreate()";
       break;
+   case RTN_ERR_COAST_CANT_FIND_EDGE_CELL:
+      strErr = "cannot find edge cell while constructing grid-edge profile";
+      break;
    default:
       // should never get here
       strErr = "unknown cause";
@@ -2294,5 +2297,45 @@ double CSimulation::dGetStdDev(vector<double> const* pV)
    double dStdDev = std::sqrt(dSqSum / pV->size() - dMean * dMean);
 
    return dStdDev;
+}
+
+
+/*==============================================================================================================================
+
+ Appends a CGeom2DIPoint to a vector<CGeom2DIPoint>, making sure that the new end point touches the previous end point i.e. that there is no gap between the two points
+
+==============================================================================================================================*/
+void CSimulation::AppendEnsureNoGap(vector<CGeom2DIPoint>* pVPtiPoints, int const nX, int const nY)
+{
+   int
+      nXLast = pVPtiPoints->back().nGetX(),
+      nYLast = pVPtiPoints->back().nGetY(),
+      nXDiff = nX - nXLast,   
+      nYDiff = nY - nYLast,
+      nXDiffA = tAbs(nXDiff),
+      nYDiffA = tAbs(nYDiff),
+      nDiff = tMax(nXDiffA, nYDiffA);
+      
+   if (nDiff > 1)
+   {
+      // We have a gap
+      double 
+         dXInc = 0,
+         dYInc = 0;
+         
+      if (nXDiffA > 1)
+         dXInc = static_cast<double>(nXDiff) / nDiff;
+         
+      if (nYDiffA > 1)
+         dYInc = static_cast<double>(nYDiff) / nDiff;
+         
+      for (int n = 1; n < nDiff; n++)
+      {
+         CGeom2DIPoint Pti(nXLast + (n * dXInc), nYLast + (n * dYInc));
+         pVPtiPoints->push_back(Pti);
+      }      
+   }
+   
+   pVPtiPoints->push_back(CGeom2DIPoint(nX, nY));
 }
 

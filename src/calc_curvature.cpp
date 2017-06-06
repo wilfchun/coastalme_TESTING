@@ -153,7 +153,7 @@ void CSimulation::DoCoastCurvature(int const nCoast, int const nHandedness)
    
    CGeom2DIPoint PtiMaxSmooth = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nMaxConvexSmoothedCoastPoint);
    CGeom2DPoint PtMaxSmooth = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nMaxConvexSmoothedCoastPoint);
-   LogStream << m_ulTimestep << ": max smoothed convexity (" << m_VCoast[nCoast].dGetSmoothCurvature(nMaxConvexSmoothedCoastPoint) << ") near vector coastline point " << nMaxConvexSmoothedCoastPoint << ", at [" << PtiMaxSmooth.nGetX() << "][" << PtiMaxSmooth.nGetY() << "] {" << PtMaxSmooth.dGetX() << ", " << PtMaxSmooth.dGetY() << "}"  << endl << endl;   
+   LogStream << m_ulTimestep << ": max smoothed convexity (" << m_VCoast[nCoast].dGetSmoothCurvature(nMaxConvexSmoothedCoastPoint) << ") near vector coastline point " << nMaxConvexSmoothedCoastPoint << ", at [" << PtiMaxSmooth.nGetX() << "][" << PtiMaxSmooth.nGetY() << "] {" << PtMaxSmooth.dGetX() << ", " << PtMaxSmooth.dGetY() << "}" << endl;   
 }
 
 

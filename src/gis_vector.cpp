@@ -354,13 +354,13 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          break;
       }
 
-      case (PLOT_WAVE_ORIENTATION_AND_HEIGHT):
+      case (PLOT_WAVE_AND_HEIGHT):
       {
          strFilePathName.append(VECTOR_WAVE_ANGLE_NAME);
          break;
       }
 
-      case (PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT):
+      case (PLOT_AVG_WAVE_AND_HEIGHT):
       {
          strFilePathName.append(VECTOR_AVG_WAVE_ANGLE_NAME);
          break;
@@ -731,7 +731,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          break;
       }
 
-      case (PLOT_WAVE_ORIENTATION_AND_HEIGHT):
+      case (PLOT_WAVE_AND_HEIGHT):
       {
          eGType = wkbPoint;
          strType = "point";
@@ -804,7 +804,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
       break;
       }
 
-      case (PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT):
+      case (PLOT_AVG_WAVE_AND_HEIGHT):
       {
          eGType = wkbPoint;
          strType = "point";

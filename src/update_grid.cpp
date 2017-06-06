@@ -49,8 +49,6 @@ int CSimulation::nUpdateGrid(void)
          if (m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
          {
             // Is a sea cell
-            m_ulThisTimestepNumSeaCells++;
-
             m_dThisTimestepTotSeaDepth += m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
          }
       }

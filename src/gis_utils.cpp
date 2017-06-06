@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ===============================================================================================================================*/
-// #include <assert.h>
+#include <assert.h>
 #include <iostream>
 using std::cout;
 using std::cerr;
@@ -204,12 +204,12 @@ double CSimulation::dTriangleAreax2(CGeom2DPoint const* pPtA, CGeom2DPoint const
 
 /*==============================================================================================================================
 
- Checks whether the supplied point (an x-y pair, in the grid CRS) is within the raster grid
+ Checks whether the supplied point (an x-y pair, in the grid CRS) is within the raster grid, and is a valid cell (i.e. the basement DEM is not NODATA)
 
 ===============================================================================================================================*/
 bool CSimulation::bIsWithinGrid(int const nX, int const nY) const
 {
-   if ((nX < 0) || (nX >= m_nXGridMax) || (nY < 0) || (nY >= m_nYGridMax))
+   if ((nX < 0) || (nX >= m_nXGridMax) || (nY < 0) || (nY >= m_nYGridMax) || m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
       return false;
 
    return true;
@@ -218,7 +218,7 @@ bool CSimulation::bIsWithinGrid(int const nX, int const nY) const
 
 /*==============================================================================================================================
 
- Checks whether the supplied point (a reference to a CGeom2DIPoint, in the grid CRS) is within the raster grid
+ Checks whether the supplied point (a reference to a CGeom2DIPoint, in the grid CRS) is within the raster grid, and is a valid cell (i.e. the basement DEM is not NODATA)
 
 ===============================================================================================================================*/
 bool CSimulation::bIsWithinGrid(CGeom2DIPoint const* Pti) const
@@ -231,6 +231,9 @@ bool CSimulation::bIsWithinGrid(CGeom2DIPoint const* Pti) const
    int nY = Pti->nGetY();
 
    if ((nY < 0) || (nY >= m_nYGridMax))
+      return false;
+   
+   if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
       return false;
 
    return true;
@@ -250,100 +253,134 @@ void CSimulation::KeepWithinGrid(CGeom2DIPoint const* Pti0, CGeom2DIPoint* Pti1)
       
    if (nX1 < 0)
    {  
-      int 
-         nX0 = Pti0->nGetX(),
-         nY0 = Pti0->nGetY();
-         
-      double 
-         dDiffX = nX1 - nX0,
-         dDiffY = nY1 - nY0,
-         dNewDiffX = nX1 - nX0;
-      
-      nX1 = 0;
-
-      if (dDiffY == 0)
-         nY1 = nY0;
-      else
+      int n = 0;
+      do
       {
-         double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
-         nY1 = dRound(dNewDiffY + nY0);
+         int 
+            nX0 = Pti0->nGetX(),
+            nY0 = Pti0->nGetY();
+            
+         double 
+            dDiffX = nX1 - nX0,
+            dDiffY = nY1 - nY0,
+            dNewDiffX = nX1 - nX0;
+         
+         nX1 = n;
+         n++;
+
+         if (dDiffY == 0)
+            nY1 = nY0;
+         else if (dDiffX == 0)
+            continue;
+         else
+         {
+            double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
+            nY1 = dRound(dNewDiffY + nY0);
+         }
+         
+         Pti1->SetX(nX1);
+         Pti1->SetY(nY1);
       }
-      
-      Pti1->SetX(nX1);
-      Pti1->SetY(nY1);      
+      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
    }
+   
    else if (nX1 > m_nXGridMax-1)
    {  
-      int 
-         nX0 = Pti0->nGetX(),
-         nY0 = Pti0->nGetY();
-         
-      double 
-         dDiffX = nX1 - nX0,
-         dDiffY = nY1 - nY0,
-         dNewDiffX = nX1 - nX0;
-      
-      nX1 = m_nXGridMax-1;
-
-      if (dDiffY == 0)
-         nY1 = nY0;
-      else
+      int n = 0;
+      do
       {
-         double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
-         nY1 = dRound(dNewDiffY + nY0);
+         int 
+            nX0 = Pti0->nGetX(),
+            nY0 = Pti0->nGetY();
+            
+         double 
+            dDiffX = nX1 - nX0,
+            dDiffY = nY1 - nY0,
+            dNewDiffX = nX1 - nX0;
+         
+         nX1 = m_nXGridMax-1 - n;
+         n++;
+
+         if (dDiffY == 0)
+            nY1 = nY0;
+         else if (dDiffX == 0)
+            continue;
+         else
+         {
+            double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
+            nY1 = dRound(dNewDiffY + nY0);
+         }
+         
+         Pti1->SetX(nX1);
+         Pti1->SetY(nY1);      
       }
-      
-      Pti1->SetX(nX1);
-      Pti1->SetY(nY1);      
+      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
    }
    
    if (nY1 < 0 )
    {      
-      int 
-         nX0 = Pti0->nGetX(),
-         nY0 = Pti0->nGetY();
-         
-      double 
-         dDiffX = nX1 - nX0,
-         dDiffY = nY1 - nY0,
-         dNewDiffY = nY1 - nY0;
-      
-      nY1 = 0;
-
-      if (dDiffX == 0)
-         nX1 = nX0;
-      else
+      int n = 0;
+      do
       {
-         double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
-         nX1 = dRound(dNewDiffX + nX0);
+         int 
+            nX0 = Pti0->nGetX(),
+            nY0 = Pti0->nGetY();
+            
+         double 
+            dDiffX = nX1 - nX0,
+            dDiffY = nY1 - nY0,
+            dNewDiffY = nY1 - nY0;
+         
+         nY1 = n;
+         n++;
+
+         if (dDiffX == 0)
+            nX1 = nX0;
+         else if (dDiffY == 0)
+            continue;
+         else
+         {
+            double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
+            nX1 = dRound(dNewDiffX + nX0);
+         }
+         
+         Pti1->SetX(nX1);
+         Pti1->SetY(nY1);      
       }
-      
-      Pti1->SetX(nX1);
-      Pti1->SetY(nY1);      
+      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
    }   
-   else if (nY1 > m_nYGridMax-1)
-   {      
-      int 
-         nX0 = Pti0->nGetX(),
-         nY0 = Pti0->nGetY();
-         
-      double 
-         dDiffX = nX1 - nX0,
-         dDiffY = nY1 - nY0,
-         dNewDiffY = nY1 - nY0;
-      
-      nY1 = m_nYGridMax-1;
 
-      if (dDiffX == 0)
-         nX1 = nX0;
-      else
+   else if (nY1 > m_nYGridMax-1)
+   {
+      int n = 0;
+      do
       {
-         double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
-         nX1 = dRound(dNewDiffX + nX0);
+         int 
+            nX0 = Pti0->nGetX(),
+            nY0 = Pti0->nGetY();
+            
+         double 
+            dDiffX = nX1 - nX0,
+            dDiffY = nY1 - nY0,
+            dNewDiffY = nY1 - nY0;
+         
+         nY1 = m_nYGridMax-1 - n;
+         n++;
+
+         if (dDiffX == 0)
+            nX1 = nX0;
+         else if (dDiffY == 0)
+            continue;
+         else
+         {
+            double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
+            nX1 = dRound(dNewDiffX + nX0);
+         }
+         
+         Pti1->SetX(nX1);
+         Pti1->SetY(nY1);      
       }
-      
-      Pti1->SetX(nX1);
-      Pti1->SetY(nY1);      
+      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
    }
 }
 
@@ -357,72 +394,107 @@ void CSimulation::KeepWithinGrid(int const nX0, int const nY0, int& nX1, int& nY
 {
    if (nX1 < 0)
    {      
-      double 
-         dDiffX = nX1 - nX0,
-         dDiffY = nY1 - nY0,
-         dNewDiffX = nX1 - nX0;
-      
-      nX1 = 0;
-
-      if (dDiffY == 0)
-         nY1 = nY0;
-      else
+      int n = 0;
+      do
       {
-         double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
-         nY1 = dRound(dNewDiffY + nY0);
+         double 
+            dDiffX = nX1 - nX0,
+            dDiffY = nY1 - nY0,
+            dNewDiffX = nX1 - nX0;
+         
+         nX1 = n;
+         n++;
+
+         if (dDiffY == 0)
+            nY1 = nY0;
+         else if (dDiffX == 0)
+            continue;
+         else
+         {
+            double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
+            nY1 = dRound(dNewDiffY + nY0);
+         }
       }
+      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
+
    }
+   
    else if (nX1 > m_nXGridMax-1)
    {      
-      double 
-         dDiffX = nX1 - nX0,
-         dDiffY = nY1 - nY0,
-         dNewDiffX = nX1 - nX0;
-      
-      nX1 = m_nXGridMax-1;
-
-      if (dDiffY == 0)
-         nY1 = nY0;
-      else
+      int n = 0;
+      do
       {
-         double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
-         nY1 = dRound(dNewDiffY + nY0);
+         double 
+            dDiffX = nX1 - nX0,
+            dDiffY = nY1 - nY0,
+            dNewDiffX = nX1 - nX0;
+         
+         nX1 = m_nXGridMax-1 - n;
+         n++;
+
+         if (dDiffY == 0)
+            nY1 = nY0;
+         else if (dDiffX == 0)
+            continue;
+         else
+         {
+            double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
+            nY1 = dRound(dNewDiffY + nY0);
+         }
       }
+      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
    }
   
    if (nY1 < 0)
    {      
-      double 
-         dDiffX = nX1 - nX0,
-         dDiffY = nY1 - nY0,
-         dNewDiffY = nY1 - nY0;
-      
-      nY1 = 0;
+      int n = 0;
+      do
+      {         
+         double 
+            dDiffX = nX1 - nX0,
+            dDiffY = nY1 - nY0,
+            dNewDiffY = nY1 - nY0;
+         
+         nY1 = n;
+         n++;
 
-      if (dDiffX == 0)
-         nX1 = nX0;
-      else
-      {
-         double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
-         nX1 = dRound(dNewDiffX + nX0);
+         if (dDiffX == 0)
+            nX1 = nX0;
+         else if (dDiffY == 0)
+            continue;
+         else
+         {
+            double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
+            nX1 = dRound(dNewDiffX + nX0);
+         }
       }
+      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
    }
+   
    else if (nY1 > m_nYGridMax-1)
    {      
-      double 
-         dDiffX = nX1 - nX0,
-         dDiffY = nY1 - nY0,
-         dNewDiffY = nY1 - nY0;
-      
-      nY1 = m_nYGridMax-1;
-
-      if (dDiffX == 0)
-         nX1 = nX0;
-      else
+      int n = 0;
+      do
       {
-         double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
-         nX1 = dRound(dNewDiffX + nX0);
+         double 
+            dDiffX = nX1 - nX0,
+            dDiffY = nY1 - nY0,
+            dNewDiffY = nY1 - nY0;
+         
+         nY1 = m_nYGridMax-1 - n;
+         n++;
+
+         if (dDiffX == 0)
+            nX1 = nX0;
+         else if (dDiffY == 0)
+            continue;
+         else
+         {
+            double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
+            nX1 = dRound(dNewDiffX + nX0);
+         }
       }
+      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());      
    }
 }
 
@@ -1113,13 +1185,13 @@ bool CSimulation::bSaveAllVectorGISFiles(void)
 
    if (m_bWaveAngleSave)
    {
-      if (! bWriteVectorGIS(PLOT_WAVE_ORIENTATION_AND_HEIGHT, &PLOT_WAVE_ORIENTATION_AND_HEIGHT_TITLE))
+      if (! bWriteVectorGIS(PLOT_WAVE_AND_HEIGHT, &PLOT_WAVE_AND_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bAvgWaveAngleSave)
    {
-      if (! bWriteVectorGIS(PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT, &PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT_TITLE))
+      if (! bWriteVectorGIS(PLOT_AVG_WAVE_AND_HEIGHT, &PLOT_AVG_WAVE_AND_HEIGHT_TITLE))
          return false;
    }
 
@@ -1518,5 +1590,40 @@ void CSimulation::SetRasterFileCreationDefaults(void)
 }
 
 
+/*==============================================================================================================================
 
+ Returns the opposite diection
 
+===============================================================================================================================*/
+int CSimulation::nGetOppositeDirection(int const nDirection)
+{
+   switch (nDirection)
+   {
+      case NORTH:
+         return SOUTH;
+         
+      case NORTH_EAST:
+         return SOUTH-WEST;
+         
+      case EAST:      
+         return WEST;
+         
+      case SOUTH_EAST:
+         return NORTH-WEST;
+         
+      case SOUTH:
+         return NORTH;
+         
+      case SOUTH_WEST:
+         return NORTH-EAST;
+         
+      case WEST:
+         return EAST;
+         
+      case NORTH_WEST:
+         return SOUTH-EAST;
+   }
+  
+   // Should never get here
+   return NO_DIRECTION;
+}

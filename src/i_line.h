@@ -39,8 +39,7 @@ public:
 //    int nGetYAt(int const);
    void SetXAt(int const, int const);
    void SetYAt(int const, int const);
-//    bool bIsPresent(CGeom2DIPoint*);
-//    bool bIsPresent(int const, int const);
+   bool bIsPresent(int const, int const);
    void Display(void);
 
 };

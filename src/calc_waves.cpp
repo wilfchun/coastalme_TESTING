@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-// #include <assert.h>
+#include <assert.h>
 #include <cmath>
 #include <unistd.h>
 #include <stdio.h>
@@ -127,8 +127,8 @@ int CSimulation::nDoAllPropagateWaves(void)
          nCoastSize = m_VCoast[nCoast].nGetCoastlineSize(),
          nNumProfiles = m_VCoast[nCoast].nGetNumProfiles();
 
-      // Interpolate these wave properties for all remaining coastline points. Do this in along-coastline sequence
-      for (int n = 0; n < nNumProfiles; n++)
+      // Interpolate these wave properties for all remaining coastline points. Do this in along-coastline sequence, but do not do this for the end-of-coastline profile (which is the final one)
+      for (int n = 0; n < nNumProfiles-1; n++)
          InterpolateWavePropertiesToCoastline(nCoast, n, nNumProfiles);
 
       // Calculate wave energy at every point on the coastline
@@ -202,7 +202,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
    for (int nNextProfIndex = nProfIndex+1; nNextProfIndex < nNumProfiles; nNextProfIndex++)
    {
       nNextProfile = m_VCoast[nCoast].nGetProfileAtAlongCoastlinePosition(nNextProfIndex);
-
+      
       if (m_VCoast[nCoast].pGetProfile(nNextProfile)->bOKIncStartAndEndOfCoast())
          break;
    }
@@ -892,9 +892,9 @@ int CSimulation::nDoAllShadowZones(void)
             nEndPoints++;
       }
       
-      LogStream << m_ulTimestep << ": after shadow zone stage 3, we have " << nEndPoints << " definite shadow zones" << endl;
-      for (unsigned int nZone = 0; nZone < VnCapeX.size(); nZone++)
-         LogStream << nZone << "\t" << VnCoastPoint[nZone] << "\t" << VnCapePoint[nZone] << endl;
+//       LogStream << m_ulTimestep << ": after shadow zone stage 3, we have " << nEndPoints << " definite shadow zones" << endl;
+//       for (unsigned int nZone = 0; nZone < VnCapeX.size(); nZone++)
+//          LogStream << nZone << "\t" << VnCoastPoint[nZone] << "\t" << VnCapePoint[nZone] << endl;
 
       // The fourth stage: for non-nested shadow zones, store the boundary, flood fill the shadow zone, then change wave properties by sweeping the shadow zone and the area downdrift from the shadow zone
       for (unsigned int nZone = 0; nZone < VnCapeX.size(); nZone++)
@@ -2159,10 +2159,12 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
    int 
       nX1 = 0,
       nY1 = 0;
+      
    double 
       dXDist,
       dYDist,
       dProfileDistXY = 0;
+      
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
 
    for (int i = nProfSize-1; i >= 0; i--)

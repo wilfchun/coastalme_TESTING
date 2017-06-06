@@ -34,6 +34,7 @@ CGeomCell::CGeomCell()
    m_bCoastline(false),
    m_bEstimated(false),
    m_bShadowBoundary(false),
+   m_nEdgeCell(NO_DIRECTION),
    m_nPolygonID(INT_NODATA),
    m_nCoastlineNormal(INT_NODATA),
    m_nShadowZoneCode(NOT_IN_SHADOW_ZONE),
@@ -65,11 +66,27 @@ CGeomCell::CGeomCell()
    m_dUnconsD50(0),
    m_dInterventionHeight(0)
 {
-   m_Landform.SetLFCategory(LF_CAT_HINTERLAND);
+   m_Landform.SetLFCategory(LF_NONE);
 }
 
 CGeomCell::~CGeomCell(void)
 {
+}
+
+
+void CGeomCell::SetEdgeCell(int const nDirection)
+{
+   m_nEdgeCell = nDirection;   
+}
+
+int CGeomCell::nGetEdgeCell(void) const
+{
+   return m_nEdgeCell;
+}
+
+bool CGeomCell::bIsEdgeCell(void) const
+{
+   return (m_nEdgeCell != NO_DIRECTION);
 }
 
 
@@ -217,6 +234,7 @@ double CGeomCell::dGetLocalConsSlope(void) const
    return m_dLocalConsSlope;
 }
 
+
 //! Sets this cell's basement elevation
 void CGeomCell::SetBasementElev(double const dNewElev)
 {
@@ -228,6 +246,16 @@ double CGeomCell::dGetBasementElev(void) const
 {
    return (m_dBasementElevation);
 }
+
+//! Returns true if this cells's basement data is NODATA, is needed for irregularly-shaped DEMs
+bool CGeomCell::bBasementElevIsMissingValue(void)
+{
+   if (m_dBasementElevation == m_pGrid->pGetSim()->CSimulation::dGetMissingValue())
+      return true;
+   
+   return false;
+}
+
 
 //! Returns the depth of seawater on this cell
 double CGeomCell::dGetSeaDepth(void) const

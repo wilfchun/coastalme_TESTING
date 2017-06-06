@@ -60,29 +60,20 @@ void CGeomILine::SetYAt(int const n, int const nY)
    m_VPoints[n].SetY(nY);
 }
 
-// bool CGeomILine::bIsPresent(CGeom2DIPoint* Pt)
-// {
-//    if (find(m_VPoints.begin(), m_VPoints.end(), *Pt) != m_VPoints.end())
-//       return true;
-//
-//    return false;
-// }
 
-// bool CGeomILine::bIsPresent(int const nX, int const nY)
-// {
-//    for (int n = 0; n < static_cast<int>(m_VPoints.size()); n++)
-//    {
-//       if ((nX == m_VPoints[n].nGetX()) && (nY == m_VPoints[n].nGetY()))
-//          return true;
-//    }
-//    return false;
-// }
+bool CGeomILine::bIsPresent(int const nX, int const nY)
+{
+   for (int n = 0; n < static_cast<int>(m_VPoints.size()); n++)
+   {
+      if ((nX == m_VPoints[n].nGetX()) && (nY == m_VPoints[n].nGetY()))
+         return true;
+   }
+   return false;
+}
 
 void CGeomILine::Display(void)
 {
-   cout << endl;
    for (int n = 0; n < static_cast<int>(m_VPoints.size()); n++)
-      cout << "[" << m_VPoints[n].nGetX() << "][" << m_VPoints[n].nGetY() << "], ";
-   cout << endl;
+      cout << "[" << m_VPoints[n].nGetX() << "][" << m_VPoints[n].nGetY() << "], " << endl;
    cout.flush();
 }

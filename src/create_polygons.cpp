@@ -274,7 +274,7 @@ void CSimulation::MarkPolygonCells(void)
          // Create an empty stack
          stack<CGeom2DIPoint> PtiStack;
 
-         // Since the polygon's vector boundary does not coincide exactly with the polygon's raster boundary, and the point-in-polygon check gives an indeterminate result if the point is exectly on the polygon's boundary, for safety we must construct a vector 'inner buffer' which is smaller than, and inside, the vector boundary
+         // Since the polygon's vector boundary does not coincide exactly with the polygon's raster boundary, and the point-in-polygon check gives an indeterminate result if the point is exactly on the polygon's boundary, for safety we must construct a vector 'inner buffer' which is smaller than, and inside, the vector boundary
          int
             nHand = m_VCoast[nCoast].nGetSeaHandedness(),
             nSize = pPolygon->nGetBoundarySize();
@@ -319,6 +319,8 @@ void CSimulation::MarkPolygonCells(void)
          // We have a flood fill start point which is definitely within the polygon so push this point onto the stack
          CGeom2DIPoint PtiStart = PtiExtCRSToGrid(&PtStart);                // Grid CRS
          PtiStack.push(PtiStart);
+         
+//          LogStream << m_ulTimestep << ": filling polygon " << nPoly << " from [" << PtiStart.nGetX() << "][" << PtiStart.nGetY() << "] {" << dGridCentroidXToExtCRSX(PtiStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiStart.nGetY()) << "}" << endl;
 
          // Then do the flood fill: loop until there are no more cell co-ords on the stack
          while (! PtiStack.empty())
@@ -343,6 +345,7 @@ void CSimulation::MarkPolygonCells(void)
             {
                // Mark the cell as being in this polygon
                m_pRasterGrid->m_Cell[nX][nY].SetPolygonID(nPolyID);
+//                LogStream << "[" << nX << "][" << nY << "] {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 
                // Increment the running totals for this polygon
                nCellsInPolygon++;
@@ -353,6 +356,7 @@ void CSimulation::MarkPolygonCells(void)
                   PtiStack.push(CGeom2DIPoint(nX, nY-1));
                   bSpanAbove = true;
                }
+               
                else if (bSpanAbove && (nY > 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() != INT_NODATA))
                {
                   bSpanAbove = false;
@@ -363,6 +367,7 @@ void CSimulation::MarkPolygonCells(void)
                   PtiStack.push(CGeom2DIPoint(nX, nY+1));
                   bSpanBelow = true;
                }
+               
                else if (bSpanBelow && (nY < m_nYGridMax-1) && (m_pRasterGrid->m_Cell[nX][nY+1].nGetPolygonID() != INT_NODATA))
                {
                   bSpanBelow = false;
@@ -372,8 +377,9 @@ void CSimulation::MarkPolygonCells(void)
             }
          }
 
-         // Store the number of cells in the polygon
-         pPolygon->SetNumCells(nCellsInPolygon);
+//          // Store the number of cells in the interior of the polygon (note that this is an underestimate, it does not include cells in the polygon boundary)
+//          pPolygon->SetNumCells(nCellsInPolygon);
+//          LogStream << m_ulTimestep << ": N cells = " << nCellsInPolygon << " in polygon " << nPoly << endl;
 
          // Calculate the total volume of seawater on the polygon (m3) and store it
 //          double dSeaVolume = dTotDepth * m_dCellSide;
@@ -387,7 +393,7 @@ void CSimulation::MarkPolygonCells(void)
 
  For between-polygon potential sediment routing: find which are the adjacent polygons, and calc the length of the shared normal between this polygon and the adjacent polygons
 
- // TODO Will need to change this when coastline-normal profiles (and so polygon seaward length) is determined by depth of closure
+ // TODO Will need to change this when length of coastline-normal profiles (and so polygon seaward length) is determined by depth of closure
 
 ===============================================================================================================================*/
 void CSimulation::DoPolygonSharedBoundaries(void)
@@ -416,6 +422,35 @@ void CSimulation::DoPolygonSharedBoundaries(void)
          // Do first for the down-coast profile, then for the up-coast profile
          for (int nDirection = DIRECTION_DOWNCOAST; nDirection <= DIRECTION_UPCOAST; nDirection++)
          {
+            // Are we at the start of the coastline, leaving it by going up-coast?
+            if ((nPoly == 0) && (nDirection == DIRECTION_UPCOAST))
+            {
+               // No other polygon is adjacent to the up-coast profile of the start-of-coast polygon
+               nVUpCoastAdjacentPolygon.push_back(INT_NODATA);
+               dVUpCoastBoundaryShare.push_back(1);
+               
+               // Store in the polygon
+               pPolygon->SetUpCoastAdjacentPolygons(&nVUpCoastAdjacentPolygon);
+               pPolygon->SetUpCoastAdjacentPolygonBoundaryShares(&dVUpCoastBoundaryShare);
+               
+               continue;
+            }
+
+            // Are we at the end of the coastline, leaving it by going down-coast?
+            if ((nPoly == nNumPolygons-1) && (nDirection == DIRECTION_DOWNCOAST))
+            {
+               // No other polygon is adjacent to the down-coast profile of the end-of-coast polygon
+               nVDownCoastAdjacentPolygon.push_back(INT_NODATA);
+               dVDownCoastBoundaryShare.push_back(1);
+               
+               // Store in the polygon
+               pPolygon->SetDownCoastAdjacentPolygons(&nVDownCoastAdjacentPolygon);
+               pPolygon->SetDownCoastAdjacentPolygonBoundaryShares(&dVDownCoastBoundaryShare);
+
+               continue;
+            }
+            
+            // We are not leaving the coastline from one end or other, so there must be at least one other polygon on either side of this one
             int
                nProfile,
                nPointsInProfile;
@@ -444,39 +479,23 @@ void CSimulation::DoPolygonSharedBoundaries(void)
                // Calculate the length of this segment of the normal profile. Note that it should not be zero, since we checked for duplicate points when creating profiles
                double dDistBetween = dGetDistanceBetween(&PtStart, &PtEnd);
 
-               // OK so far: now are we at the start or end of the coastline?
-               if ((nPoly == 0) && (nDirection == DIRECTION_UPCOAST))
+               // Find out what polygons are adjacent
+               int nCoincidentProfiles = pProfile->nGetNumCoincidentProfilesInLineSegment(nPoint);
+               if (nDirection == DIRECTION_UPCOAST)
                {
-                  // No other polygon is adjacent to the up-coast profile of the start-of-coast polygon
-                  nVUpCoastAdjacentPolygon.push_back(INT_NODATA);
-               }
+                  int nAdj = nPoly - nCoincidentProfiles;
 
-               else if ((nPoly == nNumPolygons-1) && (nDirection == DIRECTION_DOWNCOAST))
-               {
-                  // No other polygon is adjacent to the down-coast profile of the end-of-coast polygon
-                  nVDownCoastAdjacentPolygon.push_back(INT_NODATA);
+                  // Safety check
+                  if (nAdj >= 0)
+                     nVUpCoastAdjacentPolygon.push_back(nAdj);
                }
-
                else
                {
-                  // We are not at the start or end of the coastline, so there is at least one other polygon on either side of this one. Find out what polygons are adjacent
-                  int nCoincidentProfiles = pProfile->nGetNumCoincidentProfilesInLineSegment(nPoint);
-                  if (nDirection == DIRECTION_UPCOAST)
-                  {
-                     int nAdj = nPoly - nCoincidentProfiles;
+                  int nAdj = nPoly + nCoincidentProfiles;
 
-                     // Safety check
-                     if (nAdj >= 0)
-                        nVUpCoastAdjacentPolygon.push_back(nAdj);
-                  }
-                  else
-                  {
-                     int nAdj = nPoly + nCoincidentProfiles;
-
-                     // Safety check
-                     if (nAdj < nNumPolygons)
-                        nVDownCoastAdjacentPolygon.push_back(nPoly + nCoincidentProfiles);
-                  }
+                  // Safety check
+                  if (nAdj < nNumPolygons)
+                     nVDownCoastAdjacentPolygon.push_back(nPoly + nCoincidentProfiles);
                }
 
                // Store the line segment data
@@ -491,7 +510,6 @@ void CSimulation::DoPolygonSharedBoundaries(void)
                   dVDownCoastBoundaryShare.push_back(dDistBetween);
                }
             }
-         }
 
 //          assert(dVUpCoastBoundaryShare.size() == nVUpCoastAdjacentPolygon.size());
 //          assert(dVDownCoastBoundaryShare.size() == nVDownCoastAdjacentPolygon.size());
@@ -519,23 +537,32 @@ void CSimulation::DoPolygonSharedBoundaries(void)
 //                LogStream << nVDownCoastAdjacentPolygon[n] << " ";
 //             LogStream << endl;
 
-         // Calculate the fraction of the total boundary shared with each adjacent polygon
-         for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
-            dVUpCoastBoundaryShare[n] /= dUpCoastTotBoundaryLen;
-         for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
-            dVDownCoastBoundaryShare[n] /= dDownCoastTotBoundaryLen;
+            // Calculate the fraction of the total boundary shared with each adjacent polygon
+            if (nDirection == DIRECTION_UPCOAST)
+            {
+               for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
+                  dVUpCoastBoundaryShare[n] /= dUpCoastTotBoundaryLen;
+               
+               // Store in the polygon
+               pPolygon->SetUpCoastAdjacentPolygons(&nVUpCoastAdjacentPolygon);
+               pPolygon->SetUpCoastAdjacentPolygonBoundaryShares(&dVUpCoastBoundaryShare);
+            }
+            else
+            {               
+               for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
+                  dVDownCoastBoundaryShare[n] /= dDownCoastTotBoundaryLen;
 
-         // Store in the polygon
-         pPolygon->SetUpCoastAdjacentPolygons(&nVUpCoastAdjacentPolygon);
-         pPolygon->SetUpCoastAdjacentPolygonBoundaryShares(&dVUpCoastBoundaryShare);
-         pPolygon->SetDownCoastAdjacentPolygons(&nVDownCoastAdjacentPolygon);
-         pPolygon->SetDownCoastAdjacentPolygonBoundaryShares(&dVDownCoastBoundaryShare);
+               // Store in the polygon
+               pPolygon->SetDownCoastAdjacentPolygons(&nVDownCoastAdjacentPolygon);
+               pPolygon->SetDownCoastAdjacentPolygonBoundaryShares(&dVDownCoastBoundaryShare);
 
-         // Finally, calculate the distance between the coast node and the antinode of the polygon
-         double dPolygonSeawardLen = dGetDistanceBetween(pPolygon->pPtiGetNode(), pPolygon->pPtiGetAntinode());
+               // Finally, calculate the distance between the coast node and the antinode of the polygon
+               double dPolygonSeawardLen = dGetDistanceBetween(pPolygon->pPtiGetNode(), pPolygon->pPtiGetAntinode());
 
-         // And store it
-         m_VCoast[nCoast].AppendPolygonLength(dPolygonSeawardLen);
+               // And store it
+               m_VCoast[nCoast].AppendPolygonLength(dPolygonSeawardLen);
+            }
+         }
       }
    }
 }

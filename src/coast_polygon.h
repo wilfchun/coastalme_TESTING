@@ -43,7 +43,7 @@ private:
       m_nNormalProfileDownCoast,          // Ditto for the down-coast direction
       m_nProfileUpCoastNumPointsUsed,     // The number of points from the up-coast normal which are part of this polygon (less than the normal's full length if the polygon is triangular)
       m_nProfileDownCoastNumPointsUsed,   // Ditto for the down-coast normal
-      m_nNumCells,                        // The number of cells in the polygon
+//       m_nNumCells,                        // The number of cells in the polygon
       m_nPointInPolygonSearchStartPoint;  // The number of the vector point from which we start the point-in-polygon search
 
    double

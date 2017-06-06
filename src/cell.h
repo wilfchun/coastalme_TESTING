@@ -45,6 +45,7 @@ private:
       m_bShadowBoundary;
 
    int
+      m_nEdgeCell,
       m_nPolygonID,
       m_nCoastlineNormal,
       m_nShadowZoneCode;
@@ -110,7 +111,11 @@ public:
    
    void SetShadowZoneBoundary(void);
    bool bIsShadowZoneBoundary(void) const;
-
+   
+   void SetEdgeCell(int const);
+   int nGetEdgeCell(void) const;
+   bool bIsEdgeCell(void) const;
+   
    void SetPolygonID(int const);
    int nGetPolygonID(void) const;
 
@@ -121,6 +126,7 @@ public:
 
    void SetBasementElev(double const);
    double dGetBasementElev(void) const;
+   bool bBasementElevIsMissingValue(void);
 
    double dGetVolEquivSedTopElev(void) const;
    double dGetSedimentTopElev(void) const;

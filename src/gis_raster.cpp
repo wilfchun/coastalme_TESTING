@@ -155,9 +155,14 @@ int CSimulation::nReadBasementDEMData(void)
    }
    
    // If present, get the missing value (NODATA) setting
-   CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails
-   m_dMissingValue = pGDALBand->GetNoDataValue();              // Will fail for some formats
+   CPLPushErrorHandler(CPLQuietErrorHandler);                        // Needed to get next line to fail silently, if it fails
+   double dMissingValue = pGDALBand->GetNoDataValue();               // Will fail for some formats
    CPLPopErrorHandler();
+   
+   if (dMissingValue != m_dMissingValue)
+   {
+      cerr << WARN << "NODATA value in " << m_strInitialBasementDEMFile << " is " << dMissingValue << ", using default NODATA value " <<  m_dMissingValue << endl;
+   }
 
    // Next allocate memory for two 2D arrays of raster cell objects: tell the user what is happening
    AnnounceAllocateMemory();
@@ -175,7 +180,6 @@ int CSimulation::nReadBasementDEMData(void)
    }
 
    // Now read in the data
-   unsigned int nMissing = 0;
    for (int j = 0; j < m_nYGridMax; j++)
    {
       // Read scanline
@@ -194,8 +198,8 @@ int CSimulation::nReadBasementDEMData(void)
          if (! bIsNumber(dTmp))
             dTmp = m_dMissingValue;
          
-         if (dTmp == m_dMissingValue)
-            nMissing++;
+         if (dTmp == dMissingValue)
+            dTmp = m_dMissingValue;
 
          m_pRasterGrid->m_Cell[i][j].SetBasementElev(dTmp);
       }
@@ -207,13 +211,105 @@ int CSimulation::nReadBasementDEMData(void)
    // Get rid of memory allocated to this array
    delete[] pfScanline;
    
-   if (nMissing > 0)
+   return RTN_OK;
+}
+
+
+/*========================================================================================================================================
+  
+ Marks edge cells
+ 
+========================================================================================================================================*/
+void CSimulation::MarkEdgeCells(void)
+{
+   // Go round in a clockwise direction: top (north) edge first 
+   int
+      nLastX,
+      nLastY;
+   for (int nX = 0; nX < m_nXGridMax; nX++)
    {
-      cerr << WARN << nMissing << " missing values in " << m_strInitialBasementDEMFile << endl;
-      LogStream << WARN << nMissing << " missing values in " << m_strInitialBasementDEMFile << endl;
+      for (int nY = 0; nY < MAX_EDGE_SEARCH_DIST; nY++)
+      {
+         if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
+         {
+            m_ulMissingValueBasementCells++;
+            continue;
+         }
+         
+         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(NORTH); 
+         
+         m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
+         m_VEdgeCellEdge.push_back(NORTH);
+         
+         nLastY = nY;
+         
+         break;
+      }
+   }
+   
+   // Right (east) edge
+   for (int nY = nLastY+1; nY < m_nYGridMax; nY++)
+   {
+      for (int nX = m_nXGridMax-1; nX >= (m_nXGridMax - MAX_EDGE_SEARCH_DIST); nX--)
+      {
+         if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
+         {
+            m_ulMissingValueBasementCells++;
+            continue;
+         }
+         
+         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(EAST);         
+         
+         m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
+         m_VEdgeCellEdge.push_back(EAST);
+         
+         nLastX = nX;
+         
+         break;
+      }      
    }
 
-   return RTN_OK;
+   // Bottom (south) edge
+   for (int nX = nLastX-1; nX >= 0; nX--)
+   {
+      for (int nY = m_nYGridMax-1; nY >= (m_nYGridMax - MAX_EDGE_SEARCH_DIST); nY--)
+      {
+         if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
+         {
+            m_ulMissingValueBasementCells++;
+            continue;
+         }
+         
+         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(SOUTH);         
+         
+         m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
+         m_VEdgeCellEdge.push_back(SOUTH);
+         
+         nLastY = nY;
+         
+         break;
+      }      
+   }
+   
+   // Left (west) edge
+   for (int nY = nLastY-1; nY >= 0; nY--)
+   {
+      for (int nX = 0; nX < MAX_EDGE_SEARCH_DIST; nX++)
+      {
+         if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
+         {
+            m_ulMissingValueBasementCells++;
+            continue;
+         }
+         
+         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(WEST);         
+         
+         m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
+         m_VEdgeCellEdge.push_back(WEST);
+         
+         break;
+      }
+   }
 }
 
 
@@ -504,28 +600,31 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       }
 
       // If present, get the missing value setting
-      double dMissingValue;
+      int nMissingValue = INT_NODATA;
+      double dMissingValue = DBL_NODATA;
       string strTmp = strToLower(&strDataType);
       if (strTmp.find("int") != string::npos)
       {
          // This is an integer layer
-         CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails                                              
-         dMissingValue = pGDALBand->GetNoDataValue();                // Note will fail for some formats
+         CPLPushErrorHandler(CPLQuietErrorHandler);                        // Needed to get next line to fail silently, if it fails                                              
+         nMissingValue = pGDALBand->GetNoDataValue();                      // Note will fail for some formats
          CPLPopErrorHandler();
          
-         m_nMissingValue = static_cast<int>(dMissingValue);          // TODO This needs to be improved
+         if (nMissingValue != m_nMissingValue)
+         {
+            cerr << WARN << "NODATA value in " << strGISFile << " is " << nMissingValue << ", using default NODATA value " <<  m_nMissingValue << endl;
+         }
       }
       else
       {
-         // This is an floating point layer
-         CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails                                              
-         dMissingValue = pGDALBand->GetNoDataValue();                // Note will fail for some formats
+         // This is a floating point layer
+         CPLPushErrorHandler(CPLQuietErrorHandler);                        // Needed to get next line to fail silently, if it fails                                              
+         dMissingValue = pGDALBand->GetNoDataValue();                      // Note will fail for some formats
          CPLPopErrorHandler();
                
          if (dMissingValue != m_dMissingValue)
          {
-            // Hmmm, we have different missing value setting in this file and in basement DEM
-            cerr << WARN << "different NODATA values in " << strGISFile << " and " << m_strInitialBasementDEMFile << endl << "   Using NODATA value " <<  m_dMissingValue << " from " << m_strInitialBasementDEMFile << endl;
+            cerr << WARN << "NODATA value in " << strGISFile << " is " << dMissingValue << ", using default NODATA value " <<  m_dMissingValue << endl;
          }
       }
 
@@ -557,29 +656,35 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             {
                case (LANDFORM_RASTER):
                {                  
-                  // Initial Landform Class GIS data TODO Do we also need a landform sub-category input?         
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bIsNumber(dTmp))
-                     dTmp = m_dMissingValue;
+                  // Initial Landform Class GIS data, is integer TODO Do we also need a landform sub-category input?         
+                  int nTmp = pfScanline[nX];       
+                  if (! bIsNumber(nTmp))              // Deal with any NaN values
+                     nTmp = m_nMissingValue;
                   
-                  if (dTmp == dMissingValue)
+                  if (nTmp == nMissingValue)
+                     nTmp = m_nMissingValue;
+                  
+                  if (nTmp == m_nMissingValue)
                      nMissing++;
                   
-                  m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFCategory(dTmp);
+                  m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFCategory(nTmp);
                   break;
                }
 
                case (INTERVENTION_CLASS_RASTER):
                {
-                  // Intervention class
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bIsNumber(dTmp))
-                     dTmp = m_dMissingValue;
+                  // Intervention class, is integer
+                  int nTmp = pfScanline[nX];       
+                  if (! bIsNumber(nTmp))              // Deal with any NaN values
+                     nTmp = m_nMissingValue;
                   
-                  if (dTmp == dMissingValue)
+                  if (nTmp == nMissingValue)
+                     nTmp = m_nMissingValue;
+
+                  if (nTmp == m_nMissingValue)
                      nMissing++;
                   
-                  m_pRasterGrid->m_Cell[nX][nY].SetInterventionClass(dTmp);
+                  m_pRasterGrid->m_Cell[nX][nY].SetInterventionClass(nTmp);
                   break;
                }
 
@@ -591,6 +696,9 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                      dTmp = m_dMissingValue;
                   
                   if (dTmp == dMissingValue)
+                     dTmp = m_dMissingValue;
+
+                  if (dTmp == m_dMissingValue)
                      nMissing++;
                   
                   m_pRasterGrid->m_Cell[nX][nY].SetInterventionHeight(dTmp);
@@ -605,6 +713,9 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                      dTmp = m_dMissingValue;
                   
                   if (dTmp == dMissingValue)
+                     dTmp = m_dMissingValue;
+
+                  if (dTmp == m_dMissingValue)
                      nMissing++;
                   
                   m_pRasterGrid->m_Cell[nX][nY].SetSuspendedSediment(dTmp);
@@ -619,6 +730,9 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                      dTmp = m_dMissingValue;
                   
                   if (dTmp == dMissingValue)
+                     dTmp = m_dMissingValue;
+
+                  if (dTmp == m_dMissingValue)
                      nMissing++;
                   
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetFine(dTmp);
@@ -633,6 +747,9 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                      dTmp = m_dMissingValue;
                   
                   if (dTmp == dMissingValue)
+                     dTmp = m_dMissingValue;
+
+                  if (dTmp == m_dMissingValue)
                      nMissing++;
                   
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetSand(dTmp);
@@ -647,6 +764,9 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                      dTmp = m_dMissingValue;
                   
                   if (dTmp == dMissingValue)
+                     dTmp = m_dMissingValue;
+
+                  if (dTmp == m_dMissingValue)
                      nMissing++;
                   
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetCoarse(dTmp);
@@ -661,6 +781,9 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                      dTmp = m_dMissingValue;
                   
                   if (dTmp == dMissingValue)
+                     dTmp = m_dMissingValue;
+
+                  if (dTmp == m_dMissingValue)
                      nMissing++;
                   
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetFine(dTmp);
@@ -675,6 +798,9 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                      dTmp = m_dMissingValue;
                   
                   if (dTmp == dMissingValue)
+                     dTmp = m_dMissingValue;
+
+                  if (dTmp == m_dMissingValue)
                      nMissing++;
                   
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetSand(dTmp);
@@ -689,6 +815,9 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                      dTmp = m_dMissingValue;
                   
                   if (dTmp == dMissingValue)
+                     dTmp = m_dMissingValue;
+
+                  if (dTmp == m_dMissingValue)
                      nMissing++;
                   
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetCoarse(dTmp);
@@ -971,8 +1100,8 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
    }
 
    // Set projection info for output dataset (will be same as was read in from DEM)
-   CPLPushErrorHandler(CPLQuietErrorHandler);                        // needed to get next line to fail silently, if it fails
-   pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());       // will fail for some formats
+   CPLPushErrorHandler(CPLQuietErrorHandler);                              // Needed to get next line to fail silently, if it fails
+   pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());        // Will fail for some formats
    CPLPopErrorHandler();
 
    // Set geotransformation info for output dataset (will be same as was read in from DEM)
@@ -1311,12 +1440,12 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
    // Calculate statistics for this band
    double dMin, dMax, dMean, dStdDev;
-   CPLPushErrorHandler(CPLQuietErrorHandler);        // needed to get next line to fail silently, if it fails
+   CPLPushErrorHandler(CPLQuietErrorHandler);        // Needed to get next line to fail silently, if it fails
    pBand->ComputeStatistics(false, &dMin, &dMax, &dMean, &dStdDev, NULL, NULL);
    CPLPopErrorHandler();
 
    // And then write the statistics
-   CPLPushErrorHandler(CPLQuietErrorHandler);        // needed to get next line to fail silently, if it fails
+   CPLPushErrorHandler(CPLQuietErrorHandler);        // Needed to get next line to fail silently, if it fails
    pBand->SetStatistics(dMin, dMax, dMean, dStdDev);
    CPLPopErrorHandler();
 
@@ -1512,7 +1641,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
       if (((dDataMin < m_lGDALMinCanWrite) || (dDataMax > m_lGDALMaxCanWrite)) && m_bScaleRasterOutput)
          bScaleOutput = true;
    }
-
+   
    // Fill the array
    int nTmp  = 0, n = 0;
    for (int nY = 0; nY < m_nYGridMax; nY++)
@@ -1557,10 +1686,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
             {
                nTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory();
 
-               if (m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
-                  nTmp = LF_CAT_SEA;
-
-               else if ((nTmp == LF_CAT_DRIFT) || (nTmp == LF_CAT_CLIFF))
+               if ((nTmp == LF_CAT_DRIFT) || (nTmp == LF_CAT_CLIFF))
                   nTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFSubCategory();
 
                break;
@@ -1951,6 +2077,7 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
 
    return RTN_OK;
 }
+
 
 /*===============================================================================================================================
 

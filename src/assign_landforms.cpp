@@ -177,7 +177,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
       }
    }
 
-   // DEBUG CODE ============================================================================
+//    // DEBUG CODE ============================================================================
 //    for (int i = 0; i < static_cast<int>(m_VCoast.size()); i++)
 //    {
 //       for (int j = 0; j < m_VCoast[i].nGetCoastlineSize(); j++)
@@ -270,7 +270,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
 //          LogStream << endl;
 //       }
 //    }  
-   // DEBUG CODE ============================================================================
+//    // DEBUG CODE ============================================================================
    
    return RTN_OK;
 }
@@ -377,16 +377,36 @@ int CSimulation::nAssignNonCoastlineLandforms(void)
    {
       for (int nY = 0; nY < m_nYGridMax; nY++)
       {
-         if ((! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()) && (! m_pRasterGrid->m_Cell[nX][nY].bIsCoastline()))
+         if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
+            continue;
+         
+         CRWCellLandform* pLandform = m_pRasterGrid->m_Cell[nX][nY].pGetLandform();
+         int nCat = pLandform->nGetLFCategory();
+         
+         if (nCat == LF_CAT_SEA)
+            // Do nothing
+            continue;
+         
+         // Ok, this is coast or inland
+         if (! m_pRasterGrid->m_Cell[nX][nY].bIsCoastline())
          {
-            // Is dry land but is not coastline
-            if (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_CLIFF)
+            // Is not coastline
+            if (nCat == LF_CAT_CLIFF)
             {
                // This was a cliff during the last timestep, but it is no longer on the coastline. So classify it as a former cliff
-               m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFSubCategory(LF_SUBCAT_CLIFF_INLAND);
+               pLandform->SetLFSubCategory(LF_SUBCAT_CLIFF_INLAND);
 
 //                LogStream << m_ulTimestep << ": FORMER CLIFF CREATED from cliff landform [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+               
+               continue;
             }
+            
+            if ((nCat == LF_CAT_DRIFT) || (nCat == LF_CAT_INTERVENTION))
+               // Do nothing
+               continue;
+
+            // It must be hinterland
+            pLandform->SetLFCategory(LF_CAT_HINTERLAND);
          }
       }
    }

@@ -149,6 +149,7 @@ CSimulation::CSimulation(void)
    m_nBeachErosionDepositionEquation               = 
    m_nWavePropagationModel                         = 0;
    
+   // NOTE May wish to make this a user-supplied value
    m_nMissingValue                                 = INT_NODATA;
    
    m_nXMinBoundingBox                              = INT_MAX;
@@ -173,7 +174,8 @@ CSimulation::CSimulation(void)
    m_ulThisTimestepNumActualBeachErosionCells          =
    m_ulThisTimestepNumBeachDepositionCells             =
    m_ulTotPotentialPlatformErosionOnProfiles           =
-   m_ulTotPotentialPlatformErosionBetweenProfiles      = 0;
+   m_ulTotPotentialPlatformErosionBetweenProfiles      = 
+   m_ulMissingValueBasementCells                       = 0;
 
    for (int i = 0; i < NRNG; i++)
       m_ulRandSeed[i]  = 0;
@@ -282,6 +284,7 @@ CSimulation::CSimulation(void)
    for (int i = 0; i < 6; i++)
       m_dGeoTransform[i] = 0;
    
+   // NOTE May wish to make this a user-supplied value
    m_dMissingValue                           = DBL_NODATA;
 
    m_ldGTotPotentialPlatformErosion          =
@@ -360,6 +363,13 @@ CSimulation::~CSimulation(void)
    if (m_pRasterGrid)
       delete m_pRasterGrid;
 }
+
+
+double CSimulation::dGetMissingValue(void) const
+{
+   return m_dMissingValue;
+}
+
 
 double CSimulation::dGetThisTimestepSWL(void) const
 {
@@ -474,6 +484,15 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    nRet = nReadBasementDEMData();
    if (nRet != RTN_OK)
       return nRet;
+   
+   // Mark edge cells
+   MarkEdgeCells();
+   
+//    // DEBUG CODE
+//    for (unsigned int n = 0; n < m_VEdgeCell.size(); n++)
+//    {
+//       LogStream << "[" << m_VEdgeCell[n].nGetX() << "][" << m_VEdgeCell[n].nGetY() << "] {" << dGridCentroidXToExtCRSX(m_VEdgeCell[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(m_VEdgeCell[n].nGetY()) << "} " << m_VEdgeCellEdge[n] << endl;
+//    }
 
    // If we are using the default cell spacing, then now that we know the size of the raster cells, we can set the size of profile spacing in m
    if (m_dCoastNormalAvgSpacing == 0)
@@ -626,7 +645,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    m_nCoastMax = COAST_LENGTH_MAX * tMax(m_nXGridMax, m_nYGridMax);                                        // Arbitrary but probably OK
    m_nCoastMin = COAST_LENGTH_MIN_X_PROF_SPACE * m_dCoastNormalAvgSpacing / m_dCellSide;                   // Ditto
    m_nCoastCurvatureInterval = tMax(dRound(m_dCoastNormalAvgSpacing / (m_dCellSide * 2)), 2.0);            // Ditto
-
+   
    // For beach erosion/deposition, conversion from immersed weight to bulk volumetric (sand and voids) transport rate (Leo Van Rijn)
    m_dInmersedToBulkVolumetric = 1 / ((m_dBeachSedimentDensity - m_dSeaWaterDensity) * (1 - m_dBeachSedimentPorosity) * m_dG);
 
@@ -711,9 +730,43 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
+//       // TEST
+//       int nNODATA = 0;
+//       int nPoly0 = 0;
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          for (int nY = 0; nY < m_nYGridMax; nY++)
+//          {
+//             int nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+//             if (nTmp == INT_NODATA)
+//                nNODATA++;
+//             if (nTmp == 0)
+//                nPoly0++;
+//          }
+//       }
+//       LogStream << "Before marking polygon cells, N cells with NODATA polygon ID = " << nNODATA << endl;
+//       LogStream << "Before marking polygon cells, N cells with zero polygon ID = " << nPoly0 << endl;
+      
       // Mark cells of the raster grid that are within each polygon, then calc the length of the shared normal between each polygon and the adjacent polygon(s)
       MarkPolygonCells();
       DoPolygonSharedBoundaries();
+
+//       // TEST
+//       nNODATA = 0;
+//       nPoly0 = 0;
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          for (int nY = 0; nY < m_nYGridMax; nY++)
+//          {
+//             int nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+//             if (nTmp == INT_NODATA)
+//                nNODATA++;
+//             if (nTmp == 0)
+//                nPoly0++;
+//          }
+//       }
+//       LogStream << "After marking polygon cells, N cells with NODATA polygon ID = " << nNODATA << endl;
+//       LogStream << "After marking polygon cells, N cells with zero polygon ID = " << nPoly0 << endl;
 
       // PropagateWind();
 
@@ -750,7 +803,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       double dFineThisTimestep = m_dThisTimestepActualFinePlatformErosion + m_dThisTimestepActualFineBeachErosion + m_dThisTimestepCliffTalusFineErosion - m_dThisTimestepActualFineSedLostBeachErosion;
       m_dThisTimestepFineSedimentToSuspension += dFineThisTimestep;
 
-      // Do some end-of-timestep update to the raster grid, also update per-timestep and running totals
+      // Do some end-of-timestep updates to the raster grid, also update per-timestep and running totals
       nRet = nUpdateGrid();
       if (nRet != RTN_OK)
          return nRet;
