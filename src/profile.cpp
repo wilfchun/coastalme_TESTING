@@ -334,26 +334,26 @@ bool CGeomProfile::bIsPointInProfile(double const dX, double const dY, int& nPoi
 // void CGeomProfile::SetCoastPolyToLeft(int const n, int const nPoly)
 // {
 //    // NOTE No check to see if n < size()
-//    m_nVCoastPolyToLeft[n] = nPoly;
+//    m_VnCoastPolyToLeft[n] = nPoly;
 // }
 
 // int CGeomProfile::nGetCoastPolyToleft(int const n)
 // {
 //    // NOTE No check to see if n < size()
-//    return m_nVCoastPolyToLeft[n];
+//    return m_VnCoastPolyToLeft[n];
 // }
 
 
 // void CGeomProfile::SetCoastPolyToRight(int const n, int const nPoly)
 // {
 //    // NOTE No check to see if n < size()
-//    m_nVCoastPolyToRight[n] = nPoly;
+//    m_VnCoastPolyToRight[n] = nPoly;
 // }
 
 // int CGeomProfile::nGetCoastPolyToRight(int const n)
 // {
 //    // NOTE No check to see if n < size()
-//    return m_nVCoastPolyToRight[n];
+//    return m_VnCoastPolyToRight[n];
 // }
 
 

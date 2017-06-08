@@ -57,8 +57,8 @@ private:
 //    vector<bool>
 //       m_bVShared;                // Is this profile point part of a multi-line?
    vector<int>
-      m_nVCoastPolyToLeft,       // The ID of the CoastPolygon to the left (looking seaward)
-      m_nVCoastPolyToRight;      // The ID of the CoastPolygon to the right (looking seaward)
+      m_VnCoastPolyToLeft,       // The ID of the CoastPolygon to the left (looking seaward)
+      m_VnCoastPolyToRight;      // The ID of the CoastPolygon to the right (looking seaward)
 
 public:
    explicit CGeomProfile(int const);

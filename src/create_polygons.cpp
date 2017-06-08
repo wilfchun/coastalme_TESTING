@@ -103,7 +103,7 @@ int CSimulation::nCreateAllPolygons(void)
 
                // Start appending points: begin at the node point, then move down-coast as far as the down-coast (this) normal
                for (int i = nNodePoint; i <= nCoastPoint; i++)
-                  PtVBoundary.push_back(*m_VCoast[nCoast].pPtGetVectorCoastlinePoint(i));
+                  PtVBoundary.push_back(*m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(i));
 
                // Use the penultimate coastline point as the start point for the point-in-polygon search later, during flood fill
                int nPointInPolygonStartPoint = PtVBoundary.size() - 2;
@@ -130,7 +130,7 @@ int CSimulation::nCreateAllPolygons(void)
                // Append the points from the remaining bit of coast, moving down-coast to finish at the node point. Note that we must include the node point here, in order to obtain a closed polygon
                for (int i = nPrevProfileCoastPoint; i <= nNodePoint; i++)
                {
-                  CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(i);
+                  CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(i);
                   if (! (PtThis == &PtVBoundary.back()))
                      PtVBoundary.push_back(PtThis);
                }

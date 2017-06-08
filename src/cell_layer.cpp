@@ -108,12 +108,12 @@ double CRWCellLayer::dGetNotchConsolidatedLost(void) const
 
 // double CRWCellLayer::dGetVolSedFraction(void) const
 // {
-//    return m_dVolSedFraction;
+//    return m_VdolSedFraction;
 // }
 
 // void CRWCellLayer::SetVolSedFraction(double const dNewVolSedFraction)
 // {
-//    m_dVolSedFraction = dNewVolSedFraction;
+//    m_VdolSedFraction = dNewVolSedFraction;
 // }
 //
 // double CRWCellLayer::dGetMechResistance(void) const

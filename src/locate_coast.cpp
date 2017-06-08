@@ -276,90 +276,35 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
       nX = nStartX,
       nY = nStartY,
       nSearchDirection = nStartSearchDirection,
-      nLastX = INT_NODATA,
-      nLastY = INT_NODATA,
-      nBeforeLastX = INT_NODATA,
-      nBeforeLastY = INT_NODATA,
-      nRoundTheLoop = 0,
-      nThisLen = 0;
+      nRoundTheLoop = 0;
+//       nThisLen = 0;
 //       nLastLen = 0,
 //       nPreLastLen = 0;
 
-   // Temporary coastline as a line of integer points (in grid coordinates)
-   CGeomILine LTempGridCRS;
+   // Temporary coastline as integer points (grid CRS)
+   CGeomILine ILTempGridCRS;
 
-   // Start at this grid-edge point and trace the rest of the coastline using the 'wall follower' rule for maze traversal, keeping next to cells flagged as sea
+   // Start at this grid-edge point and trace the rest of the coastline using the 'wall follower' rule for maze traversal, trying to keep next to cells flagged as sea
    do
    {
 //       LogStream << "Now at [" << nX << "][" << nY << "] {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;    
-//       LogStream << "LTempGridCRS is now:" << endl;
-//       for (int n = 0; n < LTempGridCRS.nGetSize(); n++)
-//          LogStream << "[" << LTempGridCRS[n].nGetX() << "][" << LTempGridCRS[n].nGetY() << "] {" << dGridCentroidXToExtCRSX(LTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(LTempGridCRS[n].nGetY()) << "}" << endl;
+//       LogStream << "ILTempGridCRS is now:" << endl;
+//       for (int n = 0; n < ILTempGridCRS.nGetSize(); n++)
+//          LogStream << "[" << ILTempGridCRS[n].nGetX() << "][" << ILTempGridCRS[n].nGetY() << "] {" << dGridCentroidXToExtCRSX(ILTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[n].nGetY()) << "}" << endl;
 //       LogStream <<  "=================" << endl;
             
-//       // First safety check: oscillation between two points
-//       if ((nX == nBeforeLastX) && (nY == nBeforeLastY))
-//       {
-//          LogStream << m_ulTimestep << ": abandoning tracing coast from start point [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} since stuck in two-step loop between [" << nX << "][" << nY << "] {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} and [" << nLastX << "][" << nLastY << "] {" << dGridCentroidXToExtCRSX(nLastX) << ", " << dGridCentroidYToExtCRSY(nLastY) << "}" << endl;
-//          
-//          return RTN_OK;
-//       }
-      
-      nBeforeLastX = nLastX;
-      nBeforeLastY = nLastY;
-      nLastX = nX;
-      nLastY = nY;
-      
-      // Second safety check
+      // Safety check
       if (++nRoundTheLoop > m_nCoastMax)
       {
-         LogStream << m_ulTimestep << ": abandoning tracing coastline from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}, exceeded maximum length (" << m_nCoastMax << ")" << endl;
+         LogStream << m_ulTimestep << ": abandoning coastline tracing from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}, exceeded maximum search length (" << m_nCoastMax << ")" << endl;
          
-         for (int n = 0; n < LTempGridCRS.nGetSize(); n++)
-            LogStream << "[" << LTempGridCRS[n].nGetX() << "][" << LTempGridCRS[n].nGetY() << "] {" << dGridCentroidXToExtCRSX(LTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(LTempGridCRS[n].nGetY()) << "}" << endl;
+         for (int n = 0; n < ILTempGridCRS.nGetSize(); n++)
+            LogStream << "[" << ILTempGridCRS[n].nGetX() << "][" << ILTempGridCRS[n].nGetY() << "] {" << dGridCentroidXToExtCRSX(ILTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[n].nGetY()) << "}" << endl;
          
          LogStream << endl;
          
          return RTN_OK;        
       }
-
-//       // Third safety check      
-//       if (LTempGridCRS.bIsPresent(nX, nY))
-//       {
-//          // Uh-oh, we are in a loop
-//          LogStream << m_ulTimestep << ": abandoning tracing coastline from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}, about to append [" << nX << "][" << nY << "] which is already present in list (size "<< nThisLen << ")" << endl;
-//          if (nThisLen > 0)
-//          {
-//             for (int n = 0; n < LTempGridCRS.nGetSize(); n++)
-//                LogStream << "[" << LTempGridCRS[n].nGetX() << "][" << LTempGridCRS[n].nGetY() << "] {" << dGridCentroidXToExtCRSX(LTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(LTempGridCRS[n].nGetY()) << "}" << endl;
-// 
-//             LogStream << endl;
-//          }
-//          
-//          return RTN_OK;
-//       }
-
-      //       // First safety device
-//       nPreLastLen = nLastLen;
-//       nLastLen = nThisLen;
-//       
-//       nThisLen = LTempGridCRS.nGetSize();
-//       if ((nRoundTheLoop > 2) && (nThisLen == nPreLastLen))
-//       {
-//          // List is not growing
-//          bSearchedTooLong = true;
-//          
-//          LogStream << m_ulTimestep << ": abandoning tracing coastline from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} since list (size " << nThisLen << ") is not growing" << endl;
-//          if (nThisLen > 0)
-//          {
-//             for (int n = 0; n < LTempGridCRS.nGetSize(); n++)
-//                LogStream << "[" << LTempGridCRS[n].nGetX() << "][" << LTempGridCRS[n].nGetY() << "] {" << dGridCentroidXToExtCRSX(LTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(LTempGridCRS[n].nGetY()) << "}" << endl;
-//          }
-//          
-//          return RTN_OK;
-//       }     
-      
-      
 
       // OK so far: so have we left the start edge?
       if (! bHasLeftStartEdge)
@@ -603,13 +548,13 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
                {
                   // It is, so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
-                  LTempGridCRS.Append(&Pti);                     
+                  ILTempGridCRS.Append(&Pti);                     
                }
                else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL)
                {   
                   // The sediment top is above SWL so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
-                  LTempGridCRS.Append(&Pti);
+                  ILTempGridCRS.Append(&Pti);
                }
             }
          }
@@ -642,13 +587,13 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
                {
                   // It is, so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
-                  LTempGridCRS.Append(&Pti);                     
+                  ILTempGridCRS.Append(&Pti);                     
                }
                else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL)
                {   
                   // The sediment top is above SWL so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
-                  LTempGridCRS.Append(&Pti);
+                  ILTempGridCRS.Append(&Pti);
                }
             }
          }
@@ -680,13 +625,13 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
                {
                   // It is, so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
-                  LTempGridCRS.Append(&Pti);                     
+                  ILTempGridCRS.Append(&Pti);                     
                }
                else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL)
                {   
                   // The sediment top is above SWL so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
-                  LTempGridCRS.Append(&Pti);
+                  ILTempGridCRS.Append(&Pti);
                }
             }
          }
@@ -711,7 +656,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    }
    while (true);
 
-   int nCoastSize = LTempGridCRS.nGetSize();
+   int nCoastSize = ILTempGridCRS.nGetSize();
    
    if (nCoastSize == 0)
    {
@@ -725,11 +670,11 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    if (nCoastSize < m_nCoastMin)
    {
       // The vector coastline is unreasonably small, so abandon it
-      LogStream << m_ulTimestep << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} to [" << LTempGridCRS[nCoastSize-1].nGetX() << "][" << LTempGridCRS[nCoastSize-1].nGetY() << "] {" << dGridCentroidXToExtCRSX(LTempGridCRS[nCoastSize-1].nGetX()) << ", " << dGridCentroidYToExtCRSY(LTempGridCRS[nCoastSize-1].nGetY()) << "} since size (" << nCoastSize << ") is less than minimum (" << m_nCoastMin << ")" << endl;
+      LogStream << m_ulTimestep << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} to [" << ILTempGridCRS[nCoastSize-1].nGetX() << "][" << ILTempGridCRS[nCoastSize-1].nGetY() << "] {" << dGridCentroidXToExtCRSX(ILTempGridCRS[nCoastSize-1].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[nCoastSize-1].nGetY()) << "} since size (" << nCoastSize << ") is less than minimum (" << m_nCoastMin << ")" << endl;
 
       // Unmark these cells
       for (int n = 0; n < nCoastSize; n++)
-         m_pRasterGrid->m_Cell[LTempGridCRS[n].nGetX()][LTempGridCRS[n].nGetY()].SetAsCoastline(false);
+         m_pRasterGrid->m_Cell[ILTempGridCRS[n].nGetX()][ILTempGridCRS[n].nGetY()].SetAsCoastline(false);
 
       return RTN_OK;
    }
@@ -737,16 +682,16 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    int 
       nEndX = nX,
       nEndY = nY,
-      nCoastEndX = LTempGridCRS[nCoastSize-1].nGetX(),
-      nCoastEndY = LTempGridCRS[nCoastSize-1].nGetY();
+      nCoastEndX = ILTempGridCRS[nCoastSize-1].nGetX(),
+      nCoastEndY = ILTempGridCRS[nCoastSize-1].nGetY();
       
    if ((nCoastEndX != nEndX) || (nCoastEndY != nEndY))
    {
-      // The grid-edge cell at nEndX, nEndY is not already at end of LTempGridCRS. But is the final cell in LTempGridCRS already at the edge of the grid?
+      // The grid-edge cell at nEndX, nEndY is not already at end of ILTempGridCRS. But is the final cell in ILTempGridCRS already at the edge of the grid?
       if (! m_pRasterGrid->m_Cell[nCoastEndX][nCoastEndY].bIsEdgeCell())
       {
-         // The final cell in LTempGridCRS is not a grid-edge cell, so add the grid-edge cell and mark the cell as coastline
-         LTempGridCRS.Append(nEndX, nEndY);
+         // The final cell in ILTempGridCRS is not a grid-edge cell, so add the grid-edge cell and mark the cell as coastline
+         ILTempGridCRS.Append(nEndX, nEndY);
          nCoastSize++;
          
          m_pRasterGrid->m_Cell[nEndX][nEndY].SetAsCoastline(true);         
@@ -758,10 +703,10 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
       nStartEdge = m_pRasterGrid->m_Cell[nStartX][nStartY].nGetEdgeCell(),
       nEndEdge = m_pRasterGrid->m_Cell[nEndX][nEndY].nGetEdgeCell();
 
-   // Next, convert the grid coordinates in LTempGridCRS (integer values stored as doubles) to external CRS coordinates (which will probably be non-integer, again stored as doubles). This is done now, so that smoothing is more effective
+   // Next, convert the grid coordinates in ILTempGridCRS (integer values stored as doubles) to external CRS coordinates (which will probably be non-integer, again stored as doubles). This is done now, so that smoothing is more effective
    CGeomLine LTempExtCRS;
    for (int j = 0; j < nCoastSize; j++)
-      LTempExtCRS.Append(dGridCentroidXToExtCRSX(LTempGridCRS[j].nGetX()), dGridCentroidYToExtCRSY(LTempGridCRS[j].nGetY()));
+      LTempExtCRS.Append(dGridCentroidXToExtCRSX(ILTempGridCRS[j].nGetX()), dGridCentroidYToExtCRSY(ILTempGridCRS[j].nGetY()));
 
    // Now do some smoothing of the vector output, if desired
    if (m_nCoastSmooth == SMOOTH_RUNNING_MEAN)
@@ -773,23 +718,30 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    CRWCoast CoastTmp;
    m_VCoast.push_back(CoastTmp);
    int nCoast = m_VCoast.size()-1;
+   
+   // Set the coastline (Ext CRS)
+   m_VCoast[nCoast].SetCoastlineExtCRS(&LTempExtCRS);
+   
+   // Set the coastline (Grid CRS)
+   m_VCoast[nCoast].SetCoastlineGridCRS(&ILTempGridCRS);
+   
 
-   CGeom2DPoint PtLast(DBL_MIN, DBL_MIN);
-   for (int j = 0; j < nCoastSize; j++)
-   {
-      // Store the smoothed points (in external CRS) in the coast's m_LCoastline object, also append dummy values to the other attribute vectors
-      if (PtLast != &LTempExtCRS[j])        // Avoid duplicate points
-      {
-         m_VCoast[nCoast].AppendToCoastline(LTempExtCRS[j].dGetX(), LTempExtCRS[j].dGetY());
+//    CGeom2DPoint PtLast(DBL_MIN, DBL_MIN);
+//    for (int j = 0; j < nCoastSize; j++)
+//    {
+//       // Store the smoothed points (in external CRS) in the coast's m_LCoastlineExtCRS object, also append dummy values to the other attribute vectors
+//       if (PtLast != &LTempExtCRS[j])        // Avoid duplicate points
+//       {
+//          m_VCoast[nCoast].AppendPointToCoastlineExtCRS(LTempExtCRS[j].dGetX(), LTempExtCRS[j].dGetY());
+// 
+//          // Also store the locations of the corresponding unsmoothed points (in raster-grid CRS) in the coast's m_ILCellsMarkedAsCoastline vector
+//          m_VCoast[nCoast].AppendCellMarkedAsCoastline(&ILTempGridCRS[j]);
+//       }
+// 
+//       PtLast = LTempExtCRS[j];
+//    }
 
-         // Also store the locations of the corresponding unsmoothed points (in raster-grid CRS) in the coast's m_VCellsMarkedAsCoastline vector
-         m_VCoast[nCoast].AppendCellMarkedAsCoastline(&LTempGridCRS[j]);
-      }
-
-      PtLast = LTempExtCRS[j];
-   }
-
-   // Next, set values for the coast's other attributes. First set the coast's handedness, and start and end edges
+   // Set values for the coast's other attributes: set the coast's handedness, and start and end edges
    m_VCoast[nCoast].SetSeaHandedness(nHandedness);
    m_VCoast[nCoast].SetStartEdge(nStartEdge);
    m_VCoast[nCoast].SetEndEdge(nEndEdge);

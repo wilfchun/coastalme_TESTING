@@ -610,7 +610,7 @@ private:
    static CGeom2DIPoint PtiAverage(CGeom2DIPoint const*, CGeom2DIPoint const*);
    static CGeom2DIPoint PtiWeightedAverage(CGeom2DIPoint const*, CGeom2DIPoint const*, double const);
    static double dAngleSubtended(CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
-   int nGetOppositeDirection(int const);
+   static int nGetOppositeDirection(int const);
 
    // Utility routines
    static void AnnounceStart(void);
@@ -676,7 +676,7 @@ private:
    static double dCrossProduct(double const, double const, double const, double const, double const, double const);
    static double dGetMean(vector<double> const*);
    static double dGetStdDev(vector<double> const*);
-   void AppendEnsureNoGap(vector<CGeom2DIPoint>*, int const, int const);
+   static void AppendEnsureNoGap(vector<CGeom2DIPoint>*, CGeom2DIPoint const*);
 
    // Random number stuff
    static unsigned long ulGetTausworthe(unsigned long const, unsigned long const, unsigned long const, unsigned long const, unsigned long const);

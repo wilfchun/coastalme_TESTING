@@ -327,8 +327,8 @@ void CSimulation::CalcCoastTangents(int const nCoast)
       if (nCoastPoint == 0)
       {
          // For the point at the start of the coastline: use the straight line from 'this' point to the next point
-         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nCoastPoint);              // In external CRS
-         CGeom2DPoint PtAfter = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nCoastPoint+1);           // In external CRS
+         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nCoastPoint);              // In external CRS
+         CGeom2DPoint PtAfter = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nCoastPoint+1);           // In external CRS
 
          dXDiff = PtAfter.dGetX() - PtThis.dGetX();
          dYDiff = PtAfter.dGetY() - PtThis.dGetY();
@@ -336,8 +336,8 @@ void CSimulation::CalcCoastTangents(int const nCoast)
       else if (nCoastPoint == nCoastSize-1)
       {
          // For the point at the end of the coastline: use the straight line from the point before to 'this' point
-         CGeom2DPoint PtBefore = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nCoastPoint-1);          // In external CRS
-         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nCoastPoint);              // In external CRS
+         CGeom2DPoint PtBefore = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nCoastPoint-1);          // In external CRS
+         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nCoastPoint);              // In external CRS
 
          dXDiff = PtThis.dGetX() - PtBefore.dGetX();
          dYDiff = PtThis.dGetY() - PtBefore.dGetY();
@@ -345,8 +345,8 @@ void CSimulation::CalcCoastTangents(int const nCoast)
       else
       {
          // For coastline points not at the start or end of the coast: start with a straight line which links the coastline points before and after 'this' coastline point
-         CGeom2DPoint PtBefore = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nCoastPoint-1);           // In external CRS
-         CGeom2DPoint PtAfter = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nCoastPoint+1);            // In external CRS
+         CGeom2DPoint PtBefore = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nCoastPoint-1);           // In external CRS
+         CGeom2DPoint PtAfter = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nCoastPoint+1);            // In external CRS
 
          dXDiff = PtAfter.dGetX() - PtBefore.dGetX();
          dYDiff = PtAfter.dGetY() - PtBefore.dGetY();
@@ -606,8 +606,8 @@ int CSimulation::nDoAllShadowZones(void)
       vector<int> VnCoastPoint(VnCapeX.size(), INT_NODATA);
       vector<int> VnEndX(VnCapeX.size(), INT_NODATA);
       vector<int> VnEndY(VnCapeX.size(), INT_NODATA);
-      CGeomILine LiTmp;
-      vector<CGeomILine> VILiBoundary(VnCapeX.size(), LiTmp);
+      CGeomILine ILTmp;
+      vector<CGeomILine> VILBoundary(VnCapeX.size(), ILTmp);
       for (unsigned int nZone = 0; nZone < VnCapeX.size(); nZone++)
       {         
          // Work along the cells which are 'under' this shadow zone line, and see if we hit a coast cell; stop at the edge of the grid. Interpolate between cells by a simple DDA line algorithm, see http://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm) Note that Bresenham's algorithm gave occasional gaps
@@ -623,7 +623,7 @@ int CSimulation::nDoAllShadowZones(void)
             dX = VnCapeX[nZone] + dXInc,
             dY = VnCapeY[nZone] + dYInc;
             
-         CGeomILine ILiShadowBoundary;   
+         CGeomILine ILShadowBoundary;   
          
          // Process each interpolated point
          bool bHaveLeftCoast = false;
@@ -649,10 +649,10 @@ int CSimulation::nDoAllShadowZones(void)
                   if (nSinceHitSea > SHADOW_LINE_MIN_SINCE_HIT_SEA)
                   {
                      // We are clear of the cape point, but is the in-sea portion of the shadow zone line trivially short?
-                     int nShadowBoundarySize = ILiShadowBoundary.nGetSize();
+                     int nShadowBoundarySize = ILShadowBoundary.nGetSize();
                      CGeom2DIPoint 
                         PtiCape(VnCapeX[nZone], VnCapeY[nZone]),
-                        PtiGridEdge = ILiShadowBoundary[nShadowBoundarySize-1];
+                        PtiGridEdge = ILShadowBoundary[nShadowBoundarySize-1];
                      double dDistance = dGetDistanceBetween(&PtiHitSea, &PtiGridEdge) * m_dCellSide; 
                      
                      if (dDistance < MIN_SEA_LENGTH_OF_SHADOW_ZONE_LINE)
@@ -666,7 +666,7 @@ int CSimulation::nDoAllShadowZones(void)
                      // We've found a grid-edge shadow zone
                      VnEndX[nZone] = PtiGridEdge.nGetX();
                      VnEndY[nZone] = PtiGridEdge.nGetY();
-                     VILiBoundary[nZone] = ILiShadowBoundary;
+                     VILBoundary[nZone] = ILShadowBoundary;
                      
                      // There is no coastline index for the end point, so we have to calculate a kind of 'virtual' coastline index for use in the next stage
                      int nCoastSize = m_VCoast[nCoast].nGetCoastlineSize();
@@ -745,7 +745,7 @@ int CSimulation::nDoAllShadowZones(void)
             
 //             LogStream << m_ulTimestep << ": nZone = " << nZone << " nLen = " << nLen << ", stage 2 searching for shadow zone intersection at [" << nX << "][" << nY << "] {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} from cape at [" << VnCapeX[nZone] << "][" << VnCapeY[nZone] << "] {" << dGridCentroidXToExtCRSX(VnCapeX[nZone]) << ", " << dGridCentroidYToExtCRSY(VnCapeY[nZone]) << "}" << endl;      
 
-            ILiShadowBoundary.Append(nX, nY);
+            ILShadowBoundary.Append(nX, nY);
             
             if (! bHaveLeftCoast)
                nInland++;
@@ -802,7 +802,7 @@ int CSimulation::nDoAllShadowZones(void)
                      // We've found a shadow zone
                      VnEndX[nZone] = nCoastX;
                      VnEndY[nZone] = nCoastY;
-                     VILiBoundary[nZone] = ILiShadowBoundary;
+                     VILBoundary[nZone] = ILShadowBoundary;
                      
                      // Get the coastline index of the end point
                      CGeom2DIPoint PtiEnd(nCoastX, nCoastY);
@@ -910,12 +910,12 @@ int CSimulation::nDoAllShadowZones(void)
             m_VCoast[nCoast].AppendShadowZoneBoundary(CGeomLine(&PtCoast, &PtCape));
             
             // Mark the cells as shadow zone boundary
-            int nShadowLineLen = VILiBoundary[nZone].nGetSize();
+            int nShadowLineLen = VILBoundary[nZone].nGetSize();
             for (int nn = 0; nn < nShadowLineLen; nn++)
             {
                int 
-                  nTmpX = VILiBoundary[nZone][nn].nGetX(),
-                  nTmpY = VILiBoundary[nZone][nn].nGetY();                        
+                  nTmpX = VILBoundary[nZone][nn].nGetX(),
+                  nTmpY = VILBoundary[nZone][nn].nGetY();                        
                m_pRasterGrid->m_Cell[nTmpX][nTmpY].SetShadowZoneBoundary();
                
                // If this is a sea cell, mark the shadow zone boundary cell as being in the shadow zone, but not yet processed

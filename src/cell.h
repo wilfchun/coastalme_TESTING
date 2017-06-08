@@ -126,7 +126,7 @@ public:
 
    void SetBasementElev(double const);
    double dGetBasementElev(void) const;
-   bool bBasementElevIsMissingValue(void);
+   bool bBasementElevIsMissingValue(void) const;
 
    double dGetVolEquivSedTopElev(void) const;
    double dGetSedimentTopElev(void) const;

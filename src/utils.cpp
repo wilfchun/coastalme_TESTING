@@ -2305,9 +2305,11 @@ double CSimulation::dGetStdDev(vector<double> const* pV)
  Appends a CGeom2DIPoint to a vector<CGeom2DIPoint>, making sure that the new end point touches the previous end point i.e. that there is no gap between the two points
 
 ==============================================================================================================================*/
-void CSimulation::AppendEnsureNoGap(vector<CGeom2DIPoint>* pVPtiPoints, int const nX, int const nY)
+void CSimulation::AppendEnsureNoGap(vector<CGeom2DIPoint>* pVPtiPoints, CGeom2DIPoint const* pPti)
 {
    int
+      nX = pPti->nGetX(),
+      nY = pPti->nGetY(),      
       nXLast = pVPtiPoints->back().nGetX(),
       nYLast = pVPtiPoints->back().nGetY(),
       nXDiff = nX - nXLast,   

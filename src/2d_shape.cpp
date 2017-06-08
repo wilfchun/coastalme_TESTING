@@ -54,9 +54,9 @@ void CA2DShape::Resize(int const nSize)
 //    m_VPoints.insert(m_VPoints.begin(), CGeom2DPoint(dX, dY));
 // }
 
-void CA2DShape::Append(CGeom2DPoint const* PtNew)
+void CA2DShape::Append(CGeom2DPoint const* pPtNew)
 {
-   m_VPoints.push_back(*PtNew);
+   m_VPoints.push_back(*pPtNew);
 }
 
 void CA2DShape::Append(double const dX, double const dY)

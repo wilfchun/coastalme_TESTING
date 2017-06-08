@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-// #include <assert.h>
+#include <assert.h>
 #include <cmath>
 
 #include <iostream>
@@ -254,7 +254,7 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile, in
          nInterventionProfilesCreated++;
          
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
-         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nThisCapePoint);
+         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
          LogStream << m_ulTimestep << ": intervention cape profile " << nProfile << " created at coastline point " << nThisCapePoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;                     
          
          // Mark points on either side of it
@@ -307,7 +307,7 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
          nCapeProfilesCreated++;
          
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
-         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nThisCapePoint);
+         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
          LogStream << m_ulTimestep << ": natural cape profile " << nProfile << " created at coastline point " << nThisCapePoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;                     
          
          // Mark points on either side of it
@@ -535,721 +535,130 @@ int CSimulation::nCreateNormalProfile(int const nCoast, int const nProfileStartP
 ===============================================================================================================================*/
 int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast, int& nProfile)
 {
-   bool bCutShort = false;
    int
       nCoastSize = m_VCoast[nCoast].nGetCoastlineSize(),
       nHandedness = m_VCoast[nCoast].nGetSeaHandedness(),
-      nProfileLen = dRound(m_dCoastNormalLength / m_dCellSide);         // Profile length in grid CRS
-   CGeom2DPoint  PtProfileStart;                // In external CRS
+      nProfileLen = dRound(m_dCoastNormalLength / m_dCellSide),         // Profile length in grid CRS
+      nProfileStartEdge;
+      
+   CGeom2DIPoint PtiProfileStart;               // In grid CRS
    CGeomProfile* pProfile = NULL;
    vector<CGeom2DIPoint> VPtiNormalPoints;      // In grid CRS
 
    if (bCoastStart)
    {
       // At start of coast
-      int
-         nXProfileStart = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(0)->nGetX(),
-         nYProfileStart = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(0)->nGetY();
-         
-      PtProfileStart.SetX(dGridCentroidXToExtCRSX(nXProfileStart));
-      PtProfileStart.SetY(dGridCentroidYToExtCRSY(nYProfileStart));      
-         
-      int nStartEdge = m_VCoast[nCoast].nGetStartEdge();      
-      VPtiNormalPoints.push_back(*m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(0));
-      
-      int 
-         nX = nXProfileStart,
-         nY = nYProfileStart;
-      
-      // Now construct the edge profile, searching for edge cells
-      for (int n = 0; n < nProfileLen; n++)
-      {
-         bool bFound = false;
-         
-         if (nStartEdge == WEST)
-         {            
-            if (nHandedness == LEFT_HANDED)
-            {
-               nY--;
-               
-               if (nY < 0)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nXTmp = 0; nXTmp < MAX_EDGE_SEARCH_DIST; nXTmp++)
-                     {
-                        if (m_pRasterGrid->m_Cell[nXTmp][nY].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nXTmp, nY);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nXTmp, nY));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }               
-            else        // nHandedness == RIGHT_HANDED
-            {
-               nY++;
-               
-               if (nY == m_nYGridMax)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nXTmp = 0; nXTmp < MAX_EDGE_SEARCH_DIST; nXTmp++)
-                     {
-                        if (m_pRasterGrid->m_Cell[nXTmp][nY].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nXTmp, nY);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nXTmp, nY));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }                           
-         }
-         else if (nStartEdge == EAST)
-         {            
-            if (nHandedness == LEFT_HANDED)
-            {
-               nY++;
-               
-               if (nY == m_nYGridMax)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nXTmp = m_nXGridMax-1; nXTmp >= (m_nXGridMax - MAX_EDGE_SEARCH_DIST); nXTmp--)
-                     {
-                        if (m_pRasterGrid->m_Cell[nXTmp][nY].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nXTmp, nY);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nXTmp, nY));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }               
-            else        // nHandedness == RIGHT_HANDED
-            {
-               nY--;
-               
-               if (nY < 0)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nXTmp = m_nXGridMax-1; nXTmp >= (m_nXGridMax - MAX_EDGE_SEARCH_DIST); nXTmp--)
-                     {
-                        if (m_pRasterGrid->m_Cell[nXTmp][nY].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nXTmp, nY);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nXTmp, nY));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-         else if (nStartEdge == NORTH)
-         {            
-            if (nHandedness == LEFT_HANDED)
-            {
-               nX++;
-               
-               if (nX == m_nXGridMax)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nYTmp = 0; nYTmp < MAX_EDGE_SEARCH_DIST; nYTmp++)
-                     {
-                        if (m_pRasterGrid->m_Cell[nX][nYTmp].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nX, nYTmp);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nYTmp));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }               
-            else        // nHandedness == RIGHT_HANDED
-            {
-               nX--;
-               
-               if (nX < 0)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nYTmp = 0; nYTmp < MAX_EDGE_SEARCH_DIST; nYTmp++)
-                     {
-                        if (m_pRasterGrid->m_Cell[nX][nYTmp].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nX, nYTmp);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nYTmp));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }                           
-         }
-         else if (nStartEdge == SOUTH)
-         {            
-            if (nHandedness == LEFT_HANDED)
-            {
-               nX--;
-               
-               if (nX < 0)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nYTmp = m_nYGridMax-1; nYTmp >= (m_nYGridMax - MAX_EDGE_SEARCH_DIST); nYTmp--)
-                     {
-                        if (m_pRasterGrid->m_Cell[nX][nYTmp].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nX, nYTmp);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nYTmp));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }               
-            else        // nHandedness == RIGHT_HANDED
-            {
-               nX++;
-               
-               if (nX == m_nXGridMax)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nYTmp = m_nYGridMax-1; nYTmp >= (m_nYGridMax - MAX_EDGE_SEARCH_DIST); nYTmp--)
-                     {
-                        if (m_pRasterGrid->m_Cell[nX][nYTmp].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nX, nYTmp);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nYTmp));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-         
-         if (bCutShort)
-            break;
-
-         if (! bFound)
-         {
-            // We did not find an edge cell this iteration
-//             LogStream << m_ulTimestep << ": " << WARN << "could not find an edge cell near [" << nX << "][" << nY << "] {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} after " << n << " iterations, for the start-of-coast profile from [" << nXProfileStart << "][" << nYProfileStart << "] {" << dGridCentroidXToExtCRSX(nXProfileStart) << ", " << dGridCentroidYToExtCRSY(nYProfileStart) << "}" << endl;
-            
-            break;
-            
-//             return RTN_ERR_COAST_CANT_FIND_EDGE_CELL;
-         }
-      }
-
-      // Create the new start-of-coast profile
-      m_VCoast[nCoast].AppendProfile(0, ++nProfile);
+      PtiProfileStart = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(0);                // Grid CRS
+      nProfileStartEdge = m_VCoast[nCoast].nGetStartEdge();
    }
    else
    {
       // At end of coast
-      int
-         nXProfileStart = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nCoastSize-1)->nGetX(),
-         nYProfileStart = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nCoastSize-1)->nGetY();
-         
-      PtProfileStart.SetX(dGridCentroidXToExtCRSX(nXProfileStart));
-      PtProfileStart.SetY(dGridCentroidYToExtCRSY(nYProfileStart));      
-         
-      int nEndEdge = m_VCoast[nCoast].nGetEndEdge();
-      VPtiNormalPoints.push_back(*m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nCoastSize-1));
+      PtiProfileStart = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nCoastSize-1);     // Grid CRS
+      nProfileStartEdge = m_VCoast[nCoast].nGetEndEdge();
+   }
       
-      int 
-         nX = nXProfileStart,
-         nY = nYProfileStart;
+   VPtiNormalPoints.push_back(PtiProfileStart);
       
-      // Now construct the edge profile, searching for edge cells
-      for (int n = 0; n < nProfileLen; n++)
+   // Find the start cell in the list of edge cells
+   vector<CGeom2DIPoint>::iterator it = std::find(m_VEdgeCell.begin(), m_VEdgeCell.end(), PtiProfileStart);
+   if (it == m_VEdgeCell.end())
+   {
+      // Not found
+      LogStream << m_ulTimestep << ": " << ERR << " when constructing start-of-coast profile, [" <<  PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] not found in list of edge cells" << endl;
+      
+      return RTN_ERR_COAST_CANT_FIND_EDGE_CELL;
+   }
+      
+   // Found
+   int nPos = it - m_VEdgeCell.begin();
+   
+   // Now construct the edge profile, searching for edge cells
+   for (int n = 0; n < nProfileLen; n++)
+   {
+      if (bCoastStart)
       {
-         bool bFound = false;
-         
-         if (nEndEdge == WEST)
-         {            
-            if (nHandedness == LEFT_HANDED)
-            {
-               nY++;
-               
-               if (nY == m_nYGridMax)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nXTmp = 0; nXTmp < MAX_EDGE_SEARCH_DIST; nXTmp++)
-                     {
-                        if (m_pRasterGrid->m_Cell[nXTmp][nY].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nXTmp, nY);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nXTmp, nY));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }               
-            else        // nHandedness == RIGHT_HANDED
-            {
-               nY--;
-               
-               if (nY < 0)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nXTmp = 0; nXTmp < MAX_EDGE_SEARCH_DIST; nXTmp++)
-                     {
-                        if (m_pRasterGrid->m_Cell[nXTmp][nY].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nXTmp, nY);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nXTmp, nY));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }                           
-         }
-         else if (nEndEdge == EAST)
-         {            
-            if (nHandedness == LEFT_HANDED)
-            {
-               nY--;
-               
-               if (nY < 0)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nXTmp = m_nXGridMax-1; nXTmp >= (m_nXGridMax - MAX_EDGE_SEARCH_DIST); nXTmp--)
-                     {
-                        if (m_pRasterGrid->m_Cell[nXTmp][nY].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nXTmp, nY);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nXTmp, nY));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }               
-            else        // nHandedness == RIGHT_HANDED
-            {
-               nY++;
-               
-               if (nY == m_nYGridMax)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nXTmp = m_nXGridMax-1; nXTmp >= (m_nXGridMax - MAX_EDGE_SEARCH_DIST); nXTmp--)
-                     {
-                        if (m_pRasterGrid->m_Cell[nXTmp][nY].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nXTmp, nY);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nXTmp, nY));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-         else if (nEndEdge == NORTH)
-         {            
-            if (nHandedness == LEFT_HANDED)
-            {
-               nX--;
-               
-               if (nX < 0)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nYTmp = 0; nYTmp < MAX_EDGE_SEARCH_DIST; nYTmp++)
-                     {
-                        if (m_pRasterGrid->m_Cell[nX][nYTmp].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nX, nYTmp);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nYTmp));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }               
-            else        // nHandedness == RIGHT_HANDED
-            {
-               nX++;
-               
-               if (nX == m_nXGridMax)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nYTmp = 0; nYTmp < MAX_EDGE_SEARCH_DIST; nYTmp++)
-                     {
-                        if (m_pRasterGrid->m_Cell[nX][nYTmp].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nX, nYTmp);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nYTmp));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }                           
-         }
-         else if (nEndEdge == SOUTH)
-         {            
-            if (nHandedness == LEFT_HANDED)
-            {
-               nX++;
-               
-               if (nX == m_nXGridMax)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nYTmp = m_nYGridMax-1; nYTmp >= (m_nYGridMax - MAX_EDGE_SEARCH_DIST); nYTmp--)
-                     {
-                        if (m_pRasterGrid->m_Cell[nX][nYTmp].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nX, nYTmp);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nYTmp));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }               
-            else        // nHandedness == RIGHT_HANDED
-            {
-               nX--;
-               
-               if (nX < 0)
-               {
-                  // We have hit the edge of the grid but the profile is still not long enough. OK, we can live with this
-                  bCutShort = true;
-                  break;                  
-               }
-               else
-               {
-                  if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
-                  {
-                     // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                     AppendEnsureNoGap(&VPtiNormalPoints, nX, nY);
-//                      VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nY));
-                     bFound = true;
-                  }
-                  else
-                  {
-                     // Search for the edge cell
-                     for (int nYTmp = m_nYGridMax-1; nYTmp >= (m_nYGridMax - MAX_EDGE_SEARCH_DIST); nYTmp--)
-                     {
-                        if (m_pRasterGrid->m_Cell[nX][nYTmp].bIsEdgeCell())
-                        {
-                           // We have found a grid-edge cell, so append this making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
-                           AppendEnsureNoGap(&VPtiNormalPoints, nX, nYTmp);
-//                            VPtiNormalPoints.push_back(CGeom2DIPoint(nX, nYTmp));
-                           bFound = true;
-                           
-                           break;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-
-         if (bCutShort)
-            break;
-
-         if (! bFound)
+         // At start of coast
+         if (nHandedness == LEFT_HANDED)
          {
-            // We did not find an edge cell this iteration
-//             LogStream << m_ulTimestep << ": " << WARN << "could not find an edge cell near [" << nX << "][" << nY << "] {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} after " << n << " iterations, for the end-of-coast profile from [" << nXProfileStart << "][" << nYProfileStart << "] {" << dGridCentroidXToExtCRSX(nXProfileStart) << ", " << dGridCentroidYToExtCRSY(nYProfileStart) << "}" << endl;
+            // The list of edge cells is in clockwise sequence, go in this direction
+            nPos++;
             
-            break;
+            if (nPos >= static_cast<int>(m_VEdgeCell.size()))
+            {
+               // We've reached the end of the list of edge cells before the profile is long enough. OK, we can live with this
+               break;
+            }
+         }
+         else     // Right-handed
+         {
+            // The list of edge cells is in clockwise sequence, go in the opposite direction
+            nPos--;
             
-//             return RTN_ERR_COAST_CANT_FIND_EDGE_CELL;
+            if (nPos < 0)
+            {
+               // We've reached the beginning of the list of edge cells before the profile is long enough. OK, we can live with this
+               break;
+            }
          }
       }
-
-      // Create the new end-of-coast profile
-      m_VCoast[nCoast].AppendProfile(nCoastSize-1, ++nProfile);
+      else
+      {
+         // At end of coast
+         if (nHandedness == LEFT_HANDED)
+         {
+            // The list of edge cells is in clockwise sequence, go in the opposite direction
+            nPos--;
+            
+            if (nPos < 0)
+            {
+               // We've reached the beginning of the list of edge cells before the profile is long enough. OK, we can live with this
+               break;
+            }
+         }
+         else     // Right-handed
+         {
+            // The list of edge cells is in clockwise sequence, go in this direction
+            nPos++;
+            
+            if (nPos >= static_cast<int>(m_VEdgeCell.size()))
+            {
+               // We've reached the end of the list of edge cells before the profile is long enough. OK, we can live with this
+               break;
+            }
+         }
+      }
+         
+      if (m_VEdgeCellEdge[nPos] != nProfileStartEdge)
+      {
+         // We've reached the end of a grid side before the profile is long enough. OK, we can live with this
+         break;                  
+      }
+      
+      // Append this grid-edge cell, making sure that there is no gap between this and the previously-appended cell (if there is, will get problems with flood fill)
+      AppendEnsureNoGap(&VPtiNormalPoints, &m_VEdgeCell[nPos]);
    }
-   
-   pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
-   
+
+   // Create the new start-of-coast profile
    if (bCoastStart)
+   {
+      // Start of coast
+      m_VCoast[nCoast].AppendProfile(0, ++nProfile);
+      pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
+      
       // Mark this as a start-of-coast profile
-      pProfile->SetStartOfCoast(true);         
+      pProfile->SetStartOfCoast(true);               
+   }
    else
+   {
+      // End of coast
+      m_VCoast[nCoast].AppendProfile(nCoastSize-1, ++nProfile);
+      pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
+
       // Mark this as an end-of-coast profile
       pProfile->SetEndOfCoast(true);         
-   
+   }
+
    for (unsigned int n = 0; n < VPtiNormalPoints.size(); n++)
    {
       int
@@ -1276,7 +685,7 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    pProfile->AppendLineSegment();
    pProfile->AppendCoincidentProfileToLineSegments(make_pair(nProfile, 0));
 
-   LogStream << setiosflags(ios::fixed) << m_ulTimestep << ": coastline " << (bCoastStart? "START" : "END") << " profile " << nProfile << " created, from [" << PtProfileStart.dGetX() << "][" << PtProfileStart.dGetY() << "] to [" << VPtiNormalPoints.back().nGetX() << "][" << VPtiNormalPoints.back().nGetY() << "]" << endl;
+   LogStream << setiosflags(ios::fixed) << m_ulTimestep << ": coastline " << (bCoastStart? "START" : "END") << " profile " << nProfile << " created, from [" << PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] to [" << VPtiNormalPoints.back().nGetX() << "][" << VPtiNormalPoints.back().nGetY() << "]" << endl;
    
    return RTN_OK;
 }
@@ -1295,8 +704,8 @@ int CSimulation::nGetCoastNormalEndPoint(int const nCoast, int const nStartCoast
       nCoastPointAfter = tMin(nStartCoastPoint+1, nCoastSize-1);
 
    // Get the y = a * x + b equation of the straight line linking the coastline points before and after 'this' coastline point
-   CGeom2DPoint PtBefore = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nCoastPointBefore);           // PtBefore has coordinates in external CRS
-   CGeom2DPoint PtAfter = *m_VCoast[nCoast].pPtGetVectorCoastlinePoint(nCoastPointAfter);             // PtAfter has coordinates in external CRS
+   CGeom2DPoint PtBefore = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nCoastPointBefore);           // PtBefore has coordinates in external CRS
+   CGeom2DPoint PtAfter = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nCoastPointAfter);             // PtAfter has coordinates in external CRS
 
    // For this linking line, slope a = (y2 - y1) / (x2 - x1)
    double 

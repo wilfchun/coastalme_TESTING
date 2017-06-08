@@ -291,59 +291,59 @@ double CGeomCoastPolygon::dGetDeltaActualTotalSediment(void) const
 
 void CGeomCoastPolygon::SetUpCoastAdjacentPolygons(vector<int> const* pnVPolygons)
 {
-   m_nVUpCoastAdjacentPolygon = *pnVPolygons;
+   m_VnUpCoastAdjacentPolygon = *pnVPolygons;
 }
 
 int CGeomCoastPolygon::nGetUpCoastAdjacentPolygon(int const nIndex) const
 {
-//    assert(nIndex < m_nVUpCoastAdjacentPolygon.size());
-   return m_nVUpCoastAdjacentPolygon[nIndex];
+//    assert(nIndex < m_VnUpCoastAdjacentPolygon.size());
+   return m_VnUpCoastAdjacentPolygon[nIndex];
 }
 
 int CGeomCoastPolygon::nGetNumUpCoastAdjacentPolygons(void) const
 {
-   return m_nVUpCoastAdjacentPolygon.size();
+   return m_VnUpCoastAdjacentPolygon.size();
 }
 
 
 void CGeomCoastPolygon::SetDownCoastAdjacentPolygons(vector<int> const* pnVPolygons)
 {
-   m_nVDownCoastAdjacentPolygon = *pnVPolygons;
+   m_VnDownCoastAdjacentPolygon = *pnVPolygons;
 }
 
 int CGeomCoastPolygon::nGetDownCoastAdjacentPolygon(int const nIndex) const
 {
-//    assert(nIndex < m_nVDownCoastAdjacentPolygon.size());
-   return m_nVDownCoastAdjacentPolygon[nIndex];
+//    assert(nIndex < m_VnDownCoastAdjacentPolygon.size());
+   return m_VnDownCoastAdjacentPolygon[nIndex];
 }
 
 int CGeomCoastPolygon::nGetNumDownCoastAdjacentPolygons(void) const
 {
-   return m_nVDownCoastAdjacentPolygon.size();
+   return m_VnDownCoastAdjacentPolygon.size();
 }
 
 
 void CGeomCoastPolygon::SetUpCoastAdjacentPolygonBoundaryShares(vector<double> const* pdVShares)
 {
-   m_dVUpCoastAdjacentPolygonBoundaryShare = *pdVShares;
+   m_VdUpCoastAdjacentPolygonBoundaryShare = *pdVShares;
 }
 
 double CGeomCoastPolygon::dGetUpCoastAdjacentPolygonBoundaryShare(int const nIndex) const
 {
-   // NOTE no check to see if nIndex < m_dVUpCoastAdjacentPolygonBoundaryShare.size()
-   return m_dVUpCoastAdjacentPolygonBoundaryShare[nIndex];
+   // NOTE no check to see if nIndex < m_VdUpCoastAdjacentPolygonBoundaryShare.size()
+   return m_VdUpCoastAdjacentPolygonBoundaryShare[nIndex];
 }
 
 
 void CGeomCoastPolygon::SetDownCoastAdjacentPolygonBoundaryShares(vector<double> const* pdVShares)
 {
-   m_dVDownCoastAdjacentPolygonBoundaryShare = *pdVShares;
+   m_VdDownCoastAdjacentPolygonBoundaryShare = *pdVShares;
 }
 
 double CGeomCoastPolygon::dGetDownCoastAdjacentPolygonBoundaryShare(int const nIndex) const
 {
-   // NOTE no check to see if nIndex < m_dVDownCoastAdjacentPolygonBoundaryShare.size()
-   return m_dVDownCoastAdjacentPolygonBoundaryShare[nIndex];
+   // NOTE no check to see if nIndex < m_VdDownCoastAdjacentPolygonBoundaryShare.size()
+   return m_VdDownCoastAdjacentPolygonBoundaryShare[nIndex];
 }
 
 

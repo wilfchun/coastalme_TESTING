@@ -34,7 +34,7 @@ class CRWCellLayer
 {
 private:
 //     double
-//       m_dVolSedFraction,
+//       m_VdolSedFraction,
 //       m_dMechResistance,
 //       m_dConsolidationStatus;
 

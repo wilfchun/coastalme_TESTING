@@ -273,7 +273,7 @@ using std::stringstream;
 //                   {
 //                      case (COAST_VEC):
 //                         // Add this point to the coastline. Note that we are assuming only one coastline object here
-//                         m_VCoast[0].AppendToCoastline(pOGRLineString->getX(i), pOGRLineString->getY(i));
+//                         m_VCoast[0].AppendPointToCoastlineExtCRS(pOGRLineString->getX(i), pOGRLineString->getY(i));
 //                         break;
 //
 //                      // TODO others
@@ -481,9 +481,9 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
             pOGRFeature->SetField(strFieldValue1.c_str(), i);
 
             // Now attach a geometry to the feature object
-            for (int j = 0; j < m_VCoast[i].pLGetCoastline()->nGetSize(); j++)
+            for (int j = 0; j < m_VCoast[i].pLGetCoastlineExtCRS()->nGetSize(); j++)
                //  In external CRS
-               OGRls.addPoint(m_VCoast[i].pPtGetVectorCoastlinePoint(j)->dGetX(), m_VCoast[i].pPtGetVectorCoastlinePoint(j)->dGetY());
+               OGRls.addPoint(m_VCoast[i].pPtGetCoastlinePointExtCRS(j)->dGetX(), m_VCoast[i].pPtGetCoastlinePointExtCRS(j)->dGetY());
 
             pOGRFeature->SetGeometry(&OGRls);
 
@@ -649,15 +649,15 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
 
          for (int i = 0; i < static_cast<int>(m_VCoast.size()); i++)
          {
-            for (int j = 0; j < m_VCoast[i].pLGetCoastline()->nGetSize(); j++)
+            for (int j = 0; j < m_VCoast[i].pLGetCoastlineExtCRS()->nGetSize(); j++)
             {
                // Create a feature object, one per coastline point
                OGRFeature *pOGRFeature = NULL;
                pOGRFeature = OGRFeature::CreateFeature(pOGRLayer->GetLayerDefn());
 
                // Set the feature's geometry (in external CRS)
-               OGRPt.setX(m_VCoast[i].pPtGetVectorCoastlinePoint(j)->dGetX());
-               OGRPt.setY(m_VCoast[i].pPtGetVectorCoastlinePoint(j)->dGetY());
+               OGRPt.setX(m_VCoast[i].pPtGetCoastlinePointExtCRS(j)->dGetX());
+               OGRPt.setY(m_VCoast[i].pPtGetCoastlinePointExtCRS(j)->dGetY());
                pOGRFeature->SetGeometry(&OGRPt);
 
                if (nDataItem == PLOT_COAST_CURVATURE)

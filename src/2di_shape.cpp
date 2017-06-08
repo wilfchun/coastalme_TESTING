@@ -57,9 +57,9 @@ void CA2DIShape::Resize(const int nSize)
 //    m_VPoints.insert(m_VPoints.begin(), CGeom2DIPoint(nX, nY));
 // }
 
-void CA2DIShape::Append(const CGeom2DIPoint* PtiNew)
+void CA2DIShape::Append(CGeom2DIPoint const* pPtiNew)
 {
-   m_VPoints.push_back(*PtiNew);
+   m_VPoints.push_back(*pPtiNew);
 }
 
 void CA2DIShape::Append(int const nX, int const nY)

@@ -41,7 +41,7 @@ class CRWCoast
 {
 private:
    int
-      m_nSeaHandedness,          // Handedness of the direction of the sea from the coastline, travelling down-coast (i.e. in direction of increasing coast point indices)
+      m_nSeaHandedness,          // Direction of the sea from the coastline, travelling down-coast (i.e. in direction of increasing coast point indices)
       m_nStartEdge,
       m_nEndEdge;
 
@@ -52,37 +52,39 @@ private:
       m_dCurvatureSmoothSTD;
       
    CGeomLine
-      m_LCoastline;              // Smoothed line of points (external CRS) giving the plan view of the vector coast
+      m_LCoastlineExtCRS;           // Smoothed line of points (external CRS) giving the plan view of the vector coast
 
-   // All these are the same length as m_LCoastline (which may be different each timestep)
+   // The following have the same length as m_LCoastlineExtCRS (which may be different each timestep)
+   CGeomILine
+      m_ILCellsMarkedAsCoastline;   // Unsmoothed integer x-y co-ords (grid CRS) of the cell marked as coastline at each point on the vector coastline.
+                                    // Note that this is the same as point zero in profile coords
    vector<int>
-      m_nVProfileNumber,         // At each point on m_LCoastline: INT_NODATA if no profile there, otherwise the profile number
-      m_nVBreakingDistance,      // Distance of breaking (in cells), at each point on m_LCoastline
-      m_nVPolygonNode;           // At every point on m_LCoastline: INT_NODATA if no nodepoint there, otherwise the node (point of greatest concave curvature) number for a coast polygon
+      m_VnProfileNumber,            // At each point on m_LCoastlineExtCRS: INT_NODATA if no profile there, otherwise the profile number
+      m_VnBreakingDistance,         // Distance of breaking (in cells), at each point on m_LCoastlineExtCRS
+      m_VnPolygonNode;              // At every point on m_LCoastlineExtCRS: INT_NODATA if no nodepoint there, otherwise the node (point of greatest concave curvature) number for a coast polygon
    vector<double>
-      m_dVCurvatureDetailed,     // Detailed curvature at each point on m_LCoastline
-      m_dVCurvatureSmooth,       // Smoothed curvature at each point on m_LCoastline
-      m_dVBreakingWaveHeight,    // Breaking wave height at each point on m_LCoastline
-      m_dVBreakingWaveAngle,     // Breaking wave azimuth at each point on m_LCoastline
-      m_dVDepthOfBreaking,       // Depth of breaking at each point on m_LCoastline
-      m_dVFluxOrientation,       // As in the COVE model, is the angle (measured from azimuth) of alongshore energy/sediment movement; a +ve flux is in direction of increasing indices along coast. At each point on m_LCoastline
-      m_dVWaveEnergy;            // Wave energy at each point on m_LCoastline
-   vector<CGeom2DIPoint>
-      m_VCellsMarkedAsCoastline; // Unsmoothed integer x-y co-ords (grid CRS) of the cell marked as coastline at each point on the vector coastline. Note that this is the same as point zero in profile coords
+      m_VdCurvatureDetailed,        // Detailed curvature at each point on m_LCoastlineExtCRS
+      m_VdCurvatureSmooth,          // Smoothed curvature at each point on m_LCoastlineExtCRS
+      m_VdBreakingWaveHeight,       // Breaking wave height at each point on m_LCoastlineExtCRS
+      m_VdBreakingWaveAngle,        // Breaking wave azimuth at each point on m_LCoastlineExtCRS
+      m_VdDepthOfBreaking,          // Depth of breaking at each point on m_LCoastlineExtCRS
+      m_VdFluxOrientation,          // As in the COVE model, is the angle (measured from azimuth) of alongshore energy/sediment movement; a +ve flux is in direction of increasing indices along coast. At each point on m_LCoastlineExtCRS
+      m_VdWaveEnergy;               // Wave energy at each point on m_LCoastlineExtCRS
+      
    vector<CACoastLandform*>
-      m_pVLandforms;             // Pointer to a coastal landform object, at each point on m_LCoastline
+      m_pVLandforms;                // Pointer to a coastal landform object, at each point on m_LCoastlineExtCRS
 
-   // These do not have the same length as m_LCoastline
+   // These do not have the same length as m_LCoastlineExtCRS
    vector<CGeomProfile>
-      m_VProfile;                // Coast profile objects, in the sequence in which they were created (concave coastline curvature)
+      m_VProfile;                   // Coast profile objects, in the sequence in which they were created (concave coastline curvature)
    vector<int>
-      m_nVProfileCoastIndex;     // Indices of coast profiles sorted into along-coastline sequence, size = number of profiles
+      m_VnProfileCoastIndex;        // Indices of coast profiles sorted into along-coastline sequence, size = number of profiles
    vector<CGeomCoastPolygon*>
-      m_pVPolygon;               // Coast polygons, size = number of polygons
+      m_pVPolygon;                  // Coast polygons, size = number of polygons
    vector<double>
-      m_dVPolygonLength;         // Lengths of coast polygons, size = number of polygons
+      m_VdPolygonLength;            // Lengths of coast polygons, size = number of polygons
    vector<CGeomLine>
-      m_LShadowZoneBoundary;     // Lines which delineate the edge of a shadow zone, ext CRS
+      m_LShadowZoneBoundary;        // Lines which delineate the edge of a shadow zone, ext CRS
 
 public:
    CRWCoast(void);
@@ -97,16 +99,19 @@ public:
    void SetEndEdge(int const);
    int nGetEndEdge(void) const;
 
-   void AppendToCoastline(double const, double const);
-   CGeomLine* pLGetCoastline(void);
-   CGeom2DPoint* pPtGetVectorCoastlinePoint(int const);
+   void SetCoastlineExtCRS(CGeomLine const*);
+   void AppendPointToCoastlineExtCRS(double const, double const);
+   CGeomLine* pLGetCoastlineExtCRS(void);
+   CGeom2DPoint* pPtGetCoastlinePointExtCRS(int const);
+   
    int nGetCoastlineSize(void) const;
 //    double dGetCoastlineSegmentLength(int const, int const);
 //    double dGetCoastlineLengthSoFar(int const);
 //    void DisplayCoastline(void);
-   void AppendCellMarkedAsCoastline(CGeom2DIPoint*);
-   void AppendCellMarkedAsCoastline(int const, int const);
-//    void SetCellsMarkedAsCoastline(vector<CGeom2DIPoint>*);
+   
+   void SetCoastlineGridCRS(CGeomILine const*);
+//    void AppendCellMarkedAsCoastline(CGeom2DIPoint const*);
+//    void AppendCellMarkedAsCoastline(int const, int const);
    CGeom2DIPoint* pPtiGetCellMarkedAsCoastline(int const);
 //    int nGetNCellsMarkedAsCoastline(void) const;
    int nGetCoastPointGivenCell(CGeom2DIPoint const*);

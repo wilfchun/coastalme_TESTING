@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 6 June 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 8 June 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -212,7 +212,7 @@ int const      BUF_SIZE                      = 2048;              // Max length 
 int const      MAX_SAVE_DIGITS               = 3;                 // Maximum number of digits for GIS save number
 int const      CLOCK_CHECK_ITERATION         = 5000;
 int const      SAVGOL_POLYNOMIAL_MAX_ORDER   = 6;                 // Maximum order of Savitsky-Golay smoothing polynomial
-int const      COAST_LENGTH_MAX              = 100;               // For safety check when tracing coast
+int const      COAST_LENGTH_MAX              = 10;                // For safety check when tracing coast
 int const      COAST_LENGTH_MIN_X_PROF_SPACE = 2;                 // Ignore very short coasts less than this x profile spacing
 int const      MAX_NUM_SHADOW_ZONES          = 10;                // Consider at most this number of shadow zones
 int const      GRID_MARGIN                   = 10;                // Ignore this many along-coast grid-edge points re. shadow zone calcs

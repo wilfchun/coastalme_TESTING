@@ -62,12 +62,12 @@ private:
       m_PtiAntinode;                      // Co-ords of the cell (raster-grid CRS) which is at other (seaward) end of the polygon
 
    vector<int>
-      m_nVUpCoastAdjacentPolygon,
-      m_nVDownCoastAdjacentPolygon;
+      m_VnUpCoastAdjacentPolygon,
+      m_VnDownCoastAdjacentPolygon;
 
    vector<double>
-      m_dVUpCoastAdjacentPolygonBoundaryShare,
-      m_dVDownCoastAdjacentPolygonBoundaryShare;
+      m_VdUpCoastAdjacentPolygonBoundaryShare,
+      m_VdDownCoastAdjacentPolygonBoundaryShare;
 
 public:
    CGeomCoastPolygon(int const, int const, int const, int const, int const, vector<CGeom2DPoint> const*, int const, int const, CGeom2DIPoint const*, CGeom2DIPoint const*, int const);

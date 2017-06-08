@@ -84,83 +84,105 @@ int CRWCoast::nGetEndEdge(void) const
 }
 
 
-void CRWCoast::AppendToCoastline(double const dX, double const dY)
+void CRWCoast::SetCoastlineExtCRS(CGeomLine const* pLCoast)
+{
+   m_LCoastlineExtCRS = *pLCoast;
+   
+   int nLen = m_LCoastlineExtCRS.nGetSize();
+   
+   m_VnProfileNumber = vector<int>(nLen, INT_NODATA);   
+   m_VnPolygonNode = vector<int>(nLen, INT_NODATA);
+   m_VnBreakingDistance = vector<int>(nLen, INT_NODATA);
+
+   m_VdCurvatureDetailed = vector<double>(nLen, DBL_NODATA);
+   m_VdCurvatureSmooth = vector<double>(nLen, DBL_NODATA);
+   m_VdBreakingWaveHeight = vector<double>(nLen, DBL_NODATA);
+   m_VdBreakingWaveAngle = vector<double>(nLen, DBL_NODATA);
+   m_VdDepthOfBreaking = vector<double>(nLen, DBL_NODATA);
+   m_VdFluxOrientation = vector<double>(nLen, DBL_NODATA);
+   m_VdWaveEnergy = vector<double>(nLen, DBL_NODATA);  
+}
+
+
+
+void CRWCoast::AppendPointToCoastlineExtCRS(double const dX, double const dY)
 {
    // Appends a coastline point (in external CRS), also appends dummy values for curvature, breaking wave height, wave angle, and flux orientation
-   m_LCoastline.Append(dX, dY);
+   m_LCoastlineExtCRS.Append(dX, dY);
 
-   m_nVProfileNumber.push_back(INT_NODATA);
-   m_nVPolygonNode.push_back(INT_NODATA);
+   m_VnProfileNumber.push_back(INT_NODATA);
+   m_VnPolygonNode.push_back(INT_NODATA);
+   m_VnBreakingDistance.push_back(INT_NODATA);
 
-   m_dVCurvatureDetailed.push_back(DBL_NODATA);
-   m_dVCurvatureSmooth.push_back(DBL_NODATA);
-   m_dVBreakingWaveHeight.push_back(DBL_NODATA);
-   m_dVBreakingWaveAngle.push_back(DBL_NODATA);
-   m_dVDepthOfBreaking.push_back(DBL_NODATA);
-   m_dVFluxOrientation.push_back(DBL_NODATA);
-   m_dVWaveEnergy.push_back(DBL_NODATA);
-   m_nVBreakingDistance.push_back(INT_NODATA);
+   m_VdCurvatureDetailed.push_back(DBL_NODATA);
+   m_VdCurvatureSmooth.push_back(DBL_NODATA);
+   m_VdBreakingWaveHeight.push_back(DBL_NODATA);
+   m_VdBreakingWaveAngle.push_back(DBL_NODATA);
+   m_VdDepthOfBreaking.push_back(DBL_NODATA);
+   m_VdFluxOrientation.push_back(DBL_NODATA);
+   m_VdWaveEnergy.push_back(DBL_NODATA);
 }
 
-CGeomLine* CRWCoast::pLGetCoastline(void)
+CGeomLine* CRWCoast::pLGetCoastlineExtCRS(void)
 {
-   return &m_LCoastline;
+   return &m_LCoastlineExtCRS;
 }
 
-CGeom2DPoint* CRWCoast::pPtGetVectorCoastlinePoint(int const n)
+CGeom2DPoint* CRWCoast::pPtGetCoastlinePointExtCRS(int const n)
 {
-   // Point is in external CRS NOTE no check to see that n is < m_LCoastline.Size()
-   return &m_LCoastline[n];
+   // Point is in external CRS NOTE no check to see that n is < m_LCoastlineExtCRS.Size()
+   return &m_LCoastlineExtCRS[n];
 }
 
 int CRWCoast::nGetCoastlineSize(void) const
 {
-   return m_LCoastline.nGetSize();
+   return m_LCoastlineExtCRS.nGetSize();
 }
 
 // void CRWCoast::DisplayCoastline(void)
 // {
-//    m_LCoastline.Display();
+//    m_LCoastlineExtCRS.Display();
 // }
 
-void CRWCoast::AppendCellMarkedAsCoastline(CGeom2DIPoint* Pti)
+
+void CRWCoast::SetCoastlineGridCRS(CGeomILine const* pILCoastCells)
 {
-   m_VCellsMarkedAsCoastline.push_back(*Pti);
+   m_ILCellsMarkedAsCoastline = *pILCoastCells;
 }
 
-void CRWCoast::AppendCellMarkedAsCoastline(int const nX, int const nY)
-{
-   m_VCellsMarkedAsCoastline.push_back(CGeom2DIPoint(nX, nY));
-}
-
-// void CRWCoast::SetCellsMarkedAsCoastline(vector<CGeom2DIPoint>* VNewPoints)
+// void CRWCoast::AppendCellMarkedAsCoastline(CGeom2DIPoint const* pPti)
 // {
-//    m_VCellsMarkedAsCoastline = *VNewPoints;
+//    m_ILCellsMarkedAsCoastline.Append(*pPti);
+// }
+// 
+// void CRWCoast::AppendCellMarkedAsCoastline(int const nX, int const nY)
+// {
+//    m_ILCellsMarkedAsCoastline.Append(CGeom2DIPoint(nX, nY));
 // }
 
 CGeom2DIPoint* CRWCoast::pPtiGetCellMarkedAsCoastline(int const n)
 {
    // NOTE No check to see if n < size()
-   return &m_VCellsMarkedAsCoastline[n];
+   return &m_ILCellsMarkedAsCoastline[n];
 }
 
 // int CRWCoast::nGetNCellsMarkedAsCoastline(void) const
 // {
-//    return m_VCellsMarkedAsCoastline.size();
+//    return m_ILCellsMarkedAsCoastline.size();
 // }
 
 // double CRWCoast::dGetCoastlineSegmentLength(int const m, int const n)
 // {
-//    // NOTE no check to see that m is < m_LCoastline.Size(), same for n
+//    // NOTE no check to see that m is < m_LCoastlineExtCRS.Size(), same for n
 //    if (m == n)
 //       return 0;
 //
-//    return hypot(m_LCoastline[n].dGetX() - m_LCoastline[m].dGetX(), m_LCoastline[n].dGetY() - m_LCoastline[m].dGetY());
+//    return hypot(m_LCoastlineExtCRS[n].dGetX() - m_LCoastlineExtCRS[m].dGetX(), m_LCoastlineExtCRS[n].dGetY() - m_LCoastlineExtCRS[m].dGetY());
 // }
 
 // double CRWCoast::dGetCoastlineLengthSoFar(int const n)
 // {
-//    // NOTE no check to see that n is < m_LCoastline.Size()
+//    // NOTE no check to see that n is < m_LCoastlineExtCRS.Size()
 //    double dLen = 0;
 //    for (int m = 0; m < n; m++)
 //       dLen += dGetCoastlineSegmentLength(m, m+1);
@@ -172,9 +194,9 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint const* pPtiCell)
 {
    int nIndex = INT_NODATA;
    
-   for (unsigned int n = 0; n < m_VCellsMarkedAsCoastline.size(); n++)
+   for (int n = 0; n < m_ILCellsMarkedAsCoastline.nGetSize(); n++)
    {
-      if (m_VCellsMarkedAsCoastline[n] == *pPtiCell)
+      if (m_ILCellsMarkedAsCoastline[n] == *pPtiCell)
          nIndex = n;
    }
    
@@ -184,36 +206,36 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint const* pPtiCell)
 
 double CRWCoast::dGetDetailedCurvature(int const nCoastPoint) const
 {
-   // NOTE no sanity check for nCoastPoint < m_dVCurvatureDetailed.Size()
-   return m_dVCurvatureDetailed[nCoastPoint];
+   // NOTE no sanity check for nCoastPoint < m_VdCurvatureDetailed.Size()
+   return m_VdCurvatureDetailed[nCoastPoint];
 }
 
 void CRWCoast::SetDetailedCurvature(int const nCoastPoint, double const dCurvature)
 {
-   // NOTE no check to see if nCoastPoint < m_dVCurvatureDetailed.size()
-   m_dVCurvatureDetailed[nCoastPoint] = dCurvature;
+   // NOTE no check to see if nCoastPoint < m_VdCurvatureDetailed.size()
+   m_VdCurvatureDetailed[nCoastPoint] = dCurvature;
 }
 
 vector<double>* CRWCoast::pVGetDetailedCurvature(void)
 {
-   return &m_dVCurvatureDetailed;
+   return &m_VdCurvatureDetailed;
 }
 
 double CRWCoast::dGetSmoothCurvature(int const nCoastPoint) const
 {
-   // NOTE no sanity check for nCoastPoint < m_dVCurvatureSmooth.Size()
-   return m_dVCurvatureSmooth[nCoastPoint];
+   // NOTE no sanity check for nCoastPoint < m_VdCurvatureSmooth.Size()
+   return m_VdCurvatureSmooth[nCoastPoint];
 }
 
 void CRWCoast::SetSmoothCurvature(int const nCoastPoint, double const dCurvature)
 {
-   // NOTE no check to see if nCoastPoint < m_dVCurvatureSmooth.size()
-   m_dVCurvatureSmooth[nCoastPoint] = dCurvature;
+   // NOTE no check to see if nCoastPoint < m_VdCurvatureSmooth.size()
+   m_VdCurvatureSmooth[nCoastPoint] = dCurvature;
 }
 
 vector<double>* CRWCoast::pVGetSmoothCurvature(void)
 {
-   return &m_dVCurvatureSmooth;
+   return &m_VdCurvatureSmooth;
 }
 
 void CRWCoast::SetDetailedCurvatureMean(double const dMean)
@@ -269,7 +291,7 @@ void CRWCoast::AppendProfile(int const nCoastPoint, int const nProfile)
    CGeomProfile Profile(nCoastPoint);
    m_VProfile.push_back(Profile);
 
-   m_nVProfileNumber[nCoastPoint] = nProfile;
+   m_VnProfileNumber[nCoastPoint] = nProfile;
 }
 
 // void CRWCoast::ReplaceProfile(int const nProfile, vector<CGeom2DPoint> const* pPtVProfileNew)
@@ -285,8 +307,8 @@ int CRWCoast::nGetNumProfiles(void) const
 
 bool CRWCoast::bIsNormalProfileStartPoint(int const nCoastPoint) const
 {
-   // NOTE no sanity check for nCoastPoint < m_nVProfileNumber.Size()
-   if (m_nVProfileNumber[nCoastPoint] != INT_NODATA)
+   // NOTE no sanity check for nCoastPoint < m_VnProfileNumber.Size()
+   if (m_VnProfileNumber[nCoastPoint] != INT_NODATA)
       return true;
 
    return false;
@@ -295,29 +317,29 @@ bool CRWCoast::bIsNormalProfileStartPoint(int const nCoastPoint) const
 int CRWCoast::nGetProfileNumber(int const nCoastPoint) const
 {
    // Returns INT_NODATA if no profile at this point
-   return m_nVProfileNumber[nCoastPoint];
+   return m_VnProfileNumber[nCoastPoint];
 }
 
 
 void CRWCoast::CreateAlongCoastlineProfileIndex(void)
 {
    // Creates an index containing the numbers of the coastline-normal profiles in along-coast sequence
-   for (int nCoastPoint = 0; nCoastPoint < m_LCoastline.nGetSize(); nCoastPoint++)
-      if (m_nVProfileNumber[nCoastPoint] != INT_NODATA)
-         m_nVProfileCoastIndex.push_back(m_nVProfileNumber[nCoastPoint]);
+   for (int nCoastPoint = 0; nCoastPoint < m_LCoastlineExtCRS.nGetSize(); nCoastPoint++)
+      if (m_VnProfileNumber[nCoastPoint] != INT_NODATA)
+         m_VnProfileCoastIndex.push_back(m_VnProfileNumber[nCoastPoint]);
 }
 
 int CRWCoast::nGetProfileAtAlongCoastlinePosition(int const n) const
 {
    // Returns the number of the coastline-normal profile which is at position n in the along-coast sequence
-   return m_nVProfileCoastIndex[n];
+   return m_VnProfileCoastIndex[n];
 }
 
 // int CRWCoast::nGetAlongCoastlineIndexOfProfile(int const nProfile)
 // {
 //    // Returns the along-coastline position of a coastline-normal profile
-//    for (unsigned int n = 0; n < m_nVProfileCoastIndex.size(); n++)
-//       if (m_nVProfileCoastIndex[n] == nProfile)
+//    for (unsigned int n = 0; n < m_VnProfileCoastIndex.size(); n++)
+//       if (m_VnProfileCoastIndex[n] == nProfile)
 //          return n;
 //    return -1;
 // }
@@ -325,77 +347,77 @@ int CRWCoast::nGetProfileAtAlongCoastlinePosition(int const n) const
 
 void CRWCoast::SetBreakingWaveHeight(int const nCoastPoint, double const dHeight)
 {
-   // NOTE no check to see if nCoastPoint < m_dVBreakingWaveHeight.size()
-   m_dVBreakingWaveHeight[nCoastPoint] = dHeight;
+   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveHeight.size()
+   m_VdBreakingWaveHeight[nCoastPoint] = dHeight;
 }
 
 double CRWCoast::dGetBreakingWaveHeight(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_dVBreakingWaveHeight.size()
-   return m_dVBreakingWaveHeight[nCoastPoint];
+   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveHeight.size()
+   return m_VdBreakingWaveHeight[nCoastPoint];
 }
 
 void CRWCoast::SetBreakingWaveOrientation(int const nCoastPoint, double const dOrientation)
 {
-   // NOTE no check to see if nCoastPoint < m_dVBreakingWaveAngle.size()
-   m_dVBreakingWaveAngle[nCoastPoint] = dOrientation;
+   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveAngle.size()
+   m_VdBreakingWaveAngle[nCoastPoint] = dOrientation;
 }
 
 double CRWCoast::dGetBreakingWaveOrientation(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_dVBreakingWaveAngle.size()
-   return m_dVBreakingWaveAngle[nCoastPoint];
+   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveAngle.size()
+   return m_VdBreakingWaveAngle[nCoastPoint];
 }
 
 void CRWCoast::SetDepthOfBreaking(int const nCoastPoint, double const dDepth)
 {
-   // NOTE no check to see if nCoastPoint < m_dVDepthOfBreaking.size()
-   m_dVDepthOfBreaking[nCoastPoint] = dDepth;
+   // NOTE no check to see if nCoastPoint < m_VdDepthOfBreaking.size()
+   m_VdDepthOfBreaking[nCoastPoint] = dDepth;
 }
 
 double CRWCoast::dGetDepthOfBreaking(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_dVDepthOfBreaking.size()
-   return m_dVDepthOfBreaking[nCoastPoint];
+   // NOTE no check to see if nCoastPoint < m_VdDepthOfBreaking.size()
+   return m_VdDepthOfBreaking[nCoastPoint];
 }
 
 void CRWCoast::SetBreakingDistance(int const nCoastPoint, int const nDist)
 {
-   // NOTE no check to see if nCoastPoint < m_nVBreakingDistance.size()
-   m_nVBreakingDistance[nCoastPoint] = nDist;
+   // NOTE no check to see if nCoastPoint < m_VnBreakingDistance.size()
+   m_VnBreakingDistance[nCoastPoint] = nDist;
 }
 
 int CRWCoast::nGetBreakingDistance(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_nVBreakingDistance.size()
-   return m_nVBreakingDistance[nCoastPoint];
+   // NOTE no check to see if nCoastPoint < m_VnBreakingDistance.size()
+   return m_VnBreakingDistance[nCoastPoint];
 }
 
 void CRWCoast::SetFluxOrientation(int const nCoastPoint, double const dOrientation)
 {
-   // NOTE no check to see if nCoastPoint < m_dVFluxOrientation.size()
-   m_dVFluxOrientation[nCoastPoint] = dOrientation;
+   // NOTE no check to see if nCoastPoint < m_VdFluxOrientation.size()
+   m_VdFluxOrientation[nCoastPoint] = dOrientation;
 }
 
 double CRWCoast::dGetFluxOrientation(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_dVFluxOrientation.size()
-   return m_dVFluxOrientation[nCoastPoint];
+   // NOTE no check to see if nCoastPoint < m_VdFluxOrientation.size()
+   return m_VdFluxOrientation[nCoastPoint];
 }
 
 void CRWCoast::SetWaveEnergy(int const nCoastPoint, double const dEnergy)
 {
-   // NOTE no check to see if nCoastPoint < m_dVWaveEnergy.size()
+   // NOTE no check to see if nCoastPoint < m_VdWaveEnergy.size()
 //    assert(bIsFinite(dEnergy));
-   m_dVWaveEnergy[nCoastPoint] = dEnergy;
+   m_VdWaveEnergy[nCoastPoint] = dEnergy;
 }
 
 double CRWCoast::dGetWaveEnergy(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_dVWaveEnergy.size()
-//    assert(bIsFinite(m_dVWaveEnergy[nCoastPoint]));
+   // NOTE no check to see if nCoastPoint < m_VdWaveEnergy.size()
+//    assert(bIsFinite(m_VdWaveEnergy[nCoastPoint]));
 
-   return m_dVWaveEnergy[nCoastPoint];
+   return m_VdWaveEnergy[nCoastPoint];
 }
 
 
@@ -406,21 +428,21 @@ void CRWCoast::AppendCoastLandform(CACoastLandform* pCoastLandform)
 
 CACoastLandform* CRWCoast::pGetCoastLandform(int const nCoastPoint)
 {
-   // NOTE no check to see if nCoastPoint < m_VCellsMarkedAsCoastline.size()
+   // NOTE no check to see if nCoastPoint < m_ILCellsMarkedAsCoastline.size()
    return m_pVLandforms[nCoastPoint];
 }
 
 
 void CRWCoast::SetPolygonNode(int const nPoint, int const nNode)
 {
-   // NOTE no check to see if nPoint < m_nVPolygonNode.size()
-   m_nVPolygonNode[nPoint] = nNode;
+   // NOTE no check to see if nPoint < m_VnPolygonNode.size()
+   m_VnPolygonNode[nPoint] = nNode;
 }
 
 int CRWCoast::nGetPolygonNode(int const nPoint) const
 {
-   // NOTE no check to see if nPoint < m_nVPolygonNode.size()
-   return m_nVPolygonNode[nPoint];
+   // NOTE no check to see if nPoint < m_VnPolygonNode.size()
+   return m_VnPolygonNode[nPoint];
 }
 
 void CRWCoast::CreatePolygon(int const nGlobalID, int const nCoastID, int const nCoastPoint, CGeom2DIPoint const* PtiNode, CGeom2DIPoint const* PtiAntiNode, int const nProfileUpCoast, int const nProfileDownCoast, vector<CGeom2DPoint> const* pVIn, int const nPointsUpCoastProfile, int const nPointsDownCoastProfile, int const nPointInPolygonStartPoint)
@@ -437,20 +459,20 @@ int CRWCoast::nGetNumPolygons(void) const
 
 CGeomCoastPolygon* CRWCoast::pGetPolygon(int const nPoly) const
 {
-   // NOTE no check to see if nPoint < m_nVPolygonNode.size()
+   // NOTE no check to see if nPoint < m_VnPolygonNode.size()
    return m_pVPolygon[nPoly];
 }
 
 
 void CRWCoast::AppendPolygonLength(const double dLength)
 {
-   m_dVPolygonLength.push_back(dLength);
+   m_VdPolygonLength.push_back(dLength);
 }
 
 double CRWCoast::dGetPolygonLength(int const nIndex) const
 {
-   // NOTE no check to see if nIndex < m_dVPolygonLength.size()
-   return m_dVPolygonLength[nIndex];
+   // NOTE no check to see if nIndex < m_VdPolygonLength.size()
+   return m_VdPolygonLength[nIndex];
 }
 
 
