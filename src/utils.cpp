@@ -33,6 +33,8 @@
    #include <unistd.h>              // For isatty()
 #endif
 
+#include <cmath>
+
 #include <ctime>
 using std::time;
 using std::localtime;
@@ -448,9 +450,9 @@ void CSimulation::AnnounceReadICGIS(void) const
 
 
 /*==============================================================================================================================
- 
+
  Tells the user that we are now reading the Intervention height GIS file
- 
+
 ==============================================================================================================================*/
 void CSimulation::AnnounceReadIHGIS(void) const
 {
@@ -761,7 +763,7 @@ string CSimulation::strListRasterFiles(void) const
       strTmp.append(RASTER_INTERVENTION_HEIGHT_NAME);
       strTmp.append(", ");
    }
-   
+
    if (m_bSuspSedSave)
    {
       strTmp.append(RASTER_SUSP_SED_NAME);
@@ -938,7 +940,7 @@ string CSimulation::strListVectorFiles(void) const
       strTmp.append(VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_CODE);
       strTmp.append(", ");
    }
-   
+
    // remove the trailing comma and space
    strTmp.resize(strTmp.size()-2);
 
@@ -1956,7 +1958,7 @@ string CSimulation::strGetErrorText(int const nErr)
       break;
    case RTN_ERR_SHADOW_ZONE_FLOOD_FILL_NOGRID:
       strErr = "start point for flood fill of wave shadow zone is outside grid";
-      break;      
+      break;
    case RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT:
       strErr = "could not find start point for flood fill of wave shadow zone";
       break;
@@ -1978,6 +1980,9 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_COAST_CANT_FIND_EDGE_CELL:
       strErr = "cannot find edge cell while constructing grid-edge profile";
       break;
+   case RTN_ERR_CSHORE_ERROR:
+      strErr = "CShore did not finish correctly";
+      break;
    default:
       // should never get here
       strErr = "unknown cause";
@@ -1993,7 +1998,7 @@ string CSimulation::strGetErrorText(int const nErr)
 
 ==============================================================================================================================*/
 void CSimulation::DoSimulationEnd(int const nRtn)
-{   
+{
    // If we don't know the time that the run ended (e.g. because it did not finish correctly), get it now
    if (m_tSysEndTime == 0)
       m_tSysEndTime = std::time(nullptr);
@@ -2042,7 +2047,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
          cout << SENDEMAIL << m_strMailAddress << endl;
 
          string strCmd("echo \"");
-         
+
          stringstream ststrTmp;
          ststrTmp << std::put_time(std::localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;
 
@@ -2309,35 +2314,35 @@ void CSimulation::AppendEnsureNoGap(vector<CGeom2DIPoint>* pVPtiPoints, CGeom2DI
 {
    int
       nX = pPti->nGetX(),
-      nY = pPti->nGetY(),      
+      nY = pPti->nGetY(),
       nXLast = pVPtiPoints->back().nGetX(),
       nYLast = pVPtiPoints->back().nGetY(),
-      nXDiff = nX - nXLast,   
+      nXDiff = nX - nXLast,
       nYDiff = nY - nYLast,
       nXDiffA = tAbs(nXDiff),
       nYDiffA = tAbs(nYDiff),
       nDiff = tMax(nXDiffA, nYDiffA);
-      
+
    if (nDiff > 1)
    {
       // We have a gap
-      double 
+      double
          dXInc = 0,
          dYInc = 0;
-         
+
       if (nXDiffA > 1)
          dXInc = static_cast<double>(nXDiff) / nDiff;
-         
+
       if (nYDiffA > 1)
          dYInc = static_cast<double>(nYDiff) / nDiff;
-         
+
       for (int n = 1; n < nDiff; n++)
       {
          CGeom2DIPoint Pti(nXLast + (n * dXInc), nYLast + (n * dYInc));
          pVPtiPoints->push_back(Pti);
-      }      
+      }
    }
-   
+
    pVPtiPoints->push_back(CGeom2DIPoint(nX, nY));
 }
 

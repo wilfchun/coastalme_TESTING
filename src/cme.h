@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 8 June 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 11 July 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -658,6 +658,7 @@ int const      RTN_ERR_CSHORE_INPUT_FILE              = 51;
 int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 52;
 int const      RTN_ERR_GRIDCREATE                     = 53;
 int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 54;
+int const      RTN_ERR_CSHORE_ERROR                   = 55;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                    = -1;
@@ -736,7 +737,7 @@ bool bIsNumber(double const);
 // bool bIsFinite(double const);
 struct FillToWidth
 {
-   FillToWidth(char f, int w) : chFill(f), nWidth(w) 
+   FillToWidth(char f, int w) : chFill(f), nWidth(w)
    {
    }
 
@@ -746,12 +747,9 @@ struct FillToWidth
 extern std::ostream& operator<<(std::ostream&, const FillToWidth&);
 
 //============================================= Globally-available Fortran function =============================================
-namespace cshore
+extern "C"
 {
-   extern "C"
-   {
-      void cshore(void);
-   }
+   void cshore(int*);
 }
 
 //================================================= debugging stuff =============================================================
