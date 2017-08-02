@@ -153,18 +153,18 @@ int CSimulation::nReadBasementDEMData(void)
       cerr << ERR << "DEM vertical units are (" << szUnits << " ) in " << m_strInitialBasementDEMFile << ", should be 'm'" << endl;
       return RTN_ERR_DEMFILE;
    }
-   
+
    // If present, get the missing value (NODATA) setting
    CPLPushErrorHandler(CPLQuietErrorHandler);                        // Needed to get next line to fail silently, if it fails
    double dMissingValue = pGDALBand->GetNoDataValue();               // Will fail for some formats
    CPLPopErrorHandler();
-   
+
    if (dMissingValue != m_dMissingValue)
    {
       cerr << WARN << "NODATA value in " << m_strInitialBasementDEMFile << " is " << dMissingValue << ", using default NODATA value " <<  m_dMissingValue << endl;
    }
 
-   // Next allocate memory for two 2D arrays of raster cell objects: tell the user what is happening
+   // Next allocate memory for a 2D array of raster cell objects: tell the user what is happening
    AnnounceAllocateMemory();
    int nRet = m_pRasterGrid->nCreateGrid();
    if (nRet != RTN_OK)
@@ -197,7 +197,7 @@ int CSimulation::nReadBasementDEMData(void)
          double dTmp = pfScanline[i];
          if (! bIsNumber(dTmp))
             dTmp = m_dMissingValue;
-         
+
          if (dTmp == dMissingValue)
             dTmp = m_dMissingValue;
 
@@ -210,19 +210,19 @@ int CSimulation::nReadBasementDEMData(void)
 
    // Get rid of memory allocated to this array
    delete[] pfScanline;
-   
+
    return RTN_OK;
 }
 
 
 /*========================================================================================================================================
-  
+
  Marks edge cells
- 
+
 ========================================================================================================================================*/
 void CSimulation::MarkEdgeCells(void)
 {
-   // Go round in a clockwise direction: top (north) edge first 
+   // Go round in a clockwise direction: top (north) edge first
    int
       nLastX,
       nLastY;
@@ -235,18 +235,18 @@ void CSimulation::MarkEdgeCells(void)
             m_ulMissingValueBasementCells++;
             continue;
          }
-         
-         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(NORTH); 
-         
+
+         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(NORTH);
+
          m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
          m_VEdgeCellEdge.push_back(NORTH);
-         
+
          nLastY = nY;
-         
+
          break;
       }
    }
-   
+
    // Right (east) edge
    for (int nY = nLastY+1; nY < m_nYGridMax; nY++)
    {
@@ -257,16 +257,16 @@ void CSimulation::MarkEdgeCells(void)
             m_ulMissingValueBasementCells++;
             continue;
          }
-         
-         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(EAST);         
-         
+
+         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(EAST);
+
          m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
          m_VEdgeCellEdge.push_back(EAST);
-         
+
          nLastX = nX;
-         
+
          break;
-      }      
+      }
    }
 
    // Bottom (south) edge
@@ -279,18 +279,18 @@ void CSimulation::MarkEdgeCells(void)
             m_ulMissingValueBasementCells++;
             continue;
          }
-         
-         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(SOUTH);         
-         
+
+         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(SOUTH);
+
          m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
          m_VEdgeCellEdge.push_back(SOUTH);
-         
+
          nLastY = nY;
-         
+
          break;
-      }      
+      }
    }
-   
+
    // Left (west) edge
    for (int nY = nLastY-1; nY >= 0; nY--)
    {
@@ -301,12 +301,12 @@ void CSimulation::MarkEdgeCells(void)
             m_ulMissingValueBasementCells++;
             continue;
          }
-         
-         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(WEST);         
-         
+
+         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(WEST);
+
          m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
          m_VEdgeCellEdge.push_back(WEST);
-         
+
          break;
       }
    }
@@ -342,7 +342,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
          strGISFile = m_strInterventionClassFile;
          break;
       }
-      
+
       case (INTERVENTION_HEIGHT_RASTER):
       {
          // Intervention height
@@ -517,7 +517,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             m_strGDALICDataType = strDataType;
             break;
          }
-         
+
          case (INTERVENTION_HEIGHT_RASTER):
          {
             // Intervention height
@@ -606,10 +606,10 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       if (strTmp.find("int") != string::npos)
       {
          // This is an integer layer
-         CPLPushErrorHandler(CPLQuietErrorHandler);                        // Needed to get next line to fail silently, if it fails                                              
+         CPLPushErrorHandler(CPLQuietErrorHandler);                        // Needed to get next line to fail silently, if it fails
          nMissingValue = pGDALBand->GetNoDataValue();                      // Note will fail for some formats
          CPLPopErrorHandler();
-         
+
          if (nMissingValue != m_nMissingValue)
          {
             cerr << WARN << "NODATA value in " << strGISFile << " is " << nMissingValue << ", using default NODATA value " <<  m_nMissingValue << endl;
@@ -618,10 +618,10 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       else
       {
          // This is a floating point layer
-         CPLPushErrorHandler(CPLQuietErrorHandler);                        // Needed to get next line to fail silently, if it fails                                              
+         CPLPushErrorHandler(CPLQuietErrorHandler);                        // Needed to get next line to fail silently, if it fails
          dMissingValue = pGDALBand->GetNoDataValue();                      // Note will fail for some formats
          CPLPopErrorHandler();
-               
+
          if (dMissingValue != m_dMissingValue)
          {
             cerr << WARN << "NODATA value in " << strGISFile << " is " << dMissingValue << ", using default NODATA value " <<  m_dMissingValue << endl;
@@ -655,18 +655,18 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             switch (nDataItem)
             {
                case (LANDFORM_RASTER):
-               {                  
-                  // Initial Landform Class GIS data, is integer TODO Do we also need a landform sub-category input?         
-                  int nTmp = pfScanline[nX];       
+               {
+                  // Initial Landform Class GIS data, is integer TODO Do we also need a landform sub-category input?
+                  int nTmp = pfScanline[nX];
                   if (! bIsNumber(nTmp))              // Deal with any NaN values
                      nTmp = m_nMissingValue;
-                  
+
                   if (nTmp == nMissingValue)
                      nTmp = m_nMissingValue;
-                  
+
                   if (nTmp == m_nMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFCategory(nTmp);
                   break;
                }
@@ -674,16 +674,16 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (INTERVENTION_CLASS_RASTER):
                {
                   // Intervention class, is integer
-                  int nTmp = pfScanline[nX];       
+                  int nTmp = pfScanline[nX];
                   if (! bIsNumber(nTmp))              // Deal with any NaN values
                      nTmp = m_nMissingValue;
-                  
+
                   if (nTmp == nMissingValue)
                      nTmp = m_nMissingValue;
 
                   if (nTmp == m_nMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].SetInterventionClass(nTmp);
                   break;
                }
@@ -694,13 +694,13 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                   double dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bIsNumber(dTmp))
                      dTmp = m_dMissingValue;
-                  
+
                   if (dTmp == dMissingValue)
                      dTmp = m_dMissingValue;
 
                   if (dTmp == m_dMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].SetInterventionHeight(dTmp);
                   break;
                }
@@ -711,13 +711,13 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                   double dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bIsNumber(dTmp))
                      dTmp = m_dMissingValue;
-                  
+
                   if (dTmp == dMissingValue)
                      dTmp = m_dMissingValue;
 
                   if (dTmp == m_dMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].SetSuspendedSediment(dTmp);
                   break;
                }
@@ -728,13 +728,13 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                   double dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bIsNumber(dTmp))
                      dTmp = m_dMissingValue;
-                  
+
                   if (dTmp == dMissingValue)
                      dTmp = m_dMissingValue;
 
                   if (dTmp == m_dMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetFine(dTmp);
                   break;
                }
@@ -745,13 +745,13 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                   double dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bIsNumber(dTmp))
                      dTmp = m_dMissingValue;
-                  
+
                   if (dTmp == dMissingValue)
                      dTmp = m_dMissingValue;
 
                   if (dTmp == m_dMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetSand(dTmp);
                   break;
                }
@@ -762,13 +762,13 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                   double dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bIsNumber(dTmp))
                      dTmp = m_dMissingValue;
-                  
+
                   if (dTmp == dMissingValue)
                      dTmp = m_dMissingValue;
 
                   if (dTmp == m_dMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetCoarse(dTmp);
                   break;
                }
@@ -779,13 +779,13 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                   double dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bIsNumber(dTmp))
                      dTmp = m_dMissingValue;
-                  
+
                   if (dTmp == dMissingValue)
                      dTmp = m_dMissingValue;
 
                   if (dTmp == m_dMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetFine(dTmp);
                   break;
                }
@@ -796,13 +796,13 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                   double dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bIsNumber(dTmp))
                      dTmp = m_dMissingValue;
-                  
+
                   if (dTmp == dMissingValue)
                      dTmp = m_dMissingValue;
 
                   if (dTmp == m_dMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetSand(dTmp);
                   break;
                }
@@ -813,13 +813,13 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                   double dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bIsNumber(dTmp))
                      dTmp = m_dMissingValue;
-                  
+
                   if (dTmp == dMissingValue)
                      dTmp = m_dMissingValue;
 
                   if (dTmp == m_dMissingValue)
                      nMissing++;
-                  
+
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetCoarse(dTmp);
                   break;
                }
@@ -832,7 +832,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
       // Get rid of memory allocated to this array
       delete[] pfScanline;
-      
+
       if (nMissing > 0)
       {
          cerr << WARN << nMissing << " missing values in " << strGISFile << endl;
@@ -1050,13 +1050,13 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
          strFilePathName.append(RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_NAME);
          break;
       }
-      
+
       case (PLOT_INTERVENTION_HEIGHT):
       {
          strFilePathName.append(RASTER_INTERVENTION_HEIGHT_NAME);
          break;
       }
-      
+
    }
 
    // Append the 'save number' to the filename, and prepend zeros to the save number
@@ -1341,7 +1341,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapseDeposition();
                break;
             }
-            
+
             case (PLOT_INTERVENTION_HEIGHT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetInterventionHeight();
@@ -1526,7 +1526,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
          strFilePathName.append(RASTER_INTERVENTION_CLASS_NAME);
          break;
       }
-      
+
       case (PLOT_RASTER_COAST):
       {
          strFilePathName.append(RASTER_COAST_NAME);
@@ -1550,12 +1550,12 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
          strFilePathName.append(RASTER_POLYGON_NAME);
          break;
       }
-      
+
       case (PLOT_SHADOW_ZONE_CODES):
       {
          strFilePathName.append(SHADOW_ZONE_CODES_NAME);
          break;
-      }      
+      }
    }
 
    // Append the 'save number' to the filename, and prepend zeros to the save number
@@ -1641,7 +1641,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
       if (((dDataMin < m_lGDALMinCanWrite) || (dDataMax > m_lGDALMaxCanWrite)) && m_bScaleRasterOutput)
          bScaleOutput = true;
    }
-   
+
    // Fill the array
    int nTmp  = 0, n = 0;
    for (int nY = 0; nY < m_nYGridMax; nY++)
@@ -1721,12 +1721,12 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
                nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
                break;
             }
-            
+
             case (PLOT_SHADOW_ZONE_CODES):
             {
                nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneCode();
                break;
-            }      
+            }
          }
 
          // If necessary, scale this value
@@ -1812,7 +1812,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
          papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff");
          papszCategoryNames = CSLAddString(papszCategoryNames, "Drift");
          papszCategoryNames = CSLAddString(papszCategoryNames, "Intervention");
-         
+
          papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff on Coastline");
          papszCategoryNames = CSLAddString(papszCategoryNames, "Inland Cliff");
 
@@ -1858,7 +1858,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
          papszCategoryNames = CSLAddString(papszCategoryNames, "In polygon");
          break;
       }
-      
+
       case (PLOT_SHADOW_ZONE_CODES):
       {
          // TODO
@@ -1927,20 +1927,20 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
    int
       nXSize = 0,
       nYSize = 0;
-      
-   vector<double> 
+
+   vector<double>
       VdOutX,
       VdOutY;
-   
+
    unsigned int nPoints = pVnX->size();
-   
+
    for (int nDirection = 0; nDirection < 2; nDirection++)
-   {      
+   {
       // It is necessary to transfer the data from the pVnX, pVnY, pVdHeightX and pVdHeightY vectors into c-style arrays, because GDALGridCreate() will only accept c-style arrays of doubles
       double* dX = new double[nPoints];
       double* dY = new double[nPoints];
       double* dZ = new double[nPoints];
-      
+
       for (unsigned int n = 0; n < nPoints; n++)
       {
          dX[n] = pVnX->at(n);
@@ -1950,36 +1950,36 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
          else
             dZ[n] = pVdHeightX->at(n);
       }
-      
+
 //          // TEST
 //          m_nXMaxBoundingBox = m_nXGridMax-1;
-//          m_nYMaxBoundingBox = m_nYGridMax-1;     
+//          m_nYMaxBoundingBox = m_nYGridMax-1;
 //          m_nXMinBoundingBox = 0;
 //          m_nYMinBoundingBox = 0;
 //          // TEST
-      
+
       nXSize = m_nXMaxBoundingBox - m_nXMinBoundingBox + 1;
       nYSize = m_nYMaxBoundingBox - m_nYMinBoundingBox + 1;
       int nGridSize = nXSize * nYSize;
-      
-//          LogStream << "nDirection = " << nDirection << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl; 
+
+//          LogStream << "nDirection = " << nDirection << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl;
 
       // Use the GDALGridCreate() linear interpolation algorithm: this computes a Delaunay triangulation of the point cloud, finding in which triangle of the triangulation the point is, and by doing linear interpolation from its barycentric coordinates within the triangle. If the point is not in any triangle, depending on the radius, the algorithm will use the value of the nearest point or the nodata value. Only available in GDAL 2.1 and later
       GDALGridLinearOptions options;
       memset(&options, 0, sizeof(options));
       options.dfNoDataValue = DBL_NODATA;    // No data marker to fill empty points
       options.dfRadius = -1;                 // Set the search radius to infinite
-      
+
       // For the gridded output, must be a c-style array
       double* dOut = new double[nGridSize];
 
       // Call GDALGridCreate()
       int nRet = GDALGridCreate(GGA_Linear, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Float64, dOut, NULL, NULL);
-      
+
       delete[] dX;
       delete[] dY;
       delete[] dZ;
-                     
+
       if (nRet == CE_Failure)
          return RTN_ERR_GRIDCREATE;
 
@@ -1998,16 +1998,16 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
             n++;
          }
       }
-      
+
       delete[] dOut;
-      
+
 //          // TEST ===========================================
 //          string strOutFile;
 //          if (nDirection == 1)
 //             strOutFile = "testX.tif";
 //          else
 //             strOutFile = "testY.tif";
-//          
+//
 //          GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
 //          GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), nXSize, nYSize, 1, GDT_Float64, m_papszGDALRasterOptions);
 //          pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
@@ -2029,23 +2029,23 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
 //                   pdRaster[n] = VdOutY[n];
 // //                   LogStream << "nDirection = " << nDirection << " [" << nX << "][" << nY << "] = " << VdOutY[n] << endl;
 //                }
-//                   
+//
 //                n++;
 //             }
 //          }
-// 
+//
 //          GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
-//          pBand->SetNoDataValue(m_dMissingValue);      
+//          pBand->SetNoDataValue(m_dMissingValue);
 //          nRet = pBand->RasterIO(GF_Write, 0, 0, nXSize, nYSize, pdRaster, nXSize, nYSize, GDT_Float64, 0, 0);
-//          
+//
 //          if (nRet == CE_Failure)
 //             return RTN_ERR_GRIDCREATE;
-// 
+//
 //          GDALClose(pDataSet);
 //          delete[] pdRaster;
 //          // TEST ===========================================
    }
-   
+
    // Now put the x and y directions together and update the raster cells
    int n = 0;
    for (int nY = 0; nY < nYSize; nY++)
@@ -2055,25 +2055,25 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
          int
             nActualX = nX + m_nXMinBoundingBox,
             nActualY = nY + m_nYMinBoundingBox;
-            
+
          if (m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea())
          {
-            // Calculate the wave height and direction 
-            double 
+            // Calculate the wave height and direction
+            double
                dWaveHeightX = VdOutX[n],
                dWaveHeightY = VdOutY[n],
                dWaveHeight = sqrt((dWaveHeightX * dWaveHeightX) + (dWaveHeightY * dWaveHeightY)),
                dWaveDir = atan2(dWaveHeightX, dWaveHeightY) * (180/PI);
 
             // Update the cell's wave attributes
-            m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveHeight(dWaveHeight);       
+            m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveHeight(dWaveHeight);
             m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveOrientation(dKeepWithin360(dWaveDir));
-            
+
 //             LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] waveheight = " << dWaveHeight << " dWaveDir = " << dWaveDir << " dKeepWithin360(dWaveDir) = " << dKeepWithin360(dWaveDir) << endl;
-         }            
+         }
          n++;
       }
-   }      
+   }
 
    return RTN_OK;
 }
@@ -2087,47 +2087,47 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
 int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<bool> const* pVbBreaking)
 {
    unsigned int nPoints = pVnX->size();
-   
+
    // It is necessary to transfer the data from the pVnX, pVnY and pVbBreaking vectors into c-style arrays, because GDALGridCreate will only accept c-style arrays
    double* dX = new double[nPoints];
    double* dY = new double[nPoints];
    double* dZ = new double[nPoints];
-   
+
    for (unsigned int n = 0; n < nPoints; n++)
    {
       dX[n] = pVnX->at(n);
       dY[n] = pVnY->at(n);
       dZ[n] = pVbBreaking->at(n);
    }
-   
+
 //       // TEST
 //       m_nXMaxBoundingBox = m_nXGridMax-1;
-//       m_nYMaxBoundingBox = m_nYGridMax-1;     
+//       m_nYMaxBoundingBox = m_nYGridMax-1;
 //       m_nXMinBoundingBox = 0;
 //       m_nYMinBoundingBox = 0;
 //       // TEST
-      
+
    int
       nXSize = m_nXMaxBoundingBox - m_nXMinBoundingBox + 1,
       nYSize = m_nYMaxBoundingBox - m_nYMinBoundingBox + 1,
       nGridSize = nXSize * nYSize;
-//       LogStream << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl; 
-   
+//       LogStream << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl;
+
    // Call GDALGridCreate() with the nearest neighbour interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0).
    GDALGridNearestNeighborOptions options;
    memset(&options, 0, sizeof(options));
    options.dfNoDataValue = INT_NODATA;
-   
+
    // For the gridded output, must be a c-style array
    int* nOut = new int[nGridSize];
-   
+
    // Call GDALGridCreate()
    int nRet = GDALGridCreate(GGA_NearestNeighbor, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Int32, nOut, NULL, NULL);
-   
+
    delete[] dX;
    delete[] dY;
    delete[] dZ;
-                  
+
    if (nRet == CE_Failure)
       return RTN_ERR_GRIDCREATE;
 
@@ -2139,13 +2139,13 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
       for (int nX = 0; nX < nXSize; nX++)
       {
          VbOut.push_back(nOut[n]);
-//             LogStream << " nX = " << nX << " nY = " << nY << " n = " << n << " nOut[n] = " << nOut[n] << endl;            
+//             LogStream << " nX = " << nX << " nY = " << nY << " n = " << n << " nOut[n] = " << nOut[n] << endl;
          n++;
       }
    }
-   
+
    delete[] nOut;
-   
+
 //       // TEST ===========================================
 //       string strOutFile = "testactive.tif";
 //       GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
@@ -2160,22 +2160,22 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
 //          {
 //             // Write this value to the array
 //             pnRaster[n] = VbOut[n];
-//                
+//
 //             n++;
 //          }
 //       }
-// 
+//
 //       GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
-//       pBand->SetNoDataValue(m_nMissingValue);      
+//       pBand->SetNoDataValue(m_nMissingValue);
 //       nRet = pBand->RasterIO(GF_Write, 0, 0, nXSize, nYSize, pnRaster, nXSize, nYSize, GDT_Int32, 0, 0);
-//       
+//
 //       if (nRet == CE_Failure)
 //          return RTN_ERR_GRIDCREATE;
-// 
+//
 //       GDALClose(pDataSet);
 //       delete[] pnRaster;
 //       // TEST ===========================================
-   
+
    // Now update the raster cells
    n = 0;
    for (int nY = 0; nY < nYSize; nY++)
@@ -2185,14 +2185,14 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
          int
             nActualX = nX + m_nXMinBoundingBox,
             nActualY = nY + m_nYMinBoundingBox;
-            
+
          if (m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea())
          {
 //                LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] active zone  = " << (VbOut[n] ? "true" : "false") << endl;
-            
+
             m_pRasterGrid->m_Cell[nActualX][nActualY].SetInActiveZone(VbOut[n]);
          }
-         
+
          n++;
       }
    }

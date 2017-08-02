@@ -47,10 +47,10 @@ private:
 
    CSimulation* m_pSim;
 
-   vector< vector<CGeomCell> > m_Cell;
+   // NOTE seems to be faster than 2D STL vectors
+   CGeomCell** m_Cell;
 
 public:
-
    explicit CGeomRasterGrid(CSimulation*);
    ~CGeomRasterGrid(void);
 

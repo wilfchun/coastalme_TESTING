@@ -40,6 +40,13 @@ CGeomRasterGrid::CGeomRasterGrid(CSimulation* pSimIn)
 
 CGeomRasterGrid::~CGeomRasterGrid(void)
 {
+   int nXMax = m_pSim->nGetGridXMax();
+
+   // Free the m_Cell memory
+   for (int nX = 0; nX < nXMax; nX++)
+      delete [] m_Cell[nX];
+
+   delete [] m_Cell;
 }
 
 
@@ -57,15 +64,15 @@ CSimulation* CGeomRasterGrid::pGetSim(void)
 
 int CGeomRasterGrid::nCreateGrid(void)
 {
-   // Create the 2D vector CGeomCell array
+   // Create the 2D CGeomCell array, NOTE this is faster than using 2D STL vectors
    int
       nXMax = m_pSim->nGetGridXMax(),
       nYMax = m_pSim->nGetGridYMax();
 
    // TODO Check if we don't have enough memory, if so return RTN_ERR_MEMALLOC
-   m_Cell.resize(nXMax);
+   m_Cell = new CGeomCell * [nXMax];
    for (int nX = 0; nX < nXMax; nX++)
-      m_Cell[nX].resize(nYMax);
+      m_Cell[nX] = new CGeomCell[nYMax];
 
    // Initialize the CGeomCell shared pointer to the CGeomRasterGrid object
    CGeomCell::m_pGrid = this;
