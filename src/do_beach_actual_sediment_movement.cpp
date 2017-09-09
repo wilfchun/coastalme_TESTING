@@ -120,7 +120,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    LogStream << "Num \tGlobal\tCoast\t\tPotential\tActual\t\tFine\t\t\tSand\t\t\tCoarse" << endl;
    LogStream << "    \tID    \tID   \t\tErosion\t\tDeposition\tDeposition\tDeposition\tDeposition" << endl;
    for (unsigned int n = 0; n < m_pVCoastPolygon.size(); n++)
-      LogStream << n << "\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaPotentialErosion() << "\t\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine() <<  "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand() << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse() << endl;
+      LogStream << n << "\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << -m_pVCoastPolygon[n]->dGetDeltaPotentialErosion() << "\t\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine() <<  "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand() << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse() << endl;
    LogStream << endl;
 
    // OK, we know the potential depth of erosion on each polygon, but we do not yet know the actual (supply-limited) depth. Nor do we know how much of the sediment which is to be removed is fine, sand or coarse. So estimate actual (supply-limited) sediment removal, but don't actually erode the polygon
@@ -140,7 +140,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    }
 
    LogStream << "BEFORE BETWEEN-POLYGON BEACH SEDIMENT ROUTING:" << endl;
-   LogStream << "PER-POLYGON ESTIMATED ACTUAL BEACH EROSION AND DEPOSITION (not including any uncons sediment from platform erosion)" << endl;
+   LogStream << "PER-POLYGON ESTIMATED ACTUAL BEACH EROSION (-ve) AND DEPOSITION (+ve). This does not include any unconsolidated sediment from platform erosion" << endl;
    LogStream << "Num \t\tGlobal\tCoast\t\tEstimated\t\tEstimated\tEstimated\tEstimated" << endl;
    LogStream << "    \t\tID    \tID   \t\tTotal    \t\tFine     \tSand     \tCoarse" << endl;
    double
@@ -180,11 +180,11 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    if (dCheckTotErosion != 0)
       dActualSedimentDeliveryRatio = (-dCheckTotErosion - dCheckTotDeposition) / -dCheckTotErosion;
 
-   LogStream << endl << m_ulTimestep<< ": total estimated erosion = " << dCheckTotErosion << " total estimated deposition = " << dCheckTotDeposition << " (sediment delivery ratio = " << dActualSedimentDeliveryRatio << ")" << endl;
+   LogStream << endl << m_ulTimestep<< ": total estimated erosion = " << -dCheckTotErosion << " total estimated deposition = " << dCheckTotDeposition << " (sediment delivery ratio = " << dActualSedimentDeliveryRatio << ")" << endl;
 
-   LogStream << m_ulTimestep<< ": estimated fine erosion = " << dCheckFineErosion << " estimated fine deposition = " << dCheckFineDeposition << endl;
-   LogStream << m_ulTimestep<< ": estimated sand erosion = " << dCheckSandErosion << " estimated sand deposition = " << dCheckSandDeposition << endl;
-   LogStream << m_ulTimestep<< ": estimated coarse erosion = " << dCheckCoarseErosion << " estimated coarse deposition = " << dCheckCoarseDeposition << endl << endl;;
+   LogStream << m_ulTimestep<< ": estimated fine erosion = " << -dCheckFineErosion << " estimated fine deposition = " << dCheckFineDeposition << endl;
+   LogStream << m_ulTimestep<< ": estimated sand erosion = " << -dCheckSandErosion << " estimated sand deposition = " << dCheckSandDeposition << endl;
+   LogStream << m_ulTimestep<< ": estimated coarse erosion = " << -dCheckCoarseErosion << " estimated coarse deposition = " << dCheckCoarseDeposition << endl << endl;;
 
    // Now route actually-eroded sand/coarse sediment to adjacent polygons (or off-grid)
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)

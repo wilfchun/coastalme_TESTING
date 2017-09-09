@@ -1200,7 +1200,7 @@ void CSimulation::UpdateGrandTotals(void)
 
    // Any errors?
    LogStream << "Erosion errors = " << m_dThisTimestepMassBalanceErosionError << endl;
-   LogStream << "Deposition errors = " << m_dThisTimestepMassBalanceDepositionError << endl << endl;
+   LogStream << "Deposition errors = " << m_dThisTimestepMassBalanceDepositionError << endl;
 
 
    // Platform erosion
@@ -2346,3 +2346,107 @@ void CSimulation::AppendEnsureNoGap(vector<CGeom2DIPoint>* pVPtiPoints, CGeom2DI
    pVPtiPoints->push_back(CGeom2DIPoint(nX, nY));
 }
 
+
+/*==============================================================================================================================
+
+ Calculates a Dean equilibrium profile h(y) = A * y^(2/3) where h(y) is the distance below the highest point in the Dean profile at a distance y from the landward start of the profile
+
+==============================================================================================================================*/
+void CSimulation::CalcDeanProfile(vector<double>* pdVDeanProfile, double const dInc, double const dDeanTopElev, double const dA, bool const bDeposition, int const nSeawardOffset, double const dStartCellElev)
+{
+   double dDistFromProfileStart = 0;
+
+   if (bDeposition)
+   {
+      // This Dean profile is for deposition i.e. seaward displacement of the profile
+      pdVDeanProfile->at(0) = dStartCellElev;      // Is cliff-top elev for cliffs
+      for (int n = 1; n < static_cast<int>(pdVDeanProfile->size()); n++)
+      {
+         if (n <= nSeawardOffset)
+            // As we extend the profile seaward, the elevation of any points coastward of the new coast point of the Dean profile are set to the elevation of the original coast point
+            pdVDeanProfile->at(n) = dDeanTopElev;
+         else
+         {
+            double dDistBelowTop = dA * pow(dDistFromProfileStart, DEAN_POWER);
+            pdVDeanProfile->at(n) = dDeanTopElev - dDistBelowTop;
+
+            dDistFromProfileStart += dInc;
+         }
+      }
+   }
+   else
+   {
+      // This Dean profile is for erosion i.e. landward displacement of the profile
+      for (int n = 0; n < static_cast<int>(pdVDeanProfile->size()); n++)
+      {
+         double dDistBelowTop = dA * pow(dDistFromProfileStart, DEAN_POWER);
+         pdVDeanProfile->at(n) = dDeanTopElev - dDistBelowTop;
+
+         dDistFromProfileStart += dInc;
+      }
+   }
+}
+
+
+/*==============================================================================================================================
+
+ Calculate the total elevation difference when one elevation profile is subtracted from another
+
+==============================================================================================================================*/
+double CSimulation::dSubtractProfiles(vector<double> const* pdVFirstProfile, vector<double> const* pdVSecondProfile, vector<bool> const* pbVIsValid)
+{
+   double dTotElevDiff = 0;
+
+   for (int n = 0; n < static_cast<int>(pdVFirstProfile->size()); n++)
+   {
+      if (pbVIsValid->at(n))
+      {
+         double dProfileDiff = pdVFirstProfile->at(n) - pdVSecondProfile->at(n);
+
+         dTotElevDiff += dProfileDiff;
+      }
+   }
+
+//    // DEBUG STUFF -----------------------------------------------------
+//    LogStream << endl;
+//    LogStream << "First profile = ";
+//    for (int n = 0; n < static_cast<int>(pdVFirstProfile->size()); n++)
+//    {
+//       LogStream << pdVFirstProfile->at(n) << " ";
+//    }
+//    LogStream << endl;
+//    LogStream << "Second profile = ";
+//    for (int n = 0; n < static_cast<int>(pdVFirstProfile->size()); n++)
+//    {
+//       LogStream << pdVSecondProfile->at(n) << " ";
+//    }
+//    LogStream << endl;
+//    LogStream << "Difference = ";
+//    for (int n = 0; n < static_cast<int>(pdVFirstProfile->size()); n++)
+//    {
+//       LogStream << pdVFirstProfile->at(n) - pdVSecondProfile->at(n) << " ";
+//    }
+//    LogStream << endl;
+//    // DEBUG STUFF -----------------------------------------------------
+
+   return dTotElevDiff;
+}
+
+
+/*==============================================================================================================================
+
+ Calculate the depth of closure
+
+==============================================================================================================================*/
+void CSimulation::CalcDepthOfClosure(void)
+{
+   // TODO Calculate depth of closure using 'average of the maximum values observed during a typical year'
+   //    dL = 2.28 * Hsx − (68.5 * Hsx^2 / (g * Tsx^2))
+   // where:
+   //    Hsx is the nearshore storm wave height that is exceeded only 12 hours each year
+   //    Tsx is the associated wave period
+   // from Hallermeier, R.J. (1978). Uses for a calculated limit depth to beach erosion. Proc. 16th Coastal Engineering Conf., ASCE, New York. Pp 1493 - 1512
+   //
+   // For the time being, and since we assume wave height and period constant just use the actual wave height and period to calculate the depth of closure
+   m_dDepthOfClosure = (2.28 * m_dDeepWaterWaveHeight) - (68.5 * m_dDeepWaterWaveHeight * m_dDeepWaterWaveHeight / (m_dG * m_dWavePeriod * m_dWavePeriod));
+}

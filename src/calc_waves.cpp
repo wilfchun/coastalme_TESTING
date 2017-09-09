@@ -638,7 +638,7 @@ int CSimulation::nDoAllShadowZones(void)
                nY = static_cast<int>(dY);
 
             // Is the interpolated point within the raster grid?
-            if (! bIsWithinGrid(nX, nY))
+            if (! bIsWithinValidGrid(nX, nY))
             {
                if (! bHaveLeftCoast)
                   break;
@@ -768,7 +768,7 @@ int CSimulation::nDoAllShadowZones(void)
                      nCoastX = nX;
                      nCoastY = nY;
                   }
-                  else if ((bIsWithinGrid(nX, nY+1) && m_pRasterGrid->m_Cell[nX][nY+1].bIsCoastline()))
+                  else if ((bIsWithinValidGrid(nX, nY+1) && m_pRasterGrid->m_Cell[nX][nY+1].bIsCoastline()))
                   {
                      bHitCoast = true;
                      nCoastX = nX;
@@ -1016,7 +1016,7 @@ int CSimulation::nFloodFillShadowZone(int const nCoast, int const nCapePoint, CG
          PtiFloodFillStart = PtiGetPerpendicular(&PtiWeightAvg, pPtiCape, nOffset, nShadowZoneCoastToCapeSeaHand);
 
          // Safety check
-         if (! bIsWithinGrid(&PtiFloodFillStart))
+         if (! bIsWithinValidGrid(&PtiFloodFillStart))
          {
             LogStream << m_ulTimestep << ": " << ERR << "shadow zone flood fill start point [" << PtiFloodFillStart.nGetX() << "][" << PtiFloodFillStart.nGetY() << "] {" << dGridCentroidXToExtCRSX(PtiFloodFillStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiFloodFillStart.nGetY()) << "} is outside grid" << endl;
 
@@ -1280,7 +1280,7 @@ int CSimulation::nSweepShadowZone(int const nCoast, int const nCapePoint, CGeom2
             nY = static_cast<int>(dRound(dY));
 
          // Safety check
-         if (! bIsWithinGrid(nX, nY))
+         if (! bIsWithinValidGrid(nX, nY))
             continue;
 
          int nZoneCode = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneCode();
@@ -1505,7 +1505,7 @@ int CSimulation::nSweepDownDriftFromShadowZone(int const nCoast, int const nCape
             nY = static_cast<int>(dRound(dY));
 
          // Safety check
-         if (! bIsWithinGrid(nX, nY))
+         if (! bIsWithinValidGrid(nX, nY))
             continue;
 
          // Get the pre-existing (i.e. shore-parallel) wave height
@@ -1594,7 +1594,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
             // North
             nXTmp = nX;
             nYTmp = nY-1;
-            if ((bIsWithinGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
+            if ((bIsWithinValidGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
             {
                nRead++;
                dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
@@ -1613,7 +1613,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
             // East
             nXTmp = nX+1;
             nYTmp = nY;
-            if ((bIsWithinGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
+            if ((bIsWithinValidGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
             {
                nRead++;
                dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
@@ -1632,7 +1632,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
             // South
             nXTmp = nX;
             nYTmp = nY+1;
-            if ((bIsWithinGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
+            if ((bIsWithinValidGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
             {
                nRead++;
                dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
@@ -1651,7 +1651,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
             // West
             nXTmp = nX-1;
             nYTmp = nY;
-            if ((bIsWithinGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
+            if ((bIsWithinValidGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
             {
                nRead++;
                dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();

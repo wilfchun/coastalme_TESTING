@@ -96,7 +96,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
          }
       }
    }
-   
+
    LogStream << m_ulTimestep << ": cliff collapse = " << m_dThisTimestepCliffCollapseFine + m_dThisTimestepCliffCollapseSand + m_dThisTimestepCliffCollapseCoarse << " (fine = " << m_dThisTimestepCliffCollapseFine << ", sand = " << m_dThisTimestepCliffCollapseSand << ", coarse = " << m_dThisTimestepCliffCollapseCoarse << "), talus deposition = " << m_dThisTimestepCliffTalusSandDeposition + m_dThisTimestepCliffTalusCoarseDeposition << " (sand = " << m_dThisTimestepCliffTalusSandDeposition << ", coarse = " << m_dThisTimestepCliffTalusSandDeposition << ")" << endl;
 
    return RTN_OK;
@@ -111,7 +111,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
 int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, double& dFineCollapse, double& dSandCollapse, double& dCoarseCollapse)
 {
    // Get the cliff cell's grid coords
-   int 
+   int
       nX = pCliff->pPtiGetCellMarkedAsLF()->nGetX(),
       nY = pCliff->pPtiGetCellMarkedAsLF()->nGetY();
 
@@ -160,7 +160,7 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
    double dAboveNotch = m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() - dNotchElev;
 
    // In CoastalME, all depth equivalents are assumed to be a depth upon the whole of a cell i.e. upon the area of a whole cell. The vertical depth of sediment lost in each cliff collapse is a depth upon only part of a cell, i.e. upon a fraction of a cell's area. To keep the depth of cliff collapse consistent with all other depth equivalents, weight it by the fraction of the cell's area which is being removed
-   double 
+   double
       dNotchAreaFrac = dNotchDeepen / m_dCellSide,
       dCollapseDepth = dAboveNotch * dNotchAreaFrac;
 
@@ -227,7 +227,7 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
    }
 
    // For the layer which contains the notch, remove only part of the sediment depth
-   double 
+   double
       dNotchLayerTop = m_pRasterGrid->m_Cell[nX][nY].dCalcLayerElev(nNotchLayer),
       dNotchLayerThickness = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nNotchLayer)->dGetTotalThickness(),
       dNotchLayerVertFracRemoved = (dNotchLayerTop - dNotchElev ) / dNotchLayerThickness;
@@ -415,6 +415,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
       PtStart.SetX(dGridCentroidXToExtCRSX(m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisPoint)->nGetX()));
       PtStart.SetY(dGridCentroidYToExtCRSY(m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisPoint)->nGetY()));
 
+      // The seaward offset, in cells
       int nSeawardOffset = -1;
       do
       {
@@ -429,8 +430,10 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 //             break;
 //          }
 
-         // Now construct a deposition collapse profile from the start point. First get the end point of this coastline-normal line, it is one longer than the specified length because it includes the cliff point in the profile
-         double dThisProfileLength = (nVProfileLength[nAcross] + nSeawardOffset + 1) * m_dCellSide;      // In external CRS units (approximate but probably OK)
+         // Now construct a deposition collapse profile from the start point, it is one longer than the specified length because it includes the cliff point in the profile. Calculate its length in external CRS units, the way it is done here is approximate but probably OK
+         double dThisProfileLength = (nVProfileLength[nAcross] + nSeawardOffset + 1) * m_dCellSide;
+
+         // Get the end point of this coastline-normal line
          int nRtn = nGetCoastNormalEndPoint(nCoast, nThisPoint, nCoastSize, &PtStart, dThisProfileLength, &PtEnd);
          if (nRtn != RTN_OK)
          {
@@ -492,7 +495,8 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
          }
 
          int nRasterProfileLength = VCellsUnderProfile.size();
-         vector<double> dVProfileNow(nRasterProfileLength);
+         vector<double> dVProfileNow(nRasterProfileLength, 0);
+         vector<bool> bVProfileValid(nRasterProfileLength, true);
 //         LogStream << "RASTER PROFILE LENGTH = " << nRasterProfileLength << endl;
 //         if (nRasterProfileLength != dThisProfileLength)
 //            LogStream << "*************************" << endl;
@@ -504,6 +508,10 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
                nY = VCellsUnderProfile[n].nGetY();
 
             dVProfileNow[n] = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev();
+
+            // Don't allow cliff collapse onto intervention cells
+            if (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION)
+               bVProfileValid[n] = false;
          }
 
          // Calculate the elevation of the talus top
@@ -518,43 +526,24 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 //          if (dCliffTopElev < dCliffBaseElev)
 //             LogStream << "*** ERROR, cliff top is lower than cliff base" << endl;
 
-         double const dPower = 2.0 / 3.0;
-         double dTalusSlopeLength = dThisProfileLength - nSeawardOffset - 1;
+         // The talus slope length in external CRS units, this is approximate but probably OK
+         double dTalusSlopeLength = dThisProfileLength - ((nSeawardOffset - 1) * m_dCellSide);
 
          // If user has not supplied a value for m_dCliffDepositionA, then solve for dA so that the elevations at end of the existing profile, and at the end of the Dean equilibrium profile, are the same
          double dA = 0;
          if (m_dCliffDepositionA != 0)
             dA = m_dCliffDepositionA;
          else
-            dA = (dTalusTopElev - dVProfileNow[nRasterProfileLength-1]) /  pow(dTalusSlopeLength, dPower);
+            dA = (dTalusTopElev - dVProfileNow[nRasterProfileLength-1]) /  pow(dTalusSlopeLength, DEAN_POWER);
+
+         double dInc = dTalusSlopeLength / (nRasterProfileLength - nSeawardOffset - 2);
+         vector<double> dVEquiProfile(nRasterProfileLength);
 
          // Calculate the Dean equilibrium profile of the talus h(y) = A * y^(2/3) where h(y) is the distance below the talus-top elevation (the highest point in the Dean profile) at a distance y from the cliff (the landward start of the profile)
-         vector<double> dVEquiProfile(nRasterProfileLength);
-         double
-            dDistFromTalusStart = 0,
-            dInc = dTalusSlopeLength / (nRasterProfileLength-nSeawardOffset-2);
-         dVEquiProfile[0] = dCliffTopElev;
-         for (int n = 1; n < nRasterProfileLength; n++)
-         {
-            if (n <= nSeawardOffset)
-               dVEquiProfile[n] = dTalusTopElev;
-            else
-            {
-               double dDistBelowTT = dA * pow(dDistFromTalusStart, dPower);
-               dVEquiProfile[n] = dTalusTopElev - dDistBelowTT;
-               dDistFromTalusStart += dInc;
-            }
-         }
+         CalcDeanProfile(&dVEquiProfile, dInc, dTalusTopElev, dA, true, nSeawardOffset, dCliffTopElev);
 
-         // Subtract the two elevations
-         double dTotElevDiff = 0;
-
-         for (int n = 0; n < nRasterProfileLength; n++)
-         {
-            double dProfileDiff = dVEquiProfile[n] - dVProfileNow[n];
-
-            dTotElevDiff += dProfileDiff;
-         }
+         // Get the total difference in elevation between the two profiles
+         double dTotElevDiff = dSubtractProfiles(&dVEquiProfile, &dVProfileNow, &bVProfileValid);
 
 //          // DEBUG STUFF -----------------------------------------------------
 //          LogStream << endl;
@@ -588,7 +577,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
          if (dTotElevDiff < dVToDepositPerProfile[nAcross])
             // No it doesn't, so try again with a larger seaward offset
             break;
-         
+
          // Yes it does
 //          LogStream << m_ulTimestep << ": cliff collapse at [" << VCellsUnderProfile[0].nGetX() << "][" << VCellsUnderProfile[0].nGetY() << "] = {" << dGridCentroidXToExtCRSX(VCellsUnderProfile[0].nGetX()) << ", " << dGridCentroidYToExtCRSY(VCellsUnderProfile[0].nGetY()) << "} offset SUFFICIENT with nSeawardOffset = " << nSeawardOffset << endl;
 //          LogStream << m_ulTimestep << ": dTotElevDiff = " << dTotElevDiff << " dVToDepositPerProfile[nAcross] = " << dVToDepositPerProfile[nAcross] << endl;
@@ -849,8 +838,8 @@ int CSimulation::nRasterizeCliffCollapseProfile(vector<CGeom2DPoint> const* pVPo
          nY = static_cast<int>(dY);
 
       // Make sure the interpolated point is within the raster grid (can get this kind of problem due to rounding)
-      if (! bIsWithinGrid(nX, nY))   
-         KeepWithinGrid(dXStart, dYStart, nX, nY);
+      if (! bIsWithinValidGrid(nX, nY))
+         KeepWithinValidGrid(dXStart, dYStart, nX, nY);
 
       // This point is fine, so append it to the output vector
       pVIPointsOut->push_back(CGeom2DIPoint(nX, nY));         // In raster-grid co-ordinates

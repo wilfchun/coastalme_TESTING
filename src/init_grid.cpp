@@ -51,7 +51,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
    m_nXMaxBoundingBox                              = INT_MIN;
    m_nYMinBoundingBox                              = INT_MAX;
    m_nYMaxBoundingBox                              = INT_MIN;
-   
+
    m_ulThisTimestepNumSeaCells                      =
    m_ulThisTimestepNumCoastCells                    =
    m_ulThisTimestepNumPotentialPlatformErosionCells =
@@ -95,15 +95,8 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
       m_bUnconsChangedThisTimestep[n] = false;
    }
 
-   // TODO Calculate depth of closure using 'average of the maximum values observed during a typical year'
-   //    dL = 2.28 * Hsx − (68.5 * Hsx^2 / (g * Tsx^2))
-   // where:
-   //    Hsx is the nearshore storm wave height that is exceeded only 12 hours each year
-   //    Tsx is the associated wave period
-   // from Hallermeier, R.J. (1978). Uses for a calculated limit depth to beach erosion. Proc. 16th Coastal Engineering Conf., ASCE, New York. Pp 1493 - 1512
-   //
-   // For the time being, and since we assume wave height and period constant just use the actual wave height and period to calculate the depth of closure
-   m_dDepthOfClosure = (2.28 * m_dDeepWaterWaveHeight) - (68.5 * m_dDeepWaterWaveHeight * m_dDeepWaterWaveHeight / (m_dG * m_dWavePeriod * m_dWavePeriod));
+   // Re-calculate the depth of closure, in case deep water wave properties have changed
+   CalcDepthOfClosure();
 
    // And go through all cells in the RasterGrid array
    unsigned int nZeroThickness = 0;
@@ -121,7 +114,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
             if (dSedThickness <= 0)
             {
                nZeroThickness++;
-               
+
                LogStream << m_ulTimestep << ": " << WARN << "total sediment thickness is " << dSedThickness << " at [" << nX << "][" << nY << "] {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
             }
 
@@ -130,11 +123,11 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
          }
       }
    }
-   
+
    if (nZeroThickness > 0)
    {
       cerr << m_ulTimestep << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;
-      LogStream << m_ulTimestep << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;      
+      LogStream << m_ulTimestep << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;
    }
 
    return RTN_OK;

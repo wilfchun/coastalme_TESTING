@@ -236,10 +236,10 @@ void CSimulation::RasterizePolygonJoiningLine(CGeom2DPoint const* pPt1, CGeom2DP
       int
          nX = static_cast<int>(dX),
          nY = static_cast<int>(dY);
-         
+
       // Safety check
-      if (! bIsWithinGrid(nX, nY))
-         KeepWithinGrid(dXStart, dYStart, nX, nY);
+      if (! bIsWithinValidGrid(nX, nY))
+         KeepWithinValidGrid(dXStart, dYStart, nX, nY);
 
       // Mark this point on the raster grid
       m_pRasterGrid->m_Cell[nX][nY].SetPolygonID(m_nGlobalPolygonID);
@@ -319,7 +319,7 @@ void CSimulation::MarkPolygonCells(void)
          // We have a flood fill start point which is definitely within the polygon so push this point onto the stack
          CGeom2DIPoint PtiStart = PtiExtCRSToGrid(&PtStart);                // Grid CRS
          PtiStack.push(PtiStart);
-         
+
 //          LogStream << m_ulTimestep << ": filling polygon " << nPoly << " from [" << PtiStart.nGetX() << "][" << PtiStart.nGetY() << "] {" << dGridCentroidXToExtCRSX(PtiStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiStart.nGetY()) << "}" << endl;
 
          // Then do the flood fill: loop until there are no more cell co-ords on the stack
@@ -356,7 +356,7 @@ void CSimulation::MarkPolygonCells(void)
                   PtiStack.push(CGeom2DIPoint(nX, nY-1));
                   bSpanAbove = true;
                }
-               
+
                else if (bSpanAbove && (nY > 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() != INT_NODATA))
                {
                   bSpanAbove = false;
@@ -367,7 +367,7 @@ void CSimulation::MarkPolygonCells(void)
                   PtiStack.push(CGeom2DIPoint(nX, nY+1));
                   bSpanBelow = true;
                }
-               
+
                else if (bSpanBelow && (nY < m_nYGridMax-1) && (m_pRasterGrid->m_Cell[nX][nY+1].nGetPolygonID() != INT_NODATA))
                {
                   bSpanBelow = false;
@@ -428,11 +428,11 @@ void CSimulation::DoPolygonSharedBoundaries(void)
                // No other polygon is adjacent to the up-coast profile of the start-of-coast polygon
                nVUpCoastAdjacentPolygon.push_back(INT_NODATA);
                dVUpCoastBoundaryShare.push_back(1);
-               
+
                // Store in the polygon
                pPolygon->SetUpCoastAdjacentPolygons(&nVUpCoastAdjacentPolygon);
                pPolygon->SetUpCoastAdjacentPolygonBoundaryShares(&dVUpCoastBoundaryShare);
-               
+
                continue;
             }
 
@@ -442,14 +442,14 @@ void CSimulation::DoPolygonSharedBoundaries(void)
                // No other polygon is adjacent to the down-coast profile of the end-of-coast polygon
                nVDownCoastAdjacentPolygon.push_back(INT_NODATA);
                dVDownCoastBoundaryShare.push_back(1);
-               
+
                // Store in the polygon
                pPolygon->SetDownCoastAdjacentPolygons(&nVDownCoastAdjacentPolygon);
                pPolygon->SetDownCoastAdjacentPolygonBoundaryShares(&dVDownCoastBoundaryShare);
 
                continue;
             }
-            
+
             // We are not leaving the coastline from one end or other, so there must be at least one other polygon on either side of this one
             int
                nProfile,
@@ -542,13 +542,13 @@ void CSimulation::DoPolygonSharedBoundaries(void)
             {
                for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
                   dVUpCoastBoundaryShare[n] /= dUpCoastTotBoundaryLen;
-               
+
                // Store in the polygon
                pPolygon->SetUpCoastAdjacentPolygons(&nVUpCoastAdjacentPolygon);
                pPolygon->SetUpCoastAdjacentPolygonBoundaryShares(&dVUpCoastBoundaryShare);
             }
             else
-            {               
+            {
                for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
                   dVDownCoastBoundaryShare[n] /= dDownCoastTotBoundaryLen;
 
@@ -636,8 +636,8 @@ CGeom2DPoint CSimulation::PtFindPointInPolygon(vector<CGeom2DPoint> const* pPtPo
 
          // Safety check
          if (nIndex < 0)
-            return CGeom2DPoint(DBL_NODATA, DBL_NODATA);     
-         
+            return CGeom2DPoint(DBL_NODATA, DBL_NODATA);
+
          nVTestPoints.push_back(pPtPoints->at(nIndex));
       }
 

@@ -146,12 +146,12 @@ CSimulation::CSimulation(void)
    m_nCliffDepositionPlanviewWidth                 =
    m_nGlobalPolygonID                              =
    m_nUnconsSedimentHandlingAtGridEdges            =
-   m_nBeachErosionDepositionEquation               = 
+   m_nBeachErosionDepositionEquation               =
    m_nWavePropagationModel                         = 0;
-   
+
    // NOTE May wish to make this a user-supplied value
    m_nMissingValue                                 = INT_NODATA;
-   
+
    m_nXMinBoundingBox                              = INT_MAX;
    m_nXMaxBoundingBox                              = INT_MIN;
    m_nYMinBoundingBox                              = INT_MAX;
@@ -174,7 +174,7 @@ CSimulation::CSimulation(void)
    m_ulThisTimestepNumActualBeachErosionCells          =
    m_ulThisTimestepNumBeachDepositionCells             =
    m_ulTotPotentialPlatformErosionOnProfiles           =
-   m_ulTotPotentialPlatformErosionBetweenProfiles      = 
+   m_ulTotPotentialPlatformErosionBetweenProfiles      =
    m_ulMissingValueBasementCells                       = 0;
 
    for (int i = 0; i < NRNG; i++)
@@ -256,8 +256,8 @@ CSimulation::CSimulation(void)
    m_dThisTimestepMassBalanceErosionError           =
    m_dThisTimestepMassBalanceDepositionError        =
    m_dDepthOverDBMax                            =
-   m_dTotPotErosionOnProfiles                   =
-   m_dTotPotErosionBetweenProfiles              =
+   m_dTotPotentialPlatformErosionOnProfiles                   =
+   m_dTotPotentialPlatformErosionBetweenProfiles              =
    m_dProfileMaxSlope                           =
    m_dSimpleSmoothWeight                        =
    m_dBeachSmoothingVertTolerance               =
@@ -283,7 +283,7 @@ CSimulation::CSimulation(void)
 
    for (int i = 0; i < 6; i++)
       m_dGeoTransform[i] = 0;
-   
+
    // NOTE May wish to make this a user-supplied value
    m_dMissingValue                           = DBL_NODATA;
 
@@ -425,7 +425,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    return RTN_OK;
 #endif
 
-   // ================================================== initialization section ================================================   
+   // ================================================== initialization section ================================================
    // Hello, World!
    AnnounceStart();
 
@@ -484,10 +484,10 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    nRet = nReadBasementDEMData();
    if (nRet != RTN_OK)
       return nRet;
-   
+
    // Mark edge cells
    MarkEdgeCells();
-   
+
 //    // DEBUG CODE
 //    for (unsigned int n = 0; n < m_VEdgeCell.size(); n++)
 //    {
@@ -505,13 +505,13 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (m_nCoastNormalAvgSpacing < MIN_PROFILE_SPACING)
       {
          cerr << ERR << "profile spacing was specified as " << m_dCoastNormalAvgSpacing << " m, which is " << m_nCoastNormalAvgSpacing << " cells. Polygon creation works poorly if profile spacing is less than " << MIN_PROFILE_SPACING << " cells, i.e. " << MIN_PROFILE_SPACING * m_dCellSide << " m" << endl;
-         
+
          LogStream << ERR << "profile spacing was specified as " << m_dCoastNormalAvgSpacing << " m, which is " << m_nCoastNormalAvgSpacing << " cells. Polygon creation works poorly if profile spacing is less than " << MIN_PROFILE_SPACING << " cells, i.e. " << MIN_PROFILE_SPACING * m_dCellSide << " m" << endl;
-         
+
          return RTN_ERR_PROFILESPACING;
       }
    }
-   
+
    // We have at least one filename for the first layer, so add the correct number of layers. Note the the number of layers does not change during the simulation: however layers can decrease in thickness until they have zero thickness
    AnnounceAddLayers();
    for (int nX = 0; nX < m_nXGridMax; nX++)
@@ -581,7 +581,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return (nRet);
    }
-   
+
    if (! m_strInterventionHeightFile.empty())
    {
       AnnounceReadIHGIS();
@@ -589,7 +589,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return (nRet);
    }
-   
+
    // May wish to read in some vector files someday
 /*   AnnounceReadVectorFiles();
    if (! m_strInitialCoastlineFile.empty())
@@ -634,6 +634,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       return (RTN_ERR_OUTFILE);
    }
 
+   // Calculate the initial depth of closure
+   CalcDepthOfClosure();
+
    // Write beginning-of-run information to Out and Log files
    WriteStartRunDetails();
 
@@ -645,7 +648,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    m_nCoastMax = COAST_LENGTH_MAX * tMax(m_nXGridMax, m_nYGridMax);                                        // Arbitrary but probably OK
    m_nCoastMin = COAST_LENGTH_MIN_X_PROF_SPACE * m_dCoastNormalAvgSpacing / m_dCellSide;                   // Ditto
    m_nCoastCurvatureInterval = tMax(dRound(m_dCoastNormalAvgSpacing / (m_dCellSide * 2)), 2.0);            // Ditto
-   
+
    // For beach erosion/deposition, conversion from immersed weight to bulk volumetric (sand and voids) transport rate (Leo Van Rijn)
    m_dInmersedToBulkVolumetric = 1 / ((m_dBeachSedimentDensity - m_dSeaWaterDensity) * (1 - m_dBeachSedimentPorosity) * m_dG);
 
@@ -679,10 +682,10 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Check that we haven't gone on too long: if not then update timestep number etc.
       if (bTimeToQuit())
          break;
-      
+
       // Tell the user how the simulation is progressing
       AnnounceProgress();
-      
+
       LogStream << "TIMESTEP " << m_ulTimestep << " ================================================================================================" << endl;
 
       // Check to see if there is a new intervention in place: if so, update it on the RasterGrid array
@@ -704,7 +707,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nLocateSeaAndCoasts();
       if (nRet != RTN_OK)
          return nRet;
-      
+
       // Locate estuaries
       nRet = nLocateAllEstuaries();
       if (nRet != RTN_OK)
@@ -724,7 +727,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nCreateAllNormalProfilesAndCheckForIntersection();
       if (nRet != RTN_OK)
          return nRet;
-      
+
       // Create the coast polygons
       nRet = nCreateAllPolygons();
       if (nRet != RTN_OK)
@@ -746,7 +749,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //       }
 //       LogStream << "Before marking polygon cells, N cells with NODATA polygon ID = " << nNODATA << endl;
 //       LogStream << "Before marking polygon cells, N cells with zero polygon ID = " << nPoly0 << endl;
-      
+
       // Mark cells of the raster grid that are within each polygon, then calc the length of the shared normal between each polygon and the adjacent polygon(s)
       MarkPolygonCells();
       DoPolygonSharedBoundaries();
@@ -798,7 +801,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       int nRet = nDoAllActualBeachErosionAndDeposition();
       if (nRet != RTN_OK)
          return nRet;
-      
+
       // Add the fine sediment that was eroded this timestep (from the shore platform, from beach erosion, and cliff collapse talus deposition, minus the fine that went off-grid) to the suspended sediment load
       double dFineThisTimestep = m_dThisTimestepActualFinePlatformErosion + m_dThisTimestepActualFineBeachErosion + m_dThisTimestepCliffTalusFineErosion - m_dThisTimestepActualFineSedLostBeachErosion;
       m_dThisTimestepFineSedimentToSuspension += dFineThisTimestep;
@@ -807,7 +810,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nUpdateGrid();
       if (nRet != RTN_OK)
          return nRet;
-     
+
       // Now save results, first the raster and vector GIS files if required
       m_bSaveGISThisTimestep = false;
       if ((m_bSaveRegular && (m_dSimElapsed >= m_dRSaveTime) && (m_dSimElapsed < m_dSimDuration)) || (! m_bSaveRegular && (m_dSimElapsed >= m_dUSaveTime[m_nThisSave])))

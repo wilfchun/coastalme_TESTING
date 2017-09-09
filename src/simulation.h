@@ -167,7 +167,7 @@ private:
       m_nXMinBoundingBox,
       m_nXMaxBoundingBox,
       m_nYMinBoundingBox,
-      m_nYMaxBoundingBox;      
+      m_nYMaxBoundingBox;
 
    GDALDataType
       m_GDALWriteIntDataType,
@@ -275,8 +275,8 @@ private:
       m_dThisTimestepMassBalanceErosionError,
       m_dThisTimestepMassBalanceDepositionError,
       m_dDepthOverDBMax,                                    // Used in erosion potential look-up function
-      m_dTotPotErosionOnProfiles,
-      m_dTotPotErosionBetweenProfiles,
+      m_dTotPotentialPlatformErosionOnProfiles,
+      m_dTotPotentialPlatformErosionBetweenProfiles,
       m_dProfileMaxSlope,
       m_dSimpleSmoothWeight,
       m_dBeachSmoothingVertTolerance,
@@ -454,10 +454,10 @@ private:
 
    // Pointers to coast polygon objects
    vector<CGeomCoastPolygon*> m_pVCoastPolygon;
-   
+
    // Edge cells
    vector<CGeom2DIPoint> m_VEdgeCell;
-   
+
    // And the grid edge that each edge cell belongs to
    vector<int> m_VEdgeCellEdge;
 
@@ -531,6 +531,8 @@ private:
    int nInsertPointIntoProfilesIfNeededThenUpdate(int const, int const, double const, double const, int const, int const, int const, bool const);
    void TruncateProfileAndAppendNew(int const, int const, int const, vector<CGeom2DPoint> const*, vector<vector<pair<int, int> > > const*);
    void RasterizeProfile(int const, int const, vector<CGeom2DIPoint>*, vector<bool>*, bool&, bool&, bool&, bool&, bool&);
+   void CalcDeanProfile(vector<double>*, double const, double const, double const, bool const, int const, double const);
+   double dSubtractProfiles(vector<double> const*, vector<double> const*, vector<bool> const*);
    int nRasterizeCliffCollapseProfile(vector<CGeom2DPoint> const*, vector<CGeom2DIPoint>*) const;
    int nCalcPotentialPlatformErosionOnProfile(int const, int const);
    int nCalcPotentialPlatformErosionBetweenProfiles(int const, int const, int const);
@@ -543,7 +545,7 @@ private:
    static CGeom2DPoint PtChooseEndPoint(int const, CGeom2DPoint const*, CGeom2DPoint const*, double const, double const, double const, double const);
    int nGetCoastNormalEndPoint(int const, int const, int const, CGeom2DPoint const*, double const, CGeom2DPoint*);
    int nLandformToGrid(int const, int const);
-   int nCalcWavePropertiesOnProfile(int const, int const, int const, vector<int>*, vector<int>*, vector<double>*, vector<double>*, vector<bool>*); 
+   int nCalcWavePropertiesOnProfile(int const, int const, int const, vector<int>*, vector<int>*, vector<double>*, vector<double>*, vector<bool>*);
    int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*);
    int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double> const*, vector<double> const*);
    int nLookUpCShoreOutputs(string const*, int const, int const, vector<double> const*, vector<double>*);
@@ -556,7 +558,7 @@ private:
    void CalcD50AndFillWaveCalcHoles(void);
    static bool bCurvaturePairCompareAscending(const pair<int, double>&, const pair<int, double>&);
    int nDoAllShadowZones(void);
-   int nFindAllShadowZones(void);   
+   int nFindAllShadowZones(void);
    int nFloodFillShadowZone(int const, int const, CGeom2DIPoint const*, int const, CGeom2DIPoint const*);
    int nSweepShadowZone(int const, int const, CGeom2DIPoint const*, int const, CGeom2DIPoint const*, int&);
    int nSweepDownDriftFromShadowZone(int const, int const, CGeom2DIPoint const*, int const, CGeom2DIPoint const*, int const);
@@ -569,12 +571,15 @@ private:
    void DoAllPotentialBeachErosion(void);
    int nDoAllActualBeachErosionAndDeposition(void);
    int nEstimateActualBeachErosionOnPolygon(int const, int const, double const);
+   int nEstimateActualBeachErosionDownCoast(int const, int const, double&, double&, double&, double&);
+   int nEstimateActualBeachErosionUpCoast(int const, int const, double&, double&, double&, double&);
    void EstimateActualBeachErosionOnCell(int const, int const, int const, double const, double&, double&, double&);
    void ErodeBeachConstrained(int const, int const, int const, double const, double&, double&, double&);
    int nRouteActualBeachErosionToAdjacentPolygons(int const, int const);
    int nDoWithinPolygonBeachRedistribution(int const, int const);
    int nDoBeachErosionOnCells(int const, int const, double const);
    int nDoBeachDepositionOnCells(int const, int const, double const);
+   void CalcDepthOfClosure(void);
 
    // GIS utility routines
    void MarkEdgeCells(void);
@@ -582,8 +587,8 @@ private:
    bool bCheckVectorGISOutputFormat(void);
    bool bSaveAllRasterGISFiles(void);
    bool bSaveAllVectorGISFiles(void);
-   bool bIsWithinGrid(int const, int const) const;
-   bool bIsWithinGrid(CGeom2DIPoint const*) const;
+   bool bIsWithinValidGrid(int const, int const) const;
+   bool bIsWithinValidGrid(CGeom2DIPoint const*) const;
    double dGridCentroidXToExtCRSX(int const) const;
    double dGridCentroidYToExtCRSY(int const) const;
    double dGridXToExtCRSX(double const) const;
@@ -599,8 +604,8 @@ private:
    static double dGetDistanceBetween(CGeom2DPoint const*, CGeom2DPoint const*);
    static double dGetDistanceBetween(CGeom2DIPoint const*, CGeom2DIPoint const*);
    static double dTriangleAreax2(CGeom2DPoint const*, CGeom2DPoint const*, CGeom2DPoint const*);
-   void KeepWithinGrid(int const, int const, int&, int&) const;
-   void KeepWithinGrid(CGeom2DIPoint const*, CGeom2DIPoint*) const;
+   void KeepWithinValidGrid(int const, int const, int&, int&) const;
+   void KeepWithinValidGrid(CGeom2DIPoint const*, CGeom2DIPoint*) const;
    static double dKeepWithin360(double const);
 //    vector<CGeom2DPoint> VGetPerpendicular(CGeom2DPoint const*, CGeom2DPoint const*, double const, int const);
    static CGeom2DPoint PtGetPerpendicular(CGeom2DPoint const*, CGeom2DPoint const*, double const, int const);
@@ -701,7 +706,7 @@ public:
 
    CSimulation(void);
    ~CSimulation(void);
-   
+
    //! Returns the NODATA value
    double dGetMissingValue(void) const;
 

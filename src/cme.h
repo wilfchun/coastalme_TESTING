@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 2 August 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 - 8 September 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -244,6 +244,7 @@ int const      FLOOD_FILL_START_OFFSET                = 2;                 // In
 int const      SHADOW_LINE_MIN_SINCE_HIT_SEA          = 5;
 int const      MAX_LEN_SHADOW_LINE_TO_IGNORE          = 200;               // In cells: if can't find flood fill start point, continue if short shadow line
 int const      MAX_EDGE_SEARCH_DIST                   = 30;                // In cells: search for edge cells this far in from grid edge
+int const      MIN_PAR_PROFILE_SIZE                   = 3;                 // In cells: min size for uncons sed parallel profile
 
 double const   TOLERANCE                              = 1e-4;              // For bFPIsEqual, if too small (e.g. 1e-10), get spurious "rounding" errors
 double const   SEDIMENT_ELEV_TOLERANCE                = 1e-10;             // Throughout, differences in depth-equivalent sediment amount (m) less than this are ignored
@@ -251,6 +252,7 @@ double const   STRAIGHT_COAST_MAX_DETAILED_CURVATURE  = -5;
 double const   STRAIGHT_COAST_MAX_SMOOTH_CURVATURE    = -1;
 double const   MIN_SEA_LENGTH_OF_SHADOW_ZONE_LINE     = 10;                // Used in shadow line tracing
 double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE    = 10;                // Used in shadow line tracing
+double const   DEAN_POWER                             = 2.0 / 3.0;         // Dean profile exponent
 
 // Error/warning, NODATA etc.
 string const   ERR                                    = "ERROR ";
@@ -258,6 +260,9 @@ string const   WARN                                   = "WARNING ";
 
 int const      INT_NODATA                             = -999;
 double const   DBL_NODATA                             = -9999;
+
+// TESTING
+bool const     ACCEPT_SHORT_PROFILES                  = true;
 
 
 string const   PERITERHEAD1 =

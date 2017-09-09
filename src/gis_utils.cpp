@@ -37,6 +37,7 @@ using std::ios;
 
 #include "cme.h"
 #include "simulation.h"
+#include "simulation.h"
 #include "raster_grid.h"
 
 
@@ -192,11 +193,11 @@ double CSimulation::dGetDistanceBetween(CGeom2DIPoint const* Pti1, CGeom2DIPoint
 
 
 /*===============================================================================================================================
- 
+
  Returns twice the signed area of a triangle
- 
+
  ===============================================================================================================================*/
-double CSimulation::dTriangleAreax2(CGeom2DPoint const* pPtA, CGeom2DPoint const* pPtB, CGeom2DPoint const* pPtC) 
+double CSimulation::dTriangleAreax2(CGeom2DPoint const* pPtA, CGeom2DPoint const* pPtB, CGeom2DPoint const* pPtC)
 {
    return (pPtB->dGetX() - pPtA->dGetX()) * (pPtC->dGetY() - pPtA->dGetY()) - (pPtB->dGetY() - pPtA->dGetY()) * (pPtC->dGetX() - pPtA->dGetX());
 }
@@ -207,7 +208,7 @@ double CSimulation::dTriangleAreax2(CGeom2DPoint const* pPtA, CGeom2DPoint const
  Checks whether the supplied point (an x-y pair, in the grid CRS) is within the raster grid, and is a valid cell (i.e. the basement DEM is not NODATA)
 
 ===============================================================================================================================*/
-bool CSimulation::bIsWithinGrid(int const nX, int const nY) const
+bool CSimulation::bIsWithinValidGrid(int const nX, int const nY) const
 {
    if ((nX < 0) || (nX >= m_nXGridMax) || (nY < 0) || (nY >= m_nYGridMax) || m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
       return false;
@@ -221,7 +222,7 @@ bool CSimulation::bIsWithinGrid(int const nX, int const nY) const
  Checks whether the supplied point (a reference to a CGeom2DIPoint, in the grid CRS) is within the raster grid, and is a valid cell (i.e. the basement DEM is not NODATA)
 
 ===============================================================================================================================*/
-bool CSimulation::bIsWithinGrid(CGeom2DIPoint const* Pti) const
+bool CSimulation::bIsWithinValidGrid(CGeom2DIPoint const* Pti) const
 {
    int nX = Pti->nGetX();
 
@@ -232,7 +233,7 @@ bool CSimulation::bIsWithinGrid(CGeom2DIPoint const* Pti) const
 
    if ((nY < 0) || (nY >= m_nYGridMax))
       return false;
-   
+
    if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
       return false;
 
@@ -242,259 +243,177 @@ bool CSimulation::bIsWithinGrid(CGeom2DIPoint const* Pti) const
 
 /*==============================================================================================================================
 
- Constrains the second supplied point (both are CGeom2DIPoints, in the grid CRS) to be within the raster grid
+ Constrains the second supplied point (both are CGeom2DIPoints, in the grid CRS) to be an a valid cell within the raster grid
 
 ===============================================================================================================================*/
-void CSimulation::KeepWithinGrid(CGeom2DIPoint const* Pti0, CGeom2DIPoint* Pti1) const
+void CSimulation::KeepWithinValidGrid(CGeom2DIPoint const* Pti0, CGeom2DIPoint* Pti1) const
 {
-   int 
+   int
+      nX0 = Pti0->nGetX(),
+      nY0 = Pti0->nGetY(),
       nX1 = Pti1->nGetX(),
       nY1 = Pti1->nGetY();
-      
-   if (nX1 < 0)
-   {  
-      int n = 0;
-      do
-      {
-         int 
-            nX0 = Pti0->nGetX(),
-            nY0 = Pti0->nGetY();
-            
-         double 
-            dDiffX = nX1 - nX0,
-            dDiffY = nY1 - nY0,
-            dNewDiffX = nX1 - nX0;
-         
-         nX1 = n;
-         n++;
 
-         if (dDiffY == 0)
-            nY1 = nY0;
-         else if (dDiffX == 0)
-            continue;
-         else
-         {
-            double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
-            nY1 = dRound(dNewDiffY + nY0);
-         }
-         
-         Pti1->SetX(nX1);
-         Pti1->SetY(nY1);
-      }
-      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
-   }
-   
-   else if (nX1 > m_nXGridMax-1)
-   {  
-      int n = 0;
-      do
-      {
-         int 
-            nX0 = Pti0->nGetX(),
-            nY0 = Pti0->nGetY();
-            
-         double 
-            dDiffX = nX1 - nX0,
-            dDiffY = nY1 - nY0,
-            dNewDiffX = nX1 - nX0;
-         
-         nX1 = m_nXGridMax-1 - n;
-         n++;
-
-         if (dDiffY == 0)
-            nY1 = nY0;
-         else if (dDiffX == 0)
-            continue;
-         else
-         {
-            double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
-            nY1 = dRound(dNewDiffY + nY0);
-         }
-         
-         Pti1->SetX(nX1);
-         Pti1->SetY(nY1);      
-      }
-      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
-   }
-   
-   if (nY1 < 0 )
-   {      
-      int n = 0;
-      do
-      {
-         int 
-            nX0 = Pti0->nGetX(),
-            nY0 = Pti0->nGetY();
-            
-         double 
-            dDiffX = nX1 - nX0,
-            dDiffY = nY1 - nY0,
-            dNewDiffY = nY1 - nY0;
-         
-         nY1 = n;
-         n++;
-
-         if (dDiffX == 0)
-            nX1 = nX0;
-         else if (dDiffY == 0)
-            continue;
-         else
-         {
-            double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
-            nX1 = dRound(dNewDiffX + nX0);
-         }
-         
-         Pti1->SetX(nX1);
-         Pti1->SetY(nY1);      
-      }
-      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
-   }   
-
-   else if (nY1 > m_nYGridMax-1)
-   {
-      int n = 0;
-      do
-      {
-         int 
-            nX0 = Pti0->nGetX(),
-            nY0 = Pti0->nGetY();
-            
-         double 
-            dDiffX = nX1 - nX0,
-            dDiffY = nY1 - nY0,
-            dNewDiffY = nY1 - nY0;
-         
-         nY1 = m_nYGridMax-1 - n;
-         n++;
-
-         if (dDiffX == 0)
-            nX1 = nX0;
-         else if (dDiffY == 0)
-            continue;
-         else
-         {
-            double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
-            nX1 = dRound(dNewDiffX + nX0);
-         }
-         
-         Pti1->SetX(nX1);
-         Pti1->SetY(nY1);      
-      }
-      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
-   }
+   KeepWithinValidGrid(nX0, nY0, nX1, nY1);
 }
 
 
 /*==============================================================================================================================
 
- Constrains the second supplied point (both are x-y pairs, in the grid CRS) to be within the raster grid
+ Given two points in the grid CRS (the first point asumed to be within the valid part of the raster grid, and the points assumed not to be coincident), this routine modifies the value of the second point so that it is on a line joining the original points and is a valid cell within the raster grid
+
+ However in some cases (e.g. if the first point is at the edge of the valid part of the raster grid) then the second cell will be coincident with the first cell, and the line joining them is thus of zero length. The calling routine has to be able to handle this
 
 ===============================================================================================================================*/
-void CSimulation::KeepWithinGrid(int const nX0, int const nY0, int& nX1, int& nY1) const
+void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, int& nY1) const
 {
-   if (nX1 < 0)
-   {      
-      int n = 0;
-      do
+   int
+      nDiffX = nX0 - nX1,
+      nDiffY = nY0 - nY1;
+
+   if (nDiffX == 0)
+   {
+      // The two points have the same x co-ords, so we just need to constrain the y co-ord
+      if (nY1 < nY0)
       {
-         double 
-            dDiffX = nX1 - nX0,
-            dDiffY = nY1 - nY0,
-            dNewDiffX = nX1 - nX0;
-         
-         nX1 = n;
-         n++;
+         nY1 = -1;
 
-         if (dDiffY == 0)
-            nY1 = nY0;
-         else if (dDiffX == 0)
-            continue;
-         else
+         do
          {
-            double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
-            nY1 = dRound(dNewDiffY + nY0);
+            nY1++;
          }
-      }
-      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
+         while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
 
-   }
-   
-   else if (nX1 > m_nXGridMax-1)
-   {      
-      int n = 0;
-      do
+         return;
+      }
+      else
       {
-         double 
-            dDiffX = nX1 - nX0,
-            dDiffY = nY1 - nY0,
-            dNewDiffX = nX1 - nX0;
-         
-         nX1 = m_nXGridMax-1 - n;
-         n++;
+         nY1 = m_nYGridMax;
 
-         if (dDiffY == 0)
-            nY1 = nY0;
-         else if (dDiffX == 0)
-            continue;
-         else
+         do
          {
-            double dNewDiffY = dNewDiffX * dDiffY / dDiffX;
-            nY1 = dRound(dNewDiffY + nY0);
+            nY1--;
          }
-      }
-      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
-   }
-  
-   if (nY1 < 0)
-   {      
-      int n = 0;
-      do
-      {         
-         double 
-            dDiffX = nX1 - nX0,
-            dDiffY = nY1 - nY0,
-            dNewDiffY = nY1 - nY0;
-         
-         nY1 = n;
-         n++;
+         while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
 
-         if (dDiffX == 0)
-            nX1 = nX0;
-         else if (dDiffY == 0)
-            continue;
-         else
-         {
-            double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
-            nX1 = dRound(dNewDiffX + nX0);
-         }
+         return;
       }
-      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
    }
-   
-   else if (nY1 > m_nYGridMax-1)
-   {      
-      int n = 0;
-      do
+   else if (nDiffY == 0)
+   {
+      // The two points have the same y co-ords, so we just need to constrain the x co-ord
+      if (nX1 < nX0)
       {
-         double 
-            dDiffX = nX1 - nX0,
-            dDiffY = nY1 - nY0,
-            dNewDiffY = nY1 - nY0;
-         
-         nY1 = m_nYGridMax-1 - n;
-         n++;
+         nX1 = -1;
 
-         if (dDiffX == 0)
-            nX1 = nX0;
-         else if (dDiffY == 0)
-            continue;
+         do
+         {
+            nX1++;
+         }
+         while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
+
+         return;
+      }
+      else
+      {
+         nX1 = m_nXGridMax;
+
+         do
+         {
+            nX1--;
+         }
+         while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
+
+         return;
+      }
+   }
+   else
+   {
+      // The two points have different x co-ords and different y co-ords, so we have to work harder. First find which of the co-ords is the greatest distance outside the grid, and constrain that co-ord for efficiency (since this will reduce the number of times round the loop). Note that both may be inside the grid, if the incorrect co-ord is in the invalid margin, in which case arbitrarily contrain the x co-ord
+      int
+         nXDistanceOutside = 0,
+         nYDistanceOutside = 0;
+
+      if (nX1 < 0)
+         nXDistanceOutside = -nX1;
+      else if (nX1 >= m_nXGridMax)
+         nXDistanceOutside = nX1 - m_nXGridMax + 1;
+
+      if (nY1 < 0)
+         nYDistanceOutside = -nY1;
+      else if (nY1 >= m_nYGridMax)
+         nXDistanceOutside = nY1 - m_nYGridMax + 1;
+
+      if (nXDistanceOutside >= nYDistanceOutside)
+      {
+         // Constrain the x co-ord
+         if (nX1 < nX0)
+         {
+            // The incorrect x co-ord is less than the correct x co-ord: constrain it and find the y co-ord
+            nX1 = -1;
+
+            do
+            {
+               nX1++;
+
+               nY1 = nY0 + dRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
+            }
+            while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
+
+            return;
+         }
+
          else
          {
-            double dNewDiffX = dNewDiffY * dDiffX / dDiffY;
-            nX1 = dRound(dNewDiffX + nX0);
+            // The incorrect x co-ord is greater than the correct x-co-ord: constrain it and find the y co-ord
+            nX1 = m_nXGridMax;
+
+            do
+            {
+               nX1--;
+
+               nY1 = nY0 + dRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
+            }
+            while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
+
+            return;
          }
       }
-      while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());      
+      else
+      {
+         // Constrain the y co-ord
+         if (nY1 < nY0)
+         {
+            // The incorrect y co-ord is less than the correct y-co-ord: constrain it and find the x co-ord
+            nY1 = -1;
+
+            do
+            {
+               nY1++;
+
+               nX1 = nX0 + dRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
+            }
+            while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
+
+            return;
+         }
+
+         else
+         {
+            // The incorrect y co-ord is greater than the correct y co-ord: constrain it and find the x co-ord
+            nY1 = m_nYGridMax;
+
+            do
+            {
+               nY1--;
+
+               nX1 = nX0 + dRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
+            }
+            while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
+
+            return;
+         }
+      }
    }
 }
 
@@ -507,15 +426,15 @@ void CSimulation::KeepWithinGrid(int const nX0, int const nY0, int& nX1, int& nY
 double CSimulation::dKeepWithin360(double const dAngle)
 {
    double dNewAngle = dAngle;
-   
+
    // Sort out -ve angles
    while (dNewAngle < 0)
       dNewAngle += 360;
-   
+
    // Sort out angles > 360
    while (dNewAngle > 360)
       dNewAngle -= 360;
-   
+
    return dNewAngle;
 }
 
@@ -576,7 +495,7 @@ CGeom2DIPoint CSimulation::PtiWeightedAverage(CGeom2DIPoint const* pPti1, CGeom2
       nPtiWeightAvgX = dRound(dWeight * nPti2X) + (dOtherWeight * nPti1X),
       nPtiWeightAvgY = dRound((dWeight * nPti2Y) + (dOtherWeight * nPti1Y));
 
-   return CGeom2DIPoint(nPtiWeightAvgX, nPtiWeightAvgY);   
+   return CGeom2DIPoint(nPtiWeightAvgX, nPtiWeightAvgY);
 }
 
 
@@ -650,11 +569,11 @@ CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
 ===============================================================================================================================*/
 CGeom2DPoint CSimulation::PtGetPerpendicular(CGeom2DPoint const* PtStart, CGeom2DPoint const* PtNext, double const dDesiredLength, int const nHandedness)
 {
-   double 
+   double
       dXLen = PtNext->dGetX() - PtStart->dGetX(),
       dYLen = PtNext->dGetY() - PtStart->dGetY(),
       dLength;
-      
+
    if (dXLen == 0)
       dLength = dYLen;
    else if (dYLen == 0)
@@ -688,18 +607,18 @@ CGeom2DPoint CSimulation::PtGetPerpendicular(CGeom2DPoint const* PtStart, CGeom2
 *==============================================================================================================================*/
 CGeom2DIPoint CSimulation::PtiGetPerpendicular(CGeom2DIPoint const* PtiStart, CGeom2DIPoint const* PtiNext, double const dDesiredLength, int const nHandedness)
 {
-   double 
+   double
       dXLen = PtiNext->nGetX() - PtiStart->nGetX(),
       dYLen = PtiNext->nGetY() - PtiStart->nGetY(),
       dLength;
-      
+
    if (dXLen == 0)
       dLength = dYLen;
    else if (dYLen == 0)
       dLength = dXLen;
    else
       dLength = hypot(dXLen, dYLen);
-  
+
    double dScaleFactor = dDesiredLength / dLength;
 
    // The difference vector is (dXLen, dYLen), so the perpendicular difference vector is (-dYLen, dXLen) or (dYLen, -dXLen)
@@ -731,12 +650,12 @@ double CSimulation::dAngleSubtended(CGeom2DIPoint const* pPtiA, CGeom2DIPoint co
       nYDistBtoA = pPtiB->nGetY() - pPtiA->nGetY(),
       nXDistCtoA = pPtiC->nGetX() - pPtiA->nGetX(),
       nYDistCtoA = pPtiC->nGetY() - pPtiA->nGetY();
-      
+
    double
       dDotProduct = nXDistBtoA * nXDistCtoA + nYDistBtoA * nYDistCtoA,
       dPseudoCrossProduct = nXDistBtoA * nYDistCtoA - nYDistBtoA * nXDistCtoA,
       dAngle = atan2(dPseudoCrossProduct, dDotProduct);
-      
+
    return dAngle;
 }
 
@@ -1140,19 +1059,19 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
       if (! bWriteRasterGISInt(PLOT_INTERVENTION_CLASS, &PLOT_INTERVENTION_CLASS_TITLE))
          return false;
    }
-   
+
    if (m_bInterventionHeightSave)
    {
       if (! bWriteRasterGISFloat(PLOT_INTERVENTION_HEIGHT, &PLOT_INTERVENTION_HEIGHT_TITLE))
          return false;
    }
-   
+
    if (m_bShadowZoneCodesSave)
    {
       if (! bWriteRasterGISInt(PLOT_SHADOW_ZONE_CODES, &PLOT_SHADOW_ZONE_CODES_TITLE))
          return false;
    }
-   
+
    return true;
 }
 
@@ -1241,7 +1160,7 @@ bool CSimulation::bSaveAllVectorGISFiles(void)
       if (! bWriteVectorGIS(PLOT_SHADOW_ZONE_BOUNDARY, &PLOT_SHADOW_ZONE_BOUNDARY_TITLE))
          return false;
    }
-   
+
    return true;
 }
 
@@ -1303,7 +1222,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetInterventionHeight();
                break;
             }
-            
+
             case (PLOT_RASTER_POLYGON):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
@@ -1601,29 +1520,29 @@ int CSimulation::nGetOppositeDirection(int const nDirection)
    {
       case NORTH:
          return SOUTH;
-         
+
       case NORTH_EAST:
          return SOUTH-WEST;
-         
-      case EAST:      
+
+      case EAST:
          return WEST;
-         
+
       case SOUTH_EAST:
          return NORTH-WEST;
-         
+
       case SOUTH:
          return NORTH;
-         
+
       case SOUTH_WEST:
          return NORTH-EAST;
-         
+
       case WEST:
          return EAST;
-         
+
       case NORTH_WEST:
          return SOUTH-EAST;
    }
-  
+
    // Should never get here
    return NO_DIRECTION;
 }

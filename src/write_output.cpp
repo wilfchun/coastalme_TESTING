@@ -54,7 +54,7 @@ void CSimulation::WriteStartRunDetails(void)
 {
    // Set the Out file output format to fixed point
    OutStream << setiosflags(ios::fixed);
-   
+
    // Start outputting stuff
    OutStream << PROGNAME << " for " << PLATFORM << " " << strGetBuild() << " on " << strGetComputerName() << endl << endl;
 
@@ -226,7 +226,7 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << " GDAL Intervention Class file data type                    \t: " << m_strGDALICDataType << endl;
       OutStream << endl;
    }
-   
+
    if (! m_strInterventionHeightFile.empty())
    {
       OutStream << " Intervention Height file                                  \t: " << m_strInterventionHeightFile << endl;
@@ -336,6 +336,7 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << "COVE";
    else if (m_nWavePropagationModel == MODEL_CSHORE)
       OutStream << "CShore";
+   OutStream << endl;
    OutStream << " Density of sea water                                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(0) << m_dSeaWaterDensity << " kg/m^3" << endl;
    OutStream << " Initial still water level                                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dOrigSWL << " m" << endl;
    OutStream << " Final still water level                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dFinalSWL << " m" << endl;
@@ -343,10 +344,10 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << " Deep water wave height                                    \t: " << m_dDeepWaterWaveHeight << " m" << endl;
    OutStream << " Deep water wave orientation                               \t: " << m_dDeepWaterWaveOrientation << " degrees" << endl;
    OutStream << " Start depth for wave calcs (*deep water wave height)      \t: " << m_dWaveDepthRatioForWaveCalcs << endl;
-   OutStream << "*Depth of closure                                          \t: " << m_dDepthOfClosure << " m" << endl;
+   OutStream << "*Depth of closure                                          \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dDepthOfClosure << " m" << endl;
 //    OutStream << " Tide data file                                            \t: " << m_strTideDataFile << endl;
    OutStream << " Do coast platform erosion?                                \t: " << (m_bDoCoastPlatformErosion ? "Y": "N") << endl;
-   OutStream << " R value                                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::scientific) << m_dR << endl;
+   OutStream << " R value                                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(2) << m_dR << endl;
    OutStream << " Handling of beach sediment at grid edges                  \t: ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
       OutStream << "closed";
@@ -361,18 +362,18 @@ void CSimulation::WriteStartRunDetails(void)
    else if (m_nBeachErosionDepositionEquation == EQUATION_KAMPHUIS)
       OutStream << "Kamphuis";
    OutStream << endl;
-   OutStream << " Median particle size of fine sediment                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::scientific) << m_dD50Fine << " mm" << endl;
-   OutStream << " Median particle size of sand sediment                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::scientific) << m_dD50Sand << " mm" << endl;
-   OutStream << " Median particle size of coarse sediment                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::scientific) << m_dD50Coarse << " mm" << endl;
-   OutStream << " Beach sediment density                                    \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::scientific) << m_dBeachSedimentDensity << " kg/m^3" << endl;
-   OutStream << " Beach sediment porosity                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::scientific) << m_dBeachSedimentPorosity << endl;
+   OutStream << " Median particle size of fine sediment                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dD50Fine << " mm" << endl;
+   OutStream << " Median particle size of sand sediment                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dD50Sand << " mm" << endl;
+   OutStream << " Median particle size of coarse sediment                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dD50Coarse << " mm" << endl;
+   OutStream << " Beach sediment density                                    \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dBeachSedimentDensity << " kg/m^3" << endl;
+   OutStream << " Beach sediment porosity                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dBeachSedimentPorosity << endl;
    OutStream << " Fine-sized sediment relative erodibility                  \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dFineErodibility << endl;
    OutStream << " Sand-sized sediment relative erodibility                  \t: " << resetiosflags(ios::floatfield) << m_dSandErodibility << endl;
    OutStream << " Coarse-sized sediment relative erodibility                \t: " << m_dCoarseErodibility << endl;
    if (m_nBeachErosionDepositionEquation == EQUATION_CERC)
-      OutStream << " Transport parameter KLS for CERC equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::scientific) << m_dKLS << endl;
+      OutStream << " Transport parameter KLS for CERC equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dKLS << endl;
    if (m_nBeachErosionDepositionEquation == EQUATION_KAMPHUIS)
-      OutStream << " Transport parameter for Kamphuis equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::scientific) << m_dKamphuis << endl;
+      OutStream << " Transport parameter for Kamphuis equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dKamphuis << endl;
    OutStream << " Height of Dean profile start above SWL                    \t: " << m_dDeanProfileStartAboveSWL << " m" << endl;
    OutStream << " Do cliff collapse?                                        \t: " << (m_bDoCliffCollapse ? "Y": "N") << endl;
    OutStream << " Cliff erodibility                                         \t: " << m_dCliffErodibility << endl;
@@ -453,7 +454,7 @@ bool CSimulation::bWritePerTimestepResults(void)
    OutStream << setw(5) << m_ulTimestep;
    OutStream << setw(7) << m_dSimElapsed;                            // In hours
    OutStream << resetiosflags(ios::floatfield);
-   OutStream << setiosflags(ios::scientific) << setprecision(0);
+   OutStream << setiosflags(ios::fixed) << setprecision(0);
    OutStream << setw(8) << m_dSimElapsed / (24 * 365.25);            // In years
 
    // Output average sea depth (m) per sea cell =================================================================================
@@ -717,14 +718,14 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
 
    strFName.append("profile_");
    ststrTmp << FillToWidth('0', 3) << nProfile;
-   strFName.append(ststrTmp.str()); 
-   
+   strFName.append(ststrTmp.str());
+
    strFName.append("_timestep_");
    ststrTmp.clear();
    ststrTmp.str(std::string());
    ststrTmp << FillToWidth('0', 4) << m_ulTimestep;
    strFName.append(ststrTmp.str());
-   
+
    strFName.append(".csv");
 
    ofstream OutProfStream;
@@ -796,13 +797,13 @@ bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int
    strFName.append(ststrTmp.str());
 
    strFName.append((nDirection == 0 ? "_F" : "_B"));
-   
+
    strFName.append("_timestep_");
    ststrTmp.clear();
    ststrTmp.str(std::string());
    ststrTmp << FillToWidth('0', 4) << m_ulTimestep;
    strFName.append(ststrTmp.str());
-   
+
    strFName.append(".csv");
 
    ofstream OutProfStream;
@@ -961,18 +962,18 @@ int CSimulation::nWriteEndRunDetails(void)
 
    // Finally calculate performance details
    OutStream << PERFORMHEAD << endl;
-   
+
    // Get the time that the run dended
    m_tSysEndTime = std::time(nullptr);
-   
+
    OutStream << "Run ended at " << std::put_time(std::localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;
    OutStream << "Time simulated: " << strDispSimTime(m_dSimDuration) << endl << endl;
 
    // Output averages for on-profile and between-profile potential shore platform erosion, ideally these are roughly equal
    LogStream << setiosflags(ios::fixed);
    LogStream << endl;
-   LogStream << "On-profile average potential shore platform erosion = " << (m_ulTotPotentialPlatformErosionOnProfiles > 0 ? m_dTotPotErosionOnProfiles / m_ulTotPotentialPlatformErosionOnProfiles : 0) << " mm (n = " << m_ulTotPotentialPlatformErosionOnProfiles << ")" << endl;
-   LogStream << "Between-profile average potential shore platform erosion = " << (m_ulTotPotentialPlatformErosionBetweenProfiles > 0 ? m_dTotPotErosionBetweenProfiles / m_ulTotPotentialPlatformErosionBetweenProfiles : 0) << " mm (n = " << m_ulTotPotentialPlatformErosionBetweenProfiles << ")" << endl;
+   LogStream << "On-profile average potential shore platform erosion = " << (m_ulTotPotentialPlatformErosionOnProfiles > 0 ? m_dTotPotentialPlatformErosionOnProfiles / m_ulTotPotentialPlatformErosionOnProfiles : 0) << " mm (n = " << m_ulTotPotentialPlatformErosionOnProfiles << ")" << endl;
+   LogStream << "Between-profile average potential shore platform erosion = " << (m_ulTotPotentialPlatformErosionBetweenProfiles > 0 ? m_dTotPotentialPlatformErosionBetweenProfiles / m_ulTotPotentialPlatformErosionBetweenProfiles : 0) << " mm (n = " << m_ulTotPotentialPlatformErosionBetweenProfiles << ")" << endl;
    LogStream << endl;
 
 #if ! defined RANDCHECK
