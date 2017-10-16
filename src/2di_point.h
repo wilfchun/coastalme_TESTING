@@ -36,6 +36,8 @@ public:
    CGeom2DIPoint(int const, int const);
    int nGetX(void) const;
    int nGetY(void) const;
+   int* pnGetX();
+   int* pnGetY();
    void SetX(int const);
    void SetY(int const);
 //    void SetXY(int const, int const);

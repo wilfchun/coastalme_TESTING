@@ -525,7 +525,7 @@ private:
    int nCreateGridEdgeProfile(bool const, int const, int&);
    int nPutAllProfilesOntoGrid(void);
    int nModifyAllIntersectingProfiles(void);
-   static bool bCheckForIntersection(CGeomProfile* const, CGeomProfile* const, int&, int&, double&, double&, double&, double&);
+   bool bCheckForIntersection(CGeomProfile* const, CGeomProfile* const, int&, int&, double&, double&, double&, double&);
    void MergeProfilesAtFinalLineSegments(int const, int const, int const, int const, int const, double const, double const, double const, double const);
    void TruncateOneProfileRetainOtherProfile(int const, int const, int const, double const, double const, int const, int const, bool const);
    int nInsertPointIntoProfilesIfNeededThenUpdate(int const, int const, double const, double const, int const, int const, int const, bool const);

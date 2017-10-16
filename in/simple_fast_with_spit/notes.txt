@@ -1,0 +1,6 @@
+Notes re. DEM for spit stuff
+
+1. Started with two bays, extracted contours, modified these using node shifting tool, made one_bay_curve.shp
+2. Converted modified line contours to points using Vector -> Node Extract, created one_bay_curve_points.shp
+3. Used SAGA-GIS (in QGIS Processing Toolbox) Multilevel bspline interpolation (with b spline refinement, threshold error 5, extents 0, 251, 501, , and resolution 1.00)
+4. Saved this as curve_to_north.tif (columns 250 rows 500, origin 1, 501)

@@ -248,13 +248,7 @@ bool CSimulation::bIsWithinValidGrid(CGeom2DIPoint const* Pti) const
 ===============================================================================================================================*/
 void CSimulation::KeepWithinValidGrid(CGeom2DIPoint const* Pti0, CGeom2DIPoint* Pti1) const
 {
-   int
-      nX0 = Pti0->nGetX(),
-      nY0 = Pti0->nGetY(),
-      nX1 = Pti1->nGetX(),
-      nY1 = Pti1->nGetY();
-
-   KeepWithinValidGrid(nX0, nY0, nX1, nY1);
+   KeepWithinValidGrid(Pti0->nGetX(), Pti0->nGetY(), *Pti1->pnGetX(), *Pti1->pnGetY());
 }
 
 

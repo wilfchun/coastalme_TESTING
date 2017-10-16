@@ -51,6 +51,18 @@ int CGeom2DIPoint::nGetY(void) const
    return nY;
 }
 
+//! Returns a reference to the CGeom2DIPoint object's integer X co-ordinate
+int* CGeom2DIPoint::pnGetX(void)
+{
+   return &nX;
+}
+
+//! Returns a reference to the CGeom2DIPoint object's integer Y co-ordinate
+int* CGeom2DIPoint::pnGetY(void)
+{
+   return &nY;
+}
+
 //! The integer parameter sets a value for the CGeom2DIPoint object's X co-ordinate
 void CGeom2DIPoint::SetX(int const nNewX)
 {

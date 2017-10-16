@@ -81,7 +81,20 @@ int CSimulation::nCreateAllPolygons(void)
                bool bMeetsAtAPoint = false;
                CGeom2DPoint PtCoastwardTip;
 
-               // Now check to see if the two normals do meet i.e. if they are concident
+//                // DEBUG CODE =============================
+//                CGeom2DPoint PtPrevEndTmp = *pPrevProfile->pPtGetPointInProfile(nPrevProfileEnd);
+//                double
+//                   dXTmp = dExtCRSXToGridX(PtPrevEndTmp.dGetX()),
+//                   dYTmp = dExtCRSYToGridY(PtPrevEndTmp.dGetY());
+//                assert(bIsWithinValidGrid(dXTmp, dYTmp));
+//
+//                CGeom2DPoint PtThisEndTmp = *pThisProfile->pPtGetPointInProfile(nThisProfileEnd);
+//                dXTmp = dExtCRSXToGridX(PtThisEndTmp.dGetX());
+//                dYTmp = dExtCRSYToGridY(PtThisEndTmp.dGetY());
+//                assert(bIsWithinValidGrid(dXTmp, dYTmp));
+//                // DEBUG CODE =============================
+
+               // Now check to see if the two normals do meet i.e. if they are coincident
                if (pThisProfile->bFindProfileInCoincidentProfiles(nPrevProfile))
                {
                   // Yes they do meet
@@ -216,6 +229,10 @@ void CSimulation::RasterizePolygonJoiningLine(CGeom2DPoint const* pPt1, CGeom2DP
    double
       dXEnd = dExtCRSXToGridX(pPt2->dGetX()),
       dYEnd = dExtCRSYToGridY(pPt2->dGetY());
+
+   // Safety check, in case the two points are identical (can happen due to rounding errors)
+   if ((bFPIsEqual(dXStart, dXEnd, TOLERANCE)) && (bFPIsEqual(dYStart, dYEnd, TOLERANCE)))
+      return;
 
    // Interpolate between cells by a simple DDA line algorithm, see http://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm) Note that Bresenham's algorithm gave occasional gaps
    double

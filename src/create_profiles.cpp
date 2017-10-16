@@ -522,7 +522,7 @@ int CSimulation::nCreateNormalProfile(int const nCoast, int const nProfileStartP
    pProfile->AppendLineSegment();
    pProfile->AppendCoincidentProfileToLineSegments(make_pair(nProfile, 0));
 
-//    LogStream << setiosflags(ios::fixed) << m_ulTimestep << ": profile " << nProfile << " created at point " << nProfileStartPoint << " from [" << PtStart.dGetX() << "][" << PtStart.dGetY() << "] to [" << PtEnd.dGetX() << "][" << PtEnd.dGetY() << "]" << endl;
+   LogStream << setiosflags(ios::fixed) << m_ulTimestep << ": profile " << nProfile << " created at point " << nProfileStartPoint << " from [" << PtStart.dGetX() << "][" << PtStart.dGetY() << "] to [" << PtEnd.dGetX() << "][" << PtEnd.dGetY() << "]" << endl;
    return RTN_OK;
 }
 
@@ -677,7 +677,6 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
 
       // Also store the same external ccordinatespoint in this 'special' profile's coastline-normal vector (note that this will contain many points, whereas the coastline-normal vector of ordinary profiles contains only the two start and end points
       pProfile->AppendPointInProfile(&Pt);
-
    }
 
    // Create the profile's CGeomMultiLine then set nProfile as the only co-incident profile of the only line segment
@@ -765,15 +764,16 @@ int CSimulation::nGetCoastNormalEndPoint(int const nCoast, int const nStartCoast
    CGeom2DIPoint PtiEnd(dExtCRSXToGridX(pPtEnd->dGetX()), dExtCRSYToGridY(pPtEnd->dGetY()));
    if (! bIsWithinValidGrid(&PtiEnd))
    {
+      // The end point is off the grid, so constrain it to be within the valid grid
       CGeom2DIPoint PtiStart(dExtCRSXToGridX(pPtStart->dGetX()), dExtCRSYToGridY(pPtStart->dGetY()));
       KeepWithinValidGrid(&PtiStart, &PtiEnd);
+
       pPtEnd->SetX(dGridCentroidXToExtCRSX(PtiEnd.nGetX()));
       pPtEnd->SetY(dGridCentroidYToExtCRSY(PtiEnd.nGetY()));
 
-//       LogStream << m_ulTimestep << ": INVALID profile endpoint [" << PtiGrid.nGetX() << "][" << PtiGrid.nGetY() << "] = {" << pPtEnd->dGetX() << ", " << pPtEnd->dGetY() << "} is outside grid. The profile starts at coastline point " << nStartCoastPoint << " = {" << pPtStart->dGetX() << ", " << pPtStart->dGetY() << "}" << endl;
+//       LogStream << m_ulTimestep << ": changed endpoint for profile, is now [" << PtiEnd.nGetX() << "][" << PtiEnd.nGetY() << "] = {" << pPtEnd->dGetX() << ", " << pPtEnd->dGetY() << "}. The profile starts at coastline point " << nStartCoastPoint << " = {" << pPtStart->dGetX() << ", " << pPtStart->dGetY() << "}" << endl;
 //       return RTN_ERR_OFFGRID_ENDPOINT;
    }
-
 
    return RTN_OK;
 }
@@ -1019,8 +1019,8 @@ int CSimulation::nModifyAllIntersectingProfiles(void)
                         nFirstProfileLineSegments = pFirstProfile->nGetNumLineSegments(),
                         nSecondProfileLineSegments = pSecondProfile->nGetNumLineSegments();
 
-   //                   assert(nProf1LineSeg < nFirstProfileLineSegments);
-   //                   assert(nProf2LineSeg < nSecondProfileLineSegments);
+//                   assert(nProf1LineSeg < nFirstProfileLineSegments);
+//                   assert(nProf2LineSeg < nSecondProfileLineSegments);
 
                      //  Next check whether the point of intersection is on the final line segment of both profiles
                      if ((nProf1LineSeg == (nFirstProfileLineSegments-1)) && (nProf2LineSeg == (nSecondProfileLineSegments-1)))
@@ -1028,12 +1028,24 @@ int CSimulation::nModifyAllIntersectingProfiles(void)
                         // Yes, the point of intersection is on the final line segment of both profiles, so merge the profiles seaward of the point of intersection
                         MergeProfilesAtFinalLineSegments(nCoast, nFirstProfile, nSecondProfile, nFirstProfileLineSegments, nSecondProfileLineSegments, dIntersectX, dIntersectY, dAvgEndX, dAvgEndY);
 
-   //                     LogStream << m_ulTimestep << ": " << ((nDirection == DIRECTION_DOWNCOAST) ? "down" : "up") << "-coast search, end-segment intersection between profiles {" << nFirstProfile << "} and {" << nSecondProfile << "} at [" << dIntersectX << ", " << dIntersectY << "] in line segment [" << nProf1LineSeg << "] of " << nFirstProfileLineSegments << ", and line segment [" << nProf2LineSeg << "] of " << nSecondProfileLineSegments << ", respectively" << endl;
+//                         LogStream << m_ulTimestep << ": " << ((nDirection == DIRECTION_DOWNCOAST) ? "down" : "up") << "-coast search, end-segment intersection between profiles {" << nFirstProfile << "} and {" << nSecondProfile << "} at [" << dIntersectX << ", " << dIntersectY << "] in line segment [" << nProf1LineSeg << "] of " << nFirstProfileLineSegments << ", and line segment [" << nProf2LineSeg << "] of " << nSecondProfileLineSegments << ", respectively" << endl;
+
+//                         // DEBUG CODE =============================
+//                         int nSizeTmp = pFirstProfile->nGetProfileSize();
+//                         CGeom2DPoint PtEndTmp = *pFirstProfile->pPtGetPointInProfile(nSizeTmp-1);
+//
+//                         LogStream << m_ulTimestep << ": end of first profile (" << nFirstProfile << ") is point " << nSizeTmp-1 << " at [" << dExtCRSXToGridX(PtEndTmp.dGetX()) << "][" << dExtCRSYToGridY(PtEndTmp.dGetY()) << "} = {" << PtEndTmp.dGetX() << ", " << PtEndTmp.dGetY() << "}" << endl;
+//
+//                         nSizeTmp = pSecondProfile->nGetProfileSize();
+//                         PtEndTmp = *pSecondProfile->pPtGetPointInProfile(nSizeTmp-1);
+//
+//                         LogStream << m_ulTimestep << ": end of second profile (" << nSecondProfile << ") is point " << nSizeTmp-1 << " at [" << dExtCRSXToGridX(PtEndTmp.dGetX()) << "][" << dExtCRSYToGridY(PtEndTmp.dGetY()) << "} = {" << PtEndTmp.dGetX() << ", " << PtEndTmp.dGetY() << "}" << endl;
+//                         // DEBUG CODE =============================
                      }
                      else
                      {
                         // The profiles intersect, but the point of intersection is not on the final line segment of both profiles. One of the profiles will be truncated, the other profile will be retained
-   //                     LogStream << m_ulTimestep << ": " << ((nDirection == DIRECTION_DOWNCOAST) ? "down" : "up") << "-coast search, intersection (NOT both end segments) between profiles {" << nFirstProfile << "} and {" << nSecondProfile << "} at [" << dIntersectX << ", " << dIntersectY << "] in line segment [" << nProf1LineSeg << "] of " << nFirstProfileLineSegments << ", and line segment [" << nProf2LineSeg << "] of " << nSecondProfileLineSegments << ", respectively" << endl;
+//                         LogStream << m_ulTimestep << ": " << ((nDirection == DIRECTION_DOWNCOAST) ? "down" : "up") << "-coast search, intersection (NOT both end segments) between profiles {" << nFirstProfile << "} and {" << nSecondProfile << "} at [" << dIntersectX << ", " << dIntersectY << "] in line segment [" << nProf1LineSeg << "] of " << nFirstProfileLineSegments << ", and line segment [" << nProf2LineSeg << "] of " << nSecondProfileLineSegments << ", respectively" << endl;
 
                         // Decide which profile to truncate, and which to retain
                         if (nFirstProfileLineSegments > nSecondProfileLineSegments)
@@ -1060,7 +1072,7 @@ int CSimulation::nModifyAllIntersectingProfiles(void)
 //                      nProfile2NumSegments = pSecondProfile->nGetNumLineSegments(),
 //                      nProfile1Size = pFirstProfile->nGetProfileSize(),
 //                      nProfile2Size = pSecondProfile->nGetProfileSize();
-
+//
 //                   assert(pFirstProfile->nGetNumLineSegments() > 0);
 //                   assert(pSecondProfile->nGetNumLineSegments() > 0);
 //                   assert(nProfile1Size == nProfile1NumSegments+1);
@@ -1143,7 +1155,7 @@ bool CSimulation::bCheckForIntersection(CGeomProfile* const pVProfile1, CGeomPro
             nProfile1LineSegment = i;
             nProfile2LineSegment = j;
 
-      //      LogStream << "\t" << "INTERSECTION dX2 = " << dX2 << " dX4 = " << dX4 << " dY2 = " << dY2 << " dY4 = " << dY4 << endl;
+//             LogStream << "\t" << "INTERSECTION dX2 = " << dX2 << " dX4 = " << dX4 << " dY2 = " << dY2 << " dY4 = " << dY4 << endl;
             return true;
          }
       }
