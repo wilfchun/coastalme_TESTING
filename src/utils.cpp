@@ -233,6 +233,7 @@ void CSimulation::AnnounceLicence(void)
    cout << INITNOTICE << endl;
 }
 
+
 /*==============================================================================================================================
 
  Given a string containing time units, this returns the appropriate multiplier
@@ -269,6 +270,7 @@ double CSimulation::dGetTimeMultiplier(string const* strIn)
 
    return 0;
 }
+
 
 /*==============================================================================================================================
 
@@ -311,6 +313,7 @@ int CSimulation::nDoSimulationTimeMultiplier(string const* strIn)
    return RTN_OK;
 }
 
+
 /*==============================================================================================================================
 
  This finds time units in a string
@@ -329,6 +332,7 @@ int CSimulation::nDoTimeUnits(string const* strIn)
    else
       return TIME_UNKNOWN;
 }
+
 
 /*==============================================================================================================================
 
@@ -353,6 +357,7 @@ bool CSimulation::bOpenLogFile(void)
 
    return true;
 }
+
 
 /*==============================================================================================================================
 
@@ -409,10 +414,10 @@ void CSimulation::AnnounceReadRasterFiles(void)
  Now reading vector GIS files
 
 ==============================================================================================================================*/
-// void CSimulation::AnnounceReadVectorFiles(void)
-// {
-//    cout << READVECTORFILES << endl;
-// }
+void CSimulation::AnnounceReadVectorFiles(void)
+{
+   cout << READVECTORFILES << endl;
+}
 
 
 /*==============================================================================================================================
@@ -458,11 +463,28 @@ void CSimulation::AnnounceReadIHGIS(void) const
 {
    // Tell the user what is happening
    if (! m_strInterventionHeightFile.empty())
-      #ifdef _WIN32
+#ifdef _WIN32
       cout << READIHFILE << pstrChangeToForwardSlash(&m_strInterventionHeightFile) << endl;
-   #else
-   cout << READIHFILE << m_strInterventionHeightFile << endl;
-   #endif
+#else
+      cout << READIHFILE << m_strInterventionHeightFile << endl;
+#endif
+}
+
+
+/*==============================================================================================================================
+
+ Tells the user that we are now reading the deep water wave values GIS file
+
+==============================================================================================================================*/
+void CSimulation::AnnounceReadDeepWaterWaveValuesGIS(void) const
+{
+   // Tell the user what is happening
+   if (! m_strDeepWaterWaveValuesFile.empty())
+#ifdef _WIN32
+      cout << READDWWVFILE << pstrChangeToForwardSlash(&m_strDeepWaterWaveValuesFile) << endl;
+#else
+      cout << READDWWVFILE << m_strDeepWaterWaveValuesFile << endl;
+#endif
 }
 
 
@@ -577,6 +599,7 @@ void CSimulation::AnnounceReadInitialCoarseConsSedGIS(int const nLayer) const
 #endif
 }
 
+
 /*==============================================================================================================================
 
  Now reading tide data file
@@ -591,6 +614,7 @@ void CSimulation::AnnounceReadInitialCoarseConsSedGIS(int const nLayer) const
 // #endif
 // }
 
+
 /*==============================================================================================================================
 
  Now reading the SCAPE shape function file
@@ -600,6 +624,7 @@ void CSimulation::AnnounceReadSCAPEShapeFunctionFile(void)
 {
    cout << READSCAPESHAPEFUNCTIONFILE << endl;
 }
+
 
 /*==============================================================================================================================
 
@@ -622,6 +647,7 @@ void CSimulation::AnnounceIsRunning(void)
 {
    cout << RUNNOTICE << endl;
 }
+
 
 /*==============================================================================================================================
 
@@ -854,6 +880,7 @@ string CSimulation::strListRasterFiles(void) const
    return strTmp;
 }
 
+
 /*==============================================================================================================================
 
  Return a space-separated string containing the names of the vector GIS output files
@@ -947,6 +974,7 @@ string CSimulation::strListVectorFiles(void) const
    return strTmp;
 }
 
+
 /*==============================================================================================================================
 
  Return a space-separated string containing the names of the time series output files
@@ -997,6 +1025,7 @@ string CSimulation::strListTSFiles(void) const
 
    return strTmp;
 }
+
 
 /*==============================================================================================================================
 
@@ -1254,6 +1283,7 @@ void CSimulation::UpdateGrandTotals(void)
    m_ldGTotMassBalanceDepositionError      += m_dThisTimestepMassBalanceDepositionError;
 }
 
+
 /*==============================================================================================================================
 
  Returns a string, hopefully giving the name of the computer on which the simulation is running
@@ -1278,6 +1308,7 @@ string CSimulation::strGetComputerName(void)
 
    return strComputerName;
 }
+
 
 /*==============================================================================================================================
 
@@ -1410,6 +1441,7 @@ void CSimulation::CalcTime(double const dRunLength)
       LogStream << setiosflags(ios::fixed) << setprecision(3) << dRunLength / dDuration << " x faster than reality" << endl;
    }
 }
+
 
 /*==============================================================================================================================
 
@@ -2126,6 +2158,7 @@ string CSimulation::pstrChangeToBackslash(string const* strIn)
    return strOut;
 }
 
+
 /*==============================================================================================================================
 
  Swaps all backslashes in the input string to forward slashes, leaving the original unchanged
@@ -2154,6 +2187,7 @@ string CSimulation::strTrimLeft(string const* strIn)
       return strIn->substr(nStartpos);
 }
 
+
 /*==============================================================================================================================
 
  Trims whitespace from the right side of a string, does not change the original string
@@ -2168,6 +2202,7 @@ string CSimulation::strTrimRight(string const* strIn)
    else
       return strIn->substr(0, nEndpos+1);
 }
+
 
 /*==============================================================================================================================
 
@@ -2193,6 +2228,7 @@ string CSimulation::strTrim(string const* strIn)
    return strTmp;
 }
 
+
 /*==============================================================================================================================
 
  Returns the lower case version of an string, leaving the original unchanged
@@ -2205,6 +2241,7 @@ string CSimulation::strToLower(string const* strIn)
    return strOut;
 }
 
+
 /*==============================================================================================================================
 
  Returns the upper case version of an string, leaving the original unchanged
@@ -2216,6 +2253,7 @@ string CSimulation::strToLower(string const* strIn)
 //    std::transform(strIn->begin(), strIn->end(), strOut.begin(), ::toupper);
 //    return strOut;
 // }
+
 
 /*==============================================================================================================================
 
@@ -2233,6 +2271,7 @@ string CSimulation::strRemoveSubstr(string* strIn, string const* strSub)
    return *strIn;
 }
 
+
 /*==============================================================================================================================
 
  These two functions are from http://stackoverflow.com/questions/236129/split-a-string-in-c They implement (approximately) Python's split() function. This first version puts the results into a pre-constructed string vector. It ignores empty items
@@ -2249,6 +2288,7 @@ vector<string>* CSimulation::strSplit(string const* s, char const delim, vector<
    }
    return elems;
 }
+
 
 /*==============================================================================================================================
 
@@ -2440,6 +2480,12 @@ double CSimulation::dSubtractProfiles(vector<double> const* pdVFirstProfile, vec
 ==============================================================================================================================*/
 void CSimulation::CalcDepthOfClosure(void)
 {
+   double dDeepWaterWaveHeight;
+   if (m_bSingleDeepWaterWaveValues)
+      dDeepWaterWaveHeight = m_dAllCellsDeepWaterWaveHeight;
+   else
+      dDeepWaterWaveHeight = m_dMaxUserInputWaveHeight;   
+   
    // TODO Calculate depth of closure using 'average of the maximum values observed during a typical year'
    //    dL = 2.28 * Hsx − (68.5 * Hsx^2 / (g * Tsx^2))
    // where:
@@ -2448,5 +2494,16 @@ void CSimulation::CalcDepthOfClosure(void)
    // from Hallermeier, R.J. (1978). Uses for a calculated limit depth to beach erosion. Proc. 16th Coastal Engineering Conf., ASCE, New York. Pp 1493 - 1512
    //
    // For the time being, and since we assume wave height and period constant just use the actual wave height and period to calculate the depth of closure
-   m_dDepthOfClosure = (2.28 * m_dDeepWaterWaveHeight) - (68.5 * m_dDeepWaterWaveHeight * m_dDeepWaterWaveHeight / (m_dG * m_dWavePeriod * m_dWavePeriod));
+   m_dDepthOfClosure = (2.28 * dDeepWaterWaveHeight) - (68.5 * dDeepWaterWaveHeight * dDeepWaterWaveHeight / (m_dG * m_dWavePeriod * m_dWavePeriod));
+}
+
+
+/*==============================================================================================================================
+
+ Tests a reference to a string to see if it is numeric (modified from https://tfetimes.com/c-determine-if-a-string-is-numeric/)
+
+==============================================================================================================================*/
+bool CSimulation::bIsNumeric(string const* strIn)
+{
+   return std::all_of(strIn->begin(), strIn->end(), ::isdigit);
 }

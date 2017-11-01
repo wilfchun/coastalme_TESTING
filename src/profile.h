@@ -46,19 +46,22 @@ private:
       m_bTruncated,
       m_bHitAnotherProfile;
    int
-      m_nNumCoastPoint;          // The coastline point at which this profile hits the coast (not necessarily coincident wih the profile start cell)
+      m_nNumCoastPoint;             // The coastline point at which this profile hits the coast (not necessarily coincident wih the profile start cell)
+   double
+      m_dDeepWaterWaveHeight,       // The wave height at the end of the profile
+      m_dDeepWaterWaveOrientation;  // The wave orientation at the end of the profile
 
    vector<CGeom2DIPoint>
-      m_VCellInProfile;         // In grid CRS, the integer coords of the cells 'under' this profile. NOTE Point zero is the same as 'cell marked as coastline' in coast object
+      m_VCellInProfile;             // In grid CRS, the integer coords of the cells 'under' this profile. NOTE Point zero is the same as 'cell marked as coastline' in coast object
 
    // The following have the same length as m_VCellInProfile
    vector<CGeom2DPoint>
-      m_VCellInProfileExtCRS;   // In external CRS, the coords of cells 'under' this profile
+      m_VCellInProfileExtCRS;       // In external CRS, the coords of cells 'under' this profile
 //    vector<bool>
 //       m_bVShared;                // Is this profile point part of a multi-line?
    vector<int>
-      m_VnCoastPolyToLeft,       // The ID of the CoastPolygon to the left (looking seaward)
-      m_VnCoastPolyToRight;      // The ID of the CoastPolygon to the right (looking seaward)
+      m_VnCoastPolyToLeft,          // The ID of the CoastPolygon to the left (looking seaward)
+      m_VnCoastPolyToRight;         // The ID of the CoastPolygon to the right (looking seaward)
 
 public:
    explicit CGeomProfile(int const);
@@ -128,6 +131,12 @@ public:
 //    vector<CGeom2DPoint>* PtVGetCellsInProfileExtCRS(void);
 
    int nGetCellGivenDepth(CGeomRasterGrid const*, double const);
+   
+   void SetDeepWaterWaveHeight(double const);
+   double dGetDeepWaterWaveHeight(void) const;
+   
+   void SetDeepWaterWaveOrientation(double const);
+   double dGetDeepWaterWaveOrientation(void) const;
 };
 #endif //PROFILE_H
 

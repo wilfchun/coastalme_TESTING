@@ -22,7 +22,10 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ===============================================================================================================================*/
-//#include <assert.h>
+#include <assert.h>
+
+#include <vector>
+#include <algorithm>
 
 #include "cme.h"
 #include "coast.h"
@@ -96,13 +99,14 @@ void CRWCoast::SetCoastlineExtCRS(CGeomLine const* pLCoast)
 
    m_VdCurvatureDetailed = vector<double>(nLen, DBL_NODATA);
    m_VdCurvatureSmooth = vector<double>(nLen, DBL_NODATA);
+   m_VdDeepWaterWaveHeight = vector<double>(nLen, DBL_NODATA);
+   m_VdDeepWaterWaveOrientation = vector<double>(nLen, DBL_NODATA);
    m_VdBreakingWaveHeight = vector<double>(nLen, DBL_NODATA);
-   m_VdBreakingWaveAngle = vector<double>(nLen, DBL_NODATA);
+   m_VdBreakingWaveOrientation = vector<double>(nLen, DBL_NODATA);
    m_VdDepthOfBreaking = vector<double>(nLen, DBL_NODATA);
    m_VdFluxOrientation = vector<double>(nLen, DBL_NODATA);
    m_VdWaveEnergy = vector<double>(nLen, DBL_NODATA);  
 }
-
 
 
 void CRWCoast::AppendPointToCoastlineExtCRS(double const dX, double const dY)
@@ -116,8 +120,10 @@ void CRWCoast::AppendPointToCoastlineExtCRS(double const dX, double const dY)
 
    m_VdCurvatureDetailed.push_back(DBL_NODATA);
    m_VdCurvatureSmooth.push_back(DBL_NODATA);
+   m_VdDeepWaterWaveHeight.push_back(DBL_NODATA);
+   m_VdDeepWaterWaveOrientation.push_back(DBL_NODATA);
    m_VdBreakingWaveHeight.push_back(DBL_NODATA);
-   m_VdBreakingWaveAngle.push_back(DBL_NODATA);
+   m_VdBreakingWaveOrientation.push_back(DBL_NODATA);
    m_VdDepthOfBreaking.push_back(DBL_NODATA);
    m_VdFluxOrientation.push_back(DBL_NODATA);
    m_VdWaveEnergy.push_back(DBL_NODATA);
@@ -335,14 +341,52 @@ int CRWCoast::nGetProfileAtAlongCoastlinePosition(int const n) const
    return m_VnProfileCoastIndex[n];
 }
 
+int CRWCoast::nGetDownCoastProfileNumber(int const nProfile) const
+{
+   // Return the number of the profile which is adjacent to and down-coast from the specified profile. It returns INT_NODATA if there is no valid up-coast profile
+   for (unsigned int n = 0; n < m_VnProfileCoastIndex.size()-1; n++)
+   {
+      if (nProfile == m_VnProfileCoastIndex[n])
+         return m_VnProfileCoastIndex[n + 1];
+   }
+   
+   // At end of m_VnProfileCoastIndex, so no down-coast profile
+   return INT_NODATA;
+}
+
 // int CRWCoast::nGetAlongCoastlineIndexOfProfile(int const nProfile)
 // {
-//    // Returns the along-coastline position of a coastline-normal profile
+//    // Returns the along-coastline index of a coastline-normal profile
 //    for (unsigned int n = 0; n < m_VnProfileCoastIndex.size(); n++)
 //       if (m_VnProfileCoastIndex[n] == nProfile)
 //          return n;
 //    return -1;
 // }
+
+
+void CRWCoast::SetDeepWaterWaveHeight(int const nCoastPoint, double const dHeight)
+{
+   // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveHeight.size()
+   m_VdDeepWaterWaveHeight[nCoastPoint] = dHeight;
+}
+
+double CRWCoast::dGetDeepWaterWaveHeight(int const nCoastPoint) const
+{
+   // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveHeight.size()
+   return m_VdDeepWaterWaveHeight[nCoastPoint];
+}
+
+void CRWCoast::SetDeepWaterWaveOrientation(int const nCoastPoint, double const dOrientation)
+{
+   // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveOrientation.size()
+   m_VdDeepWaterWaveOrientation[nCoastPoint] = dOrientation;
+}
+
+double CRWCoast::dGetDeepWaterWaveOrientation(int const nCoastPoint) const
+{
+   // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveOrientation.size()
+   return m_VdDeepWaterWaveOrientation[nCoastPoint];
+}
 
 
 void CRWCoast::SetBreakingWaveHeight(int const nCoastPoint, double const dHeight)
@@ -359,15 +403,16 @@ double CRWCoast::dGetBreakingWaveHeight(int const nCoastPoint) const
 
 void CRWCoast::SetBreakingWaveOrientation(int const nCoastPoint, double const dOrientation)
 {
-   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveAngle.size()
-   m_VdBreakingWaveAngle[nCoastPoint] = dOrientation;
+   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveOrientation.size()
+   m_VdBreakingWaveOrientation[nCoastPoint] = dOrientation;
 }
 
 double CRWCoast::dGetBreakingWaveOrientation(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveAngle.size()
-   return m_VdBreakingWaveAngle[nCoastPoint];
+   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveOrientation.size()
+   return m_VdBreakingWaveOrientation[nCoastPoint];
 }
+
 
 void CRWCoast::SetDepthOfBreaking(int const nCoastPoint, double const dDepth)
 {
@@ -381,6 +426,7 @@ double CRWCoast::dGetDepthOfBreaking(int const nCoastPoint) const
    return m_VdDepthOfBreaking[nCoastPoint];
 }
 
+
 void CRWCoast::SetBreakingDistance(int const nCoastPoint, int const nDist)
 {
    // NOTE no check to see if nCoastPoint < m_VnBreakingDistance.size()
@@ -393,6 +439,7 @@ int CRWCoast::nGetBreakingDistance(int const nCoastPoint) const
    return m_VnBreakingDistance[nCoastPoint];
 }
 
+
 void CRWCoast::SetFluxOrientation(int const nCoastPoint, double const dOrientation)
 {
    // NOTE no check to see if nCoastPoint < m_VdFluxOrientation.size()
@@ -404,6 +451,7 @@ double CRWCoast::dGetFluxOrientation(int const nCoastPoint) const
    // NOTE no check to see if nCoastPoint < m_VdFluxOrientation.size()
    return m_VdFluxOrientation[nCoastPoint];
 }
+
 
 void CRWCoast::SetWaveEnergy(int const nCoastPoint, double const dEnergy)
 {

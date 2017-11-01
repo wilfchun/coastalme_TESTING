@@ -119,7 +119,8 @@ CSimulation::CSimulation(void)
    m_bGDALCanWriteFloat                            =
    m_bGDALCanWriteInt32                            =
    m_bScaleRasterOutput                            =
-   m_bWorldFile                                    = false;
+   m_bWorldFile                                    =
+   m_bSingleDeepWaterWaveValues                    = false;
 
    m_bGDALCanCreate                                = true;
 
@@ -211,8 +212,9 @@ CSimulation::CSimulation(void)
    m_dC_0                                       =
    m_dL_0                                       =
    m_dWaveDepthRatioForWaveCalcs                =
-   m_dDeepWaterWaveHeight                       =
-   m_dDeepWaterWaveOrientation                  =
+   m_dAllCellsDeepWaterWaveHeight               =
+   m_dAllCellsDeepWaterWaveOrientation          =
+   m_dMaxUserInputWaveHeight                    =   
    m_dR                                         =
    m_dD50Fine                                   =
    m_dD50Sand                                   =
@@ -485,6 +487,8 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    if (nRet != RTN_OK)
       return nRet;
 
+   m_ulNumCells = m_nXGridMax * m_nYGridMax;
+   
    // Mark edge cells
    MarkEdgeCells();
 
@@ -590,21 +594,17 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          return (nRet);
    }
 
-   // May wish to read in some vector files someday
-/*   AnnounceReadVectorFiles();
-   if (! m_strInitialCoastlineFile.empty())
+   if (! m_bSingleDeepWaterWaveValues)
    {
-      AnnounceReadInitialCoastlineGIS();
-
-      // Create a new coastline object
-      CRWCoast CoastTmp;
-      m_VCoast.push_back(CoastTmp);
+      // We are reading deep water wave height and orientation from a file of vector points
+      AnnounceReadVectorFiles();
+      AnnounceReadDeepWaterWaveValuesGIS();
 
       // Read in
-      nRet = nReadVectorGISData(COAST_VEC);
+      nRet = nReadVectorGISData(DEEP_WATER_WAVE_VALUES_VEC);
       if (nRet != RTN_OK)
          return (nRet);
-   } */
+   }
 
    // Read in the tide data
 //    if (! m_strTideDataFile.empty())
@@ -635,7 +635,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    }
 
    // Calculate the initial depth of closure
-   CalcDepthOfClosure();
+//    CalcDepthOfClosure();
 
    // Write beginning-of-run information to Out and Log files
    WriteStartRunDetails();
@@ -644,7 +644,6 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    AnnounceInitializing();
 
    // Misc initialization calcs
-   m_ulNumCells = m_nXGridMax * m_nYGridMax;
    m_nCoastMax = COAST_LENGTH_MAX * tMax(m_nXGridMax, m_nYGridMax);                                        // Arbitrary but probably OK
    m_nCoastMin = COAST_LENGTH_MIN_X_PROF_SPACE * m_dCoastNormalAvgSpacing / m_dCellSide;                   // Ditto
    m_nCoastCurvatureInterval = tMax(dRound(m_dCoastNormalAvgSpacing / (m_dCellSide * 2)), 2.0);            // Ditto
@@ -772,6 +771,11 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //       LogStream << "After marking polygon cells, N cells with zero polygon ID = " << nPoly0 << endl;
 
       // PropagateWind();
+      
+      // Give every coast point a value for deep water wave height and direction
+      nRet = nSetAllCoastpointDeepWaterWaveValues();
+      if (nRet != RTN_OK)
+         return nRet;
 
       // Propagate waves and define the active zone, also locate wave shadow zones
       nRet = nDoAllPropagateWaves();

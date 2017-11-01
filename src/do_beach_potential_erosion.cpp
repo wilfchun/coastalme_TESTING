@@ -186,7 +186,6 @@ void CSimulation::DoAllPotentialBeachErosion(void)
                {
                   double dBeachSlope = dAvgBreakingDepth / dAvgBreakingDist;
 
-
                   double dD50 = pPolygon->dGetAvgUnconsD50();
                   if (dD50 > 0)
                      // Note that we use a calibration constant here (m_dKamphuis)

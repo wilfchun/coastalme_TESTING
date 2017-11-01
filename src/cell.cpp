@@ -46,6 +46,8 @@ CGeomCell::CGeomCell()
    m_dTotWaveHeight(0),
    m_dWaveOrientation(DBL_NODATA),
    m_dTotWaveOrientation(DBL_NODATA),
+   m_dDeepWaterWaveHeight(DBL_NODATA),
+   m_dDeepWaterWaveOrientation(DBL_NODATA),   
    m_dBeachProtectionFactor(DBL_NODATA),
    m_dSuspendedSediment(0),
    m_dTotSuspendedSediment(0),
@@ -602,6 +604,38 @@ double CGeomCell::dGetWaveOrientation(void) const
 double CGeomCell::dGetTotWaveOrientation(void) const
 {
    return m_dTotWaveOrientation;
+}
+
+//! Sets the deep water wave height on this cell
+void CGeomCell::SetDeepWaterWaveHeight(double const dWaveHeight)
+{
+   m_dDeepWaterWaveHeight = dWaveHeight;
+}
+
+//! Returns the deep water wave height on this cell
+double CGeomCell::dGetDeepWaterWaveHeight(void) const
+{
+   return m_dDeepWaterWaveHeight;
+}
+
+//! Sets the deep water wave orientation on this cell
+void CGeomCell::SetDeepWaterWaveOrientation(double const dWaveOrientation)
+{
+   m_dDeepWaterWaveOrientation = dWaveOrientation;
+}
+
+//! Returns the deep water wave orientation on this cell
+double CGeomCell::dGetDeepWaterWaveOrientation(void) const
+{
+   return m_dDeepWaterWaveOrientation;
+}
+
+
+//! Sets wave height to the deep water wave height value, and sets wave orientation to the deep water wave orientation value
+void CGeomCell::SetWaveValuesToDeepWaterWaveValues(void)
+{
+   m_dWaveHeight = m_dDeepWaterWaveHeight;
+   m_dWaveOrientation = m_dDeepWaterWaveOrientation;
 }
 
 

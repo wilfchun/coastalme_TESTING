@@ -65,10 +65,12 @@ private:
    vector<double>
       m_VdCurvatureDetailed,        // Detailed curvature at each point on m_LCoastlineExtCRS
       m_VdCurvatureSmooth,          // Smoothed curvature at each point on m_LCoastlineExtCRS
-      m_VdBreakingWaveHeight,       // Breaking wave height at each point on m_LCoastlineExtCRS
-      m_VdBreakingWaveAngle,        // Breaking wave azimuth at each point on m_LCoastlineExtCRS
-      m_VdDepthOfBreaking,          // Depth of breaking at each point on m_LCoastlineExtCRS
-      m_VdFluxOrientation,          // As in the COVE model, is the angle (measured from azimuth) of alongshore energy/sediment movement; a +ve flux is in direction of increasing indices along coast. At each point on m_LCoastlineExtCRS
+      m_VdDeepWaterWaveHeight,      // The deep water wave height at the end of a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdDeepWaterWaveOrientation, // The deep water wave orientation at the end of a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdBreakingWaveHeight,       // The breaking wave height on a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdBreakingWaveOrientation,  // The breaking wave orientation on a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdDepthOfBreaking,          // The depth of breaking on a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdFluxOrientation,          // As in the COVE model, is the orientation alongshore energy/sediment movement; a +ve flux is in direction of increasing indices along coast. At each point on m_LCoastlineExtCRS
       m_VdWaveEnergy;               // Wave energy at each point on m_LCoastlineExtCRS
       
    vector<CACoastLandform*>
@@ -140,18 +142,30 @@ public:
 
    void CreateAlongCoastlineProfileIndex(void);
    int nGetProfileAtAlongCoastlinePosition(int const) const;
+   int nGetDownCoastProfileNumber(int const nProfile) const;   
 //    int nGetAlongCoastlineIndexOfProfile(int const);
+
+   void SetDeepWaterWaveHeight(int const, double const);
+   double dGetDeepWaterWaveHeight(int const) const;
+   
+   void SetDeepWaterWaveOrientation(int const, double const);
+   double dGetDeepWaterWaveOrientation(int const) const;
 
    void SetBreakingWaveHeight(int const, double const);
    double dGetBreakingWaveHeight(int const) const;
+   
    void SetBreakingWaveOrientation(int const, double const);
    double dGetBreakingWaveOrientation(int const) const;
+   
    void SetDepthOfBreaking(int const, double const);
    double dGetDepthOfBreaking(int const) const;
+   
    void SetBreakingDistance(int const, int const);
    int nGetBreakingDistance(int const) const;
+   
    void SetFluxOrientation(int const, double const);
    double dGetFluxOrientation(int const) const;
+   
    void SetWaveEnergy(int const, double const);
    double dGetWaveEnergy(int const) const;
 

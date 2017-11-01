@@ -120,10 +120,38 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
 
             // For the first timestep only, calculate the elevation of all this cell's layers. During the rest of the simulation, each cell's elevation is re-calculated just after any change occurs on that cell
             m_pRasterGrid->m_Cell[nX][nY].CalcAllLayerElevsAndD50();
+            
+            if (m_bSingleDeepWaterWaveValues)
+            {
+               // All cells have same value for deep water wave height and deep water wave orientation, and these values are unchanged throughout the simulation
+               m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveHeight(m_dAllCellsDeepWaterWaveHeight);
+               m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveOrientation(m_dAllCellsDeepWaterWaveOrientation);
+            }
          }
       }
    }
 
+   if (! m_bSingleDeepWaterWaveValues)
+   {
+      // Each cell's value for deep water wave height and deep water wave orientation is interpolated from multiple user-supplied values
+      for (unsigned int n = 0; n < m_VulDeepWaterWaveValuesAtTimestep.size(); n++)
+      {
+         if (m_ulTimestep == m_VulDeepWaterWaveValuesAtTimestep[n])
+         {
+            // OK, this timestep we are doing the calculation
+            if (m_VulDeepWaterWaveValuesAtTimestep[n] > 1)
+            {
+               // For every timestep after the first, read in new values before doing the interpolation  TODO              
+            }
+            
+            // Interpolate values each cell's values for deep water height and orientation from user-supplied values
+            int nRet = nInterpolateAllDeepWaterWaveValues();
+            if (nRet != RTN_OK)
+               return nRet;
+         }
+      }
+   }
+   
    if (nZeroThickness > 0)
    {
       cerr << m_ulTimestep << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;

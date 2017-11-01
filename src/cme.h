@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 - 16 October 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 1 November 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -180,7 +180,7 @@ string const   READIFCSFILE                  = "    - Consolidated fine sediment
 string const   READISCSFILE                  = "    - Consolidated sand sediment (layer ";
 string const   READICCSFILE                  = "    - Consolidated coarse sediment (layer ";
 string const   READVECTORFILES               = "  - Reading vector GIS files";
-string const   READICVFILE                   = "    - Coastline: ";
+string const   READDWWVFILE                  = "    - Deep water wave values: ";
 string const   READSCAPESHAPEFUNCTIONFILE    = "  - Reading SCAPE shape function file";
 string const   READTIDEDATAFILE              = "  - Reading tide data file: ";
 string const   ALLOCATEMEMORY                = "  - Allocating memory for raster grid";
@@ -383,10 +383,11 @@ int const      VEC_GEOMETRY_POLYGON                = 3;
 int const      VEC_GEOMETRY_OTHER                  = 4;
 
 // GIS vector input codes and constraints
-// int const      COAST_VEC                           = 1;              // Initial coastline GIS vector data
-// int const      COAST_VEC_MAX_LAYER                 = 1;
-// int const      COAST_VEC_FIELD_DATA_TYPE           = VEC_FIELD_DATA_ANY;
-// int const      COAST_VEC_GEOMETRY                  = VEC_GEOMETRY_LINE;
+int const      DEEP_WATER_WAVE_VALUES_VEC                            = 1;
+int const      DEEP_WATER_WAVE_VALUES_MAX_LAYER                      = 1;
+int const      DEEP_WATER_WAVE_VALUES_GEOMETRY                       = VEC_GEOMETRY_POINT;
+string const   DEEP_WATER_WAVE_VALUES_HEIGHT                         = "HEIGHT";
+string const   DEEP_WATER_WAVE_VALUES_ANGLE                          = "ANGLE";
 
 // GIS raster output user codes
 string const   RASTER_ALL_CODE                                       = "all";
@@ -432,7 +433,9 @@ string const   RASTER_CLIFF_COLLAPSE_DEPOSITION_NAME                 = "cliff_co
 string const   RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_NAME           = "total_cliff_collapse_deposition";
 string const   RASTER_POLYGON_NAME                                   = "polygon_raster";
 string const   RASTER_SLICE_NAME                                     = "slice";
-string const   SHADOW_ZONE_CODES_NAME                                = "shadow_zone_codes";
+string const   RASTER_SHADOW_ZONE_CODES_NAME                         = "shadow_zone_codes";
+string const   RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME               = "deep_water_wave_orientation";
+string const   RASTER_DEEP_WATER_WAVE_HEIGHT_NAME                    = "deep_water_wave_height";
 
 // GIS raster output codes and titles
 int const      PLOT_BASEMENT_ELEV                           = 1;
@@ -521,6 +524,10 @@ int const      PLOT_TOTAL_BEACH_DEPOSITION                  = 42;
 string const   PLOT_TOTAL_BEACH_DEPOSITION_TITLE            = "Total beach deposition depth";
 int const      PLOT_SHADOW_ZONE_CODES                       = 43;
 string const   PLOT_SHADOW_ZONE_CODES_TITLE                 = "Wave shadow zone codes";
+int const      PLOT_DEEP_WATER_WAVE_ORIENTATION             = 44;
+string const   PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE       = "Deep water wave orientation";
+int const      PLOT_DEEP_WATER_WAVE_HEIGHT                  = 45;
+string const   PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE            = "Deep water wave height";
 
 // GIS vector output user codes
 string const   VECTOR_ALL_CODE                              = "all";
@@ -550,7 +557,7 @@ string const   VECTOR_POLYGON_BOUNDARY_SAVE_CODE            = "polygon";
 string const   VECTOR_POLYGON_BOUNDARY_NAME                 = "polygon";
 string const   VECTOR_PLOT_CLIFF_NOTCH_SIZE_CODE            = "cliff_notch";
 string const   VECTOR_CLIFF_NOTCH_SIZE_NAME                 = "cliff_notch";
-string const   VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_CODE            = "shadow_boundary";
+string const   VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_CODE        = "shadow_boundary";
 string const   VECTOR_SHADOW_ZONE_LINE_NAME                 = "shadow_boundary";
 
 // GIS vector output codes and titles
@@ -562,10 +569,10 @@ int const      PLOT_INVALID_NORMALS                         = 3;
 string const   PLOT_INVALID_NORMALS_TITLE                   = "INVALID Coastline-normal profiles";
 int const      PLOT_COAST_CURVATURE                         = 4;
 string const   PLOT_COAST_CURVATURE_TITLE                   = "Coastline curvature";
-int const      PLOT_WAVE_AND_HEIGHT             = 5;
-string const   PLOT_WAVE_AND_HEIGHT_TITLE       = "Wave orientation and height";
-int const      PLOT_AVG_WAVE_AND_HEIGHT         = 6;
-string const   PLOT_AVG_WAVE_AND_HEIGHT_TITLE   = "Average wave orientation and height";
+int const      PLOT_WAVE_AND_HEIGHT                         = 5;
+string const   PLOT_WAVE_AND_HEIGHT_TITLE                   = "Wave orientation and height";
+int const      PLOT_AVG_WAVE_AND_HEIGHT                     = 6;
+string const   PLOT_AVG_WAVE_AND_HEIGHT_TITLE               = "Average wave orientation and height";
 int const      PLOT_WAVE_ENERGY_SINCE_COLLAPSE              = 7;
 string const   PLOT_WAVE_ENERGY_SINCE_COLLAPSE_TITLE        = "Wave energy since collapse";
 int const      PLOT_MEAN_WAVE_ENERGY                        = 8;
@@ -738,7 +745,7 @@ template <typename T> string strNumToStr(const T& t)
 // Definitions are in utilsglobal.cpp
 double dRound(double const);
 // bool bIsWhole(double const);
-bool bIsNumber(double const);
+bool bDoubleIsValid(double const);
 // bool bIsFinite(double const);
 struct FillToWidth
 {

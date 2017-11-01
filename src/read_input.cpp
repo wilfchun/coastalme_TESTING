@@ -541,10 +541,12 @@ bool CSimulation::bReadRunData(void)
                m_bRasterPolygonSave                =
                m_bPotentialPlatformErosionMaskSave =
                m_bSeaMaskSave                      =
-               m_bBeachMaskSave                    =                
+               m_bBeachMaskSave                    =
                m_bInterventionClassSave            =
-               m_bInterventionHeightSave           = 
-               m_bShadowZoneCodesSave              = true;
+               m_bInterventionHeightSave           =
+               m_bShadowZoneCodesSave              = 
+               m_bDeepWaterWaveOrientationSave     = 
+               m_bDeepWaterWaveHeightSave          = true;
             }
             else
             {
@@ -692,17 +694,29 @@ bool CSimulation::bReadRunData(void)
                   m_bInterventionClassSave = true;
                   strRH = strRemoveSubstr(&strRH, &RASTER_INTERVENTION_CLASS_NAME);
                }
-               
+
                if (strRH.find(RASTER_INTERVENTION_HEIGHT_NAME) != string::npos)
                {
                   m_bInterventionHeightSave = true;
                   strRH = strRemoveSubstr(&strRH, &RASTER_INTERVENTION_HEIGHT_NAME);
                }
-               
-               if (strRH.find(SHADOW_ZONE_CODES_NAME) != string::npos)
+
+               if (strRH.find(RASTER_SHADOW_ZONE_CODES_NAME) != string::npos)
                {
-                  m_bInterventionHeightSave = true;
-                  strRH = strRemoveSubstr(&strRH, &SHADOW_ZONE_CODES_NAME);
+                  m_bShadowZoneCodesSave = true;
+                  strRH = strRemoveSubstr(&strRH, &RASTER_SHADOW_ZONE_CODES_NAME);
+               }
+
+               if (strRH.find(RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME) != string::npos)
+               {
+                  m_bDeepWaterWaveOrientationSave = true;
+                  strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME);
+               }
+               
+               if (strRH.find(RASTER_DEEP_WATER_WAVE_HEIGHT_NAME) != string::npos)
+               {
+                  m_bDeepWaterWaveHeightSave = true;
+                  strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_HEIGHT_NAME);
                }
                
                // Check to see if all codes have been removed
@@ -786,7 +800,7 @@ bool CSimulation::bReadRunData(void)
                m_bCoastCurvatureSave          =
                m_bPolygonNodeSave             =
                m_bPolygonBoundarySave         =
-               m_bCliffNotchSave              = 
+               m_bCliffNotchSave              =
                m_bShadowZoneLineSave          = true;
             }
             else
@@ -857,7 +871,7 @@ bool CSimulation::bReadRunData(void)
                   m_bShadowZoneLineSave = true;
                   strRH = strRemoveSubstr(&strRH, &VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_CODE);
                }
-               
+
                // Check to see if all codes have been removed
                strRH = strTrimLeft(&strRH);
                if (! strRH.empty())
@@ -956,7 +970,7 @@ bool CSimulation::bReadRunData(void)
          case 17:
             // Grid edge(s) to omit when searching for coastline [NSWE]
             strRH = strToLower(&strRH);
-            
+
             if (strRH.find("n") != string::npos)
                m_bOmitSearchNorthEdge = true;
             if (strRH.find("s") != string::npos)
@@ -1354,20 +1368,21 @@ bool CSimulation::bReadRunData(void)
             {
                if (! m_strInterventionClassFile.empty())
                   strErr = "must specify both intervention class and intervention height files";
-               break;               
+               break;
             }
             else
             {
                if (m_strInterventionClassFile.empty())
                {
                   strErr = "must specify both intervention class and intervention height files";
-                  break;               
+                  break;
                }
-               
+
                #ifdef _WIN32
                // For Windows, make sure has backslashes, not Unix-style slashes
                strRH = pstrChangeToBackslash(&strRH);
                #endif
+
                // Now check for leading slash, or leading Unix home dir symbol, or occurrence of a drive letter
                if ((strRH[0] == PATH_SEPARATOR) || (strRH[0] == '~') || (strRH[1] == ':'))
                {
@@ -1382,7 +1397,7 @@ bool CSimulation::bReadRunData(void)
                }
             }
             break;
-            
+
             // ---------------------------------------------------- Hydrology data ------------------------------------------------
          case 29:
             // Wave propagation model [0 = COVE, 1 = CShore]
@@ -1390,7 +1405,7 @@ bool CSimulation::bReadRunData(void)
             if ((m_nWavePropagationModel != MODEL_COVE) && (m_nWavePropagationModel != MODEL_CSHORE))
                strErr = "switch for wave propagation model must be 0 or 1";
             break;
-            
+
          case 30:
             // Density of sea water (kg/m3)
             m_dSeaWaterDensity = atof(strRH.c_str());
@@ -1419,19 +1434,62 @@ bool CSimulation::bReadRunData(void)
             break;
 
          case 34:
-            // Deep water wave height (m)
-            m_dDeepWaterWaveHeight = atof(strRH.c_str());
-            if (m_dDeepWaterWaveHeight <= 0)
-               strErr = "deep water wave height must be greater than zero";
+            // Deep water wave height (m) or a file of point vectors giving deep water wave height (m) and orientation (for units, see below)
+            // TODO need option for multiple files
+            if (bIsNumeric(&strRH))
+            {
+               // Just one value of wave height for all deep water cells
+               m_bSingleDeepWaterWaveValues = true;
+
+               m_dAllCellsDeepWaterWaveHeight = atof(strRH.c_str());
+               if (m_dAllCellsDeepWaterWaveHeight <= 0)
+                  strErr = "deep water wave height must be greater than zero";
+            }
+            else
+            {
+               // We are reading deep water wave height and deep water wave orientation from a file
+               m_bSingleDeepWaterWaveValues = false;
+               
+               // TODO for the moment, calculate these values in only at the first timestep
+               m_VulDeepWaterWaveValuesAtTimestep.push_back(1);
+
+               if (strRH.empty())
+               {
+                  strErr = "deep water wave height must be either a number or a filename";
+                  break;
+               }
+
+               #ifdef _WIN32
+               // For Windows, make sure has backslashes, not Unix-style slashes
+               strRH = pstrChangeToBackslash(&strRH);
+               #endif
+
+               // Now check for leading slash, or leading Unix home dir symbol, or occurrence of a drive letter
+               if ((strRH[0] == PATH_SEPARATOR) || (strRH[0] == '~') || (strRH[1] == ':'))
+               {
+                  // It has an absolute path, so use it 'as is'
+                  m_strDeepWaterWaveValuesFile = strRH;
+               }
+               else
+               {
+                  // It has a relative path, so prepend the CoastalME dir
+                  m_strDeepWaterWaveValuesFile = m_strCMEDir;
+                  m_strDeepWaterWaveValuesFile.append(strRH);
+               }
+            }
             break;
 
          case 35:
             // Deep water wave orientation in input CRS: this is the oceanographic convention i.e. direction TOWARDS which the waves move (in degrees clockwise from north)
-            m_dDeepWaterWaveOrientation = atof(strRH.c_str());
-            if (m_dDeepWaterWaveOrientation < 0)
-               strErr = "deep water wave orientation must be zero degrees or more";
-            else if (m_dDeepWaterWaveOrientation >= 360)
-               strErr = "deep water wave orientation must be less than 360 degrees";
+            if (m_bSingleDeepWaterWaveValues)
+            {
+               // Only read this if we also have just a single value of wave height for all deep water cells
+               m_dAllCellsDeepWaterWaveOrientation = atof(strRH.c_str());
+               if (m_dAllCellsDeepWaterWaveOrientation < 0)
+                  strErr = "deep water wave orientation must be zero degrees or more";
+               else if (m_dAllCellsDeepWaterWaveOrientation >= 360)
+                  strErr = "deep water wave orientation must be less than 360 degrees";
+            }
             break;
 
 //          case 35:

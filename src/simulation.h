@@ -106,6 +106,8 @@ private:
       m_bSeaMaskSave,
       m_bBeachMaskSave,
       m_bShadowZoneCodesSave,
+      m_bDeepWaterWaveOrientationSave,
+      m_bDeepWaterWaveHeightSave,
       m_bSaveRegular,
       m_bCoastSave,
       m_bNormalsSave,
@@ -136,7 +138,8 @@ private:
       m_bGDALCanWriteFloat,
       m_bGDALCanWriteInt32,
       m_bScaleRasterOutput,
-      m_bWorldFile;
+      m_bWorldFile,
+      m_bSingleDeepWaterWaveValues;
 
    char** m_papszGDALRasterOptions;
    char** m_papszGDALVectorOptions;
@@ -227,8 +230,9 @@ private:
       m_dC_0,                          // Deep water wave speed (m/s)
       m_dL_0,                          // Deep water wave length (m)
       m_dWaveDepthRatioForWaveCalcs,
-      m_dDeepWaterWaveHeight,
-      m_dDeepWaterWaveOrientation,
+      m_dAllCellsDeepWaterWaveHeight,
+      m_dAllCellsDeepWaterWaveOrientation,
+      m_dMaxUserInputWaveHeight,
       m_dR,
       m_dD50Fine,
       m_dD50Sand,
@@ -337,7 +341,6 @@ private:
       m_strInterventionClassFile,
       m_strInterventionHeightFile,
       m_strInitialSuspSedimentFile,
-      m_strInitialCoastlineFile,
       m_strShapeFunctionFile,
 //       m_strTideDataFile,
       m_strLogFile,
@@ -368,15 +371,16 @@ private:
       m_strGDALISSDriverDesc,
       m_strGDALISSProjection,
       m_strGDALISSDataType,
-      m_strOGRICDriverCode,                     // Initial Coastline (vector)
-      m_strOGRICGeometry,
-      m_strOGRICDataType,
-      m_strOGRICDataValue,
+      m_strOGRDWWVDriverCode,                   // Initial Deep Water Wave Values (vector)
+      m_strOGRDWWVGeometry,
+      m_strOGRDWWVDataType,
+      m_strOGRDWWVDataValue,
       m_strGDALRasterOutputDriverLongname,
       m_strGDALRasterOutputDriverExtension,
       m_strOGRVectorOutputExtension,
       m_strRunName,
-      m_strDurationUnits;
+      m_strDurationUnits,
+      m_strDeepWaterWaveValuesFile;
 
    struct RandState
    {
@@ -405,13 +409,18 @@ private:
       m_VnSavGolIndexCoast;            // Savitzky-Golay shift index for the coastline vector(s)
 
    vector<unsigned long>
-      m_VulProfileTimestep;
-
+      m_VulProfileTimestep,
+      m_VulDeepWaterWaveValuesAtTimestep;  // Calculate deep water wave values at these timesteps
+      
    vector<double>
       m_VdSliceElev,
       m_VdErosionPotential,            // For erosion potential lookup
-      m_VdSavGolFCRWCoast,               // Savitzky-Golay filter coefficients for the coastline vector(s)
-      m_VdSavGolFCGeomProfile;             // Savitzky-Golay filter coefficients for the profile vectors
+      m_VdSavGolFCRWCoast,             // Savitzky-Golay filter coefficients for the coastline vector(s)
+      m_VdSavGolFCGeomProfile,         // Savitzky-Golay filter coefficients for the profile vectors
+      m_VdDeepWaterWavePointX,         // X co-ordinate (external CRS) for deep water wave point
+      m_VdDeepWaterWavePointY,         // Y co-ordinate (external CRS) for deep water wave point
+      m_VdDeepWaterWavePointHeight,    // Wave height at deep water wave point
+      m_VdDeepWaterWavePointAngle;     // Wave orientation at deep water wave point
 //       m_VdTideData;                    // Tide data: one record per timestep, is the change (m) from still water level for that timestep
 
    vector<string>
@@ -483,7 +492,7 @@ private:
    // GIS input and output stuff
    int nReadBasementDEMData(void);
    int nReadRasterGISData(int const, int const);
-//    int nReadVectorGISData(int const);        // NO LONGER USED BUT MAY BE USEFUL SOMEDAY
+   int nReadVectorGISData(int const);
    bool bWriteRasterGISFloat(int const, string const*, int const = 0);
    bool bWriteRasterGISInt(int const, string const*, double const = 0);
    bool bWriteVectorGIS(int const, string const*);
@@ -549,7 +558,7 @@ private:
    int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*);
    int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double> const*, vector<double> const*);
    int nLookUpCShoreOutputs(string const*, int const, int const, vector<double> const*, vector<double>*);
-   double dCalcWaveAngleToCoastNormal(double const, int const);
+   double dCalcWaveAngleToCoastNormal(double const, double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);
    void InterpolateWavePropertiesToCells(int const, int const, int const);
@@ -580,6 +589,8 @@ private:
    int nDoBeachErosionOnCells(int const, int const, double const);
    int nDoBeachDepositionOnCells(int const, int const, double const);
    void CalcDepthOfClosure(void);
+   int nInterpolateAllDeepWaterWaveValues(void);
+   int nSetAllCoastpointDeepWaterWaveValues(void);
 
    // GIS utility routines
    void MarkEdgeCells(void);
@@ -623,7 +634,7 @@ private:
    void AnnounceReadBasementDEM(void) const;
    static void AnnounceAddLayers(void);
    static void AnnounceReadRasterFiles(void);
-//    static void AnnounceReadVectorFiles(void);
+   static void AnnounceReadVectorFiles(void);
    void AnnounceReadLGIS(void) const;
    void AnnounceReadICGIS(void) const;
    void AnnounceReadIHGIS(void) const;
@@ -635,6 +646,7 @@ private:
    void AnnounceReadInitialFineConsSedGIS(int const) const;
    void AnnounceReadInitialSandConsSedGIS(int const) const;
    void AnnounceReadInitialCoarseConsSedGIS(int const) const;
+   void AnnounceReadDeepWaterWaveValuesGIS(void) const;
 //    void AnnounceReadTideData(void) const;
    static void AnnounceReadSCAPEShapeFunctionFile(void);
    static void AnnounceAllocateMemory(void);
@@ -682,6 +694,7 @@ private:
    static double dGetMean(vector<double> const*);
    static double dGetStdDev(vector<double> const*);
    static void AppendEnsureNoGap(vector<CGeom2DIPoint>*, CGeom2DIPoint const*);
+   bool bIsNumeric(string const*);
 
    // Random number stuff
    static unsigned long ulGetTausworthe(unsigned long const, unsigned long const, unsigned long const, unsigned long const, unsigned long const);

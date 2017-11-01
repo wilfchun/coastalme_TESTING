@@ -59,7 +59,7 @@ double dRound(double const d)
  Checks a double to see if it is NaN. From http://www.johndcook.com/blog/IEEE_exceptions_in_cpp/
 
 ==============================================================================================================================*/
-bool bIsNumber(double const dX)
+bool bDoubleIsValid(double const dX)
 {
    // This looks like it should always be true, but it is false if dX is a NaN
    return (dX == dX);
@@ -87,6 +87,7 @@ std::ostream& operator<< (std::ostream& ostr, const FillToWidth& args)
 {
    ostr.fill(args.chFill);
    ostr.width(args.nWidth);
+
    return ostr;
 }
 

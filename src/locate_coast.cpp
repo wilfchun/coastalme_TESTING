@@ -69,7 +69,7 @@ int CSimulation::nLocateSeaAndCoasts(void)
       cerr << m_ulTimestep << ": " << ERR << "no coastline located" << endl;
       return RTN_ERR_NOCOAST;
    }
-
+   
    return RTN_OK;
 }
 
@@ -120,7 +120,7 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
    // Start at the given edge cell, push this onto the stack
    PtiStack.push(CGeom2DIPoint(nXStart, nYStart));
 
-   // Then do the flood fill: loop until there are no more cell co-ords on the stack
+   // Then do the flood fill loop until there are no more cell co-ords on the stack
    while (! PtiStack.empty())
    {
       CGeom2DIPoint Pti = PtiStack.top();
@@ -147,9 +147,10 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
          m_pRasterGrid->m_Cell[nX][nY].SetInContiguousSea();
          m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFCategory(LF_CAT_SEA);
 
-         // Set all sea cells to have deep water (off-shore) wave orientation and height, will change this later for cells closer to the shoreline if we have on-shore waves
-         m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(m_dDeepWaterWaveOrientation);
-         m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(m_dDeepWaterWaveHeight);
+         // Set this sea cell to have deep water (off-shore) wave orientation and height, will change this later for cells closer to the shoreline if we have on-shore waves
+         m_pRasterGrid->m_Cell[nX][nY].SetWaveValuesToDeepWaterWaveValues();
+         
+//          LogStream << " [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} wave height = " << m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() << " wave angle = " << m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation() << endl;         
 
          // Now sort out the x-y extremities of the contiguous sea for the bounding box (used later in wave propagation)
          if (nX < m_nXMinBoundingBox)
@@ -255,8 +256,8 @@ int CSimulation::nTraceAllCoasts(void)
                return nRet;
          }
       }
-   }
-
+   }  
+   
    return RTN_OK;
 }
 
@@ -776,7 +777,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
 
    // Calculate values for the coast's flux orientation vector
    CalcCoastTangents(nCoast);
-
+   
    return RTN_OK;
 }
 

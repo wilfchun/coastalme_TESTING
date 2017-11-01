@@ -79,7 +79,7 @@ int CSimulation::nCreateAllNormalProfilesAndCheckForIntersection(void)
    nRet = nPutAllProfilesOntoGrid();
    if (nRet != RTN_OK)
       return nRet;
-
+   
    return RTN_OK;
 }
 
@@ -517,7 +517,7 @@ int CSimulation::nCreateNormalProfile(int const nCoast, int const nProfileStartP
 
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
    pProfile->SetAllPointsInProfile(&VNormal);         // Set only two points: the start and end points
-
+   
    // Create the profile's CGeomMultiLine then set nProfile as the only co-incident profile of the only line segment
    pProfile->AppendLineSegment();
    pProfile->AppendCoincidentProfileToLineSegments(make_pair(nProfile, 0));
@@ -560,7 +560,7 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    VPtiNormalPoints.push_back(PtiProfileStart);
 
    // Find the start cell in the list of edge cells
-   vector<CGeom2DIPoint>::iterator it = std::find(m_VEdgeCell.begin(), m_VEdgeCell.end(), PtiProfileStart);
+   auto it = std::find(m_VEdgeCell.begin(), m_VEdgeCell.end(), PtiProfileStart);
    if (it == m_VEdgeCell.end())
    {
       // Not found
@@ -678,6 +678,19 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
       // Also store the same external ccordinatespoint in this 'special' profile's coastline-normal vector (note that this will contain many points, whereas the coastline-normal vector of ordinary profiles contains only the two start and end points
       pProfile->AppendPointInProfile(&Pt);
    }
+   
+   // Get the deep water wave height and orientation values at the end of the profile
+   int
+      nEndX = VPtiNormalPoints.back().nGetX(),
+      nEndY = VPtiNormalPoints.back().nGetY();
+   
+   double
+      dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetDeepWaterWaveHeight(),
+      dDeepWaterWaveOrientation = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetDeepWaterWaveOrientation();
+   
+   // And store them for this profile
+   pProfile->SetDeepWaterWaveHeight(dDeepWaterWaveHeight);
+   pProfile->SetDeepWaterWaveOrientation(dDeepWaterWaveOrientation);   
 
    // Create the profile's CGeomMultiLine then set nProfile as the only co-incident profile of the only line segment
    pProfile->AppendLineSegment();
@@ -1245,6 +1258,15 @@ int CSimulation::nPutAllProfilesOntoGrid(void)
 // //                  LogStream << m_ulTimestep << ": profile " << nProfile << " point " << k << " marked as NOT shared" << endl;
 //             }
          }
+         
+         // Get the deep water wave height and orientation values at the end of the profile
+         double
+            dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetDeepWaterWaveHeight(),
+            dDeepWaterWaveOrientation = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetDeepWaterWaveOrientation();
+            
+         // And store them for this profile
+         pProfile->SetDeepWaterWaveHeight(dDeepWaterWaveHeight);
+         pProfile->SetDeepWaterWaveOrientation(dDeepWaterWaveOrientation);
       }
    }
 
@@ -1913,7 +1935,7 @@ void CSimulation::TruncateProfileAndAppendNew(int const nCoast, int const nMainP
                nProf = pThisProfile->nGetProf(nSeg, nCoinc),
                nProfsLineSeg = pThisProfile->nGetProfsLineSeg(nSeg, nCoinc);
 
-            vector<int>::iterator it = std::find(nVProf.begin(), nVProf.end(), nProf);
+            auto it = std::find(nVProf.begin(), nVProf.end(), nProf);
             if (it == nVProf.end())
             {
                // Not found

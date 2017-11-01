@@ -315,15 +315,16 @@ void CSimulation::WriteStartRunDetails(void)
 
    // ---------------------------------------------------- Vector GIS stuff ------------------------------------------------------
    OutStream << "Vector GIS Input Files" << endl;
-   if (m_strInitialCoastlineFile.empty())
+
+   if (m_bSingleDeepWaterWaveValues)
       OutStream << " None" << endl;
    else
    {
-      OutStream << " Initial Coastline file                                    \t: " << m_strInitialCoastlineFile << endl;
-      OutStream << " OGR Initial Coastline file driver code                    \t: " << m_strOGRICDriverCode << endl;
-      OutStream << " OGR Initial Coastline file data type                      \t: " << m_strOGRICDataType << endl;
-      OutStream << " OGR Initial Coastline file data value                     \t: " << m_strOGRICDataValue << endl;
-      OutStream << " OGR Initial Coastline file geometry                       \t: " << m_strOGRICGeometry << endl;
+      OutStream << " Deep water wave height and orientation file               \t: " << m_strDeepWaterWaveValuesFile << endl;
+      OutStream << " GDAL/OGR Deep water wave values file driver code          \t: " << m_strOGRDWWVDriverCode << endl;
+      OutStream << " GDAL/OGR Deep water wave values file data type            \t: " << m_strOGRDWWVDataType << endl;
+      OutStream << " GDAL/OGR Deep water wave values file data value           \t: " << m_strOGRDWWVDataValue << endl;
+      OutStream << " GDAL/OGR Deep water wave values file geometry             \t: " << m_strOGRDWWVGeometry << endl;
       OutStream << endl;
    }
    OutStream << endl;
@@ -341,8 +342,11 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << " Initial still water level                                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dOrigSWL << " m" << endl;
    OutStream << " Final still water level                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dFinalSWL << " m" << endl;
    OutStream << " Wave period                                               \t: " << m_dWavePeriod << " s" << endl;
-   OutStream << " Deep water wave height                                    \t: " << m_dDeepWaterWaveHeight << " m" << endl;
-   OutStream << " Deep water wave orientation                               \t: " << m_dDeepWaterWaveOrientation << " degrees" << endl;
+   if (m_bSingleDeepWaterWaveValues)
+   {
+      OutStream << " Deep water wave height                                    \t: " << m_dAllCellsDeepWaterWaveHeight << " m" << endl;
+      OutStream << " Deep water wave orientation                               \t: " << m_dAllCellsDeepWaterWaveOrientation << " degrees" << endl;
+   }
    OutStream << " Start depth for wave calcs (*deep water wave height)      \t: " << m_dWaveDepthRatioForWaveCalcs << endl;
    OutStream << "*Depth of closure                                          \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dDepthOfClosure << " m" << endl;
 //    OutStream << " Tide data file                                            \t: " << m_strTideDataFile << endl;

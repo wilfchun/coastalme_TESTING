@@ -1065,7 +1065,19 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
       if (! bWriteRasterGISInt(PLOT_SHADOW_ZONE_CODES, &PLOT_SHADOW_ZONE_CODES_TITLE))
          return false;
    }
-
+   
+   if (m_bDeepWaterWaveOrientationSave)
+   {
+      if (! bWriteRasterGISFloat(PLOT_DEEP_WATER_WAVE_ORIENTATION, &PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE))
+         return false;
+   }
+   
+   if (m_bDeepWaterWaveHeightSave)
+   {
+      if (! bWriteRasterGISFloat(PLOT_DEEP_WATER_WAVE_HEIGHT, &PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE))
+         return false;
+   }
+   
    return true;
 }
 

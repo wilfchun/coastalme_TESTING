@@ -39,7 +39,9 @@ CGeomProfile::CGeomProfile(int const nCoastPoint)
    m_bTooShort(false),
    m_bTruncated(false),
    m_bHitAnotherProfile(false),
-   m_nNumCoastPoint(nCoastPoint)
+   m_nNumCoastPoint(nCoastPoint),
+   m_dDeepWaterWaveHeight(0),
+   m_dDeepWaterWaveOrientation(0)
 {
 }
 
@@ -250,7 +252,7 @@ void CGeomProfile::RemoveLineSegment(int const nPoint)
 bool CGeomProfile::bIsPointInProfile(double const dX, double const dY)
 {
    CGeom2DPoint Pt(dX, dY);
-   vector<CGeom2DPoint>::iterator it = std::find(m_VPoints.begin(), m_VPoints.end(), &Pt);
+   auto it = std::find(m_VPoints.begin(), m_VPoints.end(), &Pt);
    if (it != m_VPoints.end())
       return true;
    else
@@ -260,7 +262,7 @@ bool CGeomProfile::bIsPointInProfile(double const dX, double const dY)
 bool CGeomProfile::bIsPointInProfile(double const dX, double const dY, int& nPoint)
 {
    CGeom2DPoint Pt(dX, dY);
-   vector<CGeom2DPoint>::iterator it = std::find(m_VPoints.begin(), m_VPoints.end(), &Pt);
+   auto it = std::find(m_VPoints.begin(), m_VPoints.end(), &Pt);
    if (it != m_VPoints.end())
    {
       // Found, so return true and set nPoint to be the index of the point which was found
@@ -438,4 +440,25 @@ int CGeomProfile::nGetCellGivenDepth(CGeomRasterGrid const* pGrid, double const 
    }
    
    return nIndex;
+}
+
+
+void CGeomProfile::SetDeepWaterWaveHeight(double const dWaveHeight)
+{
+   m_dDeepWaterWaveHeight = dWaveHeight;
+}
+
+double CGeomProfile::dGetDeepWaterWaveHeight(void) const
+{
+   return m_dDeepWaterWaveHeight;
+}
+
+void CGeomProfile::SetDeepWaterWaveOrientation(double const dWaveOrientation)
+{
+   m_dDeepWaterWaveOrientation = dWaveOrientation;
+}
+
+double CGeomProfile::dGetDeepWaterWaveOrientation(void) const
+{
+   return m_dDeepWaterWaveOrientation;
 }
