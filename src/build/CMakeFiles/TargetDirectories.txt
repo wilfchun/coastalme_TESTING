@@ -1,7 +1,0 @@
-/home/davefm/coast/CoastalME/src/build/CMakeFiles/install/strip.dir
-/home/davefm/coast/CoastalME/src/build/CMakeFiles/edit_cache.dir
-/home/davefm/coast/CoastalME/src/build/CMakeFiles/cme.dir
-/home/davefm/coast/CoastalME/src/build/CMakeFiles/rebuild_cache.dir
-/home/davefm/coast/CoastalME/src/build/CMakeFiles/list_install_components.dir
-/home/davefm/coast/CoastalME/src/build/CMakeFiles/install/local.dir
-/home/davefm/coast/CoastalME/src/build/CMakeFiles/install.dir
