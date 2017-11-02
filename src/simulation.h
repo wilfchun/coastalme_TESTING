@@ -181,7 +181,7 @@ private:
       m_lGDALMinCanWrite;
 
    unsigned long
-      m_ulTimestep,
+      m_ulIteration,
       m_ulTotTimestep,
       m_ulRandSeed[NRNG],
       m_ulNumCells,
@@ -209,7 +209,7 @@ private:
       m_dInvCellSide,                  // Inverse of m_dCellSide
       m_dInvCellDiagonal,              // Inverse of m_dCellDiagonal
       m_dSimDuration,                  // Duration of simulation, in hours
-      m_dTimeStep,
+      m_dTimestepInHours,
       m_dSimElapsed,                   // Time simulated so far, in hours
       m_dRSaveTime,
       m_dRSaveInterval,
@@ -656,7 +656,7 @@ private:
    bool bFindExeDir(char* pcArg);
    bool bTimeToQuit(void);
    static int nDoTimeUnits(string const*);
-   int nDoSimulationTimeMultiplier(string const*);
+   int nDoDurationTimeUnits(string const*);
    static double dGetTimeMultiplier(string const*);
    void UpdateGrandTotals(void);
    static string strGetBuild(void);

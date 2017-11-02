@@ -311,7 +311,7 @@ bool CSimulation::bReadRunData(void)
             // Duration of simulation (in hours, days, months, or years): sort out multiplier and user units, as used in the per-timestep output
             strRH = strToLower(&strRH);
 
-            nRet = nDoSimulationTimeMultiplier(&strRH);
+            nRet = nDoDurationTimeUnits(&strRH);
             if (nRet != RTN_OK)
             {
                strErr = "units for duration of simulation";
@@ -364,12 +364,12 @@ bool CSimulation::bReadRunData(void)
             // remove trailing spaces
             strRH = strTrimRight(&strRH);
 
-            m_dTimeStep = atof(strRH.c_str()) * dMult;         // in hours
+            m_dTimestepInHours = atof(strRH.c_str()) * dMult;         // in hours
 
-            if (m_dTimeStep <= 0)
+            if (m_dTimestepInHours <= 0)
                strErr = "timestep of simulation must be greater than zero";
 
-            if (m_dTimeStep >= m_dSimDuration)
+            if (m_dTimestepInHours >= m_dSimDuration)
                strErr = "timestep of simulation must be less than the duration of the simulation";
 
             break;
@@ -436,7 +436,7 @@ bool CSimulation::bReadRunData(void)
                   break;
                }
 
-               if (m_dUSaveTime[0] < m_dTimeStep)
+               if (m_dUSaveTime[0] < m_dTimestepInHours)
                {
                   strErr = "first save time cannot be less than timestep";
                   break;
@@ -450,7 +450,7 @@ bool CSimulation::bReadRunData(void)
                // There isn't a space, so we have only one number
                m_bSaveRegular = true;
                m_dRSaveInterval = atof(strRH.c_str()) * nMult;                   // convert to hours
-               if (m_dRSaveTime <= m_dTimeStep)
+               if (m_dRSaveTime <= m_dTimestepInHours)
                   strErr = "save interval cannot be less than timestep";
                else
                   // Set up for first save

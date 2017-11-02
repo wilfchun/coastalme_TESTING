@@ -1194,7 +1194,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (PLOT_AVG_SEA_DEPTH):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / m_ulIteration;
                break;
             }
 
@@ -1209,7 +1209,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (PLOT_AVG_WAVE_HEIGHT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / m_ulIteration;
                break;
             }
 
@@ -1289,7 +1289,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (PLOT_AVG_SUSPENDED_SEDIMENT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / m_ulIteration;
                break;
             }
 

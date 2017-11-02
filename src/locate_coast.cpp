@@ -66,7 +66,7 @@ int CSimulation::nLocateSeaAndCoasts(void)
    // Have we created any coasts?
    if (m_VCoast.empty())
    {
-      cerr << m_ulTimestep << ": " << ERR << "no coastline located" << endl;
+      cerr << m_ulIteration << ": " << ERR << "no coastline located" << endl;
       return RTN_ERR_NOCOAST;
    }
    
@@ -192,7 +192,7 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
       }
    }
 
-   LogStream << m_ulTimestep << ": doing flood fill of sea from [" << nXStart << "][" << nYStart << "] {" << dGridCentroidXToExtCRSX(nXStart) << ", " << dGridCentroidYToExtCRSY(nYStart) << "} with SWL = " << m_dThisTimestepSWL << ", " << m_ulThisTimestepNumSeaCells << " of " << m_ulNumCells << " cells now marked as sea (" <<  setiosflags(ios::fixed) << setprecision(2) << 100.0 * m_ulThisTimestepNumSeaCells / m_ulNumCells << " %)" << endl;
+   LogStream << m_ulIteration << ": doing flood fill of sea from [" << nXStart << "][" << nYStart << "] {" << dGridCentroidXToExtCRSX(nXStart) << ", " << dGridCentroidYToExtCRSY(nYStart) << "} with SWL = " << m_dThisTimestepSWL << ", " << m_ulThisTimestepNumSeaCells << " of " << m_ulNumCells << " cells now marked as sea (" <<  setiosflags(ios::fixed) << setprecision(2) << 100.0 * m_ulThisTimestepNumSeaCells / m_ulNumCells << " %)" << endl;
 
 //    LogStream << " m_nXMinBoundingBox = " << m_nXMinBoundingBox << " m_nXMaxBoundingBox = " << m_nXMaxBoundingBox << " m_nYMinBoundingBox = " << m_nYMinBoundingBox << " m_nYMaxBoundingBox = " << m_nYMaxBoundingBox << endl;
 }
@@ -297,7 +297,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
       // Safety check
       if (++nRoundTheLoop > m_nCoastMax)
       {
-         LogStream << m_ulTimestep << ": abandoning coastline tracing from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}, exceeded maximum search length (" << m_nCoastMax << ")" << endl;
+         LogStream << m_ulIteration << ": abandoning coastline tracing from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}, exceeded maximum search length (" << m_nCoastMax << ")" << endl;
 
          for (int n = 0; n < ILTempGridCRS.nGetSize(); n++)
             LogStream << "[" << ILTempGridCRS[n].nGetX() << "][" << ILTempGridCRS[n].nGetY() << "] {" << dGridCentroidXToExtCRSX(ILTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[n].nGetY()) << "}" << endl;
@@ -662,7 +662,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    if (nCoastSize == 0)
    {
       // Zero-length coastline
-      LogStream << m_ulTimestep << ": " << WARN << "abandoning zero-length coastline from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}" << endl;
+      LogStream << m_ulIteration << ": " << WARN << "abandoning zero-length coastline from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}" << endl;
 
       return RTN_OK;
    }
@@ -671,7 +671,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    if (nCoastSize < m_nCoastMin)
    {
       // The vector coastline is unreasonably small, so abandon it
-      LogStream << m_ulTimestep << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} to [" << ILTempGridCRS[nCoastSize-1].nGetX() << "][" << ILTempGridCRS[nCoastSize-1].nGetY() << "] {" << dGridCentroidXToExtCRSX(ILTempGridCRS[nCoastSize-1].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[nCoastSize-1].nGetY()) << "} since size (" << nCoastSize << ") is less than minimum (" << m_nCoastMin << ")" << endl;
+      LogStream << m_ulIteration << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} to [" << ILTempGridCRS[nCoastSize-1].nGetX() << "][" << ILTempGridCRS[nCoastSize-1].nGetY() << "] {" << dGridCentroidXToExtCRSX(ILTempGridCRS[nCoastSize-1].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[nCoastSize-1].nGetY()) << "} since size (" << nCoastSize << ") is less than minimum (" << m_nCoastMin << ")" << endl;
 
       // Unmark these cells
       for (int n = 0; n < nCoastSize; n++)
@@ -747,8 +747,8 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    m_VCoast[nCoast].SetStartEdge(nStartEdge);
    m_VCoast[nCoast].SetEndEdge(nEndEdge);
 
-   LogStream << m_ulTimestep << ": coastline " << nCoast << " created, from [" << nStartX << "][" << nStartY << "] to [" << nEndX << "][" << nEndY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} to {" << dGridCentroidXToExtCRSX(nEndX) << ", " << dGridCentroidYToExtCRSY(nEndY) << "} with " << nCoastSize << " points, handedness = " << (nHandedness == LEFT_HANDED ? "left" : "right") << endl;
-   LogStream << m_ulTimestep << ": smoothed coastline " << nCoast << " runs from {" << LTempExtCRS[0].dGetX() << ", " << LTempExtCRS[0].dGetY() << "} to {" << LTempExtCRS[nCoastSize-1].dGetX() << ", " << LTempExtCRS[nCoastSize-1].dGetY() << "} i.e. from the ";
+   LogStream << m_ulIteration << ": coastline " << nCoast << " created, from [" << nStartX << "][" << nStartY << "] to [" << nEndX << "][" << nEndY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} to {" << dGridCentroidXToExtCRSX(nEndX) << ", " << dGridCentroidYToExtCRSY(nEndY) << "} with " << nCoastSize << " points, handedness = " << (nHandedness == LEFT_HANDED ? "left" : "right") << endl;
+   LogStream << m_ulIteration << ": smoothed coastline " << nCoast << " runs from {" << LTempExtCRS[0].dGetX() << ", " << LTempExtCRS[0].dGetY() << "} to {" << LTempExtCRS[nCoastSize-1].dGetX() << ", " << LTempExtCRS[nCoastSize-1].dGetY() << "} i.e. from the ";
    if (nStartEdge == NORTH)
       LogStream << "north";
    else if (nStartEdge == SOUTH)

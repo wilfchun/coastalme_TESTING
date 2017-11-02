@@ -164,7 +164,7 @@ CSimulation::CSimulation(void)
    m_lGDALMaxCanWrite                              =
    m_lGDALMinCanWrite                              = 0;
 
-   m_ulTimestep                                        =
+   m_ulIteration                                        =
    m_ulTotTimestep                                     =
    m_ulNumCells                                        =
    m_ulThisTimestepNumSeaCells                         =
@@ -196,7 +196,7 @@ CSimulation::CSimulation(void)
    m_dInvCellDiagonal                           =
    m_dCellArea                                  =
    m_dSimDuration                               =
-   m_dTimeStep                                  =
+   m_dTimestepInHours                                  =
    m_dSimElapsed                                =
    m_dRSaveTime                                 =
    m_dRSaveInterval                             =
@@ -666,7 +666,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    // If SWL changes during the simulation, calculate the per-timestep increment (could be -ve)
    if (m_dFinalSWL != m_dOrigSWL)
    {
-      m_dDeltaSWLPerTimestep = (m_dTimeStep * (m_dFinalSWL - m_dOrigSWL)) / m_dSimDuration;
+      m_dDeltaSWLPerTimestep = (m_dTimestepInHours * (m_dFinalSWL - m_dOrigSWL)) / m_dSimDuration;
 
       // nCalcExternalForcing() is called at the start of every timestep, so we need to pre-remove the first increment in order to start with m_dThisTimestepSWL == m_dOrigSWL
       m_dThisTimestepSWL -= m_dDeltaSWLPerTimestep;
@@ -685,7 +685,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Tell the user how the simulation is progressing
       AnnounceProgress();
 
-      LogStream << "TIMESTEP " << m_ulTimestep << " ================================================================================================" << endl;
+      LogStream << "TIMESTEP " << m_ulIteration << " ================================================================================================" << endl;
 
       // Check to see if there is a new intervention in place: if so, update it on the RasterGrid array
       nRet = nUpdateIntervention();
