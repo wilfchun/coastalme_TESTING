@@ -321,13 +321,13 @@ int CSimulation::nDoSimulationTimeMultiplier(string const* strIn)
 ==============================================================================================================================*/
 int CSimulation::nDoTimeUnits(string const* strIn)
 {
-   if (strIn->find('h') != string::npos)            // Search for 'hours'
+   if (strIn->find("hour") != string::npos)
       return TIME_HOURS;
-   else if (strIn->find('d') != string::npos)       // Search for 'days'
+   else if (strIn->find("day") != string::npos)
       return TIME_DAYS;
-   else if (strIn->find('m') != string::npos)       // Search for 'months'
+   else if (strIn->find("month") != string::npos)
       return TIME_MONTHS;
-   else if (strIn->find('y') != string::npos)       // Search for 'years'
+   else if (strIn->find("year") != string::npos)
       return TIME_YEARS;
    else
       return TIME_UNKNOWN;
