@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SAGA_PROJECT VERSION="2.3.1">
+  <DATA>
+    <DATASET type="GRID">
+      <FILE>two_bays_edge_missing.sgrd</FILE>
+      <PARAMETERS name="01. two_bays">
+        <OPTION type="text" id="OBJECT_NAME" name="Name">two_bays</OPTION>
+        <OPTION type="long_text" id="OBJECT_DESC" name="Description">STATISTICS_MAXIMUM=99.824
+STATISTICS_MEAN=76.462189599999
+STATISTICS_MINIMUM=51.51
+STATISTICS_STDDEV=13.558090424327
+</OPTION>
+        <OPTION type="range" id="GENERAL_NODATA" name="No Data">-9999.000000; -9999.000000</OPTION>
+        <OPTION type="boolean" id="LEGEND_SHOW" name="Show Legend">TRUE</OPTION>
+        <OPTION type="choice" id="LEGEND_STYLE" name="Style" index="0">vertical</OPTION>
+        <OPTION type="double" id="DISPLAY_TRANSPARENCY" name="Transparency [%]">0.000000</OPTION>
+        <OPTION type="boolean" id="SHOW_ALWAYS" name="Show at all scales">TRUE</OPTION>
+        <OPTION type="range" id="SHOW_RANGE" name="Scale Range">100.000000; 1000.000000</OPTION>
+        <OPTION type="choice" id="COLORS_TYPE" name="Type" index="3">Graduated Colors</OPTION>
+        <OPTION type="color" id="UNISYMBOL_COLOR" name="Color">R255 G000 B000</OPTION>
+        <OPTION type="static_table" id="LUT" name="Table">
+          <FIELDS>
+            <FIELD type="COLOR">COLOR</FIELD>
+            <FIELD type="STRING">NAME</FIELD>
+            <FIELD type="STRING">DESCRIPTION</FIELD>
+            <FIELD type="DOUBLE">MINIMUM</FIELD>
+            <FIELD type="DOUBLE">MAXIMUM</FIELD>
+          </FIELDS>
+          <RECORDS>
+            <RECORD>
+              <FIELD>65793</FIELD>
+              <FIELD>Class 1</FIELD>
+              <FIELD>First Class</FIELD>
+              <FIELD>0.000000</FIELD>
+              <FIELD>1.000000</FIELD>
+            </RECORD>
+            <RECORD>
+              <FIELD>255</FIELD>
+              <FIELD>Class 2</FIELD>
+              <FIELD>Second Class</FIELD>
+              <FIELD>1.000000</FIELD>
+              <FIELD>2.000000</FIELD>
+            </RECORD>
+          </RECORDS>
+        </OPTION>
+        <OPTION type="colors" id="METRIC_COLORS" name="Colors">
+          <COLOR>R000 G001 B128</COLOR>
+          <COLOR>R000 G021 B196</COLOR>
+          <COLOR>R000 G075 B243</COLOR>
+          <COLOR>R002 G146 B253</COLOR>
+          <COLOR>R032 G211 B223</COLOR>
+          <COLOR>R092 G249 B163</COLOR>
+          <COLOR>R163 G249 B092</COLOR>
+          <COLOR>R223 G211 B032</COLOR>
+          <COLOR>R253 G146 B002</COLOR>
+          <COLOR>R243 G075 B000</COLOR>
+          <COLOR>R196 G021 B000</COLOR>
+        </OPTION>
+        <OPTION type="range" id="METRIC_ZRANGE" name="Value Range">51.509998; 99.823997</OPTION>
+        <OPTION type="choice" id="METRIC_SCALE_MODE" name="Mode" index="0">Linear</OPTION>
+        <OPTION type="double" id="METRIC_SCALE_LOG" name="Logarithmic Stretch Factor">1.000000</OPTION>
+        <OPTION type="text" id="GENERAL_Z_UNIT" name="Unit"/>
+        <OPTION type="double" id="GENERAL_Z_FACTOR" name="Z-Scale">1.000000</OPTION>
+        <OPTION type="double" id="GENERAL_Z_OFFSET" name="Z-Offset">0.000000</OPTION>
+        <OPTION type="choice" id="DISPLAY_RESAMPLING" name="Resampling" index="0">Nearest Neighbour</OPTION>
+        <OPTION type="choice" id="SHADE_MODE" name="Coloring" index="0">bright - dark</OPTION>
+        <OPTION type="choice" id="OVERLAY_MODE" name="This Color" index="0">Red</OPTION>
+        <OPTION type="grid_system" id="OVERLAY_R_GRIDSYSTEM" name="Grid system">
+          <CELLSIZE>1</CELLSIZE>
+          <XMIN>1.5</XMIN>
+          <XMAX>250.5</XMAX>
+          <YMIN>1.5</YMIN>
+          <YMAX>500.5</YMAX>
+        </OPTION>
+        <DATA type="grid" id="OVERLAY_R" name="Red">NOT SET</DATA>
+        <OPTION type="grid_system" id="OVERLAY_G_GRIDSYSTEM" name="Grid system">
+          <CELLSIZE>1</CELLSIZE>
+          <XMIN>1.5</XMIN>
+          <XMAX>250.5</XMAX>
+          <YMIN>1.5</YMIN>
+          <YMAX>500.5</YMAX>
+        </OPTION>
+        <DATA type="grid" id="OVERLAY_G" name="Green">NOT SET</DATA>
+        <OPTION type="grid_system" id="OVERLAY_B_GRIDSYSTEM" name="Grid system">
+          <CELLSIZE>1</CELLSIZE>
+          <XMIN>1.5</XMIN>
+          <XMAX>250.5</XMAX>
+          <YMIN>1.5</YMIN>
+          <YMAX>500.5</YMAX>
+        </OPTION>
+        <DATA type="grid" id="OVERLAY_B" name="Blue">NOT SET</DATA>
+        <OPTION type="boolean" id="VALUES_SHOW" name="Show Cell Values">TRUE</OPTION>
+        <OPTION type="font" id="VALUES_FONT" name="Font">
+          <COLOR>R000 G000 B000</COLOR>
+          <FONT>0;-13;0;0;0;400;0;0;0;0;3;2;1;34;Arial</FONT>
+        </OPTION>
+        <OPTION type="double" id="VALUES_SIZE" name="Size">15.000000</OPTION>
+        <OPTION type="integer" id="VALUES_DECIMALS" name="Decimals">2</OPTION>
+        <OPTION type="choice" id="VALUES_EFFECT" name="Boundary Effect" index="1">full frame</OPTION>
+        <OPTION type="color" id="VALUES_EFFECT_COLOR" name="Color">R255 G255 B255</OPTION>
+        <OPTION type="choice" id="MEMORY_MODE" name="Memory Handling" index="0">Normal</OPTION>
+        <OPTION type="double" id="MEMORY_BUFFER_SIZE" name="Buffer Size MB">0.004768</OPTION>
+      </PARAMETERS>
+    </DATASET>
+  </DATA>
+  <MAPS>
+    <MAP>
+      <XMIN>96.75055640406174</XMIN>
+      <XMAX>167.99100082741052</XMAX>
+      <YMIN>-58.07608559799303</YMIN>
+      <YMAX>445.253141306004</YMAX>
+      <PARAMETERS name="">
+        <OPTION type="text" id="NAME" name="Name">01. two_bays</OPTION>
+        <OPTION type="boolean" id="GOTO_NEWLAYER" name="Zoom to added layer">TRUE</OPTION>
+        <OPTION type="boolean" id="SYNC_MAPS" name="Synchronize Map Extents">FALSE</OPTION>
+        <OPTION type="boolean" id="FRAME_SHOW" name="Frame">TRUE</OPTION>
+        <OPTION type="integer" id="FRAME_WIDTH" name="Size">17</OPTION>
+        <OPTION type="boolean" id="NORTH_SHOW" name="North Arrow">FALSE</OPTION>
+        <OPTION type="double" id="NORTH_ANGLE" name="Direction">0.000000</OPTION>
+        <OPTION type="double" id="NORTH_SIZE" name="Size">5.000000</OPTION>
+        <OPTION type="double" id="NORTH_OFFSET_X" name="Horizontal Offset">5.000000</OPTION>
+        <OPTION type="double" id="NORTH_OFFSET_Y" name="Vertical Offset">90.000000</OPTION>
+        <OPTION type="boolean" id="GCS_POSITION" name="Position as Geographic Coordinates">FALSE</OPTION>
+        <OPTION type="boolean" id="SCALE_SHOW" name="Scale Bar">TRUE</OPTION>
+        <OPTION type="choice" id="SCALE_STYLE" name="Style" index="1">alternating scale bar</OPTION>
+        <OPTION type="boolean" id="SCALE_UNIT" name="Unit">TRUE</OPTION>
+        <OPTION type="double" id="SCALE_WIDTH" name="Width">40.000000</OPTION>
+        <OPTION type="double" id="SCALE_HEIGHT" name="Height">4.000000</OPTION>
+        <OPTION type="double" id="SCALE_OFFSET_X" name="Horizontal Offset">5.000000</OPTION>
+        <OPTION type="double" id="SCALE_OFFSET_Y" name="Vertical Offset">7.500000</OPTION>
+        <OPTION type="choice" id="PRINT_LEGEND" name="Show Legend" index="1">yes</OPTION>
+        <OPTION type="boolean" id="PRINT_SCALE_SHOW" name="Show Scale">TRUE</OPTION>
+        <OPTION type="integer" id="PRINT_RESOLUTION" name="Display Resolution">2</OPTION>
+        <OPTION type="boolean" id="PRINT_FRAME_SHOW" name="Show">TRUE</OPTION>
+        <OPTION type="integer" id="PRINT_FRAME_WIDTH" name="Width">7</OPTION>
+      </PARAMETERS>
+      <LAYERS>
+        <FILE>two_bays_edge_missing.sgrd</FILE>
+      </LAYERS>
+    </MAP>
+  </MAPS>
+</SAGA_PROJECT>

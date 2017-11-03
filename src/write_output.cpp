@@ -455,7 +455,7 @@ bool CSimulation::bWritePerTimestepResults(void)
    OutStream << setiosflags(ios::fixed) << setprecision(0);
 
    // Output timestep and simulated time info ===================================================================================
-   OutStream << setw(5) << m_ulIteration;
+   OutStream << setw(5) << m_ulTimestep;
    OutStream << setw(7) << m_dSimElapsed;                            // In hours
    OutStream << resetiosflags(ios::floatfield);
    OutStream << setiosflags(ios::fixed) << setprecision(0);
@@ -698,7 +698,7 @@ int CSimulation::nSaveProfile(int const nProfile, int const nCoast, int const nP
    {
       for (unsigned int j = 0; j < m_VnProfileToSave.size(); j++)
       {
-         if ((m_ulIteration == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
+         if ((m_ulTimestep == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {
             if (! bWriteProfileData(nCoast, nProfile, nProfSize, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVScapeXY))
                return RTN_ERR_PROFILEWRITE;
@@ -727,7 +727,7 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
    strFName.append("_timestep_");
    ststrTmp.clear();
    ststrTmp.str(std::string());
-   ststrTmp << FillToWidth('0', 4) << m_ulIteration;
+   ststrTmp << FillToWidth('0', 4) << m_ulTimestep;
    strFName.append(ststrTmp.str());
 
    strFName.append(".csv");
@@ -741,7 +741,7 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
       return false;
    }
 
-   OutProfStream << "\"Dist\", \"X\", \"Y\", \"Z (before erosion)\", \"Depth/DB\", \"Erosion Potential\", \"Slope\", \"Recession XY\", \"Change Elev Z\", \"Grid X\",  \"Grid Y\",  \"Weight\",  \"For profile " << nProfile << " from coastline " << nCoast << " at timestep " << m_ulIteration << "\"" << endl;
+   OutProfStream << "\"Dist\", \"X\", \"Y\", \"Z (before erosion)\", \"Depth/DB\", \"Erosion Potential\", \"Slope\", \"Recession XY\", \"Change Elev Z\", \"Grid X\",  \"Grid Y\",  \"Weight\",  \"For profile " << nProfile << " from coastline " << nCoast << " at timestep " << m_ulTimestep << "\"" << endl;
    for (int i = 0; i < nProfSize; i++)
    {
       double dX = dGridCentroidXToExtCRSX(pPtVGridProfile->at(i).nGetX());
@@ -768,7 +768,7 @@ int CSimulation::nSaveParProfile(int const nProfile, int const nCoast, int const
    {
       for (unsigned int j = 0; j < m_VnProfileToSave.size(); j++)
       {
-         if ((m_ulIteration == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
+         if ((m_ulTimestep == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {
             if (! bWriteParProfileData(nCoast, nProfile, nParProfSize, nDirection, nDistFromProfile, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVScapeXY))
                return RTN_ERR_PROFILEWRITE;
@@ -805,7 +805,7 @@ bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int
    strFName.append("_timestep_");
    ststrTmp.clear();
    ststrTmp.str(std::string());
-   ststrTmp << FillToWidth('0', 4) << m_ulIteration;
+   ststrTmp << FillToWidth('0', 4) << m_ulTimestep;
    strFName.append(ststrTmp.str());
 
    strFName.append(".csv");
@@ -819,7 +819,7 @@ bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int
       return false;
    }
 
-   OutProfStream << "\"Dist\", \"X\", \"Y\", \"Z (before erosion)\", \"Depth/DB\", \"Erosion Potential\", \"Slope\", \"Recession XY\", \"Change Elev Z\", \"Grid X\",  \"Grid Y\",  \"Weight\",  \"For profile " << nProfile << " from coastline " << nCoast << " at timestep " << m_ulIteration << "\"" << endl;
+   OutProfStream << "\"Dist\", \"X\", \"Y\", \"Z (before erosion)\", \"Depth/DB\", \"Erosion Potential\", \"Slope\", \"Recession XY\", \"Change Elev Z\", \"Grid X\",  \"Grid Y\",  \"Weight\",  \"For profile " << nProfile << " from coastline " << nCoast << " at timestep " << m_ulTimestep << "\"" << endl;
    for (int i = 0; i < nProfSize; i++)
    {
       double dX = dGridCentroidXToExtCRSX(pPtVGridProfile->at(i).nGetX());

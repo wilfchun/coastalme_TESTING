@@ -104,7 +104,7 @@ int CSimulation::nCreateAllPolygons(void)
                   pThisProfile->GetMostCoastwardSharedLineSegment(nPrevProfile, nThisProfileEnd, nPrevProfileEnd);
                   if (nThisProfileEnd == -1)
                   {
-                     LogStream << m_ulIteration << ": " << ERR << "profile " << nPrevProfile << " should be coincident with profile " << nThisProfile << " but was not found" << endl;
+                     LogStream << m_ulTimestep << ": " << ERR << "profile " << nPrevProfile << " should be coincident with profile " << nThisProfile << " but was not found" << endl;
                      return RTN_ERR_BAD_MULTILINE;
                   }
 
@@ -310,7 +310,7 @@ void CSimulation::MarkPolygonCells(void)
          }
 
 //          // DEBUG STUFF
-//          LogStream << endl << "Timestep " << m_ulIteration << ": coast " << nCoast << ", polygon " << nPoly << endl;
+//          LogStream << endl << "Timestep " << m_ulTimestep << ": coast " << nCoast << ", polygon " << nPoly << endl;
 //          LogStream << "Boundary\t\t\tBuffer" << endl;
 //          for (int i = 0; i < pPolygon->nGetBoundarySize()-1; i++)
 //             LogStream << "{" << pPolygon->pPtGetBoundaryPoint(i)->dGetX() << ", " << pPolygon->pPtGetBoundaryPoint(i)->dGetY() << "}\t{" << PtVInnerBuffer[i].dGetX() << ", " << PtVInnerBuffer[i].dGetY() << "}" << endl;
@@ -329,7 +329,7 @@ void CSimulation::MarkPolygonCells(void)
          // Safety check
          if (PtStart.dGetX() == DBL_NODATA)
          {
-            LogStream << m_ulIteration << ": " << ERR << "could not find a flood fill start point for coast " << nCoast << ", polygon " << nPoly << endl;
+            LogStream << m_ulTimestep << ": " << ERR << "could not find a flood fill start point for coast " << nCoast << ", polygon " << nPoly << endl;
             break;
          }
 
@@ -337,7 +337,7 @@ void CSimulation::MarkPolygonCells(void)
          CGeom2DIPoint PtiStart = PtiExtCRSToGrid(&PtStart);                // Grid CRS
          PtiStack.push(PtiStart);
 
-//          LogStream << m_ulIteration << ": filling polygon " << nPoly << " from [" << PtiStart.nGetX() << "][" << PtiStart.nGetY() << "] {" << dGridCentroidXToExtCRSX(PtiStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiStart.nGetY()) << "}" << endl;
+//          LogStream << m_ulTimestep << ": filling polygon " << nPoly << " from [" << PtiStart.nGetX() << "][" << PtiStart.nGetY() << "] {" << dGridCentroidXToExtCRSX(PtiStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiStart.nGetY()) << "}" << endl;
 
          // Then do the flood fill: loop until there are no more cell co-ords on the stack
          while (! PtiStack.empty())
@@ -396,7 +396,7 @@ void CSimulation::MarkPolygonCells(void)
 
 //          // Store the number of cells in the interior of the polygon (note that this is an underestimate, it does not include cells in the polygon boundary)
 //          pPolygon->SetNumCells(nCellsInPolygon);
-//          LogStream << m_ulIteration << ": N cells = " << nCellsInPolygon << " in polygon " << nPoly << endl;
+//          LogStream << m_ulTimestep << ": N cells = " << nCellsInPolygon << " in polygon " << nPoly << endl;
 
          // Calculate the total volume of seawater on the polygon (m3) and store it
 //          double dSeaVolume = dTotDepth * m_dCellSide;
@@ -531,8 +531,8 @@ void CSimulation::DoPolygonSharedBoundaries(void)
 //          assert(dVUpCoastBoundaryShare.size() == nVUpCoastAdjacentPolygon.size());
 //          assert(dVDownCoastBoundaryShare.size() == nVDownCoastAdjacentPolygon.size());
 
-//          LogStream << m_ulIteration << ": polygon = " << nPoly << (pPolygon->bIsPointed() ? " IS TRIANGULAR" : "") << endl;
-//             LogStream << m_ulIteration << ": polygon = " << nPoly << endl;
+//          LogStream << m_ulTimestep << ": polygon = " << nPoly << (pPolygon->bIsPointed() ? " IS TRIANGULAR" : "") << endl;
+//             LogStream << m_ulTimestep << ": polygon = " << nPoly << endl;
 //
 //          LogStream << "\tUP-COAST Boundary lengths = ";
 //          for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)

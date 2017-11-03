@@ -241,10 +241,10 @@ void CSimulation::AnnounceLicence(void)
 ==============================================================================================================================*/
 double CSimulation::dGetTimeMultiplier(string const* strIn)
 {
-   // First, what are the time units in the timstep string?
+   // First decide what the time units are
    int nTimeUnits = nDoTimeUnits(strIn);
 
-   // Then return the correct multiplier, since m_dTimestepInHours is always in hours
+   // Then return the correct multiplier, since m_dTimeStep is in hours
    switch (nTimeUnits)
    {
       case TIME_UNKNOWN:
@@ -274,15 +274,15 @@ double CSimulation::dGetTimeMultiplier(string const* strIn)
 
 /*==============================================================================================================================
 
- Given a string containing time units, this sets up the appropriate time unit multiplier and display of time units for the simulation
+ Given a string containing time units, this sets up the appropriate multiplier and display units for the simulation
 
 ==============================================================================================================================*/
-int CSimulation::nDoDurationTimeUnits(string const* strIn)
+int CSimulation::nDoSimulationTimeMultiplier(string const* strIn)
 {
-   // First, what are the time units in the duration of simulation string?
+   // First decide what the time units are
    int nTimeUnits = nDoTimeUnits(strIn);
 
-   // Next set up the correct multiplier, since m_dTimestepInHours is always in hours
+   // Next set up the correct multiplier, since m_dTimeStep is in hours
    switch (nTimeUnits)
    {
       case TIME_UNKNOWN:
@@ -1150,7 +1150,7 @@ bool CSimulation::bSetUpTSFiles(void)
 bool CSimulation::bTimeToQuit(void)
 {
    // Add timestep to the total time simulated so far
-   m_dSimElapsed += m_dTimestepInHours;
+   m_dSimElapsed += m_dTimeStep;
 
    if (m_dSimElapsed >= m_dSimDuration)
    {
@@ -1161,12 +1161,12 @@ bool CSimulation::bTimeToQuit(void)
    }
 
    // Not quitting, so increment the timestep count, and recalc total timesteps
-   m_ulIteration++;
-   m_ulTotTimestep = static_cast<unsigned long>(dRound(m_dSimDuration / m_dTimestepInHours));
+   m_ulTimestep++;
+   m_ulTotTimestep = static_cast<unsigned long>(dRound(m_dSimDuration / m_dTimeStep));
 
    // Check to see if we have done CLOCK_CHECK_ITERATION timesteps: if so, it is time to reset the CPU time running total in case the clock()
    // function later rolls over
-   if (0 == m_ulIteration % CLOCK_CHECK_ITERATION)
+   if (0 == m_ulTimestep % CLOCK_CHECK_ITERATION)
       DoCPUClockReset();
 
    // Not yet time to quit
@@ -1181,7 +1181,7 @@ bool CSimulation::bTimeToQuit(void)
 ==============================================================================================================================*/
 void CSimulation::UpdateGrandTotals(void)
 {
-   LogStream << endl << "TOTALS FOR TIMESTEP " << m_ulIteration << endl;
+   LogStream << endl << "TOTALS FOR TIMESTEP " << m_ulTimestep << endl;
    LogStream << "Potential platform erosion = " << m_dThisTimestepPotentialPlatformErosion << endl;
 
    LogStream << "Actual fine platform erosion = " << m_dThisTimestepActualFinePlatformErosion << endl;
@@ -2110,7 +2110,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
             strCmd.append(": ");
             strCmd.append(strGetErrorText(nRtn));
             strCmd.append(" at timestep ");
-            strCmd.append(std::to_string(m_ulIteration));
+            strCmd.append(std::to_string(m_ulTimestep));
             strCmd.append(" (");
             strCmd.append(strDispSimTime(m_dSimElapsed));
             strCmd.append(").\n\nThis message sent at ");
