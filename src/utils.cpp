@@ -986,37 +986,37 @@ string CSimulation::strListTSFiles(void) const
 
    if (m_bSeaAreaTS)
    {
-      strTmp.append(SEAAREATSCODE);
+      strTmp.append(TIME_SERIES_SEA_AREA_CODE);
       strTmp.append(", ");
    }
 
    if (m_bStillWaterLevelTS)
    {
-      strTmp.append(STILLWATERLEVELCODE);
+      strTmp.append(TIME_SERIES_STILL_WATER_LEVEL_CODE);
       strTmp.append(", ");
    }
 
    if (m_bActualPlatformErosionTS)
    {
-      strTmp.append(EROSIONTSCODE);
+      strTmp.append(TIME_SERIES_EROSION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bDepositionTS)
    {
-      strTmp.append(DEPOSITIONTSCODE);
+      strTmp.append(TIME_SERIES_DEPOSITION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bPotentialSedLostFromGridTS)
    {
-      strTmp.append(SEDLOSTFROMGRIDTSCODE);
+      strTmp.append(TIME_SERIES_SEDIMENT_LOSS_FROM_GRID_CODE);
       strTmp.append(", ");
    }
 
    if (m_bSuspSedTS)
    {
-      strTmp.append(SUSPSEDTSCODE);
+      strTmp.append(TIME_SERIES_SUSPENDED_SEDIMENT_CODE);
       strTmp.append(", ");
    }
 
@@ -1040,7 +1040,7 @@ bool CSimulation::bSetUpTSFiles(void)
    {
       // Start with wetted area
       strTSFile = m_strOutPath;
-      strTSFile.append(SEAAREATSNAME);
+      strTSFile.append(TIME_SERIES_SEA_AREA_NAME);
       strTSFile.append(CSVEXT);
 
       // Open wetted time-series CSV file
@@ -1057,7 +1057,7 @@ bool CSimulation::bSetUpTSFiles(void)
    {
       // Now still water level
       strTSFile = m_strOutPath;
-      strTSFile.append(STILLWATERLEVELTSNAME);
+      strTSFile.append(TIME_SERIES_STILL_WATER_LEVEL_NAME);
       strTSFile.append(CSVEXT);
 
       // Open still water level time-series CSV file
@@ -1074,7 +1074,7 @@ bool CSimulation::bSetUpTSFiles(void)
    {
       // Erosion (fine, sand, coarse)
       strTSFile = m_strOutPath;
-      strTSFile.append(EROSIONTSNAME);
+      strTSFile.append(TIME_SERIES_EROSION_NAME);
       strTSFile.append(CSVEXT);
 
       // Open erosion time-series CSV file
@@ -1091,7 +1091,7 @@ bool CSimulation::bSetUpTSFiles(void)
    {
       // Flow deposition
       strTSFile = m_strOutPath;
-      strTSFile.append(DEPOSITIONTSNAME);
+      strTSFile.append(TIME_SERIES_DEPOSITION_NAME);
       strTSFile.append(CSVEXT);
 
       // Open flow deposition time-series CSV file
@@ -1108,7 +1108,7 @@ bool CSimulation::bSetUpTSFiles(void)
    {
       // Sediment loss
       strTSFile = m_strOutPath;
-      strTSFile.append(SEDLOSSFROMGRIDTSNAME);
+      strTSFile.append(TIME_SERIES_SEDIMENT_LOSS_FROM_GRID_NAME);
       strTSFile.append(CSVEXT);
 
       // Open sediment loss time-series CSV file
@@ -1125,7 +1125,7 @@ bool CSimulation::bSetUpTSFiles(void)
    {
       // Sediment load
       strTSFile = m_strOutPath;
-      strTSFile.append(SUSPSEDTSNAME);
+      strTSFile.append(TIME_SERIES_SUSPENDED_SEDIMENT_NAME);
       strTSFile.append(CSVEXT);
 
       // Open sediment load time-series CSV file

@@ -861,114 +861,121 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
       m_nThisSave = tMin(++m_nThisSave, m_nUSave);
 
    // These are always written
-   if (! bWriteRasterGISFloat(PLOT_SEDIMENT_TOP_ELEV, &PLOT_SEDIMENT_TOP_ELEV_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV, &RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV_TITLE))
       return false;
 
    // These are always written
-   if (! bWriteRasterGISFloat(PLOT_TOP_ELEV, &PLOT_TOP_ELEV_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_OVERALL_TOP_ELEVATION, &RASTER_PLOT_OVERALL_TOP_ELEVATION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_LOCAL_CONS_SLOPE, &PLOT_LOCAL_CONS_SLOPE_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_SEA_DEPTH, &PLOT_SEA_DEPTH_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_SEA_DEPTH, &RASTER_PLOT_SEA_DEPTH_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_WAVE_HEIGHT, &PLOT_WAVE_HEIGHT_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_WAVE_HEIGHT, &RASTER_PLOT_WAVE_HEIGHT_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_BEACH_PROTECTION, &PLOT_BEACH_PROTECTION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_WAVE_ORIENTATION, &RASTER_PLOT_WAVE_ORIENTATION_TITLE))
+      return false;
+   
+   if (! bWriteRasterGISFloat(RASTER_PLOT_BEACH_PROTECTION, &RASTER_PLOT_BEACH_PROTECTION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_POTENTIAL_PLATFORM_EROSION, &PLOT_POTENTIAL_PLATFORM_EROSION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_ACTUAL_PLATFORM_EROSION, &PLOT_ACTUAL_PLATFORM_EROSION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_ACTUAL_PLATFORM_EROSION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION, &PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_TOTAL_ACTUAL_PLATFORM_EROSION, &PLOT_TOTAL_ACTUAL_PLATFORM_EROSION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_POTENTIAL_BEACH_EROSION, &PLOT_POTENTIAL_BEACH_EROSION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_POTENTIAL_BEACH_EROSION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_ACTUAL_BEACH_EROSION, &PLOT_ACTUAL_BEACH_EROSION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_ACTUAL_BEACH_EROSION, &RASTER_PLOT_ACTUAL_BEACH_EROSION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_TOTAL_POTENTIAL_BEACH_EROSION, &PLOT_TOTAL_POTENTIAL_BEACH_EROSION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_TOTAL_ACTUAL_BEACH_EROSION, &PLOT_TOTAL_ACTUAL_BEACH_EROSION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_BEACH_DEPOSITION, &PLOT_BEACH_DEPOSITION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_BEACH_DEPOSITION, &RASTER_PLOT_BEACH_DEPOSITION_TITLE))
       return false;
 
-   if (! bWriteRasterGISFloat(PLOT_TOTAL_BEACH_DEPOSITION, &PLOT_TOTAL_BEACH_DEPOSITION_TITLE))
+   if (! bWriteRasterGISFloat(RASTER_PLOT_TOTAL_BEACH_DEPOSITION, &RASTER_PLOT_TOTAL_BEACH_DEPOSITION_TITLE))
       return false;
 
-   if (! bWriteRasterGISInt(PLOT_LANDFORM, &PLOT_LANDFORM_TITLE))
+   if (! bWriteRasterGISInt(RASTER_PLOT_LANDFORM, &RASTER_PLOT_LANDFORM_TITLE))
       return false;
 
    // These are optional
    if (m_bAvgWaveHeightSave)
-      if (! bWriteRasterGISFloat(PLOT_AVG_WAVE_HEIGHT, &PLOT_AVG_WAVE_HEIGHT_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_AVG_WAVE_HEIGHT, &RASTER_PLOT_AVG_WAVE_HEIGHT_TITLE))
          return false;
 
+   if (m_bAvgWaveOrientationSave)
+      if (! bWriteRasterGISFloat(RASTER_PLOT_AVG_WAVE_ORIENTATION, &RASTER_PLOT_AVG_WAVE_ORIENTATION_TITLE))
+         return false;
+         
    if (m_bAvgSeaDepthSave)
-      if (! bWriteRasterGISFloat(PLOT_AVG_SEA_DEPTH, &PLOT_AVG_SEA_DEPTH_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_AVG_SEA_DEPTH, &RASTER_PLOT_AVG_SEA_DEPTH_TITLE))
       return false;
 
    if (m_bSuspSedSave)
-      if (! bWriteRasterGISFloat(PLOT_SUSPENDED_SEDIMENT, &PLOT_SUSPENDED_SEDIMENT_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_SUSPENDED_SEDIMENT, &RASTER_PLOT_SUSPENDED_SEDIMENT_TITLE))
          return false;
 
    if (m_bAvgSuspSedSave)
-       if (! bWriteRasterGISFloat(PLOT_AVG_SUSPENDED_SEDIMENT, &PLOT_AVG_SUSPENDED_SEDIMENT_TITLE))
+       if (! bWriteRasterGISFloat(RASTER_PLOT_AVG_SUSPENDED_SEDIMENT, &RASTER_PLOT_AVG_SUSPENDED_SEDIMENT_TITLE))
          return false;
 
    if (m_bBasementElevSave)
-      if (! bWriteRasterGISFloat(PLOT_BASEMENT_ELEV, &PLOT_BASEMENT_ELEV_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_BASEMENT_ELEVATION, &RASTER_PLOT_BASEMENT_ELEVATION_TITLE))
          return false;
 
    for (int nLayer = 0; nLayer < m_nLayers; nLayer++)
    {
       if (m_bFineUnconsSedSave)
       {
-         if (! bWriteRasterGISFloat(PLOT_FINEUNCONSSED, &PLOT_FINEUNCONSSED_TITLE, nLayer))
+         if (! bWriteRasterGISFloat(RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bSandUnconsSedSave)
       {
-         if (! bWriteRasterGISFloat(PLOT_SANDUNCONSSED, &PLOT_SANDUNCONSSED_TITLE, nLayer))
+         if (! bWriteRasterGISFloat(RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bCoarseUnconsSedSave)
       {
-         if (! bWriteRasterGISFloat(PLOT_COARSEUNCONSSED, &PLOT_COARSEUNCONSSED_TITLE, nLayer))
+         if (! bWriteRasterGISFloat(RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bFineConsSedSave)
       {
-         if (! bWriteRasterGISFloat(PLOT_FINECONSSED, &PLOT_FINECONSSED_TITLE, nLayer))
+         if (! bWriteRasterGISFloat(RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bSandConsSedSave)
       {
-         if (! bWriteRasterGISFloat(PLOT_SANDCONSSED, &PLOT_SANDCONSSED_TITLE, nLayer))
+         if (! bWriteRasterGISFloat(RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bCoarseConsSedSave)
       {
-         if (! bWriteRasterGISFloat(PLOT_COARSECONSSED, &PLOT_COARSECONSSED_TITLE, nLayer))
+         if (! bWriteRasterGISFloat(RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
    }
@@ -977,104 +984,104 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
    {
       for (int i = 0; i < static_cast<int>(m_VdSliceElev.size()); i++)
       {
-         if (! bWriteRasterGISInt(PLOT_SLICE, &PLOT_SLICE_TITLE, m_VdSliceElev[i]))
+         if (! bWriteRasterGISInt(RASTER_PLOT_SLICE, &RASTER_PLOT_SLICE_TITLE, m_VdSliceElev[i]))
             return false;
       }
    }
 
    if (m_bRasterCoastlineSave)
    {
-      if (! bWriteRasterGISInt(PLOT_RASTER_COAST, &PLOT_RASTER_COAST_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_COAST, &RASTER_PLOT_COAST_TITLE))
          return false;
    }
 
    if (m_bRasterNormalSave)
    {
-      if (! bWriteRasterGISInt(PLOT_RASTER_NORMAL, &PLOT_RASTER_NORMAL_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_NORMAL, &RASTER_PLOT_NORMAL_TITLE))
          return false;
    }
 
    if (m_bActiveZoneSave)
    {
-      if (! bWriteRasterGISInt(PLOT_ACTIVE_ZONE, &PLOT_ACTIVE_ZONE_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_ACTIVE_ZONE, &RASTER_PLOT_ACTIVE_ZONE_TITLE))
          return false;
    }
 
    if (m_bCliffCollapseSave)
    {
-      if (! bWriteRasterGISFloat(PLOT_CLIFF_COLLAPSE, &PLOT_CLIFF_COLLAPSE_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_CLIFF_COLLAPSE, &RASTER_PLOT_CLIFF_COLLAPSE_TITLE))
          return false;
    }
 
    if (m_bTotCliffCollapseSave)
    {
-      if (! bWriteRasterGISFloat(PLOT_TOTAL_CLIFF_COLLAPSE, &PLOT_TOTAL_CLIFF_COLLAPSE_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_TOTAL_CLIFF_COLLAPSE, &RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_TITLE))
          return false;
    }
 
    if (m_bCliffCollapseDepositionSave)
    {
-      if (! bWriteRasterGISFloat(PLOT_CLIFF_COLLAPSE_DEPOSIT, &PLOT_CLIFF_COLLAPSE_DEPOSIT_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT, &RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT_TITLE))
          return false;
    }
 
    if (m_bTotCliffCollapseDepositionSave)
    {
-      if (! bWriteRasterGISFloat(PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT, &PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT, &RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT_TITLE))
          return false;
    }
 
    if (m_bRasterPolygonSave)
    {
-      if (! bWriteRasterGISInt(PLOT_RASTER_POLYGON, &PLOT_RASTER_POLYGON_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_POLYGON, &RASTER_PLOT_POLYGON_TITLE))
          return false;
    }
 
    if (m_bPotentialPlatformErosionMaskSave)
    {
-      if (! bWriteRasterGISInt(PLOT_POTENTIAL_PLATFORM_EROSION_MASK, &PLOT_POTENTIAL_PLATFORM_EROSION_MASK_TITLE))
+      if (! bWriteRasterGISInt(RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK, &RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK_TITLE))
       return false;
    }
 
    if (m_bSeaMaskSave)
    {
-      if (! bWriteRasterGISInt(PLOT_INUNDATION_MASK, &PLOT_INUNDATION_MASK_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_INUNDATION_MASK, &RASTER_PLOT_INUNDATION_MASK_TITLE))
       return false;
    }
 
    if (m_bBeachMaskSave)
    {
-      if (! bWriteRasterGISInt(PLOT_BEACH_MASK, &PLOT_BEACH_MASK_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_BEACH_MASK, &RASTER_PLOT_BEACH_MASK_TITLE))
       return false;
    }
 
    if (m_bInterventionClassSave)
    {
-      if (! bWriteRasterGISInt(PLOT_INTERVENTION_CLASS, &PLOT_INTERVENTION_CLASS_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_INTERVENTION_CLASS, &RASTER_PLOT_INTERVENTION_CLASS_TITLE))
          return false;
    }
 
    if (m_bInterventionHeightSave)
    {
-      if (! bWriteRasterGISFloat(PLOT_INTERVENTION_HEIGHT, &PLOT_INTERVENTION_HEIGHT_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_INTERVENTION_HEIGHT, &RASTER_PLOT_INTERVENTION_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bShadowZoneCodesSave)
    {
-      if (! bWriteRasterGISInt(PLOT_SHADOW_ZONE_CODES, &PLOT_SHADOW_ZONE_CODES_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_SHADOW_ZONE_CODES, &RASTER_PLOT_SHADOW_ZONE_CODES_TITLE))
          return false;
    }
    
    if (m_bDeepWaterWaveOrientationSave)
    {
-      if (! bWriteRasterGISFloat(PLOT_DEEP_WATER_WAVE_ORIENTATION, &PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION, &RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE))
          return false;
    }
    
    if (m_bDeepWaterWaveHeightSave)
    {
-      if (! bWriteRasterGISFloat(PLOT_DEEP_WATER_WAVE_HEIGHT, &PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE))
+      if (! bWriteRasterGISFloat(RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT, &RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE))
          return false;
    }
    
@@ -1090,80 +1097,80 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
 bool CSimulation::bSaveAllVectorGISFiles(void)
 {
    // Always written
-   if (! bWriteVectorGIS(PLOT_COAST, &PLOT_COAST_TITLE))
+   if (! bWriteVectorGIS(VECTOR_PLOT_COAST, &VECTOR_PLOT_COAST_TITLE))
       return false;
 
-   if (! bWriteVectorGIS(PLOT_NORMALS, &PLOT_NORMALS_TITLE))
+   if (! bWriteVectorGIS(VECTOR_PLOT_NORMALS, &VECTOR_PLOT_NORMALS_TITLE))
       return false;
 
    if (m_bInvalidNormalsSave)
    {
-      if (! bWriteVectorGIS(PLOT_INVALID_NORMALS, &PLOT_INVALID_NORMALS_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_INVALID_NORMALS, &VECTOR_PLOT_INVALID_NORMALS_TITLE))
          return false;
    }
 
    if (m_bCoastCurvatureSave)
    {
-      if (! bWriteVectorGIS(PLOT_COAST_CURVATURE, &PLOT_COAST_CURVATURE_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_COAST_CURVATURE, &VECTOR_PLOT_COAST_CURVATURE_TITLE))
          return false;
    }
 
    if (m_bWaveAngleSave)
    {
-      if (! bWriteVectorGIS(PLOT_WAVE_AND_HEIGHT, &PLOT_WAVE_AND_HEIGHT_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_WAVE_ORIENTATION_AND_HEIGHT, &VECTOR_PLOT_WAVE_ORIENTATION_AND_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bAvgWaveAngleSave)
    {
-      if (! bWriteVectorGIS(PLOT_AVG_WAVE_AND_HEIGHT, &PLOT_AVG_WAVE_AND_HEIGHT_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT, &VECTOR_PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bWaveEnergySinceCollapseSave)
    {
-      if (! bWriteVectorGIS(PLOT_WAVE_ENERGY_SINCE_COLLAPSE, &PLOT_WAVE_ENERGY_SINCE_COLLAPSE_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE, &VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE_TITLE))
          return false;
    }
 
    if (m_bMeanWaveEnergySave)
    {
-      if (! bWriteVectorGIS(PLOT_MEAN_WAVE_ENERGY, &PLOT_MEAN_WAVE_ENERGY_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_MEAN_WAVE_ENERGY, &VECTOR_PLOT_MEAN_WAVE_ENERGY_TITLE))
          return false;
    }
 
    if (m_bBreakingWaveHeightSave)
    {
-      if (! bWriteVectorGIS(PLOT_BREAKING_WAVE_HEIGHT, &PLOT_BREAKING_WAVE_HEIGHT_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_BREAKING_WAVE_HEIGHT, &VECTOR_PLOT_BREAKING_WAVE_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bBeachProtectionSave)
    {
-      if (! bWriteVectorGIS(PLOT_BEACH_PROTECTION, &PLOT_BEACH_PROTECTION_TITLE))
+      if (! bWriteVectorGIS(RASTER_PLOT_BEACH_PROTECTION, &RASTER_PLOT_BEACH_PROTECTION_TITLE))
          return false;
    }
    if (m_bPolygonNodeSave)
    {
-      if (! bWriteVectorGIS(PLOT_POLYGON_NODES, &PLOT_POLYGON_NODES_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_POLYGON_NODES, &VECTOR_PLOT_POLYGON_NODES_TITLE))
          return false;
    }
 
    if (m_bPolygonBoundarySave)
    {
-      if (! bWriteVectorGIS(PLOT_POLYGON_BOUNDARY, &PLOT_POLYGON_BOUNDARY_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_POLYGON_BOUNDARY, &VECTOR_PLOT_POLYGON_BOUNDARY_TITLE))
          return false;
    }
 
    if (m_bCliffNotchSave)
    {
-      if (! bWriteVectorGIS(PLOT_CLIFF_NOTCH_SIZE, &PLOT_CLIFF_NOTCH_SIZE_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_CLIFF_NOTCH_SIZE, &VECTOR_PLOT_CLIFF_NOTCH_SIZE_TITLE))
          return false;
    }
 
    if (m_bShadowZoneLineSave)
    {
-      if (! bWriteVectorGIS(PLOT_SHADOW_ZONE_BOUNDARY, &PLOT_SHADOW_ZONE_BOUNDARY_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_SHADOW_ZONE_BOUNDARY, &VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_TITLE))
          return false;
    }
 
@@ -1179,12 +1186,12 @@ bool CSimulation::bSaveAllVectorGISFiles(void)
 void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, double& dMax, int const nLayer, double const dElev)
 {
    // If this is a binary mask layer, we already know the max and min values
-   if ((nDataItem == PLOT_POTENTIAL_PLATFORM_EROSION_MASK) ||
-       (nDataItem == PLOT_INUNDATION_MASK) ||
-       (nDataItem == PLOT_BEACH_MASK) ||
-       (nDataItem == PLOT_RASTER_COAST) ||
-       (nDataItem == PLOT_RASTER_NORMAL) ||
-       (nDataItem == PLOT_ACTIVE_ZONE))
+   if ((nDataItem == RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK) ||
+       (nDataItem == RASTER_PLOT_INUNDATION_MASK) ||
+       (nDataItem == RASTER_PLOT_BEACH_MASK) ||
+       (nDataItem == RASTER_PLOT_COAST) ||
+       (nDataItem == RASTER_PLOT_NORMAL) ||
+       (nDataItem == RASTER_PLOT_ACTIVE_ZONE))
    {
       dMin = 0;
       dMax = 1;
@@ -1203,19 +1210,19 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
       {
          switch (nDataItem)
          {
-            case (PLOT_SLICE):
+            case (RASTER_PLOT_SLICE):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetLayerAtElev(dElev);
                break;
             }
 
-            case (PLOT_LANDFORM):
+            case (RASTER_PLOT_LANDFORM):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory();
                break;
             }
 
-            case (PLOT_INTERVENTION_CLASS):
+            case (RASTER_PLOT_INTERVENTION_CLASS):
             {
                dTmp = INT_NODATA;
                if (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION)
@@ -1223,55 +1230,55 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
                break;
             }
 
-            case (PLOT_INTERVENTION_HEIGHT):
+            case (RASTER_PLOT_INTERVENTION_HEIGHT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetInterventionHeight();
                break;
             }
 
-            case (PLOT_RASTER_POLYGON):
+            case (RASTER_PLOT_POLYGON):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
                break;
             }
 
-            case (PLOT_BASEMENT_ELEV):
+            case (RASTER_PLOT_BASEMENT_ELEVATION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBasementElev();
                break;
             }
 
-            case (PLOT_SEDIMENT_TOP_ELEV):
+            case (RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev();
                break;
             }
 
-            case (PLOT_TOP_ELEV):
+            case (RASTER_PLOT_OVERALL_TOP_ELEVATION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneCode();
                break;
             }
 
-            case (PLOT_LOCAL_CONS_SLOPE):
+            case (RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetLocalConsSlope();
                break;
             }
 
-            case (PLOT_SEA_DEPTH):
+            case (RASTER_PLOT_SEA_DEPTH):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
                break;
             }
 
-            case (PLOT_AVG_SEA_DEPTH):
+            case (RASTER_PLOT_AVG_SEA_DEPTH):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / m_ulTimestep;
                break;
             }
 
-            case (PLOT_WAVE_HEIGHT):
+            case (RASTER_PLOT_WAVE_HEIGHT):
             {
                if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
                   dTmp = DBL_NODATA;
@@ -1280,13 +1287,28 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
                break;
             }
 
-            case (PLOT_AVG_WAVE_HEIGHT):
+            case (RASTER_PLOT_AVG_WAVE_HEIGHT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / m_ulTimestep;
                break;
             }
 
-            case (PLOT_BEACH_PROTECTION):
+            case (RASTER_PLOT_WAVE_ORIENTATION):
+            {
+               if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
+                  dTmp = DBL_NODATA;
+               else
+                  dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
+               break;
+            }
+            
+            case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
+            {
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulTimestep;
+               break;
+            }
+            
+            case (RASTER_PLOT_BEACH_PROTECTION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBeachProtectionFactor();
                if (dTmp != DBL_NODATA)
@@ -1294,139 +1316,139 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
                break;
             }
 
-            case (PLOT_POTENTIAL_PLATFORM_EROSION):
+            case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetPotentialPlatformErosion();
                break;
             }
 
-            case (PLOT_ACTUAL_PLATFORM_EROSION):
+            case (RASTER_PLOT_ACTUAL_PLATFORM_EROSION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetActualPlatformErosion();
                break;
             }
 
-            case (PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION):
+            case (RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotPotentialPlatformErosion();
                break;
             }
 
-            case (PLOT_TOTAL_ACTUAL_PLATFORM_EROSION):
+            case (RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotActualPlatformErosion();
                break;
             }
 
-            case (PLOT_POTENTIAL_BEACH_EROSION):
+            case (RASTER_PLOT_POTENTIAL_BEACH_EROSION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetPotentialBeachErosion();
                break;
             }
 
-            case (PLOT_ACTUAL_BEACH_EROSION):
+            case (RASTER_PLOT_ACTUAL_BEACH_EROSION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetActualBeachErosion();
                break;
             }
 
-            case (PLOT_TOTAL_POTENTIAL_BEACH_EROSION):
+            case (RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotPotentialBeachErosion();
                break;
             }
 
-            case (PLOT_TOTAL_ACTUAL_BEACH_EROSION):
+            case (RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotActualBeachErosion();
                break;
             }
 
-            case (PLOT_BEACH_DEPOSITION):
+            case (RASTER_PLOT_BEACH_DEPOSITION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBeachDeposition();
                break;
             }
 
-            case (PLOT_TOTAL_BEACH_DEPOSITION):
+            case (RASTER_PLOT_TOTAL_BEACH_DEPOSITION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotBeachDeposition();
                break;
             }
 
-            case (PLOT_SUSPENDED_SEDIMENT):
+            case (RASTER_PLOT_SUSPENDED_SEDIMENT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSuspendedSediment();
                break;
             }
 
-            case (PLOT_AVG_SUSPENDED_SEDIMENT):
+            case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / m_ulTimestep;
                break;
             }
 
-            case (PLOT_FINEUNCONSSED):
+            case (RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->dGetFine();
                break;
             }
 
-            case (PLOT_SANDUNCONSSED):
+            case (RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->dGetSand();
                break;
             }
 
-            case (PLOT_COARSEUNCONSSED):
+            case (RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->dGetCoarse();
                break;
             }
 
-            case (PLOT_FINECONSSED):
+            case (RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->dGetFine();
                break;
             }
 
-            case (PLOT_SANDCONSSED):
+            case (RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->dGetSand();
                break;
             }
 
-            case (PLOT_COARSECONSSED):
+            case (RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->dGetCoarse();
                break;
             }
 
-            case (PLOT_CLIFF_COLLAPSE):
+            case (RASTER_PLOT_CLIFF_COLLAPSE):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetCliffCollapse();
                break;
             }
 
-            case (PLOT_TOTAL_CLIFF_COLLAPSE):
+            case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapse();
                break;
             }
 
-            case (PLOT_CLIFF_COLLAPSE_DEPOSIT):
+            case (RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetCliffCollapseDeposition();
                break;
             }
 
-            case (PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
+            case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapseDeposition();
                break;
             }
 
-            case (PLOT_SHADOW_ZONE_CODES):
+            case (RASTER_PLOT_SHADOW_ZONE_CODES):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapseDeposition();
                break;

@@ -275,79 +275,79 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
 
    switch (nDataItem)
    {
-      case (PLOT_COAST):
+      case (VECTOR_PLOT_COAST):
       {
          strFilePathName.append(VECTOR_COAST_NAME);
          break;
       }
 
-      case (PLOT_NORMALS):
+      case (VECTOR_PLOT_NORMALS):
       {
          strFilePathName.append(VECTOR_NORMALS_NAME);
          break;
       }
 
-      case (PLOT_INVALID_NORMALS):
+      case (VECTOR_PLOT_INVALID_NORMALS):
       {
          strFilePathName.append(VECTOR_INVALID_NORMALS_NAME);
          break;
       }
 
-      case (PLOT_COAST_CURVATURE):
+      case (VECTOR_PLOT_COAST_CURVATURE):
       {
          strFilePathName.append(VECTOR_COAST_CURVATURE_NAME);
          break;
       }
 
-      case (PLOT_WAVE_AND_HEIGHT):
+      case (VECTOR_PLOT_WAVE_ORIENTATION_AND_HEIGHT):
       {
          strFilePathName.append(VECTOR_WAVE_ANGLE_NAME);
          break;
       }
 
-      case (PLOT_AVG_WAVE_AND_HEIGHT):
+      case (VECTOR_PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT):
       {
          strFilePathName.append(VECTOR_AVG_WAVE_ANGLE_NAME);
          break;
       }
 
-      case (PLOT_WAVE_ENERGY_SINCE_COLLAPSE):
+      case (VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE):
       {
          strFilePathName.append(VECTOR_WAVE_ENERGY_SINCE_COLLAPSE_NAME);
          break;
       }
 
-      case (PLOT_MEAN_WAVE_ENERGY):
+      case (VECTOR_PLOT_MEAN_WAVE_ENERGY):
       {
          strFilePathName.append(VECTOR_MEAN_WAVE_ENERGY_NAME);
          break;
       }
 
-      case (PLOT_BREAKING_WAVE_HEIGHT):
+      case (VECTOR_PLOT_BREAKING_WAVE_HEIGHT):
       {
          strFilePathName.append(VECTOR_BREAKING_WAVE_HEIGHT_NAME);
          break;
       }
 
-      case (PLOT_POLYGON_NODES):
+      case (VECTOR_PLOT_POLYGON_NODES):
       {
          strFilePathName.append(VECTOR_POLYGON_NODES_NAME);
          break;
       }
 
-      case (PLOT_POLYGON_BOUNDARY):
+      case (VECTOR_PLOT_POLYGON_BOUNDARY):
       {
          strFilePathName.append(VECTOR_POLYGON_BOUNDARY_NAME);
          break;
       }
 
-      case (PLOT_CLIFF_NOTCH_SIZE):
+      case (VECTOR_PLOT_CLIFF_NOTCH_SIZE):
       {
          strFilePathName.append(VECTOR_CLIFF_NOTCH_SIZE_NAME);
          break;
       }
 
-      case (PLOT_SHADOW_ZONE_BOUNDARY):
+      case (VECTOR_PLOT_SHADOW_ZONE_BOUNDARY):
       {
          strFilePathName.append(VECTOR_SHADOW_ZONE_LINE_NAME);
          break;
@@ -399,7 +399,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
 
    switch (nDataItem)
    {
-      case (PLOT_COAST):
+      case (VECTOR_PLOT_COAST):
       {
          eGType = wkbLineString;
          strType = "line";
@@ -447,8 +447,8 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          break;
       }
 
-      case (PLOT_NORMALS):
-      case (PLOT_INVALID_NORMALS):
+      case (VECTOR_PLOT_NORMALS):
+      case (VECTOR_PLOT_INVALID_NORMALS):
       {
          eGType = wkbLineString;
          strType = "line";
@@ -510,7 +510,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
             {
                CGeomProfile* pProfile = m_VCoast[i].pGetProfile(j);
 
-               if (((nDataItem == PLOT_NORMALS) && (pProfile->bOKIncStartAndEndOfCoast())) || ((nDataItem == PLOT_INVALID_NORMALS) && (! pProfile->bOKIncStartAndEndOfCoast())))
+               if (((nDataItem == VECTOR_PLOT_NORMALS) && (pProfile->bOKIncStartAndEndOfCoast())) || ((nDataItem == VECTOR_PLOT_INVALID_NORMALS) && (! pProfile->bOKIncStartAndEndOfCoast())))
                {
                   // Create a feature object, one per profile
                   OGRFeature *pOGRFeature = NULL;
@@ -557,27 +557,27 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          break;
       }
 
-      case (PLOT_COAST_CURVATURE):
-      case (PLOT_WAVE_ENERGY_SINCE_COLLAPSE):
-      case (PLOT_MEAN_WAVE_ENERGY):
-      case (PLOT_BREAKING_WAVE_HEIGHT):
-      case (PLOT_POLYGON_NODES):
-      case (PLOT_CLIFF_NOTCH_SIZE):
+      case (VECTOR_PLOT_COAST_CURVATURE):
+      case (VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE):
+      case (VECTOR_PLOT_MEAN_WAVE_ENERGY):
+      case (VECTOR_PLOT_BREAKING_WAVE_HEIGHT):
+      case (VECTOR_PLOT_POLYGON_NODES):
+      case (VECTOR_PLOT_CLIFF_NOTCH_SIZE):
       {
          eGType = wkbPoint;
          strType = "point";
 
          // The layer has been created, so create a real-numbered value associated with each point
          string strFieldValue1;
-         if (nDataItem == PLOT_COAST_CURVATURE)
+         if (nDataItem == VECTOR_PLOT_COAST_CURVATURE)
             strFieldValue1 = "Curve";
-         else if ((nDataItem == PLOT_WAVE_ENERGY_SINCE_COLLAPSE) || (nDataItem == PLOT_MEAN_WAVE_ENERGY))
+         else if ((nDataItem == VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE) || (nDataItem == VECTOR_PLOT_MEAN_WAVE_ENERGY))
             strFieldValue1 = "Energy";
-         else if (nDataItem == PLOT_BREAKING_WAVE_HEIGHT)
+         else if (nDataItem == VECTOR_PLOT_BREAKING_WAVE_HEIGHT)
             strFieldValue1 = "Height";
-         else if (nDataItem == PLOT_POLYGON_NODES)
+         else if (nDataItem == VECTOR_PLOT_POLYGON_NODES)
             strFieldValue1 = "Node";
-         else if (nDataItem == PLOT_CLIFF_NOTCH_SIZE)
+         else if (nDataItem == VECTOR_PLOT_CLIFF_NOTCH_SIZE)
             strFieldValue1 = "Notch";
 
          OGRFieldDefn OGRField1(strFieldValue1.c_str(), OFTReal);
@@ -605,7 +605,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                OGRPt.setY(m_VCoast[i].pPtGetCoastlinePointExtCRS(j)->dGetY());
                pOGRFeature->SetGeometry(&OGRPt);
 
-               if (nDataItem == PLOT_COAST_CURVATURE)
+               if (nDataItem == VECTOR_PLOT_COAST_CURVATURE)
                {
                   double dCurvature = m_VCoast[i].dGetDetailedCurvature(j);
                   if (dCurvature == DBL_NODATA)
@@ -614,12 +614,12 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                   // Set the feature's attribute
                   pOGRFeature->SetField(strFieldValue1.c_str(), dCurvature);
                }
-               else if (nDataItem == PLOT_WAVE_ENERGY_SINCE_COLLAPSE)
+               else if (nDataItem == VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE)
                {
                   // Set the feature's attribute
                   pOGRFeature->SetField(strFieldValue1.c_str(), m_VCoast[i].dGetWaveEnergy(j));
                }
-               else if (nDataItem == PLOT_MEAN_WAVE_ENERGY)
+               else if (nDataItem == VECTOR_PLOT_MEAN_WAVE_ENERGY)
                {
                   // Set the feature's attribute
                   double dEnergy = m_VCoast[i].pGetCoastLandform(j)->dGetTotAccumWaveEnergy();
@@ -628,13 +628,13 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
 
                   pOGRFeature->SetField(strFieldValue1.c_str(), dEnergy);
                }
-               else if (nDataItem == PLOT_BREAKING_WAVE_HEIGHT)
+               else if (nDataItem == VECTOR_PLOT_BREAKING_WAVE_HEIGHT)
                {
                   // Set the feature's attribute
                   double dHeight = m_VCoast[i].dGetBreakingWaveHeight(j);
                   pOGRFeature->SetField(strFieldValue1.c_str(), dHeight);
                }
-               else if (nDataItem == PLOT_POLYGON_NODES)
+               else if (nDataItem == VECTOR_PLOT_POLYGON_NODES)
                {
                   int nNode = m_VCoast[i].nGetPolygonNode(j);
                   if (nNode == INT_NODATA)
@@ -643,7 +643,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                   // Set the feature's attribute
                   pOGRFeature->SetField(strFieldValue1.c_str(), nNode);
                }
-               else if (nDataItem == PLOT_CLIFF_NOTCH_SIZE)
+               else if (nDataItem == VECTOR_PLOT_CLIFF_NOTCH_SIZE)
                {
                   CACoastLandform* pCoastLandform = m_VCoast[i].pGetCoastLandform(j);
                   int nCategory = pCoastLandform->nGetLandFormCategory();
@@ -676,7 +676,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          break;
       }
 
-      case (PLOT_WAVE_AND_HEIGHT):
+      case (VECTOR_PLOT_WAVE_ORIENTATION_AND_HEIGHT):
       {
          eGType = wkbPoint;
          strType = "point";
@@ -749,7 +749,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
       break;
       }
 
-      case (PLOT_AVG_WAVE_AND_HEIGHT):
+      case (VECTOR_PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT):
       {
          eGType = wkbPoint;
          strType = "point";
@@ -818,7 +818,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
       break;
       }
 
-      case (PLOT_POLYGON_BOUNDARY):
+      case (VECTOR_PLOT_POLYGON_BOUNDARY):
       {
          eGType = wkbPolygon;
          strType = "polygon";
@@ -918,7 +918,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          break;
       }
 
-      case (PLOT_SHADOW_ZONE_BOUNDARY):
+      case (VECTOR_PLOT_SHADOW_ZONE_BOUNDARY):
       {
          eGType = wkbLineString;
          strType = "line";

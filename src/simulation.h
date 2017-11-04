@@ -68,6 +68,7 @@ private:
       m_bAvgSeaDepthSave,
       m_bWaveHeightSave,
       m_bAvgWaveHeightSave,
+      m_bAvgWaveOrientationSave,
       m_bWaveAngleSave,
       m_bAvgWaveAngleSave,
       m_bWaveEnergySinceCollapseSave,

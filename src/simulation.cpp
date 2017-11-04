@@ -52,6 +52,7 @@ CSimulation::CSimulation(void)
    m_bAvgSeaDepthSave                              =
    m_bWaveHeightSave                               =
    m_bAvgWaveHeightSave                            =
+   m_bAvgWaveOrientationSave                       =
    m_bWaveAngleSave                                =
    m_bAvgWaveAngleSave                             =
    m_bBeachProtectionSave                          =

@@ -516,10 +516,11 @@ bool CSimulation::bReadRunData(void)
             m_bLandformSave                        = true;
 
             // Now look for "all"
-            if (strRH.find(RASTER_ALL_CODE) != string::npos)
+            if (strRH.find(RASTER_ALL_OUTPUT_CODE) != string::npos)
             {
                m_bAvgSeaDepthSave                  =
                m_bAvgWaveHeightSave                =
+               m_bAvgWaveOrientationSave           =
                m_bBeachProtectionSave              =
                m_bBasementElevSave                 =
                m_bSuspSedSave                      =
@@ -563,6 +564,12 @@ bool CSimulation::bReadRunData(void)
                   strRH = strRemoveSubstr(&strRH, &RASTER_AVG_WAVE_HEIGHT_NAME);
                }
 
+               if (strRH.find(RASTER_AVG_WAVE_ORIENTATION_NAME) != string::npos)
+               {
+                  m_bAvgWaveOrientationSave = true;
+                  strRH = strRemoveSubstr(&strRH, &RASTER_AVG_WAVE_ORIENTATION_NAME);
+               }
+               
                if (strRH.find(RASTER_BEACH_PROTECTION_NAME) != string::npos)
                {
                   m_bBeachProtectionSave = true;
@@ -789,7 +796,7 @@ bool CSimulation::bReadRunData(void)
             m_bWaveAngleSave = true;
 
                // First look for "all"
-            if (strRH.find(VECTOR_ALL_CODE) != string::npos)
+            if (strRH.find(VECTOR_ALL_OUTPUT_CODE) != string::npos)
             {
                m_bNormalsSave                 =
                m_bInvalidNormalsSave          =
@@ -892,7 +899,7 @@ bool CSimulation::bReadRunData(void)
             strRH = strToLower(&strRH);
 
             // First check for "all"
-            if (strRH.find(RASTER_ALL_CODE) != string::npos)
+            if (strRH.find(RASTER_ALL_OUTPUT_CODE) != string::npos)
             {
                m_bSeaAreaTS                  =
                m_bStillWaterLevelTS          =
@@ -903,40 +910,40 @@ bool CSimulation::bReadRunData(void)
             }
             else
             {
-               if (strRH.find(SEAAREATSCODE) != string::npos)
+               if (strRH.find(TIME_SERIES_SEA_AREA_CODE) != string::npos)
                {
                   m_bSeaAreaTS = true;
-                  strRH = strRemoveSubstr(&strRH, &SEAAREATSCODE);
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_SEA_AREA_CODE);
                }
 
-               if (strRH.find(STILLWATERLEVELCODE) != string::npos)
+               if (strRH.find(TIME_SERIES_STILL_WATER_LEVEL_CODE) != string::npos)
                {
                   m_bStillWaterLevelTS = true;
-                  strRH = strRemoveSubstr(&strRH, &STILLWATERLEVELCODE);
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_STILL_WATER_LEVEL_CODE);
                }
 
-               if (strRH.find(EROSIONTSCODE) != string::npos)
+               if (strRH.find(TIME_SERIES_EROSION_CODE) != string::npos)
                {
                   m_bActualPlatformErosionTS = true;
-                  strRH = strRemoveSubstr(&strRH, &EROSIONTSCODE);
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_EROSION_CODE);
                }
 
-               if (strRH.find(DEPOSITIONTSCODE) != string::npos)
+               if (strRH.find(TIME_SERIES_DEPOSITION_CODE) != string::npos)
                {
                   m_bDepositionTS = true;
-                  strRH = strRemoveSubstr(&strRH, &DEPOSITIONTSCODE);
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_DEPOSITION_CODE);
                }
 
-               if (strRH.find(SEDLOSTFROMGRIDTSCODE) != string::npos)
+               if (strRH.find(TIME_SERIES_SEDIMENT_LOSS_FROM_GRID_CODE) != string::npos)
                {
                   m_bPotentialSedLostFromGridTS = true;
-                  strRH = strRemoveSubstr(&strRH, &SEDLOSTFROMGRIDTSCODE);
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_SEDIMENT_LOSS_FROM_GRID_CODE);
                }
 
-               if (strRH.find(SUSPSEDTSCODE) != string::npos)
+               if (strRH.find(TIME_SERIES_SUSPENDED_SEDIMENT_CODE) != string::npos)
                {
                   m_bSuspSedTS = true;
-                  strRH = strRemoveSubstr(&strRH, &SUSPSEDTSCODE);
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_SUSPENDED_SEDIMENT_CODE);
                }
 
                // Check to see if all codes have been removed
