@@ -42,9 +42,19 @@ CGeomLine::CGeomLine(CGeom2DPoint const* pPt1, CGeom2DPoint const* pPt2)
    m_VPoints.push_back(*pPt2);   
 }
 
+CGeomLine::CGeomLine(int const nNum)
+{
+   CGeom2DPoint pPt;
+   m_VPoints.reserve(nNum);
+   for (int n = 0; n <= nNum; n++)
+      m_VPoints.push_back(pPt);
+}
+
+
 CGeomLine::~CGeomLine(void)
 {
 }
+
 
 double CGeomLine::dGetXAt(int const n)
 {

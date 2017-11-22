@@ -708,10 +708,10 @@ bool CSimulation::bReadRunData(void)
                   strRH = strRemoveSubstr(&strRH, &RASTER_INTERVENTION_HEIGHT_NAME);
                }
 
-               if (strRH.find(RASTER_SHADOW_ZONE_CODES_NAME) != string::npos)
+               if (strRH.find(RASTER_SHADOW_ZONE_NAME) != string::npos)
                {
                   m_bShadowZoneCodesSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_SHADOW_ZONE_CODES_NAME);
+                  strRH = strRemoveSubstr(&strRH, &RASTER_SHADOW_ZONE_NAME);
                }
 
                if (strRH.find(RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME) != string::npos)

@@ -37,7 +37,8 @@ CGeomCell::CGeomCell()
    m_nEdgeCell(NO_DIRECTION),
    m_nPolygonID(INT_NODATA),
    m_nCoastlineNormal(INT_NODATA),
-   m_nShadowZoneCode(NOT_IN_SHADOW_ZONE),
+   m_nShadowZoneNumber(0),
+   m_nDownDriftZoneNumber(0),
    m_dLocalConsSlope(0),
    m_dBasementElevation(0),
    m_dSeaDepth(0),
@@ -198,22 +199,40 @@ int CGeomCell::nGetPolygonID(void) const
 }
 
 
-void CGeomCell::SetShadowZoneCode(int const nCode)
+void CGeomCell::SetShadowZoneNumber(int const nCode)
 {
-   m_nShadowZoneCode = nCode;
+   m_nShadowZoneNumber = nCode;
 }
 
-int CGeomCell::nGetShadowZoneCode(void) const
+int CGeomCell::nGetShadowZoneNumber(void) const
 {
-   return m_nShadowZoneCode;
+   return m_nShadowZoneNumber;
 }
 
-bool CGeomCell::bIsinShadowZone(void) const
+bool CGeomCell::bIsinThisShadowZone(int const nZone) const
 {
-   if ((m_nShadowZoneCode == IN_SHADOW_ZONE_NOT_YET_DONE) || (m_nShadowZoneCode == IN_SHADOW_ZONE_DONE))
+   if (m_nShadowZoneNumber == nZone)
       return true;
    
    return false;
+}
+
+bool CGeomCell::bIsinAnyShadowZone(void) const
+{
+   if (m_nShadowZoneNumber != 0)
+      return true;
+   
+   return false;
+}
+
+void CGeomCell::SetDownDriftZoneNumber(int const nCode)
+{
+   m_nDownDriftZoneNumber = nCode;
+}
+
+int CGeomCell::nGetDownDriftZoneNumber(void) const
+{
+   return m_nDownDriftZoneNumber;
 }
 
 
@@ -547,8 +566,8 @@ void CGeomCell::InitCell(void)
    m_nPolygonID                  =
    m_nCoastlineNormal            = INT_NODATA;
    
-   m_nShadowZoneCode             = NOT_IN_SHADOW_ZONE;
-
+   m_nShadowZoneNumber           =
+   m_nDownDriftZoneNumber        =   
    m_dLocalConsSlope             =
    m_dPotentialPlatformErosion   =
    m_dActualPlatformErosion      =

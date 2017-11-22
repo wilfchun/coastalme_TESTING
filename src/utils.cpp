@@ -1161,12 +1161,12 @@ bool CSimulation::bTimeToQuit(void)
    }
 
    // Not quitting, so increment the timestep count, and recalc total timesteps
-   m_ulTimestep++;
+   m_ulIteration++;
    m_ulTotTimestep = static_cast<unsigned long>(dRound(m_dSimDuration / m_dTimeStep));
 
    // Check to see if we have done CLOCK_CHECK_ITERATION timesteps: if so, it is time to reset the CPU time running total in case the clock()
    // function later rolls over
-   if (0 == m_ulTimestep % CLOCK_CHECK_ITERATION)
+   if (0 == m_ulIteration % CLOCK_CHECK_ITERATION)
       DoCPUClockReset();
 
    // Not yet time to quit
@@ -1181,7 +1181,7 @@ bool CSimulation::bTimeToQuit(void)
 ==============================================================================================================================*/
 void CSimulation::UpdateGrandTotals(void)
 {
-   LogStream << endl << "TOTALS FOR TIMESTEP " << m_ulTimestep << endl;
+   LogStream << endl << "TOTALS FOR TIMESTEP " << m_ulIteration << endl;
    LogStream << "Potential platform erosion = " << m_dThisTimestepPotentialPlatformErosion << endl;
 
    LogStream << "Actual fine platform erosion = " << m_dThisTimestepActualFinePlatformErosion << endl;
@@ -2015,6 +2015,9 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_CSHORE_ERROR:
       strErr = "CShore did not finish correctly";
       break;
+   case RTN_ERR_NO_CELL_UNDER_COASTLINE:
+      strErr = "Could not find cell under coastline";
+      break;
    default:
       // should never get here
       strErr = "unknown cause";
@@ -2110,7 +2113,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
             strCmd.append(": ");
             strCmd.append(strGetErrorText(nRtn));
             strCmd.append(" at timestep ");
-            strCmd.append(std::to_string(m_ulTimestep));
+            strCmd.append(std::to_string(m_ulIteration));
             strCmd.append(" (");
             strCmd.append(strDispSimTime(m_dSimElapsed));
             strCmd.append(").\n\nThis message sent at ");

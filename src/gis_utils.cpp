@@ -1069,7 +1069,10 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
 
    if (m_bShadowZoneCodesSave)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_SHADOW_ZONE_CODES, &RASTER_PLOT_SHADOW_ZONE_CODES_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_SHADOW_ZONE, &RASTER_PLOT_SHADOW_ZONE_TITLE))
+         return false;
+      
+      if (! bWriteRasterGISInt(RASTER_PLOT_DOWNDRIFT_ZONE, &RASTER_PLOT_DOWNDRIFT_ZONE_TITLE))
          return false;
    }
    
@@ -1145,11 +1148,6 @@ bool CSimulation::bSaveAllVectorGISFiles(void)
          return false;
    }
 
-   if (m_bBeachProtectionSave)
-   {
-      if (! bWriteVectorGIS(RASTER_PLOT_BEACH_PROTECTION, &RASTER_PLOT_BEACH_PROTECTION_TITLE))
-         return false;
-   }
    if (m_bPolygonNodeSave)
    {
       if (! bWriteVectorGIS(VECTOR_PLOT_POLYGON_NODES, &VECTOR_PLOT_POLYGON_NODES_TITLE))
@@ -1256,7 +1254,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
 
             case (RASTER_PLOT_OVERALL_TOP_ELEVATION):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneCode();
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetOverallTopElev();
                break;
             }
 
@@ -1274,7 +1272,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
 
             case (RASTER_PLOT_AVG_SEA_DEPTH):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / m_ulIteration;
                break;
             }
 
@@ -1289,7 +1287,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
 
             case (RASTER_PLOT_AVG_WAVE_HEIGHT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / m_ulIteration;
                break;
             }
 
@@ -1304,7 +1302,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             
             case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulIteration;
                break;
             }
             
@@ -1384,7 +1382,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
 
             case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / m_ulIteration;
                break;
             }
 
@@ -1447,12 +1445,18 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapseDeposition();
                break;
             }
-
-            case (RASTER_PLOT_SHADOW_ZONE_CODES):
+            
+            case (RASTER_PLOT_SHADOW_ZONE):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapseDeposition();
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneNumber();
                break;
-            }
+            }          
+            
+            case (RASTER_PLOT_DOWNDRIFT_ZONE):
+            {
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
+               break;
+            }                        
          }
 
          if (dTmp != DBL_NODATA)

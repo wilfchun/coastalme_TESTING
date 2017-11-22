@@ -116,7 +116,7 @@ public:
 //    void AppendCellMarkedAsCoastline(int const, int const);
    CGeom2DIPoint* pPtiGetCellMarkedAsCoastline(int const);
 //    int nGetNCellsMarkedAsCoastline(void) const;
-   int nGetCoastPointGivenCell(CGeom2DIPoint const*);
+   int nGetCoastPointGivenCell(CGeom2DIPoint*);
 
    double dGetDetailedCurvature(int const) const;
    void SetDetailedCurvature(int const, double const);

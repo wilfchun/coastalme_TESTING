@@ -165,7 +165,7 @@ int CSimulation::nEstimateActualBeachErosionDownCoast(int const nCoast, int cons
    int nIndex = pUpCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
    if (nIndex == INT_NODATA)
    {
-      LogStream << m_ulTimestep << ": " << ERR << "in nEstimateActualBeachErosionOnPolygon() for polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
+      LogStream << m_ulIteration << ": " << ERR << "in nEstimateActualBeachErosionOnPolygon() for polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
 
       return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
    }
@@ -275,7 +275,7 @@ int CSimulation::nEstimateActualBeachErosionDownCoast(int const nCoast, int cons
          {
             if (nInlandOffset > (pUpCoastProfile->nGetNumCellsInProfile()-1))
             {
-//                LogStream << m_ulTimestep << ": reached end of up-coast profile " << nUpCoastProfile << " during down-coast ESTIMATION of actual beach erosion for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
+//                LogStream << m_ulIteration << ": reached end of up-coast profile " << nUpCoastProfile << " during down-coast ESTIMATION of actual beach erosion for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
 
                bEndProfile = true;
                break;
@@ -625,7 +625,7 @@ int CSimulation::nEstimateActualBeachErosionUpCoast(int const nCoast, int const 
    int nIndex = pDownCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
    if (nIndex == INT_NODATA)
    {
-      LogStream << m_ulTimestep << ": " << ERR << "in nEstimateActualBeachErosionOnPolygon() for polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nDownCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
+      LogStream << m_ulIteration << ": " << ERR << "in nEstimateActualBeachErosionOnPolygon() for polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nDownCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
 
       return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
    }
@@ -735,7 +735,7 @@ int CSimulation::nEstimateActualBeachErosionUpCoast(int const nCoast, int const 
          {
             if (nInlandOffset > (pDownCoastProfile->nGetNumCellsInProfile()-1))
             {
-               //                   LogStream << m_ulTimestep << ": reached end of down-coast profile " << nDownCoastProfile << " during up-coast ESTIMATION of actual beach erosion for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
+               //                   LogStream << m_ulIteration << ": reached end of down-coast profile " << nDownCoastProfile << " during up-coast ESTIMATION of actual beach erosion for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
 
                bEndProfile = true;
                break;
@@ -755,7 +755,7 @@ int CSimulation::nEstimateActualBeachErosionUpCoast(int const nCoast, int const 
             if (! bIsWithinValidGrid(nXDownCoastThisStart, nYDownCoastThisStart))
             {
                // It isn't
-//                   LogStream << m_ulTimestep << ": " << WARN << "reached edge of grid at [" << nXDownCoastThisStart << "][" << nYDownCoastThisStart << "] during UP-COAST estimation of actual beach erosion of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
+//                   LogStream << m_ulIteration << ": " << WARN << "reached edge of grid at [" << nXDownCoastThisStart << "][" << nYDownCoastThisStart << "] during UP-COAST estimation of actual beach erosion of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
 
                // TODO Need to improve this: at present just abandons erosion on this coast point and moves to another coast point
                bHitEdge = true;

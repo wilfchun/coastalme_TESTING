@@ -95,7 +95,7 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
    int nIndex = pUpCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
    if (nIndex == INT_NODATA)
    {
-      LogStream << m_ulTimestep << ": " << ERR << "in nDoBeachErosionOnCells() for polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
+      LogStream << m_ulIteration << ": " << ERR << "in nDoBeachErosionOnCells() for polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
 
       return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
    }
@@ -205,7 +205,7 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
          {
             if (nInlandOffset > (pUpCoastProfile->nGetNumCellsInProfile()-1))
             {
-//                LogStream << m_ulTimestep << ": reached end of up-coast profile " << nUpCoastProfile << " during down-coast ACTUAL erosion of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
+//                LogStream << m_ulIteration << ": reached end of up-coast profile " << nUpCoastProfile << " during down-coast ACTUAL erosion of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
 
                bEndProfile = true;
                break;
@@ -310,7 +310,7 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
          }
 
 //       // DEBUG STUFF -----------------------------------------------------
-//          if (m_ulTimestep == 16)
+//          if (m_ulIteration == 16)
 //          {
 //             LogStream << "\tFor polygon " << nPoly << " doing DOWN-COAST erosion, parallel profile from [" << PtiVParProfile.back().nGetX() << "][" << PtiVParProfile.back().nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiVParProfile.back().nGetX()) << ", " <<  dGridCentroidYToExtCRSY(PtiVParProfile.back().nGetY()) << "} to [" << PtiVParProfile[0].nGetX() << "][" << PtiVParProfile[0].nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiVParProfile[0].nGetX()) << ", " <<  dGridCentroidYToExtCRSY(PtiVParProfile[0].nGetY()) << "}, nParProfLen = " << nParProfLen << " dParProfileLen = " << dParProfileLen << " dParProfCoastElev = " << dParProfCoastElev << " dParProfEndElev = " << dParProfEndElev << " dParProfA = " << dParProfA << endl;
 //
@@ -590,7 +590,7 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
       int nIndex = pDownCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
       if (nIndex == INT_NODATA)
       {
-         LogStream << m_ulTimestep << ": " << ERR << "in nDoBeachErosionOnCells() for polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
+         LogStream << m_ulIteration << ": " << ERR << "in nDoBeachErosionOnCells() for polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
 
          return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
       }
@@ -689,7 +689,7 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
             {
                if (nInlandOffset > (pDownCoastProfile->nGetNumCellsInProfile()-1))
                {
-//                   LogStream << m_ulTimestep << ": reached end of down-coast profile " << nDownCoastProfile << " during up-coast ACTUAL erosion of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
+//                   LogStream << m_ulIteration << ": reached end of down-coast profile " << nDownCoastProfile << " during up-coast ACTUAL erosion of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
 
                   bEndProfile = true;
                   break;
@@ -709,7 +709,7 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
                if (! bIsWithinValidGrid(nXDownCoastThisStart, nYDownCoastThisStart))
                {
                   // It isn't
-//                   LogStream << m_ulTimestep << ": " << WARN << "reached edge of grid at [" << nXDownCoastThisStart << "][" << nYDownCoastThisStart << "] during UP-COAST erosion of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
+//                   LogStream << m_ulIteration << ": " << WARN << "reached edge of grid at [" << nXDownCoastThisStart << "][" << nYDownCoastThisStart << "] during UP-COAST erosion of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
 
                   // TODO Need to improve this: at present just abandons erosion on this coast point and moves to another coast point
                   bHitEdge = true;
@@ -793,7 +793,7 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
             }
 
 //          // DEBUG STUFF -----------------------------------------------------
-//             if (m_ulTimestep == 16)
+//             if (m_ulIteration == 16)
 //             {
 //                LogStream << "\tFor polygon " << nPoly << " doing UP-COAST erosion, parallel profile from [" << PtiVParProfile.back().nGetX() << "][" << PtiVParProfile.back().nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiVParProfile.back().nGetX()) << ", " <<  dGridCentroidYToExtCRSY(PtiVParProfile.back().nGetY()) << "} to [" << PtiVParProfile[0].nGetX() << "][" << PtiVParProfile[0].nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiVParProfile[0].nGetX()) << ", " <<  dGridCentroidYToExtCRSY(PtiVParProfile[0].nGetY()) << "}, nParProfLen = " << nParProfLen << " dParProfileLen = " << dParProfileLen << " dParProfCoastElev = " << dParProfCoastElev << " dParProfEndElev = " << dParProfEndElev << " dParProfA = " << dParProfA << endl;
 //
@@ -942,7 +942,7 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
 
                   m_pRasterGrid->m_Cell[nX][nY].SetPotentialBeachErosion(dElevDiff);
 
-//                   if (m_ulTimestep == 16)
+//                   if (m_ulIteration == 16)
 //                      LogStream << "\tnPoly = " << nPoly << " going UP-COAST, potential beach erosion = " << dElevDiff << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "} nCoastPoint = " << nCoastPoint << " nDistSeawardFromNewCoast = " << nDistSeawardFromNewCoast << " dThisElevNow = " << dThisElevNow << " Dean Elev = " << dVParProfileDeanElev[nDistSeawardFromNewCoast] << endl;
 
                   // Now get the number of the highest layer with non-zero thickness
@@ -1208,7 +1208,7 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
    int nIndex =  pUpCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
    if (nIndex == INT_NODATA)
    {
-      LogStream << m_ulTimestep << ": " << ERR << "in nDoBeachDepositionOnCells() for polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
+      LogStream << m_ulIteration << ": " << ERR << "in nDoBeachDepositionOnCells() for polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
 
       return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
    }
@@ -1294,7 +1294,7 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
          if (nParProfLen > (pUpCoastProfile->nGetNumCellsInProfile()))
          {
             // We've reached the seaward end of the up-coast profile, and still cannot deposit sufficient sediment. Need to quit, since mass balance will not be preserved (TODO find a way round this)
-            LogStream << m_ulTimestep << ": " << ERR << "reached seaward end of up-coast profile during DOWN-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
+            LogStream << m_ulIteration << ": " << ERR << "reached seaward end of up-coast profile during DOWN-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
 
             break;
          }
@@ -1675,7 +1675,7 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
       int nIndex = pDownCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
       if (nIndex == INT_NODATA)
       {
-         LogStream << m_ulTimestep << ": " << ERR << "in nDoBeachDepositionOnCells() for polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
+         LogStream << m_ulIteration << ": " << ERR << "in nDoBeachDepositionOnCells() for polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
          return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
       }
 
@@ -1752,7 +1752,7 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
             if (nParProfLen > (pDownCoastProfile->nGetNumCellsInProfile()))
             {
                // We've reached the seaward end of the down-coast profile, and still cannot deposit sufficient sediment. Need to quit, since mass balance will not be preserved (TODO find a way round this)
-               LogStream << m_ulTimestep << ": " << ERR << "reached seaward end of down-coast profile during UP-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
+               LogStream << m_ulIteration << ": " << ERR << "reached seaward end of down-coast profile during UP-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
 
                break;
             }
@@ -2136,7 +2136,7 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
       }
    }
 
-   LogStream << m_ulTimestep << ": polygon " << nPoly << " " << strMsg << " deposited = " << (dTotSandDeposited + dTotCoarseDeposited) << " target = " << dTotTargetToDeposit << " (sand = " << dTotSandDeposited << " sand remaining = " << dSandToDepositOnPoly << " coarse = " << dTotCoarseDeposited << " coarse remaining = " << dCoarseToDepositOnPoly << ")" << endl;
+   LogStream << m_ulIteration << ": polygon " << nPoly << " " << strMsg << " deposited = " << (dTotSandDeposited + dTotCoarseDeposited) << " target = " << dTotTargetToDeposit << " (sand = " << dTotSandDeposited << " sand remaining = " << dSandToDepositOnPoly << " coarse = " << dTotCoarseDeposited << " coarse remaining = " << dCoarseToDepositOnPoly << ")" << endl;
 
    return RTN_OK;
 }

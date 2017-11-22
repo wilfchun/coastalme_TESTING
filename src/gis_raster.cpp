@@ -1206,7 +1206,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (RASTER_PLOT_AVG_SEA_DEPTH):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / m_ulIteration;
                break;
             }
 
@@ -1221,7 +1221,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (RASTER_PLOT_AVG_WAVE_HEIGHT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / m_ulIteration;
                break;
             }
 
@@ -1236,7 +1236,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             
             case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulIteration;
                break;
             }
             
@@ -1316,7 +1316,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / m_ulTimestep;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / m_ulIteration;
                break;
             }
 
@@ -1609,9 +1609,15 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
          break;
       }
 
-      case (RASTER_PLOT_SHADOW_ZONE_CODES):
+      case (RASTER_PLOT_SHADOW_ZONE):
       {
-         strFilePathName.append(RASTER_SHADOW_ZONE_CODES_NAME);
+         strFilePathName.append(RASTER_SHADOW_ZONE_NAME);
+         break;
+      }
+      
+      case (RASTER_PLOT_DOWNDRIFT_ZONE):
+      {
+         strFilePathName.append(RASTER_DOWNDRIFT_ZONE_NAME);
          break;
       }
    }
@@ -1780,9 +1786,15 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
                break;
             }
 
-            case (RASTER_PLOT_SHADOW_ZONE_CODES):
+            case (RASTER_PLOT_SHADOW_ZONE):
             {
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneCode();
+               nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneNumber();
+               break;
+            }          
+            
+            case (RASTER_PLOT_DOWNDRIFT_ZONE):
+            {
+               nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
                break;
             }            
          }
@@ -1813,7 +1825,8 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
       case (RASTER_PLOT_NORMAL):
       case (RASTER_PLOT_ACTIVE_ZONE):
       case (RASTER_PLOT_POLYGON):
-      case (RASTER_PLOT_SHADOW_ZONE_CODES):
+      case (RASTER_PLOT_SHADOW_ZONE):
+      case (RASTER_PLOT_DOWNDRIFT_ZONE):
       {
          strUnits = "none";
       }
@@ -1917,7 +1930,8 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
          break;
       }
 
-      case (RASTER_PLOT_SHADOW_ZONE_CODES):
+      case (RASTER_PLOT_SHADOW_ZONE):
+      case (RASTER_PLOT_DOWNDRIFT_ZONE):
       {
          // TODO
          break;
@@ -1976,12 +1990,11 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
 
 /*===============================================================================================================================
 
- Interpolates wave properties from all profiles to all sea cells outside the active zone using GDALGridCreate(), the library version of external utility gdal_grid
+ Interpolates wave properties from all profiles to all within-polygon sea cells that are outside the active zone. We use GDALGridCreate(), the library version of external utility gdal_grid, to do this
 
 ===============================================================================================================================*/
-int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<double> const* pVdHeightX, vector<double> const* pVdHeightY)
+int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<double> const* pVdHeightX, vector<double> const* pVdHeightY)
 {
-   // Do the cells outside the active zone
    int
       nXSize = 0,
       nYSize = 0;
@@ -2114,7 +2127,9 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
             nActualX = nX + m_nXMinBoundingBox,
             nActualY = nY + m_nYMinBoundingBox;
 
-         if (m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea())
+            
+         // Only update cells that are in the contiguous sea and inside a polygon
+         if ((m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea()) && (m_pRasterGrid->m_Cell[nActualX][nActualY].nGetPolygonID() != INT_NODATA))
          {
             // Calculate the wave height and direction
             double
@@ -2132,7 +2147,7 @@ int CSimulation::nInterpolateWavePropertiesToSeaCells(vector<int> const* pVnX, v
          n++;
       }
    }
-
+   
    return RTN_OK;
 }
 

@@ -353,7 +353,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          break;
       }
    }
-
+   
    // Append the 'save number' to the filename, and prepend zeros to the save number
    strFilePathName.append("_");
    stringstream ststrTmp;
@@ -794,8 +794,8 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                pOGRFeature->SetGeometry(&OGRPt);
 
                double
-                  dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulTimestep,
-                  dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() / m_ulTimestep;
+                  dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulIteration,
+                  dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() / m_ulIteration;
 
                if ((dHeight == DBL_NODATA) || (dOrientation == DBL_NODATA))
                   continue;
@@ -948,8 +948,8 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
 
                // Now attach a geometry to the feature object
                CGeomLine LShadow = *m_VCoast[i].pGetShadowZoneBoundary(j);
-               OGRls.addPoint(LShadow.dGetXAt(0), LShadow.dGetYAt(0));
-               OGRls.addPoint(LShadow.dGetXAt(1), LShadow.dGetYAt(1));
+               for (int nn = 0; nn < LShadow.nGetSize(); nn++)
+                  OGRls.addPoint(LShadow.dGetXAt(nn), LShadow.dGetYAt(nn));
 
                pOGRFeature->SetGeometry(&OGRls);
 

@@ -182,7 +182,7 @@ private:
       m_lGDALMinCanWrite;
 
    unsigned long
-      m_ulTimestep,
+      m_ulIteration,
       m_ulTotTimestep,
       m_ulRandSeed[NRNG],
       m_ulNumCells,
@@ -499,7 +499,7 @@ private:
    bool bWriteVectorGIS(int const, string const*);
    void GetRasterOutputMinMax(int const, double&, double&, int const, double const);
    void SetRasterFileCreationDefaults(void);
-   int nInterpolateWavePropertiesToSeaCells(vector<int> const*, vector<int> const*, vector<double> const*, vector<double> const*);
+   int nInterpolateWavePropertiesToWithinPolygonCells(vector<int> const*, vector<int> const*, vector<double> const*, vector<double> const*);
    int nInterpolateWavePropertiesToActiveZoneCells(vector<int> const*, vector<int> const*, vector<bool> const*);
 
    // Initialization
@@ -566,12 +566,13 @@ private:
    void ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(int const, int const);
    static double dCalcCurvature(int const, CGeom2DPoint const*, CGeom2DPoint const*, CGeom2DPoint const*);
    void CalcD50AndFillWaveCalcHoles(void);
-   static bool bCurvaturePairCompareAscending(const pair<int, double>&, const pair<int, double>&);
    int nDoAllShadowZones(void);
+   bool bOnOrOffShoreAndUpOrDownCoast(double const, double const, int const, bool&);
+   CGeom2DIPoint PtiFollowWaveOrientation(CGeom2DIPoint const*, double const, double& dError);   
    int nFindAllShadowZones(void);
-   int nFloodFillShadowZone(int const, int const, CGeom2DIPoint const*, int const, CGeom2DIPoint const*);
-   int nSweepShadowZone(int const, int const, CGeom2DIPoint const*, int const, CGeom2DIPoint const*, int&);
-   int nSweepDownDriftFromShadowZone(int const, int const, CGeom2DIPoint const*, int const, CGeom2DIPoint const*, int const);
+   int nFloodFillShadowZone(int const, int const, int const, CGeom2DIPoint const*, int const, CGeom2DIPoint const*);
+   int nSweepShadowZone(int const, int const, int const, CGeom2DIPoint const*, int const, CGeom2DIPoint const*, int&);
+   int nSweepDownDriftFromShadowZone(int const, int const, int const, CGeom2DIPoint const*, int const, int const);
    int nCreateAllPolygons(void);
    void RasterizePolygonJoiningLine(CGeom2DPoint const*, CGeom2DPoint const*);
    static bool bIsWithinPolygon(CGeom2DPoint const*, vector<CGeom2DPoint> const*);

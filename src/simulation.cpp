@@ -165,7 +165,7 @@ CSimulation::CSimulation(void)
    m_lGDALMaxCanWrite                              =
    m_lGDALMinCanWrite                              = 0;
 
-   m_ulTimestep                                        =
+   m_ulIteration                                        =
    m_ulTotTimestep                                     =
    m_ulNumCells                                        =
    m_ulThisTimestepNumSeaCells                         =
@@ -496,7 +496,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //    // DEBUG CODE
 //    for (unsigned int n = 0; n < m_VEdgeCell.size(); n++)
 //    {
-//       LogStream << "[" << m_VEdgeCell[n].nGetX() << "][" << m_VEdgeCell[n].nGetY() << "] {" << dGridCentroidXToExtCRSX(m_VEdgeCell[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(m_VEdgeCell[n].nGetY()) << "} " << m_VEdgeCellEdge[n] << endl;
+//       LogStream << "[" << m_VEdgeCell[n].nGetX() << "][" << m_VEdgeCell[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(m_VEdgeCell[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(m_VEdgeCell[n].nGetY()) << "} " << m_VEdgeCellEdge[n] << endl;
 //    }
 
    // If we are using the default cell spacing, then now that we know the size of the raster cells, we can set the size of profile spacing in m
@@ -673,7 +673,6 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       m_dThisTimestepSWL -= m_dDeltaSWLPerTimestep;
    }
 
-
    // ===================================================== The main loop ======================================================
    // Tell the user what is happening
    AnnounceIsRunning();
@@ -686,7 +685,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Tell the user how the simulation is progressing
       AnnounceProgress();
 
-      LogStream << "TIMESTEP " << m_ulTimestep << " ================================================================================================" << endl;
+      LogStream << "TIMESTEP " << m_ulIteration << " ================================================================================================" << endl;
 
       // Check to see if there is a new intervention in place: if so, update it on the RasterGrid array
       nRet = nUpdateIntervention();
@@ -782,7 +781,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nDoAllPropagateWaves();
       if (nRet != RTN_OK)
          return nRet;
-
+      
       if (m_bDoCoastPlatformErosion)
       {
          // Calculate elevation change on the consolidated sediment which comprises the coastal platform

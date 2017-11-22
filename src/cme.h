@@ -139,7 +139,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 4 November 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 22 November 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -250,8 +250,8 @@ double const   TOLERANCE                              = 1e-4;              // Fo
 double const   SEDIMENT_ELEV_TOLERANCE                = 1e-10;             // Throughout, differences in depth-equivalent sediment amount (m) less than this are ignored
 double const   STRAIGHT_COAST_MAX_DETAILED_CURVATURE  = -5;
 double const   STRAIGHT_COAST_MAX_SMOOTH_CURVATURE    = -1;
-double const   MIN_SEA_LENGTH_OF_SHADOW_ZONE_LINE     = 10;                // Used in shadow line tracing
-double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE    = 10;                // Used in shadow line tracing
+double const   MIN_LENGTH_OF_SHADOW_ZONE_LINE         = 10;                // Used in shadow line tracing
+double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE    = 5;                 // Used in shadow line tracing
 double const   DEAN_POWER                             = 2.0 / 3.0;         // Dean profile exponent
 
 // Error/warning, NODATA etc.
@@ -287,75 +287,69 @@ string const   ENDSEDIMENTHEAD =
 string const   PERFORMHEAD =
    "END OF SIMULATION: PERFORMANCE ===================================================================================================================================================================================================";
 
-string const   OUTEXT                              = ".out";
-string const   LOGEXT                              = ".log";
-string const   CSVEXT                              = ".csv";
+string const   OUTEXT                                                      = ".out";
+string const   LOGEXT                                                      = ".log";
+string const   CSVEXT                                                      = ".csv";
 
-int const      NO_DIRECTION                        = 0;
-int const      NORTH                               = 1;
-int const      NORTH_EAST                          = 2;
-int const      EAST                                = 3;
-int const      SOUTH_EAST                          = 4;
-int const      SOUTH                               = 5;
-int const      SOUTH_WEST                          = 6;
-int const      WEST                                = 7;
-int const      NORTH_WEST                          = 8;
+int const      NO_DIRECTION                                                = 0;
+int const      NORTH                                                       = 1;
+int const      NORTH_EAST                                                  = 2;
+int const      EAST                                                        = 3;
+int const      SOUTH_EAST                                                  = 4;
+int const      SOUTH                                                       = 5;
+int const      SOUTH_WEST                                                  = 6;
+int const      WEST                                                        = 7;
+int const      NORTH_WEST                                                  = 8;
 
-int const      DIRECTION_DOWNCOAST                 = 0;        // Down-coast, i.e. along the coast so that the index of coastline points INCREASES
-int const      DIRECTION_UPCOAST                   = 1;        // Up-coast, i.e. along the coast so that the index of coastline points DECREASES
+int const      DIRECTION_DOWNCOAST                                         = 0;        // Down-coast, i.e. along the coast so that the index of coastline points INCREASES
+int const      DIRECTION_UPCOAST                                           = 1;        // Up-coast, i.e. along the coast so that the index of coastline points DECREASES
 
 // Handedness codes, these show which side the sea is on when travelling down-coast (i.e. in the direction in which coastline point numbers INCREASE)
-int const      NULL_HANDED                         = -1;
-int const      RIGHT_HANDED                        = 0;
-int const      LEFT_HANDED                         = 1;
+int const      NULL_HANDED                                                 = -1;
+int const      RIGHT_HANDED                                                = 0;
+int const      LEFT_HANDED                                                 = 1;
 
 // Sediment texture codes
-int const      TEXTURE_FINE                        = 0;
-int const      TEXTURE_SAND                        = 1;
-int const      TEXTURE_COARSE                      = 2;
+int const      TEXTURE_FINE                                                = 0;
+int const      TEXTURE_SAND                                                = 1;
+int const      TEXTURE_COARSE                                              = 2;
 
 // Time unit codes
-int const      TIME_UNKNOWN                        = -1;
-int const      TIME_HOURS                          = 0;
-int const      TIME_DAYS                           = 1;
-int const      TIME_MONTHS                         = 2;
-int const      TIME_YEARS                          = 3;
+int const      TIME_UNKNOWN                                                = -1;
+int const      TIME_HOURS                                                  = 0;
+int const      TIME_DAYS                                                   = 1;
+int const      TIME_MONTHS                                                 = 2;
+int const      TIME_YEARS                                                  = 3;
 
 // Intervention input and output codes
-int const      IO_INTERVENTION_NONE                = 0;
-int const      IO_INTERVENTION_STRUCT              = 1;
-int const      IO_INTERVENTION_NON_STRUCT          = 2;
+int const      IO_INTERVENTION_NONE                                        = 0;
+int const      IO_INTERVENTION_STRUCT                                      = 1;
+int const      IO_INTERVENTION_NON_STRUCT                                  = 2;
 
 // Generic landform code
-int const      LF_NONE                             = 0;
+int const      LF_NONE                                                     = 0;
 
 // Landform category codes for cells and coast landform objects (see old source for full list, to be used eventually)
-int const      LF_CAT_HINTERLAND                   = 1;
-int const      LF_CAT_SEA                          = 2;
-int const      LF_CAT_CLIFF                        = 3;
-int const      LF_CAT_DRIFT                        = 4;
-int const      LF_CAT_INTERVENTION                 = 5;
+int const      LF_CAT_HINTERLAND                                           = 1;
+int const      LF_CAT_SEA                                                  = 2;
+int const      LF_CAT_CLIFF                                                = 3;
+int const      LF_CAT_DRIFT                                                = 4;
+int const      LF_CAT_INTERVENTION                                         = 5;
 
 // Landform sub-category codes for cells, LF_CAT_CLIFF
-int const      LF_SUBCAT_CLIFF_ON_COASTLINE        = 6;
-int const      LF_SUBCAT_CLIFF_INLAND              = 7;
+int const      LF_SUBCAT_CLIFF_ON_COASTLINE                                = 6;
+int const      LF_SUBCAT_CLIFF_INLAND                                      = 7;
 
 // Landform sub-category codes for cells, for LF_CAT_DRIFT
-int const      LF_SUBCAT_DRIFT_MIXED               = 8;
-int const      LF_SUBCAT_DRIFT_TALUS               = 9;
-int const      LF_SUBCAT_DRIFT_BEACH               = 10;
+int const      LF_SUBCAT_DRIFT_MIXED                                       = 8;
+int const      LF_SUBCAT_DRIFT_TALUS                                       = 9;
+int const      LF_SUBCAT_DRIFT_BEACH                                       = 10;
 // TODO
-int const      LF_SUBCAT_DRIFT_DUNES               = 11;
+int const      LF_SUBCAT_DRIFT_DUNES                                       = 11;
 
 // Landform sub-category codes for cells, for LF_CAT_INTERVENTION. See also "Intervention input and output codes"
-int const      LF_SUBCAT_INTERVENTION_STRUCT       = 12;
-int const      LF_SUBCAT_INTERVENTION_NON_STRUCT   = 13;
-
-// Shadow zone codes
-int const      NOT_IN_SHADOW_ZONE                  = 0;
-int const      IN_SHADOW_ZONE_NOT_YET_DONE         = 1;
-int const      IN_SHADOW_ZONE_DONE                 = 2;
-int const      DOWNDRIFT_OF_SHADOW_ZONE            = 3;
+int const      LF_SUBCAT_INTERVENTION_STRUCT                               = 12;
+int const      LF_SUBCAT_INTERVENTION_NON_STRUCT                           = 13;
 
 // GIS raster input codes
 int const      FINE_CONS_RASTER                                            = 1;
@@ -435,7 +429,8 @@ string const   RASTER_CLIFF_COLLAPSE_DEPOSITION_NAME                       = "cl
 string const   RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_NAME                 = "total_cliff_collapse_deposition";
 string const   RASTER_POLYGON_NAME                                         = "polygon_raster";
 string const   RASTER_SLICE_NAME                                           = "slice";
-string const   RASTER_SHADOW_ZONE_CODES_NAME                               = "shadow_zone_codes";
+string const   RASTER_SHADOW_ZONE_NAME                                     = "shadow_zones";
+string const   RASTER_DOWNDRIFT_ZONE_NAME                                  = "shadow_downdrift_zones";
 string const   RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME                     = "deep_water_wave_orientation";
 string const   RASTER_DEEP_WATER_WAVE_HEIGHT_NAME                          = "deep_water_wave_height";
 
@@ -528,11 +523,13 @@ int const      RASTER_PLOT_BEACH_DEPOSITION                                = 43;
 string const   RASTER_PLOT_BEACH_DEPOSITION_TITLE                          = "Beach deposition depth";
 int const      RASTER_PLOT_TOTAL_BEACH_DEPOSITION                          = 44;
 string const   RASTER_PLOT_TOTAL_BEACH_DEPOSITION_TITLE                    = "Total beach deposition depth";
-int const      RASTER_PLOT_SHADOW_ZONE_CODES                               = 45;
-string const   RASTER_PLOT_SHADOW_ZONE_CODES_TITLE                         = "Wave shadow zone codes";
-int const      RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION                     = 46;
+int const      RASTER_PLOT_SHADOW_ZONE                                     = 45;
+string const   RASTER_PLOT_SHADOW_ZONE_TITLE                               = "Wave shadow zones";
+int const      RASTER_PLOT_DOWNDRIFT_ZONE                                  = 46;
+string const   RASTER_PLOT_DOWNDRIFT_ZONE_TITLE                            = "Downdrift of wave shadow zones";
+int const      RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION                     = 47;
 string const   RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE               = "Deep water wave orientation";
-int const      RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT                          = 47;
+int const      RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT                          = 48;
 string const   RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE                    = "Deep water wave height";
 
 // GIS vector output user codes
@@ -677,6 +674,7 @@ int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 52;
 int const      RTN_ERR_GRIDCREATE                     = 53;
 int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 54;
 int const      RTN_ERR_CSHORE_ERROR                   = 55;
+int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 56;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                    = -1;

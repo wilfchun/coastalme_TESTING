@@ -35,8 +35,9 @@ class CGeomLine : public CA2DShape
 public:
    CGeomLine(void);
    CGeomLine(CGeom2DPoint const*, CGeom2DPoint const*);
+   CGeomLine(int const);
    ~CGeomLine(void);
-
+   
    double dGetXAt(int const);
    double dGetYAt(int const);
    CGeom2DPoint* pGetPtAt(int const); 

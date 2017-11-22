@@ -48,8 +48,9 @@ private:
       m_nEdgeCell,
       m_nPolygonID,
       m_nCoastlineNormal,
-      m_nShadowZoneCode;
-
+      m_nShadowZoneNumber,
+      m_nDownDriftZoneNumber;
+      
    double
       m_dLocalConsSlope,                     // As used in erosion calcs (really just for display purposes)
       m_dBasementElevation,                  // Elevation of basement surface (m)
@@ -215,8 +216,11 @@ public:
    double dGetInterventionHeight(void) const;
    double dGetInterventionTopElev(void) const;
    
-   void SetShadowZoneCode(int const);
-   int nGetShadowZoneCode(void) const;
-   bool bIsinShadowZone(void) const;
+   void SetShadowZoneNumber(int const);
+   int nGetShadowZoneNumber(void) const;
+   bool bIsinThisShadowZone(int const) const;
+   bool bIsinAnyShadowZone(void) const;
+   void SetDownDriftZoneNumber(int const);
+   int nGetDownDriftZoneNumber(void) const;
 };
 #endif // CELL_H

@@ -42,6 +42,11 @@ CGeom2DIPoint& CA2DIShape::operator[] (int const n)
    return m_VPoints[n];
 }
 
+CGeom2DIPoint& CA2DIShape::Back(void)
+{
+   return m_VPoints.back();
+}
+
 void CA2DIShape::Clear(void)
 {
    m_VPoints.clear();

@@ -195,18 +195,69 @@ CGeom2DIPoint* CRWCoast::pPtiGetCellMarkedAsCoastline(int const n)
 //    return dLen;
 // }
 
-//! Returns the coastline number given a cell, or INT_NODATA if the cell is not 'under' a coastline 
-int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint const* pPtiCell)
+//! Returns the coastline number given a cell, or INT_NODATA if neither this cell nor any of its neighbouring cells are 'under' a coastline. If it is a neighbouring cell that is under the coastline, then it also changes the cell that is supplied as an input parameter
+int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
 {
-   int nIndex = INT_NODATA;
-   
-   for (int n = 0; n < m_ILCellsMarkedAsCoastline.nGetSize(); n++)
+   for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
    {
-      if (m_ILCellsMarkedAsCoastline[n] == *pPtiCell)
-         nIndex = n;
+      if (m_ILCellsMarkedAsCoastline[nCoastPoint] == *pPtiCell)
+      {
+         return nCoastPoint;
+      }
    }
    
-   return nIndex;
+   // This cell is not under a coastline, so try the adjacent cells
+   int n = -1;
+   while (n <= 7)
+   {
+      int
+         nX = pPtiCell->nGetX(),
+         nY = pPtiCell->nGetY();
+      
+      switch (++n)
+      {
+         case 0:
+            nY--;
+            break;
+         case 1:
+            nY--;
+            nX++;
+            break;
+         case 2:
+            nX++;
+            break;
+         case 3:
+            nX++;
+            nY++;
+            break;
+         case 4:
+            nY++;
+            break;
+         case 5:
+            nX--;
+            nY++;
+            break;
+         case 6:
+            nX--;
+            break;
+         case 7:
+            nX--;
+            nY--;
+            break;
+      }
+      
+      CGeom2DIPoint PtiTmp(nX, nY);
+      for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
+      {
+         if (m_ILCellsMarkedAsCoastline[nCoastPoint] == PtiTmp)
+         {
+            *pPtiCell = PtiTmp;
+            return nCoastPoint;
+         }
+      }
+   }      
+   
+   return INT_NODATA;
 }
 
 
