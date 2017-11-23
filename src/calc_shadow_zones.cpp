@@ -711,6 +711,7 @@ int CSimulation::nFloodFillShadowZone(int const nCoast, int const nZone, int con
 ===============================================================================================================================*/
 int CSimulation::nSweepShadowZone(int const nCoast, int const nZone, int const nShadowBoundaryStartPoint, CGeom2DIPoint const* pPtiStart, int const nCoastPoint, CGeom2DIPoint const* pPtiEnd, int& nCoastSwept)
 {
+   // TODO merge this and the down drift sweep. We go out (one call at a time) radially from the shadow boundary start point. For each radius, move along the radius and change both shadow zone cells and down drift cells which lie on that radius
    int
       nCoastSize = m_VCoast[nCoast].nGetCoastlineSize(),
       nCoastSeaHand = m_VCoast[nCoast].nGetSeaHandedness(),
@@ -1073,7 +1074,7 @@ int CSimulation::nSweepDownDriftFromShadowZone(int const nCoast, int const nZone
          // OK, we are downdrift of the shadow zone area and have not yet processed this cell for this zone, so mark it
          m_pRasterGrid->m_Cell[nX][nY].SetDownDriftZoneNumber(nZone+1);
 
-         // Equation 14 from Hurst et al. NOTE could not get this to work, so used the equation below instead
+         // Equation 14 from Hurst et al. NOTE could not get this to work, so used the equation below instead TODO check this with Andres
 //         double dKp = 0.5 * (1.0 - sin((PI * 90.0 * nSweep) / (180.0 * nSweepLength)));
 //         double dKp = 0.5 + (0.5 * sin((PI * nSweep) / (2.0 * nSweepLength)));
          double dKp = 0.5 + (1.0 * sin((PI * nSweep) / (2.0 * nSweepLength)));
