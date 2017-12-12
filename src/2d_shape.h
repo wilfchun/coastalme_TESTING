@@ -40,6 +40,7 @@ protected:
 public:
    CA2DShape(void);
    virtual ~CA2DShape(void);
+   
    CGeom2DPoint& operator[] (int const);
    void Clear(void);
    void Resize(int const);
@@ -47,6 +48,7 @@ public:
    void Append(CGeom2DPoint const*);
    void Append(double const, double const);
    int nGetSize(void) const;
+   CGeom2DPoint* pPtBack(void);
 //    void SetPoints(const vector<CGeom2DPoint>*);
 //    int nLookUp(CGeom2DPoint*);
 //    double dGetLength(void) const;

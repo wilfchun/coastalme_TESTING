@@ -36,6 +36,7 @@ using std::setprecision;
 
 #include <algorithm>
 using std::sort;
+using std::find;
 
 #include <utility>
 using std::pair;
@@ -561,7 +562,7 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    VPtiNormalPoints.push_back(PtiProfileStart);
 
    // Find the start cell in the list of edge cells
-   auto it = std::find(m_VEdgeCell.begin(), m_VEdgeCell.end(), PtiProfileStart);
+   auto it = find(m_VEdgeCell.begin(), m_VEdgeCell.end(), PtiProfileStart);
    if (it == m_VEdgeCell.end())
    {
       // Not found
@@ -1449,7 +1450,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
       bTooShort = true;
       pProfile->SetTooShort(true);
 
-      LogStream << m_ulIteration << ": profile " << nProfile << " is TOO SHORT" << endl;
+      LogStream << m_ulIteration << ": profile " << nProfile << " from [" << pVIPointsOut->at(0).nGetX() << "][" << pVIPointsOut->at(0).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(0).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(0).nGetY()) << "} to [" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetX() << "][" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(pVIPointsOut->size()-1).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(pVIPointsOut->size()-1).nGetY()) << "} is too short, only " << pVIPointsOut->size() << " points" << endl;
    }
 }
 
@@ -1936,7 +1937,7 @@ void CSimulation::TruncateProfileAndAppendNew(int const nCoast, int const nMainP
                nProf = pThisProfile->nGetProf(nSeg, nCoinc),
                nProfsLineSeg = pThisProfile->nGetProfsLineSeg(nSeg, nCoinc);
 
-            auto it = std::find(nVProf.begin(), nVProf.end(), nProf);
+            auto it = find(nVProf.begin(), nVProf.end(), nProf);
             if (it == nVProf.end())
             {
                // Not found

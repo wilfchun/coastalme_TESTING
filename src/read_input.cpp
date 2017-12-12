@@ -66,14 +66,11 @@ bool CSimulation::bReadIni(void)
       return false;
    }
 
-   char szRec[BUF_SIZE] = "";
    int i = 0;
    string strRec, strErr;
 
-   while (InStream.getline(szRec, BUF_SIZE, '\n'))
+   while (getline(InStream, strRec))
    {
-      strRec = szRec;
-
       // Trim off leading and trailing whitespace
       strRec = strTrimLeft(&strRec);
       strRec = strTrimRight(&strRec);
@@ -89,14 +86,14 @@ bool CSimulation::bReadIni(void)
          if (nPos == string::npos)
          {
             // Error: badly formatted line (no colon)
-            cerr << ERR << "badly formatted line (no ':') in " << strFilePathName << endl << "'" << szRec << "'" << endl;
+            cerr << ERR << "badly formatted line (no ':') in " << strFilePathName << endl << "'" << strRec << "'" << endl;
             return false;
          }
 
          if (nPos == strRec.size()-1)
          {
             // Error: badly formatted line (colon with nothing following)
-            cerr << ERR << "badly formatted line (nothing following ':') in " << strFilePathName << endl << "'" << szRec << "'" << endl;
+            cerr << ERR << "badly formatted line (nothing following ':') in " << strFilePathName << endl << "'" << strRec << "'" << endl;
             return false;
          }
 
@@ -217,17 +214,14 @@ bool CSimulation::bReadRunData(void)
       return false;
    }
 
-   char szRec[BUF_SIZE] = "";
    int
       i = 0,
       nMult = 0;
       size_t nPos = 0;
    string strRec, strErr;
-
-   while (InStream.getline(szRec, BUF_SIZE, '\n'))
+   
+   while (getline(InStream, strRec))
    {
-      strRec = szRec;
-
       // Trim off leading and trailing whitespace
       strRec = strTrimLeft(&strRec);
       strRec = strTrimRight(&strRec);
@@ -243,7 +237,7 @@ bool CSimulation::bReadRunData(void)
          if (nPos == string::npos)
          {
             // Error: badly formatted line (no colon)
-            cerr << ERR << "badly formatted line (no ':') in " << m_strDataPathName << endl << szRec << endl;
+            cerr << ERR << "badly formatted line (no ':') in " << m_strDataPathName << endl << strRec << endl;
             return false;
          }
 
@@ -808,7 +802,8 @@ bool CSimulation::bReadRunData(void)
                m_bPolygonNodeSave             =
                m_bPolygonBoundarySave         =
                m_bCliffNotchSave              =
-               m_bShadowZoneLineSave          = true;
+               m_bShadowBoundarySave          = 
+               m_bDowndriftBoundarySave       = true;
             }
             else
             {
@@ -873,12 +868,18 @@ bool CSimulation::bReadRunData(void)
                   strRH = strRemoveSubstr(&strRH, &VECTOR_PLOT_CLIFF_NOTCH_SIZE_CODE);
                }
 
-               if (strRH.find(VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_CODE) != string::npos)
+               if (strRH.find(VECTOR_PLOT_SHADOW_BOUNDARY_CODE) != string::npos)
                {
-                  m_bShadowZoneLineSave = true;
-                  strRH = strRemoveSubstr(&strRH, &VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_CODE);
+                  m_bShadowBoundarySave = true;
+                  strRH = strRemoveSubstr(&strRH, &VECTOR_PLOT_SHADOW_BOUNDARY_CODE);
                }
 
+               if (strRH.find(VECTOR_PLOT_DOWNDRIFT_BOUNDARY_CODE) != string::npos)
+               {
+                  m_bDowndriftBoundarySave = true;
+                  strRH = strRemoveSubstr(&strRH, &VECTOR_PLOT_DOWNDRIFT_BOUNDARY_CODE);
+               }
+               
                // Check to see if all codes have been removed
                strRH = strTrimLeft(&strRH);
                if (! strRH.empty())
@@ -1096,13 +1097,11 @@ bool CSimulation::bReadRunData(void)
                   {
                      do
                      {
-                        if (! InStream.getline(szRec, BUF_SIZE, '\n'))
+                        if (! (getline(InStream, strRec)))
                         {
                            cerr << ERR << "premature end of file in " << m_strDataPathName << endl;
                            return false;
                         }
-
-                        strRec = szRec;
 
                         // Trim off leading and trailing whitespace
                         strRec = strTrimLeft(&strRec);
@@ -1116,7 +1115,7 @@ bool CSimulation::bReadRunData(void)
                      if (nPos == string::npos)
                      {
                         // Error: badly formatted line (no colon)
-                        cerr << ERR << "badly formatted line (no ':') in " << m_strDataPathName << endl << szRec << endl;
+                        cerr << ERR << "badly formatted line (no ':') in " << m_strDataPathName << endl << strRec << endl;
                         return false;
                      }
 
@@ -1292,7 +1291,7 @@ bool CSimulation::bReadRunData(void)
                   if (! strErr.empty())
                   {
                      // Error in input to run details file
-                     cerr << ERR << "reading " << strErr << " in " << m_strDataPathName << endl << "'" << szRec << "'" << endl;
+                     cerr << ERR << "reading " << strErr << " in " << m_strDataPathName << endl << "'" << strRec << "'" << endl;
                      InStream.close();
                      return false;
                   }
@@ -1852,7 +1851,7 @@ bool CSimulation::bReadRunData(void)
          if (! strErr.empty())
          {
             // Error in input to run details file
-            cerr << endl << ERR << strErr << ".\nPlease edit " << m_strDataPathName << " and change this line:" << endl << "'" << szRec << "'" << endl << endl;
+            cerr << endl << ERR << strErr << ".\nPlease edit " << m_strDataPathName << " and change this line:" << endl << "'" << strRec << "'" << endl << endl;
             InStream.close();
             return false;
          }
@@ -1905,14 +1904,11 @@ bool CSimulation::bReadRunData(void)
 //    }
 //
 //    // Opened OK
-//    char szRec[BUF_SIZE] = "";
 //    string strRec;
 //
 //    // Now read the data from the file
-//    while (InStream.getline(szRec, BUF_SIZE, '\n'))
+//    while (getline(InStream, strRec))
 //    {
-//       strRec = szRec;
-//
 //       // Trim off leading and trailing whitespace
 //       strRec = strTrimLeft(&strRec);
 //       strRec = strTrimRight(&strRec);
@@ -1960,7 +1956,6 @@ int CSimulation::nReadShapeFunction()
 
    // Opened OK
    int nExpected = 0, nRead = 0;
-   char szRec[BUF_SIZE] = "";
    string strRec;
 
    // Read in the number of data lines expected
@@ -1973,10 +1968,8 @@ int CSimulation::nReadShapeFunction()
       VdErosionPotentialFirstDeriv;
 
    // Now read the rest of the data from the file to get the Erosion Potential Shape function
-   while (InStream.getline(szRec, BUF_SIZE, '\n'))
+   while (getline(InStream, strRec))
    {
-      strRec = szRec;
-
       // Trim off leading and trailing whitespace
       strRec = strTrimLeft(&strRec);
       strRec = strTrimRight(&strRec);

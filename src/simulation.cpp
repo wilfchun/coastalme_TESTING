@@ -99,7 +99,8 @@ CSimulation::CSimulation(void)
    m_bPolygonNodeSave                              =
    m_bPolygonBoundarySave                          =
    m_bCliffNotchSave                               =
-   m_bShadowZoneLineSave                           =
+   m_bShadowBoundarySave                           =
+   m_bDowndriftBoundarySave                        =
    m_bSeaAreaTS                                    =
    m_bStillWaterLevelTS                            =
    m_bActualPlatformErosionTS                      =

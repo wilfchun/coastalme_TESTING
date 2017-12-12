@@ -26,6 +26,8 @@
 using std::endl;
 
 #include <cmath>
+using std::sqrt;
+
 #include <numeric>
 using std::accumulate;
 using std::inner_product;
@@ -88,20 +90,20 @@ void CSimulation::DoCoastCurvature(int const nCoast, int const nHandedness)
    // Now calculate the mean and standard deviation of each set of curvature values
    vector<double>* pVDetailed = m_VCoast[nCoast].pVGetDetailedCurvature();
    double 
-      dSum = std::accumulate(pVDetailed->begin(), pVDetailed->end(), 0.0),
+      dSum = accumulate(pVDetailed->begin(), pVDetailed->end(), 0.0),
       dMean = dSum / pVDetailed->size();
    m_VCoast[nCoast].SetDetailedCurvatureMean(dMean);
    double 
-      dSquareSum = std::inner_product(pVDetailed->begin(), pVDetailed->end(), pVDetailed->begin(), 0.0),
-      dSTD = std::sqrt(dSquareSum / pVDetailed->size() - dMean * dMean);
+      dSquareSum = inner_product(pVDetailed->begin(), pVDetailed->end(), pVDetailed->begin(), 0.0),
+      dSTD = sqrt(dSquareSum / pVDetailed->size() - dMean * dMean);
    m_VCoast[nCoast].SetDetailedCurvatureSTD(dSTD);
 
    vector<double>* pVSmooth = m_VCoast[nCoast].pVGetSmoothCurvature();
-   dSum = std::accumulate(pVSmooth->begin(), pVSmooth->end(), 0.0),
+   dSum = accumulate(pVSmooth->begin(), pVSmooth->end(), 0.0),
    dMean = dSum / pVSmooth->size();
    m_VCoast[nCoast].SetSmoothCurvatureMean(dMean);
-   dSquareSum = std::inner_product(pVSmooth->begin(), pVSmooth->end(), pVSmooth->begin(), 0.0),
-   dSTD = std::sqrt(dSquareSum / pVSmooth->size() - dMean * dMean);
+   dSquareSum = inner_product(pVSmooth->begin(), pVSmooth->end(), pVSmooth->begin(), 0.0),
+   dSTD = sqrt(dSquareSum / pVSmooth->size() - dMean * dMean);
    m_VCoast[nCoast].SetSmoothCurvatureSTD(dSTD);
    
    int 

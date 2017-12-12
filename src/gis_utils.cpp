@@ -633,21 +633,57 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(CGeom2DIPoint const* PtiStart, CG
 
 
 /*==============================================================================================================================
+ 
+ Returns a CGeom2DIPoint (grid CRS) which is the 'other' point of a two-point vector passing through [nStartX][nStartY], and which is perpendicular to the two-point vector from [nStartX][nStartY] to [nNextX][nNextY]
+ 
+==============================================================================================================================*/
+CGeom2DIPoint CSimulation::PtiGetPerpendicular(int const nStartX, int const nStartY, int const nNextX, int const nNextY, double const dDesiredLength, int const nHandedness)
+{
+   double
+      dXLen = nNextX - nStartX,
+      dYLen = nNextY - nStartY,
+      dLength;
+   
+   if (dXLen == 0)
+      dLength = dYLen;
+   else if (dYLen == 0)
+      dLength = dXLen;
+   else
+      dLength = hypot(dXLen, dYLen);
+   
+   double dScaleFactor = dDesiredLength / dLength;
+   
+   // The difference vector is (dXLen, dYLen), so the perpendicular difference vector is (-dYLen, dXLen) or (dYLen, -dXLen)
+   CGeom2DIPoint EndPti;
+   if (nHandedness == RIGHT_HANDED)
+   {
+      EndPti.SetX(nStartX + (dScaleFactor * dYLen));
+      EndPti.SetY(nStartY - (dScaleFactor * dXLen));
+   }
+   else
+   {
+      EndPti.SetX(nStartX - (dScaleFactor * dYLen));
+      EndPti.SetY(nStartY + (dScaleFactor * dXLen));
+   }
+   
+   return EndPti;
+}
+
+
+/*==============================================================================================================================
 
  Returns the signed angle BAC (in radians) subtended between three CGeom2DIPoints B A C. From http://stackoverflow.com/questions/3057448/angle-between-3-vertices
 
 *==============================================================================================================================*/
 double CSimulation::dAngleSubtended(CGeom2DIPoint const* pPtiA, CGeom2DIPoint const* pPtiB, CGeom2DIPoint const* pPtiC)
 {
-   int
-      nXDistBtoA = pPtiB->nGetX() - pPtiA->nGetX(),
-      nYDistBtoA = pPtiB->nGetY() - pPtiA->nGetY(),
-      nXDistCtoA = pPtiC->nGetX() - pPtiA->nGetX(),
-      nYDistCtoA = pPtiC->nGetY() - pPtiA->nGetY();
-
    double
-      dDotProduct = nXDistBtoA * nXDistCtoA + nYDistBtoA * nYDistCtoA,
-      dPseudoCrossProduct = nXDistBtoA * nYDistCtoA - nYDistBtoA * nXDistCtoA,
+      dXDistBtoA = pPtiB->nGetX() - pPtiA->nGetX(),
+      dYDistBtoA = pPtiB->nGetY() - pPtiA->nGetY(),
+      dXDistCtoA = pPtiC->nGetX() - pPtiA->nGetX(),
+      dYDistCtoA = pPtiC->nGetY() - pPtiA->nGetY(),
+      dDotProduct = dXDistBtoA * dXDistCtoA + dYDistBtoA * dYDistCtoA,
+      dPseudoCrossProduct = dXDistBtoA * dYDistCtoA - dYDistBtoA * dXDistCtoA,
       dAngle = atan2(dPseudoCrossProduct, dDotProduct);
 
    return dAngle;
@@ -1166,12 +1202,18 @@ bool CSimulation::bSaveAllVectorGISFiles(void)
          return false;
    }
 
-   if (m_bShadowZoneLineSave)
+   if (m_bShadowBoundarySave)
    {
-      if (! bWriteVectorGIS(VECTOR_PLOT_SHADOW_ZONE_BOUNDARY, &VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_SHADOW_BOUNDARY, &VECTOR_PLOT_SHADOW_BOUNDARY_TITLE))
          return false;
    }
 
+   if (m_bDowndriftBoundarySave)
+   {
+      if (! bWriteVectorGIS(VECTOR_PLOT_DOWNDRIFT_BOUNDARY, &VECTOR_PLOT_DOWNDRIFT_BOUNDARY_TITLE))
+         return false;
+   }
+   
    return true;
 }
 
@@ -1577,4 +1619,30 @@ int CSimulation::nGetOppositeDirection(int const nDirection)
 
    // Should never get here
    return NO_DIRECTION;
+}
+
+
+/*==============================================================================================================================
+ 
+ Given two integer points, calculates the slope and intercept of the line passing through the points
+ 
+===============================================================================================================================*/
+void CSimulation::GetSlopeAndInterceptFromPoints(CGeom2DIPoint const* pPti1, CGeom2DIPoint const* pPti2, double& dSlope, double& dIntercept)
+{
+   int
+      nX1 = pPti1->nGetX(),
+      nY1 = pPti1->nGetY(),
+      nX2 = pPti2->nGetX(),
+      nY2 = pPti2->nGetY();
+      
+   double
+      dXDiff = nX1 - nX2,
+      dYDiff = nY1 - nY2;
+   
+   if (bFPIsEqual(dXDiff, 0.0, TOLERANCE))
+      dSlope = 0;
+   else
+      dSlope = dYDiff / dXDiff;
+      
+   dIntercept = nY1 - (dSlope * nX1);
 }

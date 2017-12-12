@@ -24,8 +24,11 @@
 ===============================================================================================================================*/
 // #include <assert.h>
 #include <cmath>
+
 #include <vector>
+
 #include <algorithm>
+using std::find;
 
 #include "cme.h"
 #include "profile.h"
@@ -252,7 +255,7 @@ void CGeomProfile::RemoveLineSegment(int const nPoint)
 bool CGeomProfile::bIsPointInProfile(double const dX, double const dY)
 {
    CGeom2DPoint Pt(dX, dY);
-   auto it = std::find(m_VPoints.begin(), m_VPoints.end(), &Pt);
+   auto it = find(m_VPoints.begin(), m_VPoints.end(), &Pt);
    if (it != m_VPoints.end())
       return true;
    else
@@ -262,7 +265,7 @@ bool CGeomProfile::bIsPointInProfile(double const dX, double const dY)
 bool CGeomProfile::bIsPointInProfile(double const dX, double const dY, int& nPoint)
 {
    CGeom2DPoint Pt(dX, dY);
-   auto it = std::find(m_VPoints.begin(), m_VPoints.end(), &Pt);
+   auto it = find(m_VPoints.begin(), m_VPoints.end(), &Pt);
    if (it != m_VPoints.end())
    {
       // Found, so return true and set nPoint to be the index of the point which was found

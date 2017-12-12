@@ -575,18 +575,35 @@ double CRWCoast::dGetPolygonLength(int const nIndex) const
 }
 
 
-int CRWCoast::nGetNumShadowZoneBoundaries(void)
+int CRWCoast::nGetNumShadowBoundaries(void)
 {
-   return m_LShadowZoneBoundary.size();
+   return m_LShadowBoundary.size();
 }
 
-void CRWCoast::AppendShadowZoneBoundary(const CGeomLine LBoundary)
+void CRWCoast::AppendShadowBoundary(const CGeomLine LBoundary)
 {
-   m_LShadowZoneBoundary.push_back(LBoundary);
+   m_LShadowBoundary.push_back(LBoundary);
 }
 
-CGeomLine* CRWCoast::pGetShadowZoneBoundary(int const n)
+CGeomLine* CRWCoast::pGetShadowBoundary(int const n)
 {
-   // NOTE: no check to see if n < m_LShadowZoneBoundary.size()
-   return &m_LShadowZoneBoundary[n];
+   // NOTE: no check to see if n < m_LShadowBoundary.size()
+   return &m_LShadowBoundary[n];
+}
+
+
+int CRWCoast::nGetNumDowndriftBoundaries(void)
+{
+   return m_LDowndriftBoundary.size();
+}
+
+void CRWCoast::AppendDowndriftBoundary(const CGeomLine LBoundary)
+{
+   m_LDowndriftBoundary.push_back(LBoundary);
+}
+
+CGeomLine* CRWCoast::pGetDowndriftBoundary(int const n)
+{
+   // NOTE: no check to see if n < m_LDowndriftBoundary.size()
+   return &m_LDowndriftBoundary[n];
 }

@@ -63,10 +63,10 @@ void CSimulation::WriteStartRunDetails(void)
    // ----------------------------------------------- Run Information ----------------------------------------------------------
    OutStream << "RUN DETAILS" << endl;
    OutStream << " Name                                                      \t: " << m_strRunName << endl;
-   OutStream << " Started                                                   \t: " << std::put_time(std::localtime(&m_tSysStartTime), "%T %A %d %B %Y") << endl;
+   OutStream << " Started                                                   \t: " << put_time(localtime(&m_tSysStartTime), "%T %A %d %B %Y") << endl;
 
    // Same info. for Log file
-   LogStream << m_strRunName << " run started at " << std::put_time(std::localtime(&m_tSysStartTime), "%T on %A %d %B %Y") << endl << endl;
+   LogStream << m_strRunName << " run started at " << put_time(localtime(&m_tSysStartTime), "%T on %A %d %B %Y") << endl << endl;
 
    // Contine with Out file
    OutStream << " Initialization file                                       \t: "
@@ -375,10 +375,10 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << " Sand-sized sediment relative erodibility                  \t: " << resetiosflags(ios::floatfield) << m_dSandErodibility << endl;
    OutStream << " Coarse-sized sediment relative erodibility                \t: " << m_dCoarseErodibility << endl;
    if (m_nBeachErosionDepositionEquation == EQUATION_CERC)
-      OutStream << " Transport parameter KLS for CERC equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dKLS << endl;
+      OutStream << " Transport parameter KLS for CERC equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dKLS << endl;
    if (m_nBeachErosionDepositionEquation == EQUATION_KAMPHUIS)
-      OutStream << " Transport parameter for Kamphuis equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dKamphuis << endl;
-   OutStream << " Height of Dean profile start above SWL                    \t: " << m_dDeanProfileStartAboveSWL << " m" << endl;
+      OutStream << " Transport parameter for Kamphuis equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dKamphuis << endl;
+   OutStream << " Height of Dean profile start above SWL                    \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dDeanProfileStartAboveSWL  << " m" << endl;
    OutStream << " Do cliff collapse?                                        \t: " << (m_bDoCliffCollapse ? "Y": "N") << endl;
    OutStream << " Cliff erodibility                                         \t: " << m_dCliffErodibility << endl;
    OutStream << " Notch overhang to initiate collapse                       \t: " << m_dNotchOverhangAtCollapse << " m" << endl;
@@ -726,7 +726,7 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
 
    strFName.append("_timestep_");
    ststrTmp.clear();
-   ststrTmp.str(std::string());
+   ststrTmp.str(string());
    ststrTmp << FillToWidth('0', 4) << m_ulIteration;
    strFName.append(ststrTmp.str());
 
@@ -796,7 +796,7 @@ bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int
 
    strFName.append("_parallel_");
    ststrTmp.clear();
-   ststrTmp.str(std::string());
+   ststrTmp.str(string());
    ststrTmp << FillToWidth('0', 3) << nDistFromProfile;
    strFName.append(ststrTmp.str());
 
@@ -804,7 +804,7 @@ bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int
 
    strFName.append("_timestep_");
    ststrTmp.clear();
-   ststrTmp.str(std::string());
+   ststrTmp.str(string());
    ststrTmp << FillToWidth('0', 4) << m_ulIteration;
    strFName.append(ststrTmp.str());
 
@@ -968,9 +968,9 @@ int CSimulation::nWriteEndRunDetails(void)
    OutStream << PERFORMHEAD << endl;
 
    // Get the time that the run dended
-   m_tSysEndTime = std::time(nullptr);
+   m_tSysEndTime = time(nullptr);
 
-   OutStream << "Run ended at " << std::put_time(std::localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;
+   OutStream << "Run ended at " << put_time(localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;
    OutStream << "Time simulated: " << strDispSimTime(m_dSimDuration) << endl << endl;
 
    // Output averages for on-profile and between-profile potential shore platform erosion, ideally these are roughly equal

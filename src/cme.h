@@ -50,7 +50,10 @@
 
 ===============================================================================================================================*/
 #include <climits>
+
 #include <sstream>
+using std::ostream;
+using std::ostringstream;
 
 #include "simulation.h"
 
@@ -139,7 +142,7 @@
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 23 November 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 11 December 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -230,6 +233,7 @@ double const   WALKDEN_HALL_PARAM_2                   = 0.75;              // Se
 
 double const   DEPTH_OVER_DB_INCREMENT                = 0.001;             // Depth Over DB increment for erosion potential look-up function
 double const   INVERSE_DEPTH_OVER_DB_INCREMENT        = 1000;              // Inverse of the above
+double const   DEAN_POWER                             = 2.0 / 3.0;         // Dean profile exponent
 
 // TODO Let the user define the CShore wave friction factor
 double const   CSHORE_FRICTION_FACTOR                 = 0.015;             // Friction factor for CShore model
@@ -238,13 +242,14 @@ double const   CSHORE_FRICTION_FACTOR                 = 0.015;             // Fr
 bool const     USE_DEEP_WATER_FOR_SHADOW_LINE         = true;              // Use deep water wave orintation in determining shadow line orientation?
 bool const     CREATE_SHADOW_ZONE_IF_HITS_GRID_EDGE   = true;              // If shadow line tracing hits grid edge, create shadow zone?
 
-int const      MIN_PROFILE_SPACING                    = 30;                // In cells: profile creation does not work well if profiles are too closely spaced
+int const      MIN_PROFILE_SPACING                    = 20;                // In cells: profile creation does not work well if profiles are too closely spaced
 int const      CAPE_POINT_MIN_SPACING                 = 10;                // In cells: for shadow zone stuff, cape points must not be closer than this
 int const      FLOOD_FILL_START_OFFSET                = 2;                 // In cells: flood fill starts this distance inside polygon
 int const      SHADOW_LINE_MIN_SINCE_HIT_SEA          = 5;
 int const      MAX_LEN_SHADOW_LINE_TO_IGNORE          = 200;               // In cells: if can't find flood fill start point, continue if short shadow line
 int const      MAX_EDGE_SEARCH_DIST                   = 30;                // In cells: search for edge cells this far in from grid edge
 int const      MIN_PAR_PROFILE_SIZE                   = 3;                 // In cells: min size for uncons sed parallel profile
+int const      MAX_NUM_PREV_ORIENTATION_VALUES        = 10;                // Max length of deque used in tracing shadow boundary
 
 double const   TOLERANCE                              = 1e-4;              // For bFPIsEqual, if too small (e.g. 1e-10), get spurious "rounding" errors
 double const   SEDIMENT_ELEV_TOLERANCE                = 1e-10;             // Throughout, differences in depth-equivalent sediment amount (m) less than this are ignored
@@ -252,7 +257,7 @@ double const   STRAIGHT_COAST_MAX_DETAILED_CURVATURE  = -5;
 double const   STRAIGHT_COAST_MAX_SMOOTH_CURVATURE    = -1;
 double const   MIN_LENGTH_OF_SHADOW_ZONE_LINE         = 10;                // Used in shadow line tracing
 double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE    = 5;                 // Used in shadow line tracing
-double const   DEAN_POWER                             = 2.0 / 3.0;         // Dean profile exponent
+
 
 // Error/warning, NODATA etc.
 string const   ERR                                    = "ERROR ";
@@ -560,8 +565,10 @@ string const   VECTOR_POLYGON_BOUNDARY_SAVE_CODE                           = "po
 string const   VECTOR_POLYGON_BOUNDARY_NAME                                = "polygon";
 string const   VECTOR_PLOT_CLIFF_NOTCH_SIZE_CODE                           = "cliff_notch";
 string const   VECTOR_CLIFF_NOTCH_SIZE_NAME                                = "cliff_notch";
-string const   VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_CODE                       = "shadow_boundary";
-string const   VECTOR_SHADOW_ZONE_LINE_NAME                                = "shadow_boundary";
+string const   VECTOR_PLOT_SHADOW_BOUNDARY_CODE                            = "shadow_boundary";
+string const   VECTOR_SHADOW_BOUNDARY_NAME                                 = "shadow_boundary";
+string const   VECTOR_PLOT_DOWNDRIFT_BOUNDARY_CODE                         = "downdrift_boundary";
+string const   VECTOR_DOWNDRIFT_BOUNDARY_NAME                              = "downdrift_boundary";
 
 // GIS vector output codes and titles
 int const      VECTOR_PLOT_COAST                                           = 1;
@@ -588,8 +595,10 @@ int const      VECTOR_PLOT_POLYGON_BOUNDARY                                = 11;
 string const   VECTOR_PLOT_POLYGON_BOUNDARY_TITLE                          = "Polygons";
 int const      VECTOR_PLOT_CLIFF_NOTCH_SIZE                                = 12;
 string const   VECTOR_PLOT_CLIFF_NOTCH_SIZE_TITLE                          = "Cliff notch incision";
-int const      VECTOR_PLOT_SHADOW_ZONE_BOUNDARY                            = 13;
-string const   VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_TITLE                      = "Shadow zone boundary";
+int const      VECTOR_PLOT_SHADOW_BOUNDARY                                 = 13;
+string const   VECTOR_PLOT_SHADOW_BOUNDARY_TITLE                           = "Shadow zone boundary";
+int const      VECTOR_PLOT_DOWNDRIFT_BOUNDARY                              = 14;
+string const   VECTOR_PLOT_DOWNDRIFT_BOUNDARY_TITLE                        = "Downdrift zone boundary";
 
 // Time series codes
 string const   TIME_SERIES_SEA_AREA_NAME                                   = "sea_area";
@@ -669,12 +678,11 @@ int const      RTN_ERR_SHADOW_ZONE_FLOOD_FILL_NOGRID  = 47;
 int const      RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT  = 48;
 int const      RTN_ERR_CSHORE_EMPTY_PROFILE           = 49;
 int const      RTN_ERR_CSHORE_OUTPUT_FILE             = 50;
-int const      RTN_ERR_CSHORE_INPUT_FILE              = 51;
-int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 52;
-int const      RTN_ERR_GRIDCREATE                     = 53;
-int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 54;
-int const      RTN_ERR_CSHORE_ERROR                   = 55;
-int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 56;
+int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 51;
+int const      RTN_ERR_GRIDCREATE                     = 52;
+int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 53;
+int const      RTN_ERR_CSHORE_ERROR                   = 54;
+int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 55;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                    = -1;
@@ -741,7 +749,7 @@ template <class T> bool bIsBetween(T a, T b, T c)
 template <typename T> string strNumToStr(const T& t)
 {
    // From http://stackoverflow.com/questions/2125880/convert-float-to-stdstring-in-c
-   std::ostringstream os;
+   ostringstream os;
    os << t;
    return os.str();
 }
@@ -760,7 +768,7 @@ struct FillToWidth
    char chFill;
    int nWidth;
 };
-extern std::ostream& operator<<(std::ostream&, const FillToWidth&);
+extern ostream& operator<< (ostream&, const FillToWidth&);
 
 //============================================= Globally-available Fortran function =============================================
 extern "C"

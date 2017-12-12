@@ -69,6 +69,11 @@ int CA2DShape::nGetSize(void) const
    return m_VPoints.size();
 }
 
+CGeom2DPoint* CA2DShape::pPtBack(void)
+{
+   return &m_VPoints.back();
+}
+
 // void CA2DShape::SetPoints(const vector<CGeom2DPoint>* VNewPoints)
 // {
 //    m_VPoints = *VNewPoints;

@@ -24,57 +24,72 @@
 ==============================================================================================================================*/
 #include "linearinterp.h"
 
-//template<typename Real>
-int nearestNeighbourIndex(std::vector<double> &x, double &value)
+int nNearestNeighbourIndex(vector<double> const* pVdX, double const dValue)
 {
-   double dist = std::numeric_limits<double>::max();
-   double newDist = dist;
-   size_t idx = 0;
+   double 
+      dDist = DBL_MAX,
+      dNewDist = dDist;
+   int nIdx = 0;
 
-   for (size_t i = 0; i < x.size(); ++i) 
+   for (unsigned int i = 0; i < pVdX->size(); ++i) 
    {
-      newDist = std::abs(value - x[i]);
-      if (newDist <= dist) 
+      dNewDist = tAbs(dValue - pVdX->at(i));
+      if (dNewDist <= dDist) 
       {
-         dist = newDist;
-         idx = i;
+         dDist = dNewDist;
+         nIdx = i;
       }
    }
 
-   return idx;
+   return nIdx;
 }
 
 
-//template<typename Real>
-std::vector<double> interp1(std::vector<double> &x, std::vector<double> &y, std::vector<double> &x_new)
+vector<double> VdInterp1(vector<double> const* pVdX, vector<double> const* pVdY, vector<double> const* pVdX_new)
 {
-   std::vector<double> y_new;
-   double dx, dy;
-   size_t x_max_idx = x.size() - 1;
-   size_t x_new_size = x_new.size();
+   vector<double> VdY_new;
+   double dX, dY;
+   int x_max_idx = pVdX->size() - 1;
+   int x_new_size = pVdX_new->size();
 
-   y_new.reserve(x_new_size);
+   VdY_new.reserve(x_new_size);
 
-   for (size_t i = 0; i < x_new_size; ++i)
+   for (int i = 0; i < x_new_size; ++i)
    {
-      size_t idx = nearestNeighbourIndex(x, x_new[i]);
+      int idx = nNearestNeighbourIndex(pVdX, pVdX_new->at(i));
 
-      if (x[idx] > x_new[i])
+      if (pVdX->at(idx) > pVdX_new->at(i))
       {
-         dx = idx > 0 ? (x[idx] - x[idx - 1]) : (x[idx + 1] - x[idx]);
-         dy = idx > 0 ? (y[idx] - y[idx - 1]) : (y[idx + 1] - y[idx]);
+         if (idx > 0)
+         {
+            dX = pVdX->at(idx) - pVdX->at(idx-1);
+            dY = pVdY->at(idx) - pVdY->at(idx-1);
+         }
+         else
+         {
+            dX = pVdX->at(idx+1) - pVdX->at(idx);
+            dY = pVdY->at(idx+1) - pVdY->at(idx);            
+         }
       }
       else
       {
-         dx = idx < x_max_idx ? (x[idx + 1] - x[idx]) : (x[idx] - x[idx - 1]);
-         dy = idx < x_max_idx ? (y[idx + 1] - y[idx]) : (y[idx] - y[idx - 1]);
+         if (idx < x_max_idx)
+         {
+            dX = pVdX->at(idx+1) - pVdX->at(idx);
+            dY = pVdY->at(idx+1) - pVdY->at(idx);            
+         }
+         else
+         {
+            dX = pVdX->at(idx) - pVdX->at(idx-1);
+            dY = pVdY->at(idx) - pVdY->at(idx-1);            
+         }
       }
 
-      double m = dy / dx;
-      double b = y[idx] - x[idx] * m;
+      double m = dY / dX;
+      double b = pVdY->at(idx) - pVdX->at(idx) * m;
 
-      y_new.push_back(x_new[i] * m + b);
+      VdY_new.push_back(pVdX_new->at(i) * m + b);
    }
 
-   return y_new;
+   return VdY_new;
 }

@@ -37,6 +37,7 @@ using std::ifstream;
 using std::stringstream;
 
 #include <string>
+using std::to_string;
 
 #include <gdal_priv.h>
 #include <gdal_alg.h>
@@ -855,7 +856,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
    string strFilePathName(m_strOutPath);
 
    string strLayer = "_layer_";
-   strLayer.append(std::to_string(nLayer+1));
+   strLayer.append(to_string(nLayer+1));
 
    switch (nDataItem)
    {
@@ -1625,7 +1626,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
    // Append the 'save number' to the filename, and prepend zeros to the save number
    strFilePathName.append("_");
    ststrTmp.clear();
-   ststrTmp.str(std::string());
+   ststrTmp.str(string());
    ststrTmp << FillToWidth('0', MAX_SAVE_DIGITS) << m_nGISSave;
    strFilePathName.append(ststrTmp.str());
 

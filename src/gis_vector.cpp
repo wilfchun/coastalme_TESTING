@@ -347,9 +347,15 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          break;
       }
 
-      case (VECTOR_PLOT_SHADOW_ZONE_BOUNDARY):
+      case (VECTOR_PLOT_SHADOW_BOUNDARY):
       {
-         strFilePathName.append(VECTOR_SHADOW_ZONE_LINE_NAME);
+         strFilePathName.append(VECTOR_SHADOW_BOUNDARY_NAME);
+         break;
+      }
+      
+      case (VECTOR_PLOT_DOWNDRIFT_BOUNDARY):
+      {
+         strFilePathName.append(VECTOR_DOWNDRIFT_BOUNDARY_NAME);
          break;
       }
    }
@@ -918,12 +924,12 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          break;
       }
 
-      case (VECTOR_PLOT_SHADOW_ZONE_BOUNDARY):
+      case (VECTOR_PLOT_SHADOW_BOUNDARY):
       {
          eGType = wkbLineString;
          strType = "line";
 
-         // Create an integer-numbered value (the number of the shadow zone line object) for the multi-line
+         // Create an integer-numbered value (the number of the shadow boundary line object) for the multi-line
          string strFieldValue1 = "ShadowLine";
          OGRFieldDefn OGRField1(strFieldValue1.c_str(), OFTInteger);
          if (pOGRLayer->CreateField(&OGRField1) != OGRERR_NONE)
@@ -937,17 +943,17 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
 
          for (int i = 0; i < static_cast<int>(m_VCoast.size()); i++)
          {
-            for (int j = 0; j < m_VCoast[i].nGetNumShadowZoneBoundaries(); j++)
+            for (int j = 0; j < m_VCoast[i].nGetNumShadowBoundaries(); j++)
             {
                // Create a feature object, one per coast
                OGRFeature *pOGRFeature = NULL;
                pOGRFeature = OGRFeature::CreateFeature(pOGRLayer->GetLayerDefn());
 
-               // Set the feature's attribute (the shadow zone line number)
+               // Set the feature's attribute (the shadow boundary line number)
                pOGRFeature->SetField(strFieldValue1.c_str(), j);
 
                // Now attach a geometry to the feature object
-               CGeomLine LShadow = *m_VCoast[i].pGetShadowZoneBoundary(j);
+               CGeomLine LShadow = *m_VCoast[i].pGetShadowBoundary(j);
                for (int nn = 0; nn < LShadow.nGetSize(); nn++)
                   OGRls.addPoint(LShadow.dGetXAt(nn), LShadow.dGetYAt(nn));
 
@@ -966,6 +972,57 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
             }
          }
 
+         break;
+      }
+      
+      case (VECTOR_PLOT_DOWNDRIFT_BOUNDARY):
+      {
+         eGType = wkbLineString;
+         strType = "line";
+         
+         // Create an integer-numbered value (the number of the downdrift boundary line object) for the multi-line
+         string strFieldValue1 = "DdriftLine";
+         OGRFieldDefn OGRField1(strFieldValue1.c_str(), OFTInteger);
+         if (pOGRLayer->CreateField(&OGRField1) != OGRERR_NONE)
+         {
+            cerr << ERR << "cannot create " << strType << " attribute field 1 '" << strFieldValue1 << "' in " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
+            return false;
+         }
+         
+         // OK, now do features
+         OGRLineString OGRls;
+         
+         for (int i = 0; i < static_cast<int>(m_VCoast.size()); i++)
+         {
+            for (int j = 0; j < m_VCoast[i].nGetNumDowndriftBoundaries(); j++)
+            {
+               // Create a feature object, one per coast
+               OGRFeature *pOGRFeature = NULL;
+               pOGRFeature = OGRFeature::CreateFeature(pOGRLayer->GetLayerDefn());
+               
+               // Set the feature's attribute (the shadow zone line number)
+               pOGRFeature->SetField(strFieldValue1.c_str(), j);
+               
+               // Now attach a geometry to the feature object
+               CGeomLine LDowndrift = *m_VCoast[i].pGetDowndriftBoundary(j);
+               for (int nn = 0; nn < LDowndrift.nGetSize(); nn++)
+                  OGRls.addPoint(LDowndrift.dGetXAt(nn), LDowndrift.dGetYAt(nn));
+               
+               pOGRFeature->SetGeometry(&OGRls);
+               
+               // Create the feature in the output layer
+               if (pOGRLayer->CreateFeature(pOGRFeature) != OGRERR_NONE)
+               {
+                  cerr << ERR << "cannot create  " << strType << " feature " << strPlotTitle << j << " for coast " << i << " in " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
+                  return false;
+               }
+               
+               // Tidy up: empty the line string and get rid of the feature object
+               OGRls.empty();
+               OGRFeature::DestroyFeature(pOGRFeature);
+            }
+         }
+         
          break;
       }
    }

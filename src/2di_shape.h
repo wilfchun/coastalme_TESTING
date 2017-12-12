@@ -41,6 +41,7 @@ protected:
 public:
    CA2DIShape(void);
    virtual ~CA2DIShape(void);
+   
    CGeom2DIPoint& operator[] (int const);
    CGeom2DIPoint& Back(void);
    void Clear(void);

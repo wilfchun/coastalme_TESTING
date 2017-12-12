@@ -39,6 +39,7 @@
 using std::time;
 using std::localtime;
 using std::clock;
+using std::clock_t;
 using std::difftime;
 
 #include <iostream>
@@ -55,12 +56,14 @@ using std::setw;
 using std::put_time;
 
 #include <string>
+using std::to_string;
 
 #include <sstream>
 using std::stringstream;
 
 #include <algorithm>
 using std::transform;
+using std::all_of;
 
 #include <numeric>
 using std::accumulate;
@@ -156,7 +159,7 @@ void CSimulation::AnnounceStart(void)
 void CSimulation::StartClock(void)
 {
    // First start the 'CPU time' clock ticking
-   if (static_cast<std::clock_t>(-1) == std::clock())
+   if (static_cast<clock_t>(-1) == clock())
    {
       // There's a problem with the clock, but continue anyway
       LogStream << WARN << "CPU time not available" << endl;
@@ -165,12 +168,12 @@ void CSimulation::StartClock(void)
    else
    {
       // All OK, so get the time in m_dClkLast (this is needed to check for clock rollover on long runs)
-      m_dClkLast = static_cast<double>(std::clock());
+      m_dClkLast = static_cast<double>(clock());
       m_dClkLast -= CLOCK_T_MIN;       // necessary if clock_t is signed to make m_dClkLast unsigned
    }
 
    // And now get the actual time we started
-   m_tSysStartTime = std::time(nullptr);
+   m_tSysStartTime = time(nullptr);
 }
 
 
@@ -229,7 +232,7 @@ void CSimulation::AnnounceLicence(void)
    cout << DISCLAIMER6 << endl;
    cout << LINE << endl << endl;
 
-   cout << STARTNOTICE << strGetComputerName() << " at " << std::put_time(std::localtime(&m_tSysStartTime), "%T on %A %d %B %Y") << endl;
+   cout << STARTNOTICE << strGetComputerName() << " at " << put_time(localtime(&m_tSysStartTime), "%T on %A %d %B %Y") << endl;
    cout << INITNOTICE << endl;
 }
 
@@ -962,12 +965,18 @@ string CSimulation::strListVectorFiles(void) const
       strTmp.append(", ");
    }
 
-   if (m_bShadowZoneLineSave)
+   if (m_bShadowBoundarySave)
    {
-      strTmp.append(VECTOR_PLOT_SHADOW_ZONE_BOUNDARY_CODE);
+      strTmp.append(VECTOR_PLOT_SHADOW_BOUNDARY_CODE);
       strTmp.append(", ");
    }
 
+   if (m_bDowndriftBoundarySave)
+   {
+      strTmp.append(VECTOR_PLOT_DOWNDRIFT_BOUNDARY_CODE);
+      strTmp.append(", ");
+   }
+   
    // remove the trailing comma and space
    strTmp.resize(strTmp.size()-2);
 
@@ -1412,7 +1421,7 @@ void CSimulation::CalcTime(double const dRunLength)
    }
 
    // Calculate run time
-   double dDuration = std::difftime(m_tSysEndTime, m_tSysStartTime);
+   double dDuration = difftime(m_tSysEndTime, m_tSysStartTime);
 
    // And write run time out to OutStream and LogStream
    OutStream << "Run time elapsed: " << strDispTime(dDuration, false, false);
@@ -1467,7 +1476,7 @@ string CSimulation::strDispSimTime(const double dTimeIn)
       unsigned long ulYears = static_cast<unsigned long>(dRound(ulTimeIn / dHoursInYear));
       ulTimeIn -= static_cast<unsigned long>(dRound(ulYears * dHoursInYear));
 
-      strTime = std::to_string(ulYears);
+      strTime = to_string(ulYears);
       strTime.append("y ");
    }
    else
@@ -1522,7 +1531,7 @@ string CSimulation::strDispTime(const double dTimeIn, const bool bRound, const b
       unsigned long ulHours = ulTimeIn / 3600ul;
       ulTimeIn -= (ulHours * 3600ul);
 
-      strTime = std::to_string(ulHours);
+      strTime = to_string(ulHours);
       strTime.append(":");
    }
    else
@@ -1553,7 +1562,7 @@ string CSimulation::strDispTime(const double dTimeIn, const bool bRound, const b
       // Fractions of a second
       strTime.append(".");
       ststrTmp.clear();
-      ststrTmp.str(std::string());
+      ststrTmp.str(string());
       ststrTmp << FillToWidth('0', 2) << static_cast<unsigned long>(dTime * 100);
       strTime.append(ststrTmp.str());
    }
@@ -1596,10 +1605,10 @@ void CSimulation::AnnounceProgress(void)
       static double sdToGo = 0;
 
       // Update time elapsed and time remaining every nInterval timesteps
-      std::time_t tNow = std::time(nullptr);
+      time_t tNow = time(nullptr);
 
       // Calculate time elapsed and remaining
-      sdElapsed = std::difftime(tNow, m_tSysStartTime);
+      sdElapsed = difftime(tNow, m_tSysStartTime);
       sdToGo = (sdElapsed * m_dSimDuration / m_dSimElapsed) - sdElapsed;
 
       // Tell the user about progress (note need to make several separate calls to cout here, or MS VC++ compiler appears to get confused)
@@ -1998,10 +2007,7 @@ string CSimulation::strGetErrorText(int const nErr)
       strErr = "empty profile during during CShore wave propagation";
       break;
    case RTN_ERR_CSHORE_OUTPUT_FILE:
-      strErr = "creating CShore output file";
-      break;
-   case RTN_ERR_CSHORE_INPUT_FILE:
-      strErr = "reading CShore input file";
+      strErr = "reading CShore output file";
       break;
    case RTN_ERR_WAVE_INTERPOLATION_LOOKUP:
       strErr = "during wave interpolation lookup";
@@ -2036,13 +2042,13 @@ void CSimulation::DoSimulationEnd(int const nRtn)
 {
    // If we don't know the time that the run ended (e.g. because it did not finish correctly), get it now
    if (m_tSysEndTime == 0)
-      m_tSysEndTime = std::time(nullptr);
+      m_tSysEndTime = time(nullptr);
 
    switch (nRtn)
    {
    case (RTN_OK):
       // normal ending
-      cout << RUNENDNOTICE << std::put_time(std::localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
+      cout << RUNENDNOTICE << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
       break;
 
    case (RTN_HELPONLY):
@@ -2051,17 +2057,17 @@ void CSimulation::DoSimulationEnd(int const nRtn)
 
    default:
       // Aborting because of some error
-      cerr << ERRORNOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << std::put_time(std::localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
+      cerr << ERRORNOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
 
       if (LogStream && LogStream.is_open())
       {
-         LogStream << ERR << strGetErrorText(nRtn) << " (error code " << nRtn << ") on " << std::put_time(std::localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
+         LogStream << ERR << strGetErrorText(nRtn) << " (error code " << nRtn << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
          LogStream.flush();
       }
 
       if (OutStream && OutStream.is_open())
       {
-         OutStream << ERR << strGetErrorText(nRtn) << " (error code " << nRtn << ") on " << std::put_time(std::localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
+         OutStream << ERR << strGetErrorText(nRtn) << " (error code " << nRtn << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
          OutStream.flush();
       }
    }
@@ -2084,7 +2090,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
          string strCmd("echo \"");
 
          stringstream ststrTmp;
-         ststrTmp << std::put_time(std::localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;
+         ststrTmp << put_time(localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;
 
          // Send an email using Linux/Unix mail command
          if (RTN_OK == nRtn)
@@ -2109,11 +2115,11 @@ void CSimulation::DoSimulationEnd(int const nRtn)
             strCmd.append(", running on ");
             strCmd.append(strGetComputerName());
             strCmd.append(", aborted with error code ");
-            strCmd.append(std::to_string(nRtn));
+            strCmd.append(to_string(nRtn));
             strCmd.append(": ");
             strCmd.append(strGetErrorText(nRtn));
             strCmd.append(" at timestep ");
-            strCmd.append(std::to_string(m_ulIteration));
+            strCmd.append(to_string(m_ulIteration));
             strCmd.append(" (");
             strCmd.append(strDispSimTime(m_dSimElapsed));
             strCmd.append(").\n\nThis message sent at ");
@@ -2240,7 +2246,7 @@ string CSimulation::strTrim(string const* strIn)
 string CSimulation::strToLower(string const* strIn)
 {
    string strOut = *strIn;
-   std::transform(strIn->begin(), strIn->end(), strOut.begin(), ::tolower);
+   transform(strIn->begin(), strIn->end(), strOut.begin(), tolower);
    return strOut;
 }
 
@@ -2253,7 +2259,7 @@ string CSimulation::strToLower(string const* strIn)
 // string CSimulation::strToUpper(string const* strIn)
 // {
 //    string strOut = *strIn;
-//    std::transform(strIn->begin(), strIn->end(), strOut.begin(), ::toupper);
+//    transform(strIn->begin(), strIn->end(), strOut.begin(), toupper);
 //    return strOut;
 // }
 
@@ -2325,7 +2331,7 @@ double CSimulation::dCrossProduct(double const dX1, double const dY1, double con
 ==============================================================================================================================*/
 double CSimulation::dGetMean(vector<double> const* pV)
 {
-   double dSum = std::accumulate(pV->begin(), pV->end(), 0.0);
+   double dSum = accumulate(pV->begin(), pV->end(), 0.0);
    double dMean = dSum / pV->size();
    return dMean;
 }
@@ -2338,11 +2344,11 @@ double CSimulation::dGetMean(vector<double> const* pV)
 ==============================================================================================================================*/
 double CSimulation::dGetStdDev(vector<double> const* pV)
 {
-   double dSum = std::accumulate(pV->begin(), pV->end(), 0.0);
+   double dSum = accumulate(pV->begin(), pV->end(), 0.0);
    double dMean = dSum / pV->size();
 
-   double dSqSum = std::inner_product(pV->begin(), pV->end(), pV->begin(), 0.0);
-   double dStdDev = std::sqrt(dSqSum / pV->size() - dMean * dMean);
+   double dSqSum = inner_product(pV->begin(), pV->end(), pV->begin(), 0.0);
+   double dStdDev = sqrt(dSqSum / pV->size() - dMean * dMean);
 
    return dStdDev;
 }
@@ -2508,5 +2514,5 @@ void CSimulation::CalcDepthOfClosure(void)
 ==============================================================================================================================*/
 bool CSimulation::bIsNumeric(string const* strIn)
 {
-   return std::all_of(strIn->begin(), strIn->end(), ::isdigit);
+   return all_of(strIn->begin(), strIn->end(), isdigit);
 }

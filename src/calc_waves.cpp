@@ -26,6 +26,7 @@
 #include <cmath>
 
 #include <iostream>
+using std::ifstream;
 using std::cout;
 using std::endl;
 using std::ios;
@@ -39,6 +40,7 @@ using std::setw;
 #include <algorithm>
 using std::sort;
 using std::remove;
+using std::reverse;
 
 #include <stack>
 using std::stack;
@@ -471,15 +473,15 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          strOYVELO = "OYVELO",
          strOPARAM = "OPARAM";
       
-      nRet = nLookUpCShoreOutputs(&strOSETUP, 4, 4, &VdProfileDistXY, &VdFreeSurfaceStd);
+      nRet = nReadCShoreOutput(&strOSETUP, 4, 4, &VdProfileDistXY, &VdFreeSurfaceStd);
       if (nRet != RTN_OK)
          return nRet;
       
-      nRet = nLookUpCShoreOutputs(&strOYVELO, 4, 2, &VdProfileDistXY, &VdSinWaveAngleRadians);
+      nRet = nReadCShoreOutput(&strOYVELO, 4, 2, &VdProfileDistXY, &VdSinWaveAngleRadians);
       if (nRet != RTN_OK)
          return nRet;
       
-      nRet = nLookUpCShoreOutputs(&strOPARAM, 4, 3, &VdProfileDistXY, &VdFractionBreakingWaves);
+      nRet = nReadCShoreOutput(&strOPARAM, 4, 3, &VdProfileDistXY, &VdFractionBreakingWaves);
       if (nRet != RTN_OK)
          return nRet;
       
@@ -656,33 +658,33 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
 {
    // Initialize inifile from infileTemplate
    system("cp infileTemplate infile");       // The infileTemplate must be in the working directory
-   std::string strFName = "infile";
+   string strFName = "infile";
    
    // We have all the inputs in the CShore format, so we can create the input file
-   std::ofstream file;
-   file.open(strFName.c_str(), ios::out | ios::app);
-   if (file.fail())
+   ofstream OutStream;
+   OutStream.open(strFName.c_str(), ios::out | ios::app);
+   if (OutStream.fail())
    {
-      // Error, cannot open CShore input file
+      // Error, cannot open file for writing
       LogStream << m_ulIteration << ": " << ERR << "cannot open " << strFName << " for output" << endl;
       return RTN_ERR_CSHORE_OUTPUT_FILE;
    }
    
    // OK, write to the file
-   file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << 0.0;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
-   file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dTimestep;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
+   OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << 0.0;
+   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
+   OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << dTimestep;
+   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
    
-   file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << 0.0;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dSurgeLevel << endl;
-   file << setiosflags(ios::fixed) << setprecision(2); file << setw(11) << dTimestep;
-   file << setiosflags(ios::fixed) << setprecision(4); file << setw(11) << dSurgeLevel << endl;
+   OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << 0.0;
+   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << dSurgeLevel << endl;
+   OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << dTimestep;
+   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << dSurgeLevel << endl;
    
-   file << setw(8) << pVdXdist->size() << "                        -> NBINP" << endl;
-   file << setiosflags(ios::fixed) << setprecision(4);
+   OutStream << setw(8) << pVdXdist->size() << "                        -> NBINP" << endl;
+   OutStream << setiosflags(ios::fixed) << setprecision(4);
    for (unsigned int i = 0; i < pVdXdist->size(); i++)
-      file << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << dWaveFriction << endl;
+      OutStream << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << dWaveFriction << endl;
    
    return RTN_OK;
 }
@@ -751,18 +753,18 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
 
 /*==============================================================================================================================
  
- The CShore lookup: it returns a vector with the the interpolated values on column # of the CShore output file. The interpolation may be simple linear or a more advanced hermite cubic method
+ The CShore lookup reads a CShore output file and creates a vector holding interpolated values. The interpolation may be simple linear or a more advanced hermite cubic method
  
 ==============================================================================================================================*/
-int CSimulation::nLookUpCShoreOutputs(string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>* pVdMyInterpolatedValues)
+int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>* pVdMyInterpolatedValues)
 {
    // TODO Make this a user input
    // Select the interpolation method to be used: 0 for simple linear or 1 for hermite cubic
    int InterpMethodOption = CSHORE_INTERPOLATION_LINEAR;
-   //    int InterpMethodOption = CSHORE_INTERPOLATION_HERMITE_CUBIC;
+//       int InterpMethodOption = CSHORE_INTERPOLATION_HERMITE_CUBIC;
    
    // Read in the first column (contains XY distance relative to seaward limit) and CShore column from the CShore output file
-   std::ifstream InStream;
+   ifstream InStream;
    InStream.open(strCShoreFilename->c_str(), ios::in);
    
    // Did it open OK?
@@ -771,63 +773,73 @@ int CSimulation::nLookUpCShoreOutputs(string const* strCShoreFilename, int const
       // Error: cannot open CShore file for input
       LogStream << m_ulIteration << ": " << ERR << "cannot open " << *strCShoreFilename << " for input" << endl;
       
-      return RTN_ERR_CSHORE_INPUT_FILE;
+      return RTN_ERR_CSHORE_OUTPUT_FILE;
    }
    
-   // Opened OK
-   int nExpectedRows;
-   double
-      dValue,
-      dDummy;
-   vector<double> VdValue;
-   vector< vector < double > > VdData;
-   
-   // Read in the header line
-   InStream >> dDummy;           // Always 1
-   InStream >> nExpectedRows;    // Used for sanity check
-   InStream >> dDummy;           // Always 3600
-   
-   // Read the remaining lines
-   while (InStream >> dValue)
-   {
-      VdValue.push_back(dValue);
-      
-      if (static_cast<int>(VdValue.size()) == nExpectedColumns)
-      {
-         VdData.push_back(VdValue);
-         VdValue.clear();
-      }
-   }
-   
-   // Set up the vectors to hold the input data
+   // Opened OK, so set up the vectors to hold the CShore output data
    vector<double>
       VdXYDistCShore,
       VdValuesCShore;
    
-   for (unsigned int i = 0; i < VdData.size(); i++)
+   // And read in the data
+   int 
+      n = -1,
+      nExpectedRows;
+   string strLineIn;
+   while (getline(InStream, strLineIn))
    {
-      VdXYDistCShore.push_back(VdData[i][0]);
-      VdValuesCShore.push_back(VdData[i][nCShorecolumn-1]);
+      n++;
+      if (n == 0)
+      {
+         // The header line
+         vector<string> VstrItems = strSplit(&strLineIn, SPACE);
+         nExpectedRows = atoi(VstrItems[1].c_str());
+      }
+      else
+      {
+         // The data
+         vector<string> VstrItems = strSplit(&strLineIn, SPACE);
+         
+         int nCols = VstrItems.size();         
+         if (nCols != nExpectedColumns)
+         {
+            // Error: did not get nExpectedColumns CShore output columns
+            LogStream << m_ulIteration << ": " << ERR << "expected " << nExpectedColumns << " CShore output columns but read " << nCols << " columns from header section of file " << strCShoreFilename << endl;
+            
+            return RTN_ERR_CSHORE_OUTPUT_FILE;        
+         }
+         // Number of columns is OK
+         VdXYDistCShore.push_back(atof(VstrItems[0].c_str()));         
+         VdValuesCShore.push_back(atof(VstrItems[nCShorecolumn-1].c_str()));
+      }         
    }
    
-   // Check that we have read all the expected nExpectedRows
+   // Check that we have read nExpectedRows from the file
    int nReadRows = VdXYDistCShore.size();
    if (nReadRows != nExpectedRows)
    {
-      // Error: we expect nExpected CShore output rows but actually read nReadRows
-      LogStream << m_ulIteration << ": " << ERR << "expected CShore output rows " << nExpectedRows << "but read " << nReadRows << " for file " << strCShoreFilename << endl;
+      // Error: did not get nExpectedRows CShore output rows
+      LogStream << m_ulIteration << ": " << ERR << "expected " << nExpectedRows << " CShore output rows, but read " << nReadRows << " rows from file " << strCShoreFilename << endl;
       
-      return RTN_ERR_CSHORE_INPUT_FILE;
+      return RTN_ERR_CSHORE_OUTPUT_FILE;
    }
    
-   // Change the origin of the across-shore distance from the CShore convention to the one used here (i.e. with the origin at the shoreline)
-   vector<double>  vdXYDistCME(nReadRows, 0);
-   for (int i = 0; i < nReadRows; i++)
-      vdXYDistCME[i] = VdXYDistCShore[nReadRows-1] - VdXYDistCShore[i];
+   if (nReadRows < 2)
+   {
+      // Error: cannot interpolate values if we have only one value
+      LogStream << m_ulIteration << ": " << ERR << "only " << nReadRows << " CShore output rows in file " << strCShoreFilename << ". Try lengthening the coastline normals." << endl;
+      
+      return RTN_ERR_CSHORE_OUTPUT_FILE;
+   }   
    
-   // Reverse the cshore XYdistance and value vectors (i.e. first point is at the shoreline and must be in strictly ascending order)
-   std::reverse(vdXYDistCME.begin(), vdXYDistCME.end());
-   std::reverse(VdValuesCShore.begin(), VdValuesCShore.end());
+   // The output is OK, so change the origin of the across-shore distance from the CShore convention to the one used here (i.e. with the origin at the shoreline)
+   vector<double>  VdXYDistCME(nReadRows, 0);
+   for (int i = 0; i < nReadRows; i++)
+      VdXYDistCME[i] = VdXYDistCShore[nReadRows-1] - VdXYDistCShore[i];
+   
+   // Reverse the CShore XYdistance and value vectors (i.e. first point is at the shoreline and must be in strictly ascending order)
+   reverse(VdXYDistCME.begin(), VdXYDistCME.end());
+   reverse(VdValuesCShore.begin(), VdValuesCShore.end());
    
    // Now we have everything ready to do the interpolation
    if (InterpMethodOption == CSHORE_INTERPOLATION_HERMITE_CUBIC)
@@ -837,7 +849,7 @@ int CSimulation::nLookUpCShoreOutputs(string const* strCShoreFilename, int const
       for (int i = 1; i < nReadRows-1; i++)
       {
          // Calculate the horizontal distance increment between two adjacent points (not always the same distance because it depend on profile-cells centroid location)
-         double dX = vdXYDistCME[i+1] - vdXYDistCME[i-1];    // This is always positive
+         double dX = VdXYDistCME[i+1] - VdXYDistCME[i-1];    // This is always positive
          VdValuesCShoreDeriv[i] = (VdValuesCShore[i+1] - VdValuesCShore[i-1]) / (2 * dX);
       }
       
@@ -854,16 +866,21 @@ int CSimulation::nLookUpCShoreOutputs(string const* strCShoreFilename, int const
          VdDeriv3(nSize, 0);        // Third derivative at the sample points, ditto
       
       // Calculate the value of erosion potential (is a -ve value) for each of the sample values of DepthOverDB, and store it for use in the look-up function
-      hermite_cubic_spline_value(nReadRows, &(vdXYDistCME.at(0)), &(VdValuesCShore.at(0)), &(VdValuesCShoreDeriv.at(0)), nSize, &(VdDistXYCopy[0]), &(pVdMyInterpolatedValues->at(0)), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
+      hermite_cubic_spline_value(nReadRows, &(VdXYDistCME.at(0)), &(VdValuesCShore.at(0)), &(VdValuesCShoreDeriv.at(0)), nSize, &(VdDistXYCopy[0]), &(pVdMyInterpolatedValues->at(0)), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
    }
    else
    {
       // Using the simple linear approach
+      
+      // TODO We get an error if pVdDistXY->size() == 1, Andres to check why we get this
+//       if (pVdDistXY->size() == 1)
+      
+      
       vector<double> VdDistXYCopy(pVdDistXY->begin(), pVdDistXY->end());
-      *pVdMyInterpolatedValues = interp1(vdXYDistCME, VdValuesCShore, VdDistXYCopy);
+      *pVdMyInterpolatedValues = VdInterp1(&VdXYDistCME, &VdValuesCShore, &VdDistXYCopy);
    }
    
-   return RTN_OK;
+   return RTN_OK;   
 }
 
 
@@ -1199,7 +1216,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
                }
             }
 
-// /*            
+/*            
             // Now fill in wave calc holes, start by looking at the cell's N-S and W-E neighbours
             int
                nXTmp,
@@ -1209,6 +1226,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
                nShadowNum = 0,
                nDownDrift = 0,
                nDownDriftNum = 0,
+               nCoast = 0,
                nRead = 0;
             double
                dWaveHeight = 0,
@@ -1217,107 +1235,131 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
             // North
             nXTmp = nX;
             nYTmp = nY-1;
-            if ((bIsWithinValidGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
+            if (bIsWithinValidGrid(nXTmp, nYTmp))
             {
-               nRead++;
-               dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
-               dWaveAngle += (m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveOrientation());
-
-               if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInActiveZone())
-                  nActive++;
-
-               int nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetShadowZoneNumber();
-               if (nTmp != 0)
+               if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea())
                {
-                  nShadow++;
-                  nShadowNum = nTmp;
+                  nRead++;
+                  dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
+                  dWaveAngle += (m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveOrientation());
+
+                  if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInActiveZone())
+                     nActive++;
+
+                  int nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetShadowZoneNumber();
+                  if (nTmp != 0)
+                  {
+                     nShadow++;
+                     nShadowNum = nTmp;
+                  }
+                  
+                  nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetDownDriftZoneNumber();
+                  if ( nTmp > 0)
+                  {
+                     nDownDrift++;
+                     nDownDriftNum = nTmp;
+                  }          
                }
-               nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetDownDriftZoneNumber();
-               if ( nTmp > 0)
-               {
-                  nDownDrift++;
-                  nDownDriftNum = nTmp;
-               }                  
+               else
+                  nCoast++;
             }
-
+               
             // East
             nXTmp = nX+1;
             nYTmp = nY;
-            if ((bIsWithinValidGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
+            if (bIsWithinValidGrid(nXTmp, nYTmp))
             {
-               nRead++;
-               dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
-               dWaveAngle += (m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveOrientation());
-
-               if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInActiveZone())
-                  nActive++;
-
-               int nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetShadowZoneNumber();
-               if (nTmp != 0)
+               if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea())
                {
-                  nShadow++;
-                  nShadowNum = nTmp;
+                  nRead++;
+                  dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
+                  dWaveAngle += (m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveOrientation());
+
+                  if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInActiveZone())
+                     nActive++;
+
+                  int nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetShadowZoneNumber();
+                  if (nTmp != 0)
+                  {
+                     nShadow++;
+                     nShadowNum = nTmp;
+                  }
+                  
+                  nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetDownDriftZoneNumber();
+                  if ( nTmp > 0)
+                  {
+                     nDownDrift++;
+                     nDownDriftNum = nTmp;
+                  }
                }
-               nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetDownDriftZoneNumber();
-               if ( nTmp > 0)
-               {
-                  nDownDrift++;
-                  nDownDriftNum = nTmp;
-               }                  
+               else
+                  nCoast++;
             }
-
+               
             // South
             nXTmp = nX;
             nYTmp = nY+1;
-            if ((bIsWithinValidGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
+            if (bIsWithinValidGrid(nXTmp, nYTmp))
             {
-               nRead++;
-               dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
-               dWaveAngle += (m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveOrientation());
-
-               if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInActiveZone())
-                  nActive++;
-
-               int nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetShadowZoneNumber();
-               if (nTmp != 0)
+               if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea())
                {
-                  nShadow++;
-                  nShadowNum = nTmp;
+                  nRead++;
+                  dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
+                  dWaveAngle += (m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveOrientation());
+
+                  if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInActiveZone())
+                     nActive++;
+
+                  int nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetShadowZoneNumber();
+                  if (nTmp != 0)
+                  {
+                     nShadow++;
+                     nShadowNum = nTmp;
+                  }
+                  
+                  nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetDownDriftZoneNumber();
+                  if ( nTmp > 0)
+                  {
+                     nDownDrift++;
+                     nDownDriftNum = nTmp;
+                  }
                }
-               nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetDownDriftZoneNumber();
-               if ( nTmp > 0)
-               {
-                  nDownDrift++;
-                  nDownDriftNum = nTmp;
-               }                  
+               else
+                  nCoast++;
             }
-
+               
             // West
             nXTmp = nX-1;
             nYTmp = nY;
-            if ((bIsWithinValidGrid(nXTmp, nYTmp)) && (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea()))
+            if (bIsWithinValidGrid(nXTmp, nYTmp))
             {
-               nRead++;
-               dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
-               dWaveAngle += (m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveOrientation());
-
-               if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInActiveZone())
-                  nActive++;
-
-               int nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetShadowZoneNumber();
-               if (nTmp != 0)
+               if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInContiguousSea())
                {
-                  nShadow++;
-                  nShadowNum = nTmp;
+                  nRead++;
+                  dWaveHeight += m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveHeight();
+                  dWaveAngle += (m_pRasterGrid->m_Cell[nXTmp][nYTmp].dGetWaveOrientation());
+
+                  if (m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsInActiveZone())
+                     nActive++;
+
+                  int nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetShadowZoneNumber();
+                  if (nTmp != 0)
+                  {
+                     nShadow++;
+                     nShadowNum = nTmp;
+                  }
+                  
+                  nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetDownDriftZoneNumber();
+                  if ( nTmp > 0)
+                  {
+                     nDownDrift++;
+                     nDownDriftNum = nTmp;
+                  } 
                }
-               nTmp = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetDownDriftZoneNumber();
-               if ( nTmp > 0)
-               {
-                  nDownDrift++;
-                  nDownDriftNum = nTmp;
-               }                  
+               else
+                  nCoast++;
             }
-
+            
             if (nRead > 0)
             {
                // Calculate the average of neighbours
@@ -1330,34 +1372,50 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
                {
                   m_pRasterGrid->m_Cell[nX][nY].SetInActiveZone(true);
                   m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
-                  m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);
-                  
+                  m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);                  
                }
 
-               // If this cell has a wave height which is the same as its deep-water wave height, but its neighbours have a different average wave height, then give it the average of its neighbours
+               // If this sea cell has a wave height which is the same as its deep-water wave height, but its neighbours have a different average wave height, then give it the average of its neighbours
                double dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight();
                if ((m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() == dDeepWaterWaveHeight) && (! bFPIsEqual(dDeepWaterWaveHeight, dWaveHeight, TOLERANCE)))
                {
                   m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
                }
 
-               // If this cell has a wave orientation which is the same as its deep-water wave orientation, but its neighbours have a different average wave orientation, then give it the average of its neighbours
+               // If this sea cell has a wave orientation which is the same as its deep-water wave orientation, but its neighbours have a different average wave orientation, then give it the average of its neighbours
                double dDeepWaterWaveOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveOrientation();
                if ((m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation() == dDeepWaterWaveOrientation) && (! bFPIsEqual(dDeepWaterWaveOrientation, dWaveAngle, TOLERANCE)))
                {
                   m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);
                }
                
-               // If this sea cell is not marked as in a shadow zone, or is marked as in a shadow zone but is not yet processed (a -ve number), but has four neighbours which are in a shadow zone, then it should also be in the shadow zone: give it the average of its neighbours
+               // Is this sea cell is not already marked as in a shadow zone (note could be marked as in a shadow zone but not yet processed: a -ve number)?
                int nShadowZoneCode = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneNumber();
-               if (((nShadowZoneCode == 0) || (nShadowZoneCode < 0)) && (nShadow == 4))
+               if (nShadowZoneCode <= 0) 
                {
-                  m_pRasterGrid->m_Cell[nX][nY].SetShadowZoneNumber(nShadowNum);
-                  m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
-                  m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);
+                  // If the cell has four neighbours which are all in a shadow zone, or four neighbours some of which are shadow zone and the remainder downdrift zone, or four neighbours some of which are shadow zone and the remainder coast; then it should also be in the shadow zone: give it the average of its neighbours
+                  if (nShadow == 4)
+                  {
+                     m_pRasterGrid->m_Cell[nX][nY].SetShadowZoneNumber(nShadowNum);
+                     m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
+                     m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);
+                  }
+                  else if (nShadow + nDownDrift == 4)
+                  {
+                     m_pRasterGrid->m_Cell[nX][nY].SetShadowZoneNumber(nShadowNum);
+                     m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
+                     m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);
+                  }
+                  else if (nShadow + nCoast == 4)
+                  {
+                     m_pRasterGrid->m_Cell[nX][nY].SetShadowZoneNumber(nShadowNum);
+                     m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
+                     m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);
+                  }
+                  
                }
 
-               // If this sea cell is not marked as in a downdrift zone but has four neighbours which are marked as in a downdrift zone, then it should also be in the downdrift zone: give it the average of its neighbours
+               // If this sea cell is not marked as in a downdrift zone but has four neighbours which are in a downdrift zone, then it should also be in the downdrift zone: give it the average of its neighbours
                int nDownDriftZoneCode = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
                if ((nDownDriftZoneCode == 0) && (nDownDrift == 4))
                {
@@ -1366,7 +1424,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
                   m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);
                }
             }
-// */
+*/
           }
       }
    }

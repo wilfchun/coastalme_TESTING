@@ -83,7 +83,7 @@ bool bDoubleIsValid(double const dX)
  Operator that inserts a given fill character, to a given width, into an output stream. From http://stackoverflow.com/questions/2839592/equivalent-of-02d-with-stdstringstream
 
 ==============================================================================================================================*/
-std::ostream& operator<< (std::ostream& ostr, const FillToWidth& args)
+ostream& operator<< (ostream& ostr, const FillToWidth& args)
 {
    ostr.fill(args.chFill);
    ostr.width(args.nWidth);

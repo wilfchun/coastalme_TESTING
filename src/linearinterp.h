@@ -24,17 +24,18 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ===============================================================================================================================*/
-#include <iostream>
 #include <vector>
-#include <limits>
+using std::vector;
+
+#include <cfloat>
+
 #include <cmath>
+using std::abs;
 
-  /*template<typename Real>
-  int nearestNeighbourIndex(std::vector<Real> &x, Real &value);
-  template<typename Real>
-  std::vector<Real> interp1(std::vector<Real> &x, std::vector<Real> &y, std::vector<Real> &x_new);*/
+#include "cme.h"
 
-  int nearestNeighbourIndex(std::vector<double> &x, double &value);  
-  std::vector<double> interp1(std::vector<double> &x, std::vector<double> &y, std::vector<double> &x_new);
+
+int nNearestNeighbourIndex(vector<double> const*, double const);  
+vector<double> VdInterp1(vector<double> const*, vector<double> const*, vector<double> const*);
   
 #endif // LINEARINTERP_H

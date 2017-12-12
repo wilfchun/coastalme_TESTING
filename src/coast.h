@@ -86,8 +86,10 @@ private:
    vector<double>
       m_VdPolygonLength;            // Lengths of coast polygons, size = number of polygons
    vector<CGeomLine>
-      m_LShadowZoneBoundary;        // Lines which delineate the edge of a shadow zone, ext CRS
-
+      m_LShadowBoundary;            // Lines which delineate the edge of a shadow zone, ext CRS
+   vector<CGeomLine>
+      m_LDowndriftBoundary;         // Lines which delineate the edge of a downdrift zone, ext CRS
+      
 public:
    CRWCoast(void);
    ~CRWCoast(void);
@@ -181,9 +183,13 @@ public:
    void AppendPolygonLength(const double);
    double dGetPolygonLength(int const) const;
    
-   int nGetNumShadowZoneBoundaries(void);
-   void AppendShadowZoneBoundary(const CGeomLine);
-   CGeomLine* pGetShadowZoneBoundary(int const);
+   int nGetNumShadowBoundaries(void);
+   void AppendShadowBoundary(const CGeomLine);
+   CGeomLine* pGetShadowBoundary(int const);
+   
+   int nGetNumDowndriftBoundaries(void);
+   void AppendDowndriftBoundary(const CGeomLine);
+   CGeomLine* pGetDowndriftBoundary(int const);
 };
 #endif //COAST_H
 

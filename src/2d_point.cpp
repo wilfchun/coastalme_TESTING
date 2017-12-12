@@ -77,15 +77,6 @@ void CGeom2DPoint::operator= (CGeom2DPoint* pPt)
    dY = pPt->dGetY();
 }
 
-// //! Compares two CGeom2DPoint objects for equality
-// bool CGeom2DPoint::operator== (CGeom2DPoint* pPt) const
-// {
-//    if ((pPt->dGetX() == dX) && (pPt->dGetY() == dY))
-//       return true;
-//
-//    return false;
-// }
-
 //! Compares two CGeom2DPoint objects for equality
 bool CGeom2DPoint::operator== (CGeom2DPoint* pPt) const
 {
