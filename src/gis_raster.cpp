@@ -2198,24 +2198,31 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
    // OK, now create a gridded version of the active zone: first create the GDAL context
    GDALGridContext* pContext = GDALGridContextCreate(GGA_NearestNeighbor, &options, nPoints, dX, dY, dZ, true);   
    if (pContext == NULL)
+   {
+      delete[] dX;
+      delete[] dY;
+      delete[] dZ;
+      delete[] nOut;
+      
       return RTN_ERR_GRIDCREATE;
-   
-   // Now process the context
-   int nRet = GDALGridContextProcess(pContext, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Int32, nOut, NULL, NULL);
-   if (nRet == CE_Failure)
-      return RTN_ERR_GRIDCREATE;
-   
-   // And finally, get rid of the context
-   GDALGridContextFree(pContext);
-   
-   // Call GDALGridCreate()
-//    int nRet = GDALGridCreate(GGA_NearestNeighbor, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Int32, nOut, NULL, NULL);
-//    if (nRet == CE_Failure)
-//       return RTN_ERR_GRIDCREATE;
+   }
    
    delete[] dX;
    delete[] dY;
    delete[] dZ;
+
+   // Now process the context
+   int nRet = GDALGridContextProcess(pContext, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Int32, nOut, NULL, NULL);
+   if (nRet == CE_Failure)
+   {
+      delete[] nOut;
+      
+      return RTN_ERR_GRIDCREATE;
+   }
+   
+   // And finally, get rid of the context
+   GDALGridContextFree(pContext);
+   
 
    // The output from GDALGridCreate() is in nOut but must be reversed
    vector<bool> VbOut;
@@ -2338,12 +2345,30 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    // OK, now create a gridded version of wave height: first create the GDAL context
    GDALGridContext* pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nPoints, dX, dY, dHeight, true);   
    if (pContext == NULL)
+   {
+      delete[] dX;
+      delete[] dY;
+      delete[] dHeight;
+      delete[] dAngle;
+      delete[] dHeightOut;
+      delete[] dAngleOut;
+      
       return RTN_ERR_GRIDCREATE;
+   }
    
    // Now process the context
    int nRet = GDALGridContextProcess(pContext, 0, m_nXGridMax-1, 0, m_nYGridMax-1, m_nXGridMax, m_nYGridMax, GDT_Float64, dHeightOut, NULL, NULL);
    if (nRet == CE_Failure)
+   {
+      delete[] dX;
+      delete[] dY;
+      delete[] dHeight;
+      delete[] dAngle;
+      delete[] dHeightOut;
+      delete[] dAngleOut;
+      
       return RTN_ERR_GRIDCREATE;
+   }
    
    // And finally, get rid of the context
    GDALGridContextFree(pContext);

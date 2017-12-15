@@ -323,7 +323,6 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << " Deep water wave height and orientation file               \t: " << m_strDeepWaterWaveValuesFile << endl;
       OutStream << " GDAL/OGR Deep water wave values file driver code          \t: " << m_strOGRDWWVDriverCode << endl;
       OutStream << " GDAL/OGR Deep water wave values file data type            \t: " << m_strOGRDWWVDataType << endl;
-      OutStream << " GDAL/OGR Deep water wave values file data value           \t: " << m_strOGRDWWVDataValue << endl;
       OutStream << " GDAL/OGR Deep water wave values file geometry             \t: " << m_strOGRDWWVGeometry << endl;
       OutStream << endl;
    }

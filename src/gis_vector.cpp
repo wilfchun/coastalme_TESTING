@@ -247,9 +247,8 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
       case (DEEP_WATER_WAVE_VALUES_VEC):
          m_dMaxUserInputWaveHeight = dMaxVal;         
          
-         m_strOGRDWWVDriverCode = strDriverCode;
-         m_strOGRDWWVDataType   = strDataType;
-         m_strOGRDWWVDataValue  = strDataValue;
+         m_strOGRDWWVDriverCode = pOGRDataSource->GetDriverName();
+         m_strOGRDWWVDataType   = "double";
          m_strOGRDWWVGeometry   = strGeometry;
          break;
 

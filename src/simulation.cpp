@@ -101,6 +101,8 @@ CSimulation::CSimulation(void)
    m_bCliffNotchSave                               =
    m_bShadowBoundarySave                           =
    m_bDowndriftBoundarySave                        =
+   m_bDeepWaterWaveOrientationSave                 =
+   m_bDeepWaterWaveHeightSave                      =
    m_bSeaAreaTS                                    =
    m_bStillWaterLevelTS                            =
    m_bActualPlatformErosionTS                      =

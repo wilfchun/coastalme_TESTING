@@ -377,7 +377,6 @@ private:
       m_strOGRDWWVDriverCode,                   // Initial Deep Water Wave Values (vector)
       m_strOGRDWWVGeometry,
       m_strOGRDWWVDataType,
-      m_strOGRDWWVDataValue,
       m_strGDALRasterOutputDriverLongname,
       m_strGDALRasterOutputDriverExtension,
       m_strOGRVectorOutputExtension,
@@ -537,14 +536,14 @@ private:
    int nCreateGridEdgeProfile(bool const, int const, int&);
    int nPutAllProfilesOntoGrid(void);
    int nModifyAllIntersectingProfiles(void);
-   bool bCheckForIntersection(CGeomProfile* const, CGeomProfile* const, int&, int&, double&, double&, double&, double&);
+   static bool bCheckForIntersection(CGeomProfile* const, CGeomProfile* const, int&, int&, double&, double&, double&, double&);
    void MergeProfilesAtFinalLineSegments(int const, int const, int const, int const, int const, double const, double const, double const, double const);
    void TruncateOneProfileRetainOtherProfile(int const, int const, int const, double const, double const, int const, int const, bool const);
    int nInsertPointIntoProfilesIfNeededThenUpdate(int const, int const, double const, double const, int const, int const, int const, bool const);
    void TruncateProfileAndAppendNew(int const, int const, int const, vector<CGeom2DPoint> const*, vector<vector<pair<int, int> > > const*);
    void RasterizeProfile(int const, int const, vector<CGeom2DIPoint>*, vector<bool>*, bool&, bool&, bool&, bool&, bool&);
    void CalcDeanProfile(vector<double>*, double const, double const, double const, bool const, int const, double const);
-   double dSubtractProfiles(vector<double> const*, vector<double> const*, vector<bool> const*);
+   static double dSubtractProfiles(vector<double> const*, vector<double> const*, vector<bool> const*);
    int nRasterizeCliffCollapseProfile(vector<CGeom2DPoint> const*, vector<CGeom2DIPoint>*) const;
    int nCalcPotentialPlatformErosionOnProfile(int const, int const);
    int nCalcPotentialPlatformErosionBetweenProfiles(int const, int const, int const);
@@ -561,7 +560,7 @@ private:
    int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*);
    int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double> const*, vector<double> const*);
    int nReadCShoreOutput(string const*, int const, int const, vector<double> const*, vector<double>*);
-   double dCalcWaveAngleToCoastNormal(double const, double const, int const);
+   static double dCalcWaveAngleToCoastNormal(double const, double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);
    void InterpolateWavePropertiesToCells(int const, int const, int const);
@@ -569,8 +568,8 @@ private:
    static double dCalcCurvature(int const, CGeom2DPoint const*, CGeom2DPoint const*, CGeom2DPoint const*);
    void CalcD50AndFillWaveCalcHoles(void);
    int nDoAllShadowZones(void);
-   bool bOnOrOffShoreAndUpOrDownCoast(double const, double const, int const, bool&);
-   CGeom2DIPoint PtiFollowWaveOrientation(CGeom2DIPoint const*, double const, double& dError);   
+   static bool bOnOrOffShoreAndUpOrDownCoast(double const, double const, int const, bool&);
+   static CGeom2DIPoint PtiFollowWaveOrientation(CGeom2DIPoint const*, double const, double&);   
    int nFindAllShadowZones(void);
    int nFloodFillShadowZone(int const, CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
    int nDoShadowZoneAndDownDriftZone(int const, int const, int const, int const);
@@ -633,7 +632,7 @@ private:
    static CGeom2DIPoint PtiWeightedAverage(CGeom2DIPoint const*, CGeom2DIPoint const*, double const);
    static double dAngleSubtended(CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
    static int nGetOppositeDirection(int const);
-   void GetSlopeAndInterceptFromPoints(CGeom2DIPoint const*, CGeom2DIPoint const*, double&, double&);
+   static void GetSlopeAndInterceptFromPoints(CGeom2DIPoint const*, CGeom2DIPoint const*, double&, double&);
 
    // Utility routines
    static void AnnounceStart(void);
@@ -701,7 +700,7 @@ private:
    static double dGetMean(vector<double> const*);
    static double dGetStdDev(vector<double> const*);
    static void AppendEnsureNoGap(vector<CGeom2DIPoint>*, CGeom2DIPoint const*);
-   bool bIsNumeric(string const*);
+   static bool bIsNumeric(string const*);
 
    // Random number stuff
    static unsigned long ulGetTausworthe(unsigned long const, unsigned long const, unsigned long const, unsigned long const, unsigned long const);
