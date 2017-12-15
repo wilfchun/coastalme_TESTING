@@ -147,8 +147,8 @@ int CSimulation::nCreateAllNormalProfiles(void)
       // Calculate a convexity threshold, which is two standard deviations below the mean: will not create non-cape profiles on coast points with smoothed convexity which exceeds this (i.e. with smoothed curvature values which are less than this threshold)
       double
          dStdCurvature = m_VCoast[nCoast].dGetSmoothCurvatureSTD(),
-//          dCoastProfileConvexityThreshold = m_VCoast[nCoast].dGetSmoothCurvatureMean() - (2 * dStdCurvature);
-         dCoastProfileConvexityThreshold = m_VCoast[nCoast].dGetSmoothCurvatureMean() - dStdCurvature;
+         dCoastProfileConvexityThreshold = m_VCoast[nCoast].dGetSmoothCurvatureMean() - (2 * dStdCurvature);
+//          dCoastProfileConvexityThreshold = m_VCoast[nCoast].dGetSmoothCurvatureMean() - dStdCurvature;
 
       // If we have a coast with almost identical curvature everywhere (e.g. a straight line), then set the threshold to a big -ve value, so that convexity at coastline points is ignored
       if (tAbs(dStdCurvature) < TOLERANCE)
@@ -306,9 +306,9 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
          // This natural cape profile is fine
          nCapeProfilesCreated++;
 
-//          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
-//          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
-//          LogStream << m_ulIteration << ": natural cape profile " << nProfile << " created at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
+         CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
+         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
+         LogStream << m_ulIteration << ": natural cape profile " << nProfile << " created at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
 
          // Mark points on either side of it
          for (int m = 1; m < nProfileToNodeSpacing; m++)

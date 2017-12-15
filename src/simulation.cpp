@@ -168,7 +168,7 @@ CSimulation::CSimulation(void)
    m_lGDALMaxCanWrite                              =
    m_lGDALMinCanWrite                              = 0;
 
-   m_ulIteration                                        =
+   m_ulIteration                                       =
    m_ulTotTimestep                                     =
    m_ulNumCells                                        =
    m_ulThisTimestepNumSeaCells                         =
@@ -261,18 +261,18 @@ CSimulation::CSimulation(void)
    m_dThisTimestepFineSedimentToSuspension          =
    m_dThisTimestepMassBalanceErosionError           =
    m_dThisTimestepMassBalanceDepositionError        =
-   m_dDepthOverDBMax                            =
-   m_dTotPotentialPlatformErosionOnProfiles                   =
-   m_dTotPotentialPlatformErosionBetweenProfiles              =
-   m_dProfileMaxSlope                           =
-   m_dSimpleSmoothWeight                        =
-   m_dBeachSmoothingVertTolerance               =
-   m_dCliffErodibility                          =
-   m_dNotchOverhangAtCollapse                   =
-   m_dNotchBaseBelowSWL                         =
-   m_dCliffDepositionA                          =
-   m_dCliffDepositionPlanviewLength             =
-   m_dCliffDepositionHeightFrac                 =
+   m_dDepthOverDBMax                                =
+   m_dTotPotentialPlatformErosionOnProfiles         =
+   m_dTotPotentialPlatformErosionBetweenProfiles    =
+   m_dProfileMaxSlope                               =
+   m_dSimpleSmoothWeight                            =
+   m_dBeachSmoothingVertTolerance                   =
+   m_dCliffErodibility                              =
+   m_dNotchOverhangAtCollapse                       =
+   m_dNotchBaseBelowSWL                             =
+   m_dCliffDepositionA                              =
+   m_dCliffDepositionPlanviewLength                 =
+   m_dCliffDepositionHeightFrac                     =
    m_dThisTimestepCliffCollapseFine                 =
    m_dThisTimestepCliffCollapseSand                 =
    m_dThisTimestepCliffCollapseCoarse               =
@@ -281,8 +281,8 @@ CSimulation::CSimulation(void)
    m_dThisTimestepCliffTalusFineErosion             =
    m_dThisTimestepCliffTalusSandErosion             =
    m_dThisTimestepCliffTalusCoarseErosion           =
-   m_dCoastNormalRandSpaceFact                  =
-   m_dDeanProfileStartAboveSWL                  = 0;
+   m_dCoastNormalRandSpaceFact                      =
+   m_dDeanProfileStartAboveSWL                      = 0;
 
    m_dMinSWL                                    = DBL_MAX;
    m_dMaxSWL                                    = DBL_MIN;

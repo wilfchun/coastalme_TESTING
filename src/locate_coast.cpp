@@ -413,7 +413,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
 
                   break;
 
-               case WEST :
+               case WEST:
                   // The sea is towards the RHS (N) of the coast, so first try to go right (to the N)
                   nXSeaward = nX;
                   nYSeaward = nY-1;
@@ -507,7 +507,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
 
                   break;
 
-               case WEST :
+               case WEST:
                   // The sea is towards the LHS (S) of the coast, so first try to go left (to the S)
                   nXSeaward = nX;
                   nYSeaward = nY+1;
