@@ -165,20 +165,20 @@ bool CGeomCell::bIsCoastline(void) const
 }
 
 //! Marks this cell as 'under' a coastline-normal profile
-void CGeomCell::SetNormalProfile(int const nNormal)
+void CGeomCell::SetProfile(int const nNormal)
 {
    m_nCoastlineNormal = nNormal;
 }
 
 
 //! If this cell is 'under' a coastline-normal profile, returns the number of the profile. Otherwise it returns INT_NODATA
-int CGeomCell::nGetNormalProfile(void) const
+int CGeomCell::nGetProfile(void) const
 {
    return m_nCoastlineNormal;
 }
 
 //! Returns true if this cell is 'under' a coastline normal
-bool CGeomCell::bIsNormalProfile(void) const
+bool CGeomCell::bIsProfile(void) const
 {
    if (m_nCoastlineNormal == INT_NODATA)
       return false;

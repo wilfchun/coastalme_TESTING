@@ -55,8 +55,7 @@ using std::to_string;
 int CSimulation::nReadBasementDEMData(void)
 {
    // Use GDAL to create a dataset object, which then opens the DEM file
-   GDALDataset* pGDALDataset = NULL;
-   pGDALDataset = (GDALDataset *) GDALOpen(m_strInitialBasementDEMFile.c_str(), GA_ReadOnly);
+   GDALDataset* pGDALDataset = (GDALDataset *) GDALOpen(m_strInitialBasementDEMFile.c_str(), GA_ReadOnly);
    if (NULL == pGDALDataset)
    {
       // Can't open file (note will already have sent GDAL error message to stdout)
@@ -137,9 +136,8 @@ int CSimulation::nReadBasementDEMData(void)
    m_dExtCRSGridArea = tAbs(m_dNorthWestXExtCRS - m_dSouthEastXExtCRS) * tAbs(m_dNorthWestYExtCRS * m_dSouthEastYExtCRS);
 
    // Now get GDAL raster band information
-   GDALRasterBand* pGDALBand = NULL;
+   GDALRasterBand* pGDALBand = pGDALDataset->GetRasterBand(1);
    int nBlockXSize = 0, nBlockYSize = 0;
-   pGDALBand = pGDALDataset->GetRasterBand(1);
    pGDALBand->GetBlockSize(&nBlockXSize, &nBlockYSize);
    m_strGDALBasementDEMDataType = GDALGetDataTypeName(pGDALBand->GetRasterDataType());
 
@@ -405,8 +403,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
    if (! strGISFile.empty())
    {
       // We do have a filename, so use GDAL to create a dataset object, which then opens the GIS file
-      GDALDataset* pGDALDataset = NULL;
-      pGDALDataset = (GDALDataset *) GDALOpen(strGISFile.c_str(), GA_ReadOnly);
+      GDALDataset* pGDALDataset = (GDALDataset *) GDALOpen(strGISFile.c_str(), GA_ReadOnly);
       if (NULL == pGDALDataset)
       {
          // Can't open file (note will already have sent GDAL error message to stdout)
@@ -491,9 +488,8 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       }
 
       // Now get GDAL raster band information
-      GDALRasterBand* pGDALBand = NULL;
-      int nBlockXSize = 0, nBlockYSize = 0;
-      pGDALBand = pGDALDataset->GetRasterBand(1);              // TODO give a message if there are several bands
+      GDALRasterBand* pGDALBand = pGDALDataset->GetRasterBand(1);              // TODO give a message if there are several bands
+      int nBlockXSize = 0, nBlockYSize = 0;      
       pGDALBand->GetBlockSize(&nBlockXSize, &nBlockYSize);
       strDataType = GDALGetDataTypeName(pGDALBand->GetRasterDataType());
 
@@ -1771,7 +1767,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
 
             case (RASTER_PLOT_NORMAL):
             {
-               nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsNormalProfile() ? 1 : 0);
+               nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsProfile() ? 1 : 0);
                break;
             }
 
@@ -1991,7 +1987,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
 
 /*===============================================================================================================================
 
- Interpolates wave properties from all profiles to all within-polygon sea cells that are outside the active zone. We use GDALGridCreate(), the library version of external utility gdal_grid, to do this
+ Interpolates wave properties from all profiles to all within-polygon sea cells. We use GDALGridCreate(), the library version of external utility gdal_grid, to do this
 
 ===============================================================================================================================*/
 int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<double> const* pVdHeightX, vector<double> const* pVdHeightY)
@@ -2008,7 +2004,7 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
 
    for (int nDirection = 0; nDirection < 2; nDirection++)
    {
-      // It is necessary to transfer the data from the pVnX, pVnY, pVdHeightX and pVdHeightY vectors into c-style arrays, because GDALGridCreate() will only accept c-style arrays of doubles
+      // It is necessary to transfer the data from the pVnX, pVnY, pVdHeightX and pVdHeightY vectors into c-style arrays of doubles, because this is what GDALGridCreate() wants TODO try doing this earlier, for speed
       double* dX = new double[nPoints];
       double* dY = new double[nPoints];
       double* dZ = new double[nPoints];
@@ -2024,6 +2020,11 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
       }
 
 //          // TEST
+//       for (int nn = 0; nn < nPoints; nn++)
+//       {
+//          LogStream << nn << " " << dX[nn] << " " << dY[nn] << " " << dZ[nn] << endl;
+//       }
+
 //          m_nXMaxBoundingBox = m_nXGridMax-1;
 //          m_nYMaxBoundingBox = m_nYGridMax-1;
 //          m_nXMinBoundingBox = 0;
@@ -2047,13 +2048,21 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
 
       // Call GDALGridCreate()
       int nRet = GDALGridCreate(GGA_Linear, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Float64, dOut, NULL, NULL);
+      if (nRet == CE_Failure)
+      {
+         LogStream << CPLGetLastErrorMsg() << endl;
+         
+         delete[] dX;
+         delete[] dY;
+         delete[] dZ;
 
+         return RTN_ERR_GRIDCREATE;
+      }
+
+      // Tidy
       delete[] dX;
       delete[] dY;
       delete[] dZ;
-
-      if (nRet == CE_Failure)
-         return RTN_ERR_GRIDCREATE;
 
       // The output from GDALGridCreate() is in dOut but must be reversed
       int n = 0;
@@ -2127,7 +2136,6 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
          int
             nActualX = nX + m_nXMinBoundingBox,
             nActualY = nY + m_nYMinBoundingBox;
-
             
          // Only update cells that are in the contiguous sea and inside a polygon
          if ((m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea()) && (m_pRasterGrid->m_Cell[nActualX][nActualY].nGetPolygonID() != INT_NODATA))
@@ -2162,7 +2170,7 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
 {
    unsigned int nPoints = pVnX->size();
 
-   // It is necessary to transfer the data from the pVnX, pVnY and pVbBreaking vectors into c-style arrays, because GDALGridCreate will only accept c-style arrays of doubles TODO do this when data collected, for speed
+   // It is necessary to transfer the data from the pVnX, pVnY and pVbBreaking vectors into c-style arrays of doubles, because this is what GDALGridCreate wants TODO try doing this earlier, for speed
    double* dX = new double[nPoints];
    double* dY = new double[nPoints];
    double* dZ = new double[nPoints];
@@ -2240,7 +2248,7 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
    delete[] nOut;
 
 //       // TEST ===========================================
-//       string strOutFile = "testactive.tif";
+//       string strOutFile = "./testactive.tif";
 //       GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
 //       GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), nXSize, nYSize, 1, GDT_Int32, m_papszGDALRasterOptions);
 //       pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
@@ -2301,26 +2309,8 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
 int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
 {
    // Interpolate deep water height and orientation from multiple user-supplied values
-   unsigned int nPoints = m_VdDeepWaterWavePointX.size();
+   unsigned int nUserPoints = m_VdDeepWaterWavePointX.size();
 
-   // It is necessary to transfer the data from the m_VdDeepWaterWavePointX, m_VdDeepWaterWavePointY, m_VdDeepWaterWavePointHeight and m_VdDeepWaterWavePointAngle vectors into c-style arrays, because GDALGridCreate will only accept c-style arrays of doubles TODO do this when data collected, for speed
-   double* dX = new double[nPoints];
-   double* dY = new double[nPoints];
-   double* dHeight = new double[nPoints];
-   double* dAngle = new double[nPoints];
-
-   for (unsigned int n = 0; n < nPoints; n++)
-   {
-      // TODO check if input point is actually in sea    
-
-      dX[n] = dExtCRSXToGridX(m_VdDeepWaterWavePointX[n]);
-      dY[n] = dExtCRSYToGridY(m_VdDeepWaterWavePointY[n]);
-      dHeight[n] = m_VdDeepWaterWavePointHeight[n];
-      dAngle[n] = m_VdDeepWaterWavePointAngle[n];
-      
-//       cout << "[" << dX[n] << "][" << dY[n] << "] = {" << m_VdDeepWaterWavePointX[n] << ", " << m_VdDeepWaterWavePointY[n] << "}, dHeight = " << dHeight[n] << " dAngle = " << dAngle[n] << endl;
-   }
-   
    // Call GDALGridCreate() with the GGA_InverseDistanceToAPower interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0).
    GDALGridInverseDistanceToAPowerOptions options;
    memset(&options, 0, sizeof(options));
@@ -2334,38 +2324,23 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    options.nMaxPoints = 0;
    options.nMinPoints = 0;
    options.dfNoDataValue = INT_NODATA;
-
-   // For the gridded output, must be a c-style array
-   double* dHeightOut = new double[m_ulNumCells];
-   double* dAngleOut = new double[m_ulNumCells];
    
 //    CPLSetConfigOption("CPL_DEBUG", "ON");
 //    CPLSetConfigOption("GDAL_NUM_THREADS", "1");
    
    // OK, now create a gridded version of wave height: first create the GDAL context
-   GDALGridContext* pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nPoints, dX, dY, dHeight, true);   
+   GDALGridContext* pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints, &m_VdDeepWaterWavePointX[0], &m_VdDeepWaterWavePointY[0], &m_VdDeepWaterWavePointHeight[0], true);   
    if (pContext == NULL)
    {
-      delete[] dX;
-      delete[] dY;
-      delete[] dHeight;
-      delete[] dAngle;
-      delete[] dHeightOut;
-      delete[] dAngleOut;
-      
       return RTN_ERR_GRIDCREATE;
    }
    
    // Now process the context
+   double* dHeightOut = new double[m_ulNumCells];
    int nRet = GDALGridContextProcess(pContext, 0, m_nXGridMax-1, 0, m_nYGridMax-1, m_nXGridMax, m_nYGridMax, GDT_Float64, dHeightOut, NULL, NULL);
    if (nRet == CE_Failure)
    {
-      delete[] dX;
-      delete[] dY;
-      delete[] dHeight;
-      delete[] dAngle;
       delete[] dHeightOut;
-      delete[] dAngleOut;
       
       return RTN_ERR_GRIDCREATE;
    }
@@ -2374,23 +2349,27 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    GDALGridContextFree(pContext);
 
    // Next create a gridded version of wave orientation: first create the GDAL context
-   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nPoints, dX, dY, dAngle, true);   
+   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints,  &(m_VdDeepWaterWavePointX[0]), &(m_VdDeepWaterWavePointY[0]), (&m_VdDeepWaterWavePointAngle[0]), true);   
    if (pContext == NULL)
+   {
+      delete[] dHeightOut;
+
       return RTN_ERR_GRIDCREATE;
+   }
    
    // Now process the context
+   double* dAngleOut = new double[m_ulNumCells];
    nRet = GDALGridContextProcess(pContext, 0, m_nXGridMax-1, 0, m_nYGridMax-1, m_nXGridMax, m_nYGridMax, GDT_Float64, dAngleOut, NULL, NULL);
    if (nRet == CE_Failure)
+   {      
+      delete[] dHeightOut;
+      delete[] dAngleOut;
+
       return RTN_ERR_GRIDCREATE;
+   }
    
    // And finally, get rid of the context
-   GDALGridContextFree(pContext);
-   
-   // Clean up
-   delete[] dX;
-   delete[] dY;
-   delete[] dHeight;
-   delete[] dAngle;
+   GDALGridContextFree(pContext);   
 
    // The output from GDALGridCreate() is in dHeightOut and dAngleOut but must be reversed
    vector<double>
@@ -2413,20 +2392,20 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    delete[] dAngleOut;
 
 //    // TEST ===========================================
-//    string strOutFile = "testHeight.tif";
+//    string strOutFile = "./testHeight.tif";
 //    GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
 //    GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
 //    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
 //    pDataSet->SetGeoTransform(m_dGeoTransform);
 //    double* pdRaster = new double[m_ulNumCells];
-//    n = 0;
+//    int nn = 0;
 //    for (int nY = 0; nY < m_nYGridMax; nY++)
 //    {
 //       for (int nX = 0; nX < m_nXGridMax; nX++)
 //       {
 //          // Write this value to the array
-//          pdRaster[n] = VdHeight[n];
-//          n++;
+//          pdRaster[nn] = VdHeight[nn];
+//          nn++;
 //       }
 //    }
 // 
@@ -2440,18 +2419,18 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
 //    GDALClose(pDataSet);
 // 
 // 
-//    strOutFile = "testAngle.tif";
+//    strOutFile = "./testAngle.tif";
 //    pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
 //    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
 //    pDataSet->SetGeoTransform(m_dGeoTransform);
-//    n = 0;
+//    nn = 0;
 //    for (int nY = 0; nY < m_nYGridMax; nY++)
 //    {
 //       for (int nX = 0; nX < m_nXGridMax; nX++)
 //       {
 //          // Write this value to the array
-//          pdRaster[n] = VdAngle[n];
-//          n++;
+//          pdRaster[nn] = VdAngle[nn];
+//          nn++;
 //       }
 //    }
 // 

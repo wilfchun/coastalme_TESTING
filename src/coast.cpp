@@ -200,7 +200,7 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
 {
    for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
    {
-      if (m_ILCellsMarkedAsCoastline[nCoastPoint] == *pPtiCell)
+      if (this->m_ILCellsMarkedAsCoastline[nCoastPoint] == *pPtiCell)
       {
          return nCoastPoint;
       }
@@ -362,7 +362,7 @@ int CRWCoast::nGetNumProfiles(void) const
    return m_VProfile.size();
 }
 
-bool CRWCoast::bIsNormalProfileStartPoint(int const nCoastPoint) const
+bool CRWCoast::bIsProfileStartPoint(int const nCoastPoint) const
 {
    // NOTE no sanity check for nCoastPoint < m_VnProfileNumber.Size()
    if (m_VnProfileNumber[nCoastPoint] != INT_NODATA)

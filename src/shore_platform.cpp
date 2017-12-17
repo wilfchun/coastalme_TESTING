@@ -416,7 +416,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       }
 
       // Is this coastline start point the start point of an adjacent coastline-normal vector?
-      if (m_pRasterGrid->m_Cell[nParCoastX][nParCoastY].bIsNormalProfile())
+      if (m_pRasterGrid->m_Cell[nParCoastX][nParCoastY].bIsProfile())
       {
 //         LogStream << m_ulIteration << ": LEAVING LOOP since hit another profile at nThisPointOnCoast = " << nThisPointOnCoast << " while doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile = " << nProfile << ", dist from profile = " <<  nDistFromProfile << endl;
          break;
@@ -1216,9 +1216,9 @@ void CSimulation::ConstructParallelProfile(int const nProfileStartX, int const n
       }
 
       // Have we hit an adjacent coastline-normal profile? If so, cut short
-      if (m_pRasterGrid->m_Cell[nXPar][nYPar].bIsNormalProfile())
+      if (m_pRasterGrid->m_Cell[nXPar][nYPar].bIsProfile())
       {
-//         LogStream << "HIT PROFILE " << m_pRasterGrid->m_Cell[nXPar][nYPar].nGetNormalProfile() << " at [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " <<  dGridCentroidYToExtCRSY(nYPar) << "}" << endl;
+//         LogStream << "HIT PROFILE " << m_pRasterGrid->m_Cell[nXPar][nYPar].nGetProfile() << " at [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " <<  dGridCentroidYToExtCRSY(nYPar) << "}" << endl;
          return;
       }
 

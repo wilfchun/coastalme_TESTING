@@ -419,8 +419,8 @@ private:
       m_VdErosionPotential,            // For erosion potential lookup
       m_VdSavGolFCRWCoast,             // Savitzky-Golay filter coefficients for the coastline vector(s)
       m_VdSavGolFCGeomProfile,         // Savitzky-Golay filter coefficients for the profile vectors
-      m_VdDeepWaterWavePointX,         // X co-ordinate (external CRS) for deep water wave point
-      m_VdDeepWaterWavePointY,         // Y co-ordinate (external CRS) for deep water wave point
+      m_VdDeepWaterWavePointX,         // X co-ordinate (grid CRS) for deep water wave point
+      m_VdDeepWaterWavePointY,         // Y co-ordinate (grid CRS) for deep water wave point
       m_VdDeepWaterWavePointHeight,    // Wave height at deep water wave point
       m_VdDeepWaterWavePointAngle;     // Wave orientation at deep water wave point
 //       m_VdTideData;                    // Tide data: one record per timestep, is the change (m) from still water level for that timestep
@@ -527,12 +527,12 @@ private:
    int nTraceCoastLine(int const, int const, int const, int const);
    int nTraceAllCoasts(void);
    void DoCoastCurvature(int const, int const);
-   int nCreateAllNormalProfilesAndCheckForIntersection(void);
-   int nCreateAllNormalProfiles(void);
+   int nCreateAllProfilesAndCheckForIntersection(void);
+   int nCreateAllProfiles(void);
    void CreateNaturalCapeNormals(int const, int&, int const, vector<bool>*, vector<pair<int, double> > const*);
    void CreateRestOfNormals(int const, int&, int const, double const, vector<bool>*, vector<pair<int, double> > const*);
    void CreateInterventionProfiles(int const, int&, int const);
-   int nCreateNormalProfile(int const, int const, int&);
+   int nCreateProfile(int const, int const, int&);
    int nCreateGridEdgeProfile(bool const, int const, int&);
    int nPutAllProfilesOntoGrid(void);
    int nModifyAllIntersectingProfiles(void);
@@ -542,7 +542,7 @@ private:
    int nInsertPointIntoProfilesIfNeededThenUpdate(int const, int const, double const, double const, int const, int const, int const, bool const);
    void TruncateProfileAndAppendNew(int const, int const, int const, vector<CGeom2DPoint> const*, vector<vector<pair<int, int> > > const*);
    void RasterizeProfile(int const, int const, vector<CGeom2DIPoint>*, vector<bool>*, bool&, bool&, bool&, bool&, bool&);
-   void CalcDeanProfile(vector<double>*, double const, double const, double const, bool const, int const, double const);
+   static void CalcDeanProfile(vector<double>*, double const, double const, double const, bool const, int const, double const);
    static double dSubtractProfiles(vector<double> const*, vector<double> const*, vector<bool> const*);
    int nRasterizeCliffCollapseProfile(vector<CGeom2DPoint> const*, vector<CGeom2DIPoint>*) const;
    int nCalcPotentialPlatformErosionOnProfile(int const, int const);

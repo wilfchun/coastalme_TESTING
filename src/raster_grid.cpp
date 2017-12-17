@@ -33,7 +33,8 @@ CGeomRasterGrid::CGeomRasterGrid(CSimulation* pSimIn)
 : m_dD50Fine(0),
   m_dD50Sand(0),
   m_dD50Coarse(0),
-  m_pSim(pSimIn)
+  m_pSim(pSimIn),
+  m_Cell(NULL)
 {
 }
 

@@ -23,13 +23,13 @@
 ; Run information -----------------------------------------------------------------------------------------------------
 Main output/log file names                        [omit path and extension]: simple
 
-Duration of simulation                         [hours, days, months, years]: 60 days
-Timestep (hours or days)                                                   : 6 hours
-Save times                                     [hours, days, months, years]: 5 10 15 20 25 30 35 40 45 50 days
-
-;Duration of simulation                         [hours, days, months, years]: 365 days
+;Duration of simulation                         [hours, days, months, years]: 30 days
 ;Timestep (hours or days)                                                   : 6 hours
-;Save times                                     [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
+;Save times                                     [hours, days, months, years]: 6 12 24 48 100 200 300 400 500 600 hours
+
+Duration of simulation                         [hours, days, months, years]: 365 days
+Timestep (hours or days)                                                   : 6 hours
+Save times                                     [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
 
 ;Duration of simulation                         [hours, days, months, years]: 5 years
 ;Timestep (hours or days)                                                   : 6 hours
@@ -80,11 +80,11 @@ Intervention class file                                     [path and name]:
 Intervention height file                                    [path and name]:
 
 ; Hydrology data -------------------------------------------------------------------------------------------------------
-Wave propagation model                               [0 = COVE, 1 = CShore]: 0
+Wave propagation model                               [0 = COVE, 1 = CShore]: 1
 
 Density of sea water (kg/m3)                                               : 1029
 
-Initial still water level (m), or per-timestep SWL file                    : 29
+Initial still water level (m), or per-timestep SWL file                    : 150
 Final still water level (m)                   [blank = same as initial SWL]:
 Wave period (sec)                                                          : 10
 Deep water wave height (m), or file TODO need multiple file input option   : in/simple_fast_with_spit/deep_sea_waves.shp
@@ -93,9 +93,9 @@ Deep water wave orientation (degrees)                                      : 300
 
 ; Sediment data --------------------------------------------------------------------------------------------------------
 Simulate coast platform erosion?                                           : y
-Resistance of coast platform (units ???)                                   : 6e6      ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011), is 1/erodibility
+Resistance of coast platform (units ???)                                   : 2e6      ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011), is 1/erodibility
 
-Beach sediment transport at grid edges   [0 = closed, 1 = open, 2 = Mobius]: 2
+Beach sediment transport at grid edges   [0 = closed, 1 = open, 2 = Mobius]: 1
 
 Beach potential erosion/deposition equation        [0 = CERC, 1 = Kamphuis]: 1
 
@@ -118,22 +118,22 @@ Berm height i.e. height above SWL of start of depositional Dean profile (m): 0.2
 
 ; Cliff collapse data --------------------------------------------------------------------------------------------------
 Simulate cliff collapse?                                                   : y
-Cliff erodibility (units ???)                                              : 8e-8      ; Note get can't create Dean profile error with higher values
+Cliff erodibility (units ???)                                              : 3.5e-7    ; LAST 3.8e-7 was 8e-8 Note higher values always give "Can't create Dean profile" error
 Notch overhang to initiate collapse (m)                                    : 0.5
 Notch base below still water level (m)                                     : 0.3
 Scale parameter A for cliff deposition (m^(1/3))                 [0 = auto]: 0         ; For a 0.2 mm D50, will be 0.1
-Planview width of cliff deposition talus (in cells)           [must be odd]: 5         ; was 11 was 5 7
-Planview length of cliff deposition talus (m)                              : 15        ; was 50 was 30 15
-Height of landward talus end, as fraction of cliff elevation               : 0         ; tried 0.1
+Planview width of cliff deposition talus (in cells)           [must be odd]: 11        ; was 5 7
+Planview length of cliff deposition talus (m)                              : 50        ; was 15 30 15
+Height of landward talus end, as fraction of cliff elevation               : 0.1       ; was 0
 
 ; Other data -----------------------------------------------------------------------------------------------------------
 Gravitational acceleration (m2/s)                                          : 9.81
 
 ; TEMPORARY ONLY, CHANGE DYNAMICALLY LATER
 Spacing of coastline normals (m)                      [0 = default minimum]: 0
-Random factor for spacing of normals            [0 to 1, 0 = deterministic]: 0.1
-Length of coastline normals (m)                                            : 160
-Maximum number of 'cape' normals                                           : 2
+Random factor for spacing of normals            [0 to 1, 0 = deterministic]: 0.2
+Length of coastline normals (m)                                            : 180
+Maximum number of 'cape' normals                                           : 8
 
 Start depth for wave calcs (ratio to deep water wave height)               : 3   ; was 5 10 30 15
 

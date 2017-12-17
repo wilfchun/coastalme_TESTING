@@ -726,7 +726,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          return nRet;
 
       // Create the coastline-normal profiles
-      nRet = nCreateAllNormalProfilesAndCheckForIntersection();
+      nRet = nCreateAllProfilesAndCheckForIntersection();
       if (nRet != RTN_OK)
          return nRet;
 

@@ -64,10 +64,10 @@ bool bCurvaturePairCompareDescending(const pair<int, double> &prLeft, const pair
  Create profiles normal to the coastline, modifies these if they intersect, then puts the profiles onto the raster grid
 
 ===============================================================================================================================*/
-int CSimulation::nCreateAllNormalProfilesAndCheckForIntersection(void)
+int CSimulation::nCreateAllProfilesAndCheckForIntersection(void)
 {
    // Create all coastline-normal profiles, in coastline-concave-curvature sequence i.e. the first profiles are created 'around' the most concave bits of coast. An index is also created which allows profiles to be accessed in along-coast sequence. Also create 'special' profiles at the start and end of the coast, and put these onto the raster griid now
-   int nRet = nCreateAllNormalProfiles();
+   int nRet = nCreateAllProfiles();
    if (nRet != RTN_OK)
       return nRet;
 
@@ -90,7 +90,7 @@ int CSimulation::nCreateAllNormalProfilesAndCheckForIntersection(void)
  Create coastline-normal profiles for all coastlines: first at a limited number at natural and artificial cape positions, then at locations of greatest concave curvature of the vector coastline. Finally, grid-edge normal profiles are created
 
 ===============================================================================================================================*/
-int CSimulation::nCreateAllNormalProfiles(void)
+int CSimulation::nCreateAllProfiles(void)
 {
    int nProfileToNodeSpacing = m_nCoastNormalAvgSpacing / 2;
 
@@ -187,7 +187,7 @@ int CSimulation::nCreateAllNormalProfiles(void)
 //       for (int n = 0; n < nCoastSize; n++)
 //       {
 //          LogStream << n;
-//          if (m_VCoast[nCoast].bIsNormalProfileStartPoint(n))
+//          if (m_VCoast[nCoast].bIsProfileStartPoint(n))
 //             LogStream << " profile " << m_VCoast[nCoast].nGetProfileNumber(n);
 //          LogStream << endl;
 //       }
@@ -243,7 +243,7 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile, in
       if (! bVCoastPointSearched[nThisCapePoint])
       {
          // We have not already searched this coast point, so try putting an intervention cape profile here
-         int nRet = nCreateNormalProfile(nCoast, nThisCapePoint, nProfile);
+         int nRet = nCreateProfile(nCoast, nThisCapePoint, nProfile);
          bVCoastPointSearched[nThisCapePoint] = true;
 
          if (nRet != RTN_OK)
@@ -296,7 +296,7 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
       if (! bVCoastPointSearched->at(nThisCapePoint))
       {
          // We have not already searched this coast point, so try putting a natural cape profile here
-         int nRet = nCreateNormalProfile(nCoast, nThisCapePoint, nProfile);
+         int nRet = nCreateProfile(nCoast, nThisCapePoint, nProfile);
          bVCoastPointSearched->at(nThisCapePoint) = true;
 
          if (nRet != RTN_OK)
@@ -409,7 +409,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
             // No, so mark this point as searched
             bVCoastPointSearched->at(nThisPoint) = true;
 
-            if (m_VCoast[nCoast].bIsNormalProfileStartPoint(nThisPoint))
+            if (m_VCoast[nCoast].bIsProfileStartPoint(nThisPoint))
             {
                // We have hit the start point of another profile
 //                LogStream << m_ulIteration << ": nThisPoint = " << nThisPoint<< " hit start of another profile, profile " << m_VCoast[nCoast].nGetProfileNumber(nThisPoint) << endl;
@@ -438,7 +438,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                      // Mark this coast point as searched
                      bVCoastPointSearched->at(nClose) = true;
 
-                     if (m_VCoast[nCoast].bIsNormalProfileStartPoint(nClose))
+                     if (m_VCoast[nCoast].bIsProfileStartPoint(nClose))
                      {
                         // The adjacent coast point is already the start point of a normal, we can't have two normals this close so abandon this one
                         bTooClose = true;
@@ -459,21 +459,21 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                   else
                      nProfileStartPoint--;
 
-//                   LogStream << m_ulIteration << ": excessive convexity = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << ") at nThisPoint = " << nThisPoint << " when attempting to create nProfile = " << nProfile+1 << ", possible nProfileStartPoint changed to " << nProfileStartPoint << endl;
+                  LogStream << m_ulIteration << ": excessive detailed convexity = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << ") at nThisPoint = " << nThisPoint << " when attempting to create nProfile = " << nProfile+1 << ", possible nProfileStartPoint changed to " << nProfileStartPoint << endl;
                   continue;
                }
 
                // OK, try to create a profile here
-               int nRet = nCreateNormalProfile(nCoast, nThisPoint, nProfile);
+               int nRet = nCreateProfile(nCoast, nThisPoint, nProfile);
                if (nRet == RTN_OK)
                {
                   // Profile created OK
-//                      LogStream << m_ulIteration << ": profile " << nProfile << " created at nThisPoint = " << nThisPoint << " which has curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << "). Started from nNodePoint = " << nNodePoint << " which has curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nNodePoint) << endl;
+//                   LogStream << m_ulIteration << ": profile " << nProfile << " created at nThisPoint = " << nThisPoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << "). Started from nNodePoint = " << nNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nNodePoint) << endl;
                }
                else
                {
                   // Uh-oh, this profile is no good (end is off-grid) so keep going
-//                      LogStream << m_ulIteration << ": profile " << nProfile+1 << " NOT created at nThisPoint = " << nThisPoint << endl;
+//                   LogStream << m_ulIteration << ": profile " << nProfile+1 << " NOT created at nThisPoint = " << nThisPoint << endl;
 
                   bNodeNoGood = true;
                }
@@ -494,7 +494,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
  Creates a single coastline-normal profile
 
 ===============================================================================================================================*/
-int CSimulation::nCreateNormalProfile(int const nCoast, int const nProfileStartPoint, int& nProfile)
+int CSimulation::nCreateProfile(int const nCoast, int const nProfileStartPoint, int& nProfile)
 {
    // OK, we have flagged the start point of this new coastline-normal profile, so create it. Make the start of the profile the centroid of the actual cell that is marked as coast (not the cell under the smoothed vector coast, they may well be different)
    int nCoastSize = m_VCoast[nCoast].nGetCoastlineSize();
@@ -667,7 +667,7 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
          nY = VPtiNormalPoints[n].nGetY();
 
       // Mark each cell in the raster grid
-      m_pRasterGrid->m_Cell[nX][nY].SetNormalProfile(nProfile);
+      m_pRasterGrid->m_Cell[nX][nY].SetProfile(nProfile);
 
       // Store the raster-grid coordinates in the profile object
       pProfile->AppendCellInProfile(nX, nY);
@@ -1240,7 +1240,7 @@ int CSimulation::nPutAllProfilesOntoGrid(void)
          for (unsigned int k = 0; k < VCellsToMark.size(); k++)
          {
             // So mark each cell in the raster grid
-            m_pRasterGrid->m_Cell[VCellsToMark[k].nGetX()][VCellsToMark[k].nGetY()].SetNormalProfile(nProfile);
+            m_pRasterGrid->m_Cell[VCellsToMark[k].nGetX()][VCellsToMark[k].nGetY()].SetProfile(nProfile);
 
             // Store the raster-grid coordinates in the profile object
             pProfile->AppendCellInProfile(VCellsToMark[k].nGetX(), VCellsToMark[k].nGetY());
@@ -1386,10 +1386,10 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
 
             // Check to see if we hit another profile which is not a coincident normal to this normal
             static int nLastProfileChecked = -1;
-            if ((nProfile != nLastProfileChecked) && m_pRasterGrid->m_Cell[nX][nY].bIsNormalProfile())
+            if ((nProfile != nLastProfileChecked) && m_pRasterGrid->m_Cell[nX][nY].bIsProfile())
             {
                // For the first time for this profile, we've hit a raster cell which is already marked as 'under' a normal profile. Get the number of the profile which marked this cell
-               int nHitProfile = m_pRasterGrid->m_Cell[nX][nY].nGetNormalProfile();
+               int nHitProfile = m_pRasterGrid->m_Cell[nX][nY].nGetProfile();
 
                // TODO Bodge in case we hit a profile which belongs to a different coast
                if (nHitProfile > nProfiles-1)

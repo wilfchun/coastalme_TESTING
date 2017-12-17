@@ -139,7 +139,7 @@ public:
    void AppendProfile(int const, int const);
 //    void ReplaceProfile(int const, vector<CGeom2DPoint> const*);
    int nGetNumProfiles(void) const;
-   bool bIsNormalProfileStartPoint(int const) const;
+   bool bIsProfileStartPoint(int const) const;
    int nGetProfileNumber(int const) const;
 
    void CreateAlongCoastlineProfileIndex(void);

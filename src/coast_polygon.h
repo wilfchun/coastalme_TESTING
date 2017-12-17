@@ -39,8 +39,8 @@ private:
       m_nGlobalID,                        // The simulation-global number of this polygon
       m_nCoastID,                         // This-coast-only number of this polygon
       m_nCoastNode,                       // The point on this polygon's coastline segment with maximum concave curvature, roughly at the middle of the coastline segment
-      m_nNormalProfileUpCoast,            // The normal profile which bounds the polygon in the up-coast direction
-      m_nNormalProfileDownCoast,          // Ditto for the down-coast direction
+      m_nProfileUpCoast,            // The normal profile which bounds the polygon in the up-coast direction
+      m_nProfileDownCoast,          // Ditto for the down-coast direction
       m_nProfileUpCoastNumPointsUsed,     // The number of points from the up-coast normal which are part of this polygon (less than the normal's full length if the polygon is triangular)
       m_nProfileDownCoastNumPointsUsed,   // Ditto for the down-coast normal
 //       m_nNumCells,                        // The number of cells in the polygon

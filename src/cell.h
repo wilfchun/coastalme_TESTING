@@ -108,9 +108,9 @@ public:
    void SetAsCoastline(bool const);
    bool bIsCoastline(void) const;
 
-   void SetNormalProfile(int const);
-   int nGetNormalProfile(void) const;
-   bool bIsNormalProfile(void) const;
+   void SetProfile(int const);
+   int nGetProfile(void) const;
+   bool bIsProfile(void) const;
    
    void SetShadowZoneBoundary(void);
    bool bIsShadowZoneBoundary(void) const;

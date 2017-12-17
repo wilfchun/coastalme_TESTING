@@ -298,7 +298,6 @@ int CSimulation::nDoAllShadowZones(void)
             bHitCoast = false,
             bHitSea = false,
             bInLoop = false;
-         int nShadowBoundaryCoastPoint = -1;
          
          // From each start point, follow the wave direction
          CGeomILine ILShadowBoundary;
@@ -325,6 +324,8 @@ int CSimulation::nDoAllShadowZones(void)
          
          while ((! bHitEdge) && (! bHitCoast))
          {
+//             int nShadowBoundaryCoastPoint = -1;
+            
             if (nDist > 0)
             {
                int
@@ -460,7 +461,7 @@ int CSimulation::nDoAllShadowZones(void)
             }
                 
             // We've found a valid shadow zone. Check the last point in the shadow boundary. Note that occasionally this last cell is not 'above' a cell but one of its neighbouring cells is: in which case, replace the last point in the shadow boundary with the co-ords of this neighbouring cell
-            nShadowBoundaryCoastPoint = m_VCoast[nCoast].nGetCoastPointGivenCell(&ILShadowBoundary.Back()); 
+            int nShadowBoundaryCoastPoint = m_VCoast[nCoast].nGetCoastPointGivenCell(&ILShadowBoundary.Back()); 
             if (nShadowBoundaryCoastPoint == INT_NODATA)
             {
                // Could not find a neighbouring cell which is 'under' the coastline

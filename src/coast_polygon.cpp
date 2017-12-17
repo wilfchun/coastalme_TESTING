@@ -36,8 +36,8 @@ CGeomCoastPolygon::CGeomCoastPolygon(int const nGlobalID, int const nCoastID, in
    m_nGlobalID(nGlobalID),
    m_nCoastID(nCoastID),
    m_nCoastNode(nNode),
-   m_nNormalProfileUpCoast(nProfileUpCoast),
-   m_nNormalProfileDownCoast(nProfileDownCoast),
+   m_nProfileUpCoast(nProfileUpCoast),
+   m_nProfileDownCoast(nProfileDownCoast),
    m_nProfileUpCoastNumPointsUsed(nLastPointUpCoast),
    m_nProfileDownCoastNumPointsUsed(nLastPointDownCoast),
 //    m_nNumCells(0),
@@ -131,12 +131,12 @@ CGeom2DIPoint* CGeomCoastPolygon::pPtiGetAntinode(void)
 
 int CGeomCoastPolygon::nGetUpCoastProfile(void) const
 {
-   return m_nNormalProfileUpCoast;
+   return m_nProfileUpCoast;
 }
 
 int CGeomCoastPolygon::nGetDownCoastProfile(void) const
 {
-   return m_nNormalProfileDownCoast;
+   return m_nProfileDownCoast;
 }
 
 

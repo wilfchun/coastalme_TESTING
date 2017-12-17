@@ -79,7 +79,7 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
       for (int nPoint = 0; nPoint < m_VCoast[nCoast].nGetCoastlineSize(); nPoint++)
       {
          // We are going down-coast
-         if (m_VCoast[nCoast].bIsNormalProfileStartPoint(nPoint))
+         if (m_VCoast[nCoast].bIsProfileStartPoint(nPoint))
          {
             // OK, a coastline-normal profile begins at this coastline point, so set the deep water wave values at this coastline point to be the values at the seaward end of the coastline normal
             int nProfile = m_VCoast[nCoast].nGetProfileNumber(nPoint);
@@ -149,18 +149,19 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
 ===============================================================================================================================*/
 int CSimulation::nDoAllPropagateWaves(void)
 {
-   // Set up vectors to hold the wave attribute data at every profile point
+   // Set up all-profile vectors to hold the wave attribute data at every profile point on all profiles
+   vector<bool>VbBreakingAll;
+
    vector<int>
-      VnX,
-      VnY;
+      VnXAll,
+      VnYAll;
       
    vector<double>
-      VdHeightX,
-      VdHeightY;
+      VdHeightXAll,
+      VdHeightYAll;
       
-   vector<bool>VbBreaking;
-
    // Calculate wave properties for every coast
+   bool bSomeNonStartOrEndOfCoastProfiles = false;
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
       int
@@ -170,19 +171,78 @@ int CSimulation::nDoAllPropagateWaves(void)
       // Calculate wave properties at every point along each valid profile, and for the cells under the profiles. Do this in the original (curvature-related) profile sequence
       for (int nProfile = 0; nProfile < nNumProfiles; nProfile++)
       {
+         vector<bool> VbBreaking;
+         vector<int>
+            VnX,
+            VnY;
+         vector<double>
+            VdHeightX,
+            VdHeightY;
+            
          int nRet = nCalcWavePropertiesOnProfile(nCoast, nCoastSize, nProfile, &VnX, &VnY, &VdHeightX, &VdHeightY, &VbBreaking);
          if (nRet != RTN_OK)
             return nRet;
+         
+         // Are the waves off-shore? If so, do nothing more with this profile. The wave values for cells have already been given the off-shore value
+         if (VbBreaking.empty())
+            continue;
+         
+         // Is this a start of coast or end of coast profile?
+         if ((! m_VCoast[nCoast].pGetProfile(nProfile)->bStartOfCoast()) && (! m_VCoast[nCoast].pGetProfile(nProfile)->bEndOfCoast()))
+         {
+            // It is neither a start of coast or an end of coast profile, so set switch
+            bSomeNonStartOrEndOfCoastProfiles = true;            
+         }
+         
+         // TEST
+//          for (int nn = 0; nn < VnX.size(); nn++)
+//          {
+//             LogStream << "nProfile = " << nProfile << " nn = " << nn << " VnX[nn] = " << VnX[nn] << " VnY[nn] = " << VnY[nn] << " VdHeightX[nn] = " << VdHeightX[nn] << " VdHeightY[nn] = " << VdHeightY[nn] << " VbBreaking[nn] = " << VbBreaking[nn] << endl;
+//          }
+//          LogStream << endl;
+         // TEST
+         
+         // Append to the all-profile vectors
+         VnXAll.insert(VnXAll.end(), VnX.begin(), VnX.end());
+         VnYAll.insert(VnYAll.end(), VnY.begin(), VnY.end());
+         VdHeightXAll.insert(VdHeightXAll.end(), VdHeightX.begin(), VdHeightX.end());
+         VdHeightYAll.insert(VdHeightYAll.end(), VdHeightY.begin(), VdHeightY.end());
+         VbBreakingAll.insert(VbBreakingAll.end(), VbBreaking.begin(), VbBreaking.end());
       }
    }
+   
+   // OK, do we have some profiles other than start of coast or end of coast profiles in the all-profile vectors? We need to check this, because GDALGridCreate() in nInterpolateWavePropertiesToWithinPolygonCells() does not work if we give it only a start of coast or an end of cell profile to work with
+   if (! bSomeNonStartOrEndOfCoastProfiles)
+   {
+      LogStream << m_ulIteration << ": waves are on-shore only for start and/or end of coast profiles" << endl;
+      
+      return RTN_OK;      
+   }
 
-   // Interpolate the wave attributes from all profile points to all within polygon sea cells that are outside the active zone
-   int nRet = nInterpolateWavePropertiesToWithinPolygonCells(&VnX, &VnY, &VdHeightX, &VdHeightY);
+   // TEST
+//    LogStream << "Out of loop" << endl;
+//    for (int nn = 0; nn < VnXAll.size(); nn++)
+//    {
+//       LogStream << "nn = " << nn << " VnXAll[nn] = " << VnXAll[nn] << " VnYAll[nn] = " << VnYAll[nn] << " VdHeightXAll[nn] = " << VdHeightXAll[nn] << " VdHeightYAll[nn] = " << VdHeightYAll[nn] << " VbBreakingAll[nn] = " << VbBreakingAll[nn] << endl;
+//    }
+//    LogStream << endl;
+   // TEST
+   
+   // Are the waves off-shore for every profile? If so, do nothing more
+   if (VbBreakingAll.empty())
+   {
+      LogStream << m_ulIteration << ": waves off-shore for all profiles" << endl;
+      
+      return RTN_OK;      
+   }
+
+   // Some waves are on-shore, so interpolate the wave attributes from all profile points to all within-polygon sea cells
+   int nRet = nInterpolateWavePropertiesToWithinPolygonCells(&VnXAll, &VnYAll, &VdHeightXAll, &VdHeightYAll);
    if (nRet != RTN_OK)
       return nRet;
  
-   // Interpolate the wave attributes from all profile points to all sea cells in the active zone
-   nRet = nInterpolateWavePropertiesToActiveZoneCells(&VnX, &VnY, &VbBreaking);
+   // Interpolate the wave attributes from all profile points to all sea cells that are in the active zone
+   nRet = nInterpolateWavePropertiesToActiveZoneCells(&VnXAll, &VnYAll, &VbBreakingAll);
    if (nRet != RTN_OK)
       return nRet;
 
@@ -272,7 +332,11 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    
    // Only do this for profiles without problems. Still do start- and end-of-coast profiles however
    if (! pProfile->bOKIncStartAndEndOfCoast())
+   {
+      LogStream << m_ulIteration << ": invalid profile " << nProfile << endl;
+      
       return RTN_OK;
+   }
    
    int
       nSeaHand = m_VCoast[nCoast].nGetSeaHandedness(),
@@ -310,11 +374,12 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    if (dWaveToNormalAngle == DBL_NODATA)
    {
       // They are so, do nothing (each cell under the profile has already been initialised with deep water wave height and wave direction)
-      //      LogStream << m_ulIteration << ": THIS profile = " << nProfile << " sea is to " << (m_VCoast[nCoast].nGetSeaHandedness() == RIGHT_HANDED ? "right" : "left") << " dWaveToNormalAngle = " << dWaveToNormalAngle << " which is off-shore" << endl;
+//       LogStream << m_ulIteration << ": profile " << nProfile << " has sea to " << (m_VCoast[nCoast].nGetSeaHandedness() == RIGHT_HANDED ? "right" : "left") << " dWaveToNormalAngle = " << dWaveToNormalAngle << " which is off-shore" << endl;
+      
       return RTN_OK;
    }
    
-   //   LogStream << m_ulIteration << ": THIS profile = " << nProfile << " sea is to " << (m_VCoast[nCoast].nGetSeaHandedness() == RIGHT_HANDED ? "right" : "left") << " dWaveToNormalAngle = " << dWaveToNormalAngle << " which is " << (dWaveToNormalAngle < 0 ? "DOWN" : "UP") << "-coast" << endl;
+//    LogStream << m_ulIteration << ": profile = " << nProfile << " has sea to " << (m_VCoast[nCoast].nGetSeaHandedness() == RIGHT_HANDED ? "right" : "left") << " dWaveToNormalAngle = " << dWaveToNormalAngle << " which is " << (dWaveToNormalAngle < 0 ? "DOWN" : "UP") << "-coast" << endl;
    
    // Calculate the angle between the deep water wave direction and a normal to the coast tangent for the previous coast point
    double dWaveToNormalAnglePrev;
@@ -328,7 +393,10 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    else
       dWaveToNormalAnglePrev = dWaveToNormalAngle;
    
-   //   LogStream << "\tPrevious profile, dWaveToNormalAnglePrev = " << dWaveToNormalAnglePrev << " which is " << (dWaveToNormalAnglePrev < 0 ? "DOWN" : "UP") << "-coast" << endl;
+//    if (dWaveToNormalAnglePrev == DBL_NODATA)
+//       LogStream << "\tPrevious profile, dWaveToNormalAnglePrev = " << dWaveToNormalAnglePrev << " which is off-shore" << endl;
+//    else
+//       LogStream << "\tPrevious profile, dWaveToNormalAnglePrev = " << dWaveToNormalAnglePrev << " which is " << (dWaveToNormalAnglePrev < 0 ? "DOWN" : "UP") << "-coast" << endl;
    
    // Calculate the angle between the deep water wave direction and a normal to the coast tangent for the next coast point
    double dWaveToNormalAngleNext;
@@ -342,7 +410,10 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    else
       dWaveToNormalAngleNext = dWaveToNormalAngle;
    
-   //   LogStream << "\tNext profile, dWaveToNormalAngleNext = " << dWaveToNormalAngleNext << " which is " << (dWaveToNormalAngleNext < 0 ? "DOWN" : "UP") << "-coast" << endl;
+//    if (dWaveToNormalAngleNext == DBL_NODATA)
+//       LogStream << "\tNext profile, dWaveToNormalAngleNext = " << dWaveToNormalAngleNext << " which is off-shore" << endl;
+//    else
+//       LogStream << "\tNext profile, dWaveToNormalAngleNext = " << dWaveToNormalAngleNext << " which is " << (dWaveToNormalAngleNext < 0 ? "DOWN" : "UP") << "-coast" << endl;
    
    // Following Ashton and Murray (2006), if we have high-angle waves then use the flux orientation of the previous (up-coast) profile, if transitioning from diffusive to antidiffusive use flux maximizing angle (45 degrees)
    if ((dWaveToNormalAngle > 0) && (dWaveToNormalAnglePrev != DBL_NODATA) && (dWaveToNormalAnglePrev > 0))

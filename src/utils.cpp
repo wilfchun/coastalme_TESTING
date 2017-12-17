@@ -47,6 +47,8 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::ios;
+using std::showpos;
+using std::noshowpos;
 
 #include <iomanip>
 using std::setiosflags;
@@ -1196,23 +1198,32 @@ void CSimulation::UpdateGrandTotals(void)
    LogStream << "Actual fine platform erosion = " << m_dThisTimestepActualFinePlatformErosion << endl;
    LogStream << "Actual sand platform erosion = " << m_dThisTimestepActualSandPlatformErosion << endl;
    LogStream << "Actual coarse platform erosion = " << m_dThisTimestepActualCoarsePlatformErosion << endl;
-
+   LogStream << "TOTAL actual platform erosion = " << showpos << m_dThisTimestepActualFinePlatformErosion + m_dThisTimestepActualSandPlatformErosion + m_dThisTimestepActualCoarsePlatformErosion << endl;
+   
+   LogStream << endl;
+   
    // Cliff collapse
-   LogStream << "Cliff collapse fine = " << m_dThisTimestepCliffCollapseFine << endl;
+   LogStream << "Cliff collapse fine = " << noshowpos << m_dThisTimestepCliffCollapseFine << endl;
    LogStream << "Cliff collapse sand = " << m_dThisTimestepCliffCollapseSand << endl;
    LogStream << "Cliff collapse coarse = " << m_dThisTimestepCliffCollapseCoarse << endl;
+   LogStream << "TOTAL cliff collapse = " << showpos << m_dThisTimestepCliffCollapseFine + m_dThisTimestepCliffCollapseSand + m_dThisTimestepCliffCollapseCoarse << endl;
+   
+   LogStream << endl;
 
    // Cliff collapse talus deposition
-   LogStream << "Cliff collapse sand talus deposition = " << m_dThisTimestepCliffTalusSandDeposition << endl;
-   LogStream << "Cliff collapse coarse talus deposition = " << m_dThisTimestepCliffTalusCoarseDeposition << endl;
+   LogStream << "Deposition of unconsolidated sand talus due to cliff collapse = " << noshowpos << m_dThisTimestepCliffTalusSandDeposition << endl;
+   LogStream << "Deposition of unconsolidated coarse talus due to cliff collapse = " << m_dThisTimestepCliffTalusCoarseDeposition << endl;
 
    // Cliff collapse talus erosion
-   LogStream << "Cliff collapse fine talus erosion = " << m_dThisTimestepCliffTalusFineErosion << endl;
-   LogStream << "Cliff collapse sand talus erosion = " << m_dThisTimestepCliffTalusSandErosion << endl;
-   LogStream << "Cliff collapse coarse talus erosion = " <<    m_dThisTimestepCliffTalusCoarseErosion << endl;
-
+   LogStream << "Erosion of previously-deposited fine talus = " << m_dThisTimestepCliffTalusFineErosion << endl;
+   LogStream << "Erosion of previously-deposited sand talus = " << m_dThisTimestepCliffTalusSandErosion << endl;
+   LogStream << "Erosion of previously-deposited coarse talus = " << m_dThisTimestepCliffTalusCoarseErosion << endl;
+   LogStream << "TOTAL change in talus from cliff collapse = " << showpos << -m_dThisTimestepCliffTalusFineErosion + (m_dThisTimestepCliffTalusSandDeposition - m_dThisTimestepCliffTalusSandErosion) + (m_dThisTimestepCliffTalusCoarseDeposition - m_dThisTimestepCliffTalusCoarseErosion) << endl;
+   
+   LogStream << endl;
+   
    // Beach erosion
-   LogStream << "Potential beach erosion = " << m_dThisTimestepPotentialBeachErosion << endl;
+   LogStream << "Potential beach erosion = " << noshowpos << m_dThisTimestepPotentialBeachErosion << endl;
 
    LogStream << "Actual fine beach erosion = " << m_dThisTimestepActualFineBeachErosion << endl;
    LogStream << "Actual sand beach erosion = " << m_dThisTimestepActualSandBeachErosion << endl;
@@ -1222,33 +1233,49 @@ void CSimulation::UpdateGrandTotals(void)
    LogStream << "Sand beach deposition = " << m_dThisTimestepSandBeachDeposition << endl;
    LogStream << "Coarse beach deposition = " << m_dThisTimestepCoarseBeachDeposition << endl;
 
-   // Sediment lost due to beach erosion
-   LogStream << "Off-grid potential beach erosion = " << m_dThisTimestepPotentialSedLostBeachErosion << endl;
+   LogStream << "Change in fine beach sediment = " << -m_dThisTimestepActualFineBeachErosion << endl;
+   LogStream << "Change in sand beach sediment = " << m_dThisTimestepSandBeachDeposition - m_dThisTimestepActualSandBeachErosion << endl;
+   LogStream << "Change in coarse beach sediment = " << m_dThisTimestepCoarseBeachDeposition - m_dThisTimestepActualCoarseBeachErosion << endl;   
+   LogStream << "TOTAL change in beach sediment = " << showpos << -m_dThisTimestepActualFineBeachErosion + (m_dThisTimestepSandBeachDeposition - m_dThisTimestepActualSandBeachErosion) + (m_dThisTimestepCoarseBeachDeposition - m_dThisTimestepActualCoarseBeachErosion) << endl;   
+   
+   LogStream << endl;
 
-   LogStream << "Off-grid actual fine beach erosion = " << m_dThisTimestepActualFineSedLostBeachErosion << endl;
-   LogStream << "Off-grid actual sand beach erosion = " << m_dThisTimestepActualSandSedLostBeachErosion << endl;
-   LogStream << "Off-grid actual coarse beach erosion = " << m_dThisTimestepActualCoarseSedLostBeachErosion << endl;
+   // Sediment lost from grid due to beach erosion and deposition
+   LogStream << "Beach sediment potentially lost from grid = " << noshowpos << m_dThisTimestepPotentialSedLostBeachErosion << endl;
 
-   // Sediment lost due to cliff collapse
-   LogStream << "Off-grid sand cliff collapse = " << m_dThisTimestepSandSedLostCliffCollapse << endl;
-   LogStream << "Off-grid coarse cliff collapse = " << m_dThisTimestepCoarseSedLostCliffCollapse << endl;
+   LogStream << "Fine beach sediment actually lost from grid = " << m_dThisTimestepActualFineSedLostBeachErosion << endl;
+   LogStream << "Sand beach sediment actually lost from grid = " << m_dThisTimestepActualSandSedLostBeachErosion << endl;
+   LogStream << "Coarse beach sediment actually lost from grid = " << m_dThisTimestepActualCoarseSedLostBeachErosion << endl;
+   
+   LogStream << endl;
+
+   // Sediment lost from grid due to cliff collapse
+   LogStream << "Sand sediment lost from grid due to cliff collapse = " << m_dThisTimestepSandSedLostCliffCollapse << endl;
+   LogStream << "Coarse sediment lost from grid due to cliff collapse = " << m_dThisTimestepCoarseSedLostCliffCollapse << endl;
+   
+   LogStream << "TOTAL beach sediment actually lost from grid (all processes)  = " << showpos << m_dThisTimestepActualFineSedLostBeachErosion + m_dThisTimestepActualSandSedLostBeachErosion + m_dThisTimestepActualCoarseSedLostBeachErosion + m_dThisTimestepSandSedLostCliffCollapse + m_dThisTimestepCoarseSedLostCliffCollapse << endl;
+   
+   LogStream << endl;
 
    // Suspended sediment
-   LogStream << "Suspended sediment = " << m_dThisTimestepFineSedimentToSuspension << endl << endl;
+   LogStream << "Suspended sediment = " << noshowpos << m_dThisTimestepFineSedimentToSuspension << endl;
+
+   LogStream << endl;
 
    // Any errors?
    LogStream << "Erosion errors = " << m_dThisTimestepMassBalanceErosionError << endl;
    LogStream << "Deposition errors = " << m_dThisTimestepMassBalanceDepositionError << endl;
 
-
-   // Platform erosion
+   LogStream << endl;
+   
+   // Add to grand totals: first platform erosion
    m_ldGTotPotentialPlatformErosion        += m_dThisTimestepPotentialPlatformErosion;
 
    m_ldGTotFineActualPlatformErosion       += m_dThisTimestepActualFinePlatformErosion;
    m_ldGTotSandActualPlatformErosion       += m_dThisTimestepActualSandPlatformErosion;
    m_ldGTotCoarseActualPlatformErosion     += m_dThisTimestepActualCoarsePlatformErosion;
 
-   // Cliff collapse
+   // Next cliff collapse
    m_ldGTotCliffCollapseFine               += m_dThisTimestepCliffCollapseFine;
    m_ldGTotCliffCollapseSand               += m_dThisTimestepCliffCollapseSand;
    m_ldGTotCliffCollapseCoarse             += m_dThisTimestepCliffCollapseCoarse;
