@@ -40,6 +40,8 @@ private:
 
 public:
    CRWCellSediment(void);
+   CRWCellSediment(CRWCellSediment const&);           // Copy constructor defined explicitly, to stop cppcheck from complaining
+   
    CRWCellSediment& operator= (const CRWCellSediment&);
 
    void SetFine(double const);

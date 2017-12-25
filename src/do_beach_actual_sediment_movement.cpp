@@ -398,6 +398,9 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
             }
             else if (nPoly == nNumPolygons-1)
             {
+               // TEST DFM 
+               pPolygon->AddDeltaActualUnconsSand(1);               
+               
                // This is the polygon at the down-coast end of the coastline, and uncons sediment movement is down-coast. Decide what to do based on the user setting m_nUnconsSedimentHandlingAtGridEdges
                if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
                {
@@ -418,9 +421,9 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
 
                   LogStream << m_ulIteration << ": polygon " << nPoly << " is at the down-coast end of the coastline, actual sediment movement is DOWN-COAST. With open grid edges, sediment goes off-grid: fine = " << dFineToPoly << " sand = " << dSandToPoly << " coarse = " << dCoarseToPoly << endl;
                }
-               else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_MOBIUS)
+               else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_RECIRCULATE)
                {
-                  // Mobius grid edges, so send the sediment to the polygon at the up-coast end of this coastline TODO Check whether this causes mass balance problems, depending on the sequence of polygon processing
+                  // Re-circulating grid edges, so send the sediment to the polygon at the up-coast end of this coastline TODO Check whether this causes mass balance problems, depending on the sequence of polygon processing
                   int nOtherEndPoly = 0;
                   CGeomCoastPolygon* pOtherEndPoly = m_VCoast[nCoast].pGetPolygon(nOtherEndPoly);
                   pOtherEndPoly->AddDeltaActualUnconsFine(dFineToPoly);
@@ -437,7 +440,7 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
                   pPolygon->AddDeltaActualUnconsSand(-dTotSandToPoly);
                   pPolygon->AddDeltaActualUnconsCoarse(-dTotCoarseToPoly);
 
-                  LogStream << m_ulIteration << ": polygon " << nPoly << " is at the down-coast end of the coastline, actual sediment movement is DOWN-COAST. With Mobius option this goes to up-coast coast-end polygon " << nOtherEndPoly << ": fine = " << dFineToPoly << " sand = " << dSandToPoly << " coarse = " << dCoarseToPoly << endl;
+                  LogStream << m_ulIteration << ": polygon " << nPoly << " is at the down-coast end of the coastline, actual sediment movement is DOWN-COAST. With re-circulating option this goes to up-coast coast-end polygon " << nOtherEndPoly << ": fine = " << dFineToPoly << " sand = " << dSandToPoly << " coarse = " << dCoarseToPoly << endl;
                }
             }
          }
@@ -486,6 +489,9 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
             }
             else if (nPoly == 0)
             {
+               // TEST DFM 
+               pPolygon->AddDeltaActualUnconsSand(1);
+               
                // This is the polygon at the up-coast end of the coastline, and uncons sediment movement is up-coast. Decide what to do based on the user setting m_nUnconsSedimentHandlingAtGridEdges
                if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
                {
@@ -506,9 +512,9 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
 
                   LogStream << m_ulIteration << ": polygon " << nPoly << " is at the up-coast end of the coastline, actual sediment movement is UP-COAST. With open grid edges, sediment goes off-grid: fine = " << dFineToPoly << " sand = " << dSandToPoly << " coarse = " << dCoarseToPoly << endl;
                }
-               else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_MOBIUS)
+               else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_RECIRCULATE)
                {
-                  // Mobius grid edges, so send the sediment to the polygon at the down-coast end of this coastline TODO Check whether this causes mass balance problems, depending on the sequence of polygon processing
+                  // Re-circulating grid edges, so send the sediment to the polygon at the down-coast end of this coastline TODO Check whether this causes mass balance problems, depending on the sequence of polygon processing
                   int nOtherEndPoly = nNumPolygons-1;
                   CGeomCoastPolygon* pOtherEndPoly = m_VCoast[nCoast].pGetPolygon(nOtherEndPoly);
                   pOtherEndPoly->AddDeltaActualUnconsFine(dFineToPoly);
@@ -525,7 +531,7 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
                   pPolygon->AddDeltaActualUnconsSand(-dTotSandToPoly);
                   pPolygon->AddDeltaActualUnconsCoarse(-dTotCoarseToPoly);
 
-                  LogStream << m_ulIteration << ": polygon " << nPoly << " is at the up-coast end of the coastline, actual sediment movement is UP-COAST. With Mobius option this goes to down-coast coast-end polygon " << nOtherEndPoly << ": fine = " << dFineToPoly << " sand = " << dSandToPoly << " coarse = " << dCoarseToPoly << endl;
+                  LogStream << m_ulIteration << ": polygon " << nPoly << " is at the up-coast end of the coastline, actual sediment movement is UP-COAST. With re-circulating option this goes to down-coast coast-end polygon " << nOtherEndPoly << ": fine = " << dFineToPoly << " sand = " << dSandToPoly << " coarse = " << dCoarseToPoly << endl;
                }
             }
          }

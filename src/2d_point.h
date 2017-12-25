@@ -34,12 +34,15 @@ private:
 public:
    CGeom2DPoint(void);
    CGeom2DPoint(double const, double const);
+   CGeom2DPoint(CGeom2DPoint const&);        // Copy constructor defined explicitly, to stop cppcheck from complaining
+   
    double dGetX(void) const;
    double dGetY(void) const;
    void SetX(double const);
    void SetY(double const);
 //    void SetXY(double const, double const);
 //    void SetXY(CGeom2DPoint const*);
+   
    void operator= (CGeom2DPoint*);
    bool operator== (CGeom2DPoint*) const;
    bool operator!= (CGeom2DPoint*) const;

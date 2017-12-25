@@ -30,6 +30,8 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::ios;
+using std::showpos;
+using std::noshowpos;
 
 #include <iomanip>
 using std::setiosflags;
@@ -356,8 +358,8 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << "closed";
    else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_OPEN)
       OutStream << "open";
-   else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_MOBIUS)
-      OutStream << "Mobius";
+   else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_RECIRCULATE)
+      OutStream << "recirculate";
    OutStream << endl;
    OutStream << " Beach potential erosion/deposition equation               \t: ";
    if (m_nBeachErosionDepositionEquation == EQUATION_CERC)
@@ -486,7 +488,7 @@ bool CSimulation::bWritePerTimestepResults(void)
    OutStream << setw(7) << 100 * static_cast<double>(m_ulThisTimestepNumActualPlatformErosionCells) / m_ulThisTimestepNumSeaCells;
 
    // Output per-timestep actual shore platform erosion in mm (average for all sea cells)
-   double dThisTimestepActualPlatformErosion = m_dThisTimestepActualFinePlatformErosion + m_dThisTimestepActualSandPlatformErosion + m_dThisTimestepActualCoarsePlatformErosion;
+   double dThisTimestepActualPlatformErosion = m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse;
    OutStream << setw(8) << 1000 * dThisTimestepActualPlatformErosion / m_ulThisTimestepNumSeaCells;
 
    // Output per-timestep actual shore platform erosion in mm (average for all cells with actual shore platform erosion)
@@ -498,9 +500,9 @@ bool CSimulation::bWritePerTimestepResults(void)
 
    // Output per-timestep actual shore platform erosion in mm (average for all sea cells)
    OutStream << setiosflags(ios::fixed) << setprecision(1);
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualFinePlatformErosion / m_ulThisTimestepNumSeaCells;
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualSandPlatformErosion / m_ulThisTimestepNumSeaCells;
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualCoarsePlatformErosion / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(6) << 1000 * m_dThisTimestepActualPlatformErosionFine / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(6) << 1000 * m_dThisTimestepActualPlatformErosionSand / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(6) << 1000 * m_dThisTimestepActualPlatformErosionCoarse / m_ulThisTimestepNumSeaCells;
 
    // Output the this-timestep % of sea cells with potential beach erosion ======================================================
    OutStream << setw(7) << 100 * static_cast<double>(m_ulThisTimestepNumPotentialBeachErosionCells) / m_ulThisTimestepNumSeaCells;
@@ -521,7 +523,7 @@ bool CSimulation::bWritePerTimestepResults(void)
    OutStream << setw(7) << 100 * static_cast<double>(m_ulThisTimestepNumActualBeachErosionCells) / m_ulThisTimestepNumSeaCells;
 
    // Output per-timestep actual beach erosion in mm (average for all sea cells)
-   double dThisTimestepActualBeachErosion = m_dThisTimestepActualFineBeachErosion + m_dThisTimestepActualSandBeachErosion + m_dThisTimestepActualCoarseBeachErosion;
+   double dThisTimestepActualBeachErosion = m_dThisTimestepActualBeachErosionFine + m_dThisTimestepActualBeachErosionSand + m_dThisTimestepActualBeachErosionCoarse;
    OutStream << setw(6) << 1000 * dThisTimestepActualBeachErosion / m_ulThisTimestepNumSeaCells;
 
    // Per-timestep actual beach erosion in mm (average for all cells with actual beach erosion)
@@ -533,15 +535,15 @@ bool CSimulation::bWritePerTimestepResults(void)
 
    // Per-timestep actual beach erosion in mm (average for all sea cells)
    OutStream << setiosflags(ios::fixed) << setprecision(1);
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualFineBeachErosion / m_ulThisTimestepNumSeaCells;
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualSandBeachErosion / m_ulThisTimestepNumSeaCells;
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualCoarseBeachErosion / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(6) << 1000 * m_dThisTimestepActualBeachErosionFine / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(6) << 1000 * m_dThisTimestepActualBeachErosionSand / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(6) << 1000 * m_dThisTimestepActualBeachErosionCoarse / m_ulThisTimestepNumSeaCells;
 
    // Output the this-timestep % of sea cells with beach deposition =============================================================
    OutStream << setw(7) << 100 * static_cast<double>(m_ulThisTimestepNumBeachDepositionCells) / m_ulThisTimestepNumSeaCells;
 
    // Per-timestep beach deposition in mm (average for all sea cells)
-   double dThisTimestepBeachDeposition = m_dThisTimestepSandBeachDeposition + m_dThisTimestepCoarseBeachDeposition;
+   double dThisTimestepBeachDeposition = m_dThisTimestepBeachDepositionSand + m_dThisTimestepBeachDepositionCoarse;
    OutStream << setw(6) << 1000 * dThisTimestepBeachDeposition / m_ulThisTimestepNumSeaCells;
 
    // Per-timestep beach deposition in mm (average for all cells with beach deposition)
@@ -553,17 +555,17 @@ bool CSimulation::bWritePerTimestepResults(void)
 
    // Per-timestep beach deposition in mm (average for all sea cells)
    OutStream << setiosflags(ios::fixed) << setprecision(1);
-   OutStream << setw(6) << 1000 * m_dThisTimestepSandBeachDeposition / m_ulThisTimestepNumSeaCells;
-   OutStream << setw(6) << 1000 * m_dThisTimestepCoarseBeachDeposition / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(6) << 1000 * m_dThisTimestepBeachDepositionSand / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(6) << 1000 * m_dThisTimestepBeachDepositionCoarse / m_ulThisTimestepNumSeaCells;
 
-   // Per-timestep cliff collapse in mm (average for all coast cells) ===========================================================
-   OutStream << setw(8) << 1000 * m_dThisTimestepCliffCollapseFine / m_ulThisTimestepNumCoastCells;
-   OutStream << setw(8) << 1000 * m_dThisTimestepCliffCollapseSand / m_ulThisTimestepNumCoastCells;
-   OutStream << setw(8) << 1000 * m_dThisTimestepCliffCollapseCoarse / m_ulThisTimestepNumCoastCells;
+   // Per-timestep cliff collapse erosion in mm (average for all coast cells) ===========================================================
+   OutStream << setw(8) << 1000 * m_dThisTimestepCliffCollapseErosionFine / m_ulThisTimestepNumCoastCells;
+   OutStream << setw(8) << 1000 * m_dThisTimestepCliffCollapseErosionSand / m_ulThisTimestepNumCoastCells;
+   OutStream << setw(8) << 1000 * m_dThisTimestepCliffCollapseErosionCoarse / m_ulThisTimestepNumCoastCells;
 
    // Per-timestep cliff collapse deposition in mm (average for all sea cells) ==================================================
-   OutStream << setw(5) << 1000 * m_dThisTimestepCliffTalusSandDeposition / m_ulThisTimestepNumSeaCells;
-   OutStream << setw(6) << 1000 * m_dThisTimestepCliffTalusCoarseDeposition / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(5) << 1000 * m_dThisTimestepCliffDepositionSand / m_ulThisTimestepNumSeaCells;
+   OutStream << setw(6) << 1000 * m_dThisTimestepCliffDepositionCoarse / m_ulThisTimestepNumSeaCells;
 
    // Output per-timestep fine sediment going to suspension, in mm (average for all sea cells) ==================================
    OutStream << setw(8) << 1000 * m_dThisTimestepFineSedimentToSuspension / m_ulThisTimestepNumSeaCells;
@@ -590,6 +592,7 @@ bool CSimulation::bWritePerTimestepResults(void)
 ===============================================================================================================================*/
 bool CSimulation::bWriteTSFiles(void)
 {
+   // Sea area
    if (m_bSeaAreaTS)
    {
       // Output in external CRS units
@@ -600,7 +603,7 @@ bool CSimulation::bWriteTSFiles(void)
          return false;
    }
 
-
+   // Still water level
    if (m_bStillWaterLevelTS)
    {
       // Output as is (m)
@@ -611,36 +614,83 @@ bool CSimulation::bWriteTSFiles(void)
          return false;
    }
 
+   // Actual platform erosion (fine, sand, and coarse)
    if (m_bActualPlatformErosionTS)
    {
       // Output as is (m depth equivalent)
-      ErosionTSStream << m_dSimElapsed  << "\t,\t" << m_dThisTimestepActualFinePlatformErosion << ",\t" << m_dThisTimestepActualSandPlatformErosion << ",\t" << m_dThisTimestepActualCoarsePlatformErosion << endl;
+      ErosionTSStream << m_dSimElapsed  << "\t,\t" << m_dThisTimestepActualPlatformErosionFine << ",\t" << m_dThisTimestepActualPlatformErosionSand << ",\t" << m_dThisTimestepActualPlatformErosionCoarse << endl;
 
       // Did a time series file write error occur?
       if (ErosionTSStream.fail())
          return false;
    }
-
-   if (m_bDepositionTS)
+   
+   // Cliff collapse erosion (fine, sand, and coarse)
+   if (m_bCliffCollapseErosionTS)
    {
       // Output as is (m depth equivalent)
-//      DepositionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepFineDeposition << ",\t" << m_dThisTimestepSandDeposition << ",\t" << m_dThisTimestepCoarseDeposition << endl;
+      CliffCollapseErosionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepCliffCollapseErosionFine << ",\t" << m_dThisTimestepCliffCollapseErosionSand << ",\t" << m_dThisTimestepCliffCollapseErosionCoarse << endl;
 
       // Did a time series file write error occur?
-      if (DepositionTSStream.fail())
+      if (CliffCollapseErosionTSStream.fail())
          return false;
    }
 
-   if (m_bPotentialSedLostFromGridTS)
+   // Cliff collapse deposition (sand and coarse)
+   if (m_bCliffCollapseDepositionTS)
    {
       // Output as is (m depth equivalent)
-      SedLostTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepPotentialSedLostBeachErosion << endl;
+      CliffCollapseDepositionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepCliffDepositionSand << ",\t" << m_dThisTimestepCliffDepositionCoarse << endl;
 
       // Did a time series file write error occur?
-      if (SedLostTSStream.fail())
+      if (CliffCollapseDepositionTSStream.fail())
          return false;
    }
 
+   // Cliff collapse net 
+   if (m_bCliffCollapseNetTS)
+   {
+      // Output as is (m depth equivalent)
+      CliffCollapseNetTSStream << noshowpos << m_dSimElapsed << "\t,\t" << showpos << -m_dThisTimestepCliffErosionFine + (m_dThisTimestepCliffDepositionSand - m_dThisTimestepCliffTalusSandErosion) + (m_dThisTimestepCliffDepositionCoarse - m_dThisTimestepCliffTalusCoarseErosion) << endl;
+      
+      // Did a time series file write error occur?
+      if (CliffCollapseNetTSStream.fail())
+         return false;
+   }
+   
+   // Beach erosion (fine, sand, and coarse)
+   if (m_bBeachErosionTS)
+   {
+      // Output as is (m depth equivalent)
+      BeachErosionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepActualBeachErosionFine << ",\t" << m_dThisTimestepActualBeachErosionSand << ",\t" << m_dThisTimestepActualBeachErosionCoarse << endl;
+      
+      // Did a time series file write error occur?
+      if (BeachErosionTSStream.fail())
+         return false;
+   }
+   
+   // Beach deposition (sand and coarse)
+   if (m_bBeachDepositionTS)
+   {
+      // Output as is (m depth equivalent)
+      BeachDepositionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepBeachDepositionSand << ",\t" << m_dThisTimestepBeachDepositionCoarse << endl;
+      
+      // Did a time series file write error occur?
+      if (BeachDepositionTSStream.fail())
+         return false;
+   }
+   
+   // Net change in beach sediment
+   if (m_bBeachSedimentChangeNetTS)
+   {
+      // Output as is (m depth equivalent)
+      BeachSedimentChangeNetTSStream << noshowpos << m_dSimElapsed << "\t,\t" << showpos << -m_dThisTimestepActualBeachErosionFine + (m_dThisTimestepBeachDepositionSand - m_dThisTimestepActualBeachErosionSand) + (m_dThisTimestepBeachDepositionCoarse - m_dThisTimestepActualBeachErosionCoarse) << endl;
+      
+      // Did a time series file write error occur?
+      if (BeachSedimentChangeNetTSStream.fail())
+         return false;
+   }
+   
    if (m_bSuspSedTS)
    {
       // Output as is (m depth equivalent)
@@ -951,8 +1001,8 @@ int CSimulation::nWriteEndRunDetails(void)
       OutStream << "CLOSED, therefore values above are for fine sediment only";
    else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_OPEN)
       OutStream << "OPEN, therefore values above are for all sediment size classes";
-   else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_MOBIUS)
-      OutStream << "MOBIUS, therefore values above are for all sediment size classes";
+   else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_RECIRCULATE)
+      OutStream << "RE-CIRCULATING, therefore values above are for all sediment size classes";
    OutStream << endl;
 
    double

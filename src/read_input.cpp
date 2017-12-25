@@ -905,8 +905,12 @@ bool CSimulation::bReadRunData(void)
                m_bSeaAreaTS                  =
                m_bStillWaterLevelTS          =
                m_bActualPlatformErosionTS    =
-               m_bDepositionTS               =
-               m_bPotentialSedLostFromGridTS =
+               m_bCliffCollapseErosionTS     =
+               m_bCliffCollapseDepositionTS  =
+               m_bCliffCollapseNetTS         =
+               m_bBeachErosionTS             =
+               m_bBeachDepositionTS          =
+               m_bBeachSedimentChangeNetTS   =
                m_bSuspSedTS                  = true;
             }
             else
@@ -923,24 +927,30 @@ bool CSimulation::bReadRunData(void)
                   strRH = strRemoveSubstr(&strRH, &TIME_SERIES_STILL_WATER_LEVEL_CODE);
                }
 
-               if (strRH.find(TIME_SERIES_EROSION_CODE) != string::npos)
+               if (strRH.find(TIME_SERIES_PLATFORM_EROSION_CODE) != string::npos)
                {
                   m_bActualPlatformErosionTS = true;
-                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_EROSION_CODE);
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_PLATFORM_EROSION_CODE);
                }
 
-               if (strRH.find(TIME_SERIES_DEPOSITION_CODE) != string::npos)
+               if (strRH.find(TIME_SERIES_CLIFF_COLLAPSE_EROSION_CODE) != string::npos)
                {
-                  m_bDepositionTS = true;
-                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_DEPOSITION_CODE);
+                  m_bCliffCollapseErosionTS = true;
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_CLIFF_COLLAPSE_EROSION_CODE);
                }
 
-               if (strRH.find(TIME_SERIES_SEDIMENT_LOSS_FROM_GRID_CODE) != string::npos)
+               if (strRH.find(TIME_SERIES_CLIFF_COLLAPSE_DEPOSITION_CODE) != string::npos)
                {
-                  m_bPotentialSedLostFromGridTS = true;
-                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_SEDIMENT_LOSS_FROM_GRID_CODE);
+                  m_bCliffCollapseDepositionTS = true;
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_CLIFF_COLLAPSE_DEPOSITION_CODE);
                }
 
+               if (strRH.find(TIME_SERIES_CLIFF_COLLAPSE_NET_CODE) != string::npos)
+               {
+                  m_bCliffCollapseNetTS = true;
+                  strRH = strRemoveSubstr(&strRH, &TIME_SERIES_CLIFF_COLLAPSE_NET_CODE);
+               }
+               
                if (strRH.find(TIME_SERIES_SUSPENDED_SEDIMENT_CODE) != string::npos)
                {
                   m_bSuspSedTS = true;
@@ -1537,9 +1547,9 @@ bool CSimulation::bReadRunData(void)
             break;
 
          case 38:
-            // Beach sediment transport at grid edges [0 = closed, 1 = open, 2 = Mobius]
+            // Beach sediment transport at grid edges [0 = closed, 1 = open, 2 = re-circulate]
             m_nUnconsSedimentHandlingAtGridEdges = atoi(strRH.c_str());
-            if ((m_nUnconsSedimentHandlingAtGridEdges < GRID_EDGE_CLOSED) || (m_nUnconsSedimentHandlingAtGridEdges > GRID_EDGE_MOBIUS))
+            if ((m_nUnconsSedimentHandlingAtGridEdges < GRID_EDGE_CLOSED) || (m_nUnconsSedimentHandlingAtGridEdges > GRID_EDGE_RECIRCULATE))
                strErr = "switch for handling of beach sediment at grid edges must be 0, 1, or 2";
             break;
 

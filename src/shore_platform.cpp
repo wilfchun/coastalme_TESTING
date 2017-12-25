@@ -101,7 +101,7 @@ int CSimulation::nDoAllShorePlatFormErosion(void)
    }
 
    LogStream << m_ulIteration << ": potential shore platform erosion = " << m_dThisTimestepPotentialPlatformErosion << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles << ")" << endl;
-   LogStream << m_ulIteration << ": actual shore platform erosion = " << m_dThisTimestepActualFinePlatformErosion + m_dThisTimestepActualSandPlatformErosion + m_dThisTimestepActualCoarsePlatformErosion << " (fine = " << m_dThisTimestepActualFinePlatformErosion << ", sand = " << m_dThisTimestepActualSandPlatformErosion << ", coarse = " << m_dThisTimestepActualCoarsePlatformErosion << ")" << endl;
+   LogStream << m_ulIteration << ": actual shore platform erosion = " << m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse << " (fine = " << m_dThisTimestepActualPlatformErosionFine << ", sand = " << m_dThisTimestepActualPlatformErosionSand << ", coarse = " << m_dThisTimestepActualPlatformErosionCoarse << ")" << endl;
 
    return RTN_OK;
 }
@@ -723,7 +723,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       m_bConsChangedThisTimestep[nThisLayer] = true;
 
       // And increment the per-timestep total
-      m_dThisTimestepActualFinePlatformErosion += dFineEroded;
+      m_dThisTimestepActualPlatformErosionFine += dFineEroded;
    }
 
    if (nSandWeight)
@@ -744,7 +744,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       m_bConsChangedThisTimestep[nThisLayer] = true;
 
       // And increment the per-timestep total
-      m_dThisTimestepActualSandPlatformErosion += dSandEroded;
+      m_dThisTimestepActualPlatformErosionSand += dSandEroded;
    }
 
    if (nCoarseWeight)
@@ -765,7 +765,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       m_bConsChangedThisTimestep[nThisLayer] = true;
 
       // And increment the per-timestep total
-      m_dThisTimestepActualCoarsePlatformErosion += dCoarseEroded;
+      m_dThisTimestepActualPlatformErosionCoarse += dCoarseEroded;
    }
 
    // Did we erode anything?

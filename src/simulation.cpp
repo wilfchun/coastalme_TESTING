@@ -107,8 +107,12 @@ CSimulation::CSimulation(void)
    m_bStillWaterLevelTS                            =
    m_bActualPlatformErosionTS                      =
    m_bSuspSedTS                                    =
-   m_bPotentialSedLostFromGridTS                   =
-   m_bDepositionTS                                 =
+   m_bCliffCollapseDepositionTS                    =
+   m_bCliffCollapseErosionTS                       =
+   m_bCliffCollapseNetTS                           =
+   m_bBeachErosionTS                               =
+   m_bBeachDepositionTS                            =
+   m_bBeachSedimentChangeNetTS                     =
    m_bSaveGISThisTimestep                          =
    m_bOutputProfileData                            =
    m_bOutputParallelProfileData                    =
@@ -246,15 +250,15 @@ CSimulation::CSimulation(void)
    m_dThisTimestepSandSedLostCliffCollapse          =
    m_dThisTimestepCoarseSedLostCliffCollapse        =
    m_dThisTimestepPotentialPlatformErosion          =
-   m_dThisTimestepActualFinePlatformErosion         =
-   m_dThisTimestepActualSandPlatformErosion         =
-   m_dThisTimestepActualCoarsePlatformErosion       =
+   m_dThisTimestepActualPlatformErosionFine         =
+   m_dThisTimestepActualPlatformErosionSand         =
+   m_dThisTimestepActualPlatformErosionCoarse       =
    m_dThisTimestepPotentialBeachErosion             =
-   m_dThisTimestepActualFineBeachErosion            =
-   m_dThisTimestepActualSandBeachErosion            =
-   m_dThisTimestepActualCoarseBeachErosion          =
-   m_dThisTimestepSandBeachDeposition               =
-   m_dThisTimestepCoarseBeachDeposition             =
+   m_dThisTimestepActualBeachErosionFine            =
+   m_dThisTimestepActualBeachErosionSand            =
+   m_dThisTimestepActualBeachErosionCoarse          =
+   m_dThisTimestepBeachDepositionSand               =
+   m_dThisTimestepBeachDepositionCoarse             =
    m_dThisTimestepEstimatedActualFineBeachErosion   =
    m_dThisTimestepEstimatedActualSandBeachErosion   =
    m_dThisTimestepEstimatedActualCoarseBeachErosion =
@@ -273,12 +277,12 @@ CSimulation::CSimulation(void)
    m_dCliffDepositionA                              =
    m_dCliffDepositionPlanviewLength                 =
    m_dCliffDepositionHeightFrac                     =
-   m_dThisTimestepCliffCollapseFine                 =
-   m_dThisTimestepCliffCollapseSand                 =
-   m_dThisTimestepCliffCollapseCoarse               =
-   m_dThisTimestepCliffTalusSandDeposition          =
-   m_dThisTimestepCliffTalusCoarseDeposition        =
-   m_dThisTimestepCliffTalusFineErosion             =
+   m_dThisTimestepCliffCollapseErosionFine                 =
+   m_dThisTimestepCliffCollapseErosionSand                 =
+   m_dThisTimestepCliffCollapseErosionCoarse               =
+   m_dThisTimestepCliffDepositionSand          =
+   m_dThisTimestepCliffDepositionCoarse        =
+   m_dThisTimestepCliffErosionFine             =
    m_dThisTimestepCliffTalusSandErosion             =
    m_dThisTimestepCliffTalusCoarseErosion           =
    m_dCoastNormalRandSpaceFact                      =
@@ -357,12 +361,15 @@ CSimulation::~CSimulation(void)
    if (ErosionTSStream && ErosionTSStream.is_open())
       ErosionTSStream.close();
 
-   if (DepositionTSStream && DepositionTSStream.is_open())
-      DepositionTSStream.close();
+   if (CliffCollapseErosionTSStream && CliffCollapseErosionTSStream.is_open())
+      CliffCollapseErosionTSStream.close();
 
-   if (SedLostTSStream && SedLostTSStream.is_open())
-      SedLostTSStream.close();
+   if (CliffCollapseDepositionTSStream && CliffCollapseDepositionTSStream.is_open())
+      CliffCollapseDepositionTSStream.close();
 
+   if (CliffCollapseNetTSStream && CliffCollapseNetTSStream.is_open())
+      CliffCollapseNetTSStream.close();
+   
    if (SedLoadTSStream && SedLoadTSStream.is_open())
       SedLoadTSStream.close();
 
@@ -810,7 +817,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          return nRet;
 
       // Add the fine sediment that was eroded this timestep (from the shore platform, from beach erosion, and cliff collapse talus deposition, minus the fine that went off-grid) to the suspended sediment load
-      double dFineThisTimestep = m_dThisTimestepActualFinePlatformErosion + m_dThisTimestepActualFineBeachErosion + m_dThisTimestepCliffTalusFineErosion - m_dThisTimestepActualFineSedLostBeachErosion;
+      double dFineThisTimestep = m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualBeachErosionFine + m_dThisTimestepCliffErosionFine - m_dThisTimestepActualFineSedLostBeachErosion;
       m_dThisTimestepFineSedimentToSuspension += dFineThisTimestep;
 
       // Do some end-of-timestep updates to the raster grid, also update per-timestep and running totals

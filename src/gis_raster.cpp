@@ -2050,7 +2050,7 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
       int nRet = GDALGridCreate(GGA_Linear, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Float64, dOut, NULL, NULL);
       if (nRet == CE_Failure)
       {
-         LogStream << CPLGetLastErrorMsg() << endl;
+         cerr << CPLGetLastErrorMsg() << endl;
          
          delete[] dX;
          delete[] dY;

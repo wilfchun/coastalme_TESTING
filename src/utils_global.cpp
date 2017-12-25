@@ -78,6 +78,8 @@ bool bDoubleIsValid(double const dX)
 
 
 
+
+
 /*==============================================================================================================================
 
  Operator that inserts a given fill character, to a given width, into an output stream. From http://stackoverflow.com/questions/2839592/equivalent-of-02d-with-stdstringstream

@@ -28,6 +28,7 @@
 #include "cell_sediment.h"
 
 
+//! CRWCellSediment constructor, sets all internal values to zero
 CRWCellSediment::CRWCellSediment(void)
 :  m_dFine(0),
    m_dNotchFineLost(0),
@@ -38,6 +39,18 @@ CRWCellSediment::CRWCellSediment(void)
 {
 }
 
+//! CRWCellSediment copy constructor
+CRWCellSediment::CRWCellSediment(CRWCellSediment const& OtherSediment)
+{
+   m_dFine            = OtherSediment.m_dFine;
+   m_dNotchFineLost   = OtherSediment.m_dNotchFineLost;
+   m_dSand            = OtherSediment.m_dSand;
+   m_dNotchSandLost   = OtherSediment.m_dNotchSandLost;
+   m_dCoarse          = OtherSediment.m_dCoarse;
+   m_dNotchCoarseLost = OtherSediment.m_dNotchCoarseLost;   
+}
+
+//! Sets one CRWCellSediment object equal to another
 CRWCellSediment& CRWCellSediment::operator= (const CRWCellSediment& OtherSediment)
 {
    // This copies all fields from one object to another
@@ -50,6 +63,7 @@ CRWCellSediment& CRWCellSediment::operator= (const CRWCellSediment& OtherSedimen
 
    return (*this);
 }
+
 
 // Sets this sediment layer object's fine sediment depth equivalent. Note no checks here to see if new equiv depth is sensible (e.g. non-negative)
 void CRWCellSediment::SetFine(double const dNewSedDepth)

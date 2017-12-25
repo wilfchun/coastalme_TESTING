@@ -97,7 +97,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
       }
    }
 
-   LogStream << m_ulIteration << ": cliff collapse = " << m_dThisTimestepCliffCollapseFine + m_dThisTimestepCliffCollapseSand + m_dThisTimestepCliffCollapseCoarse << " (fine = " << m_dThisTimestepCliffCollapseFine << ", sand = " << m_dThisTimestepCliffCollapseSand << ", coarse = " << m_dThisTimestepCliffCollapseCoarse << "), talus deposition = " << m_dThisTimestepCliffTalusSandDeposition + m_dThisTimestepCliffTalusCoarseDeposition << " (sand = " << m_dThisTimestepCliffTalusSandDeposition << ", coarse = " << m_dThisTimestepCliffTalusSandDeposition << ")" << endl;
+   LogStream << m_ulIteration << ": cliff collapse = " << m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse << " (fine = " << m_dThisTimestepCliffCollapseErosionFine << ", sand = " << m_dThisTimestepCliffCollapseErosionSand << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse << "), talus deposition = " << m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse << " (sand = " << m_dThisTimestepCliffDepositionSand << ", coarse = " << m_dThisTimestepCliffDepositionSand << ")" << endl;
 
    return RTN_OK;
 }
@@ -299,9 +299,9 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
    m_nNThisTimestepCliffCollapse++;
    m_nNTotCliffCollapse++;
 
-   m_dThisTimestepCliffCollapseFine += dFineCollapse;
-   m_dThisTimestepCliffCollapseSand += dSandCollapse;
-   m_dThisTimestepCliffCollapseCoarse += dCoarseCollapse;
+   m_dThisTimestepCliffCollapseErosionFine += dFineCollapse;
+   m_dThisTimestepCliffCollapseErosionSand += dSandCollapse;
+   m_dThisTimestepCliffCollapseErosionCoarse += dCoarseCollapse;
 
    return RTN_OK;
 }
@@ -701,7 +701,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
                   m_bUnconsChangedThisTimestep[nTopLayer] = true;
 
                   // And increment the per-timestep talus erosion total
-                  m_dThisTimestepCliffTalusFineErosion += dFine;
+                  m_dThisTimestepCliffErosionFine += dFine;
                }
 
                if (nSandWeight)
@@ -790,8 +790,8 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
    }
 
    // Increment this-timestep totals for cliff collapse deposition
-   m_dThisTimestepCliffTalusSandDeposition += dSandCollapse;
-   m_dThisTimestepCliffTalusCoarseDeposition += dCoarseCollapse;
+   m_dThisTimestepCliffDepositionSand += dSandCollapse;
+   m_dThisTimestepCliffDepositionCoarse += dCoarseCollapse;
 
    return RTN_OK;
 }

@@ -42,7 +42,7 @@ using std::endl;
 ===============================================================================================================================*/
 int CSimulation::nDoWithinPolygonBeachRedistribution(int const nCoast, int const nPoly)
 {
-   // Get the depth of sediment to be redistibuted on this polygon (is a depth in m)
+   // Get the depth of sediment to be redistributed on this polygon (is a depth in m)
    double dSedChange = m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaActualTotalSediment();
 
    int nRet = RTN_OK;
@@ -51,8 +51,10 @@ int CSimulation::nDoWithinPolygonBeachRedistribution(int const nCoast, int const
       return nRet;
 
    if (dSedChange < 0)
+   {
       // Net erosion on this polygon, so calculate a net decrease in depth of unconsolidated sediment on the cells within the polygon. Note that some cells may gain in elevation (i.e. have some unconsolidated sediment deposition) however
       nRet = nDoBeachErosionOnCells(nCoast, nPoly, -dSedChange);
+   }
    else
    {
       // Net deposition on this polygon, however we will only be depositing sand and coarse sediment here
@@ -497,9 +499,9 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
 
                   // Update this-timestep totals
                   m_ulThisTimestepNumActualBeachErosionCells++;
-                  m_dThisTimestepActualFineBeachErosion += dFine;
-                  m_dThisTimestepActualSandBeachErosion += dSand;
-                  m_dThisTimestepActualCoarseBeachErosion += dCoarse;
+                  m_dThisTimestepActualBeachErosionFine += dFine;
+                  m_dThisTimestepActualBeachErosionSand += dSand;
+                  m_dThisTimestepActualBeachErosionCoarse += dCoarse;
 
 //                   LogStream << "\tIn nDoBeachErosionOnCells(), nPoly = " << nPoly << " going DOWN-COAST, actual beach erosion = " << dTmpTot << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "}  nCoastPoint = " << nCoastPoint << " nDistSeawardFromNewCoast = " << nDistSeawardFromNewCoast << endl;
                }
@@ -568,8 +570,8 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
 
                   // Update per-timestep totals
                   m_ulThisTimestepNumBeachDepositionCells++;
-                  m_dThisTimestepSandBeachDeposition += dSandToDeposit;
-                  m_dThisTimestepCoarseBeachDeposition += dCoarseToDeposit;
+                  m_dThisTimestepBeachDepositionSand += dSandToDeposit;
+                  m_dThisTimestepBeachDepositionCoarse += dCoarseToDeposit;
 
 //                   LogStream << "\tIn nDoBeachErosionOnCells(), nPoly = " << nPoly << " going DOWN-COAST, beach deposition = " << dTotToDeposit << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "}  nCoastPoint = " << nCoastPoint << " nDistSeawardFromNewCoast = " << nDistSeawardFromNewCoast << endl;
                }
@@ -979,9 +981,9 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
 
                      // Update this-timestep totals
                      m_ulThisTimestepNumActualBeachErosionCells++;
-                     m_dThisTimestepActualFineBeachErosion += dFine;
-                     m_dThisTimestepActualSandBeachErosion += dSand;
-                     m_dThisTimestepActualCoarseBeachErosion += dCoarse;
+                     m_dThisTimestepActualBeachErosionFine += dFine;
+                     m_dThisTimestepActualBeachErosionSand += dSand;
+                     m_dThisTimestepActualBeachErosionCoarse += dCoarse;
 
 //                      LogStream << "\tIn nDoBeachErosionOnCells(), nPoly = " << nPoly << " going UP-COAST, actual beach erosion = " << dTmpTot << " at [" << nX << "][" << nY << "]  = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "} nCoastPoint = " << nCoastPoint << " nDistSeawardFromNewCoast = " << nDistSeawardFromNewCoast << endl;
                   }
@@ -1050,8 +1052,8 @@ int CSimulation::nDoBeachErosionOnCells(int const nCoast, int const nPoly, doubl
 
                      // Update this-timestep totals
                      m_ulThisTimestepNumBeachDepositionCells++;
-                     m_dThisTimestepSandBeachDeposition += dSandToDeposit;
-                     m_dThisTimestepCoarseBeachDeposition += dCoarseToDeposit;
+                     m_dThisTimestepBeachDepositionSand += dSandToDeposit;
+                     m_dThisTimestepBeachDepositionCoarse += dCoarseToDeposit;
 
 //                      LogStream << "\tIn nDoBeachErosionOnCells(), nPoly = " << nPoly << " going UP-COAST, beach deposition = " << dTotToDeposit << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "} nCoastPoint = " << nCoastPoint << " nDistSeawardFromNewCoast = " << nDistSeawardFromNewCoast << endl;
                   }
@@ -1600,8 +1602,8 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
 
                   // Update this-timestep totals
                   m_ulThisTimestepNumBeachDepositionCells++;
-                  m_dThisTimestepSandBeachDeposition += dSandToDeposit;
-                  m_dThisTimestepCoarseBeachDeposition += dCoarseToDeposit;
+                  m_dThisTimestepBeachDepositionSand += dSandToDeposit;
+                  m_dThisTimestepBeachDepositionCoarse += dCoarseToDeposit;
 
                }
             }
@@ -1649,9 +1651,9 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
 
                   // Update this-timestep totals
                   m_ulThisTimestepNumActualBeachErosionCells++;
-                  m_dThisTimestepActualFineBeachErosion += dFine;
-                  m_dThisTimestepActualSandBeachErosion += dSand;
-                  m_dThisTimestepActualCoarseBeachErosion += dCoarse;
+                  m_dThisTimestepActualBeachErosionFine += dFine;
+                  m_dThisTimestepActualBeachErosionSand += dSand;
+                  m_dThisTimestepActualBeachErosionCoarse += dCoarse;
 
 //                   LogStream << "\tPolygon net deposition " << nPoly << " going UP-COAST, actual beach erosion = " << dFine + dSand + dCoarse << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << endl;
                }
@@ -2052,8 +2054,8 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
 
                      // Update this-timestep totals
                      m_ulThisTimestepNumBeachDepositionCells++;
-                     m_dThisTimestepSandBeachDeposition += dSandToDeposit;
-                     m_dThisTimestepCoarseBeachDeposition += dCoarseToDeposit;
+                     m_dThisTimestepBeachDepositionSand += dSandToDeposit;
+                     m_dThisTimestepBeachDepositionCoarse += dCoarseToDeposit;
 
                   }
                }
@@ -2101,9 +2103,9 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
 
                      // Update this-timestep totals
                      m_ulThisTimestepNumActualBeachErosionCells++;
-                     m_dThisTimestepActualFineBeachErosion += dFine;
-                     m_dThisTimestepActualSandBeachErosion += dSand;
-                     m_dThisTimestepActualCoarseBeachErosion += dCoarse;
+                     m_dThisTimestepActualBeachErosionFine += dFine;
+                     m_dThisTimestepActualBeachErosionSand += dSand;
+                     m_dThisTimestepActualBeachErosionCoarse += dCoarse;
 
    //                   LogStream << "\tPolygon net deposition " << nPoly << " going UP-COAST, actual beach erosion = " << dFine + dSand + dCoarse << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << endl;
                   }

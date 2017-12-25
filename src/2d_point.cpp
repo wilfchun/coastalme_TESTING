@@ -25,34 +25,47 @@
 #include "2d_point.h"
 
 
+//! Constructor with no parameters (the X and Y co-ordinates of the CGeom2DPoint object are set to zero)
 CGeom2DPoint::CGeom2DPoint(void)
 :  dX(0),
    dY(0)
 {
 }
 
+//! Constructor with two double parameters, for the X and Y co-ordinates of the CGeom2DPoint object
 CGeom2DPoint::CGeom2DPoint(double const dNewX, double const dNewY)
 :  dX(dNewX),
    dY(dNewY)
 {
 }
 
+//! CGeom2DPoint copy constructor
+CGeom2DPoint::CGeom2DPoint(CGeom2DPoint const& Pt)
+{
+   dX = Pt.dX;
+   dY = Pt.dY;
+}
 
+
+//! Returns the CGeom2DPoint object's double X co-ordinate
 double CGeom2DPoint::dGetX(void) const
 {
    return dX;
 }
 
+//! Returns the CGeom2DPoint object's double Y co-ordinate
 double CGeom2DPoint::dGetY(void) const
 {
    return dY;
 }
 
+//! The double parameter sets a value for the CGeom2DIPoint object's X co-ordinate
 void CGeom2DPoint::SetX(double const dNewX)
 {
    dX = dNewX;
 }
 
+//! The double parameter sets a value for the CGeom2DIPoint object's Y co-ordinate
 void CGeom2DPoint::SetY(double const dNewY)
 {
    dY = dNewY;
@@ -69,6 +82,7 @@ void CGeom2DPoint::SetY(double const dNewY)
 //    dX = Pt->dGetX();
 //    dY = Pt->dGetY();
 // }
+
 
 //! Sets one CGeom2DPoint object equal to another
 void CGeom2DPoint::operator= (CGeom2DPoint* pPt)

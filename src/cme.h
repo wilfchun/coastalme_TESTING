@@ -3,7 +3,7 @@
  * \mainpage
    <b>CoastalME</b> (Coastal Modelling Environment) simulates the long-term behaviour of a coast. This initial version is a prototype which considers simple soft cliff cross-shore effects only\n
 
-   See <a href="https://github.com/coastalme/coastalme" target="_blank">https://github.com/coastalme/coastalme</a> for the latest version of the source code.\n
+   See <a href="https://github.com/coastalme/coastalme_TESTING" target="_blank">https://github.com/coastalme/coastalme_TESTING</a> for the latest version of the source code, and <a href="https://github.com/coastalme/coastalme" target="_blank">https://github.com/coastalme/coastalme</a> for the stable version.\n
 
  * \section intro_sec Introduction
  * <b>TODO</b> Say more about CoastalME here\n
@@ -142,7 +142,7 @@ using std::ostringstream;
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 17 December 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 25 December 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -607,23 +607,35 @@ string const   TIME_SERIES_SEA_AREA_CODE                                   = "se
 string const   TIME_SERIES_STILL_WATER_LEVEL_NAME                          = "still_water_level";
 string const   TIME_SERIES_STILL_WATER_LEVEL_CODE                          = "waterlevel";
 
-string const   TIME_SERIES_EROSION_NAME                                    = "erosion";
-string const   TIME_SERIES_EROSION_CODE                                    = "erosion";
+string const   TIME_SERIES_PLATFORM_EROSION_NAME                           = "platform_erosion";
+string const   TIME_SERIES_PLATFORM_EROSION_CODE                           = "platform_erosion";
 
-string const   TIME_SERIES_DEPOSITION_NAME                                 = "deposition";
-string const   TIME_SERIES_DEPOSITION_CODE                                 = "deposition";
+string const   TIME_SERIES_CLIFF_COLLAPSE_EROSION_NAME                     = "cliff_collapse_erosion";
+string const   TIME_SERIES_CLIFF_COLLAPSE_EROSION_CODE                     = "cliff_collapse_erosion";
 
-string const   TIME_SERIES_SEDIMENT_LOSS_FROM_GRID_NAME                    = "sediment_loss";
-string const   TIME_SERIES_SEDIMENT_LOSS_FROM_GRID_CODE                    = "sedlost";
+string const   TIME_SERIES_CLIFF_COLLAPSE_DEPOSITION_NAME                  = "cliff_collapse_deposition";
+string const   TIME_SERIES_CLIFF_COLLAPSE_DEPOSITION_CODE                  = "cliff_collapse_deposition";
+
+string const   TIME_SERIES_CLIFF_COLLAPSE_NET_NAME                         = "cliff_collapse_net";
+string const   TIME_SERIES_CLIFF_COLLAPSE_NET_CODE                         = "cliff_collapse_net";
+
+string const   TIME_SERIES_BEACH_EROSION_NAME                              = "beach_erosion";
+string const   TIME_SERIES_BEACH_EROSION_CODE                              = "beach_erosion";
+
+string const   TIME_SERIES_BEACH_DEPOSITION_NAME                           = "beach_deposition";
+string const   TIME_SERIES_BEACH_DEPOSITION_CODE                           = "beach_deposition";
+
+string const   TIME_SERIES_BEACH_CHANGE_NET_NAME                           = "beach_change_net";
+string const   TIME_SERIES_BEACH_CHANGE_NET_CODE                           = "beach_change_net";
 
 string const   TIME_SERIES_SUSPENDED_SEDIMENT_NAME                         = "suspended_sediment";
 string const   TIME_SERIES_SUSPENDED_SEDIMENT_CODE                         = "suspended";
 
 // CShore codes
-string const   WAVEENERGYFLUX                      = "wave_energy_flux";
-string const   WAVEHEIGHTX                         = "WAVEHEIGHTX.csv";
-string const   WAVEHEIGHTY                         = "WAVEHEIGHTY.csv";
-string const   ACTIVEZONE                          = "ACTIVEZONE.csv";
+string const   WAVEENERGYFLUX                                              = "wave_energy_flux";
+string const   WAVEHEIGHTX                                                 = "WAVEHEIGHTX.csv";
+string const   WAVEHEIGHTY                                                 = "WAVEHEIGHTY.csv";
+string const   ACTIVEZONE                                                  = "ACTIVEZONE.csv";
 
 // Return codes
 int const      RTN_OK                                 = 0;
@@ -697,7 +709,7 @@ int const      SMOOTH_SAVITZKY_GOLAY               = 2;
 // Grid-edge boundary treatment for unconsolidated sediment movement
 int const      GRID_EDGE_CLOSED                    = 0;
 int const      GRID_EDGE_OPEN                      = 1;
-int const      GRID_EDGE_MOBIUS                    = 2;
+int const      GRID_EDGE_RECIRCULATE               = 2;
 
 // Model for wave propagation
 int const      MODEL_COVE                          = 0;
@@ -754,6 +766,8 @@ template <typename T> string strNumToStr(const T& t)
    return os.str();
 }
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 // Definitions are in utilsglobal.cpp
 double dRound(double const);
 // bool bIsWhole(double const);
@@ -764,11 +778,14 @@ struct FillToWidth
    FillToWidth(char f, int w) : chFill(f), nWidth(w)
    {
    }
-
+   
    char chFill;
    int nWidth;
 };
-extern ostream& operator<< (ostream&, const FillToWidth&);
+ostream& operator<< (ostream&, const FillToWidth&);
+
+#endif
+
 
 //============================================= Globally-available Fortran function =============================================
 extern "C"
