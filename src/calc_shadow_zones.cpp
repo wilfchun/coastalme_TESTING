@@ -901,7 +901,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
    }
 
    // Store the downdrift boundary (external CRS), with the start point first            
-   m_VCoast[nCoast].AppendDowndriftBoundary(LDownDriftBoundary);      
+   m_VCoast[nCoast].AppendShadowDowndriftBoundary(LDownDriftBoundary);      
 
    // Compare the lengths of the along-coast and the along-downdrift boundaries. The increment will be 1 for the smaller of the two, will be > 1 for the larger of the two
    int nMaxDistance;

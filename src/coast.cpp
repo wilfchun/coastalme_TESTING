@@ -200,7 +200,7 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
 {
    for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
    {
-      if (this->m_ILCellsMarkedAsCoastline[nCoastPoint] == *pPtiCell)
+      if (m_ILCellsMarkedAsCoastline[nCoastPoint] == *pPtiCell)
       {
          return nCoastPoint;
       }
@@ -592,18 +592,18 @@ CGeomLine* CRWCoast::pGetShadowBoundary(int const n)
 }
 
 
-int CRWCoast::nGetNumDowndriftBoundaries(void)
+int CRWCoast::nGetNumShadowDowndriftBoundaries(void)
 {
-   return m_LDowndriftBoundary.size();
+   return m_LShadowDowndriftBoundary.size();
 }
 
-void CRWCoast::AppendDowndriftBoundary(const CGeomLine LBoundary)
+void CRWCoast::AppendShadowDowndriftBoundary(const CGeomLine LBoundary)
 {
-   m_LDowndriftBoundary.push_back(LBoundary);
+   m_LShadowDowndriftBoundary.push_back(LBoundary);
 }
 
-CGeomLine* CRWCoast::pGetDowndriftBoundary(int const n)
+CGeomLine* CRWCoast::pGetShadowDowndriftBoundary(int const n)
 {
-   // NOTE: no check to see if n < m_LDowndriftBoundary.size()
-   return &m_LDowndriftBoundary[n];
+   // NOTE: no check to see if n < m_LShadowDowndriftBoundary.size()
+   return &m_LShadowDowndriftBoundary[n];
 }

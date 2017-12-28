@@ -142,7 +142,7 @@ using std::ostringstream;
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 25 December 2017";
+string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 28 December 2017";
 string const   SHORTNAME                     = "CME";
 string const   CME_INI                       = "cme.ini";
 
@@ -266,7 +266,7 @@ string const   WARN                                   = "WARNING ";
 int const      INT_NODATA                             = -999;
 double const   DBL_NODATA                             = -9999;
 
-// TESTING
+// TEST
 bool const     ACCEPT_SHORT_PROFILES                  = true;
 
 
@@ -435,9 +435,11 @@ string const   RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_NAME                 = "to
 string const   RASTER_POLYGON_NAME                                         = "polygon_raster";
 string const   RASTER_SLICE_NAME                                           = "slice";
 string const   RASTER_SHADOW_ZONE_NAME                                     = "shadow_zones";
-string const   RASTER_DOWNDRIFT_ZONE_NAME                                  = "shadow_downdrift_zones";
+string const   RASTER_SHADOW_DOWNDRIFT_ZONE_NAME                           = "shadow_downdrift_zones";
 string const   RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME                     = "deep_water_wave_orientation";
 string const   RASTER_DEEP_WATER_WAVE_HEIGHT_NAME                          = "deep_water_wave_height";
+string const   RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME                    = "polygon_updrift_or_downdrift";
+string const   RASTER_POLYGON_GAIN_OR_LOSS_NAME                            = "polygon_gain_or_loss";
 
 // GIS raster output codes and titles
 int const      RASTER_PLOT_BASEMENT_ELEVATION                              = 1;
@@ -530,12 +532,16 @@ int const      RASTER_PLOT_TOTAL_BEACH_DEPOSITION                          = 44;
 string const   RASTER_PLOT_TOTAL_BEACH_DEPOSITION_TITLE                    = "Total beach deposition depth";
 int const      RASTER_PLOT_SHADOW_ZONE                                     = 45;
 string const   RASTER_PLOT_SHADOW_ZONE_TITLE                               = "Wave shadow zones";
-int const      RASTER_PLOT_DOWNDRIFT_ZONE                                  = 46;
-string const   RASTER_PLOT_DOWNDRIFT_ZONE_TITLE                            = "Downdrift of wave shadow zones";
+int const      RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE                           = 46;
+string const   RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE_TITLE                     = "Downdrift of wave shadow zones";
 int const      RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION                     = 47;
 string const   RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE               = "Deep water wave orientation";
 int const      RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT                          = 48;
 string const   RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE                    = "Deep water wave height";
+int const      RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT                    = 49;
+string const   RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT_TITLE              = "Polygon updrift or downdrift movement of unconsolidated sediment";
+int const      RASTER_PLOT_POLYGON_GAIN_OR_LOSS                            = 50;
+string const   RASTER_PLOT_POLYGON_GAIN_OR_LOSS_TITLE                      = "Polygon gain or loss of unconsolidated sediment";
 
 // GIS vector output user codes
 string const   VECTOR_ALL_OUTPUT_CODE                                      = "all";
@@ -549,10 +555,10 @@ string const   VECTOR_INVALID_NORMALS_NAME                                 = "in
 // string const   VECTOR_COLLAPSE_NORMALS_NAME                             = "collapse_normals";
 string const   VECTOR_COAST_CURVATURE_CODE                                 = "coast_curvature";
 string const   VECTOR_COAST_CURVATURE_NAME                                 = "coast_curvature";
-string const   VECTOR_WAVE_ANGLE_CODE                                      = "wave_angle";
-string const   VECTOR_WAVE_ANGLE_NAME                                      = "wave_angle";
-string const   VECTOR_AVG_WAVE_ANGLE_NAME                                  = "avg_wave_angle";
-string const   VECTOR_AVG_WAVE_ANGLE_CODE                                  = "avg_wave_angle";
+string const   VECTOR_WAVE_ANGLE_AND_HEIGHT_CODE                           = "wave_angle";
+string const   VECTOR_WAVE_ANGLE_AND_HEIGHT_NAME                           = "wave_angle";
+string const   VECTOR_AVG_WAVE_ANGLE_AND_HEIGHT_NAME                       = "avg_wave_angle";
+string const   VECTOR_AVG_WAVE_ANGLE_AND_HEIGHT_CODE                       = "avg_wave_angle";
 string const   VECTOR_WAVE_ENERGY_SINCE_COLLAPSE_CODE                      = "wave_energy";
 string const   VECTOR_WAVE_ENERGY_SINCE_COLLAPSE_NAME                      = "wave_energy";
 string const   VECTOR_MEAN_WAVE_ENERGY_CODE                                = "mean_wave_energy";
@@ -563,12 +569,14 @@ string const   VECTOR_POLYGON_NODE_SAVE_CODE                               = "no
 string const   VECTOR_POLYGON_NODES_NAME                                   = "node";
 string const   VECTOR_POLYGON_BOUNDARY_SAVE_CODE                           = "polygon";
 string const   VECTOR_POLYGON_BOUNDARY_NAME                                = "polygon";
-string const   VECTOR_PLOT_CLIFF_NOTCH_SIZE_CODE                           = "cliff_notch";
+string const   VECTOR_CLIFF_NOTCH_SIZE_CODE                                = "cliff_notch";
 string const   VECTOR_CLIFF_NOTCH_SIZE_NAME                                = "cliff_notch";
-string const   VECTOR_PLOT_SHADOW_BOUNDARY_CODE                            = "shadow_boundary";
+string const   VECTOR_SHADOW_BOUNDARY_CODE                                 = "shadow_boundary";
 string const   VECTOR_SHADOW_BOUNDARY_NAME                                 = "shadow_boundary";
-string const   VECTOR_PLOT_DOWNDRIFT_BOUNDARY_CODE                         = "downdrift_boundary";
+string const   VECTOR_DOWNDRIFT_BOUNDARY_CODE                              = "downdrift_boundary";
 string const   VECTOR_DOWNDRIFT_BOUNDARY_NAME                              = "downdrift_boundary";
+string const   VECTOR_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_CODE                = "deep_water_wave_angle";
+string const   VECTOR_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_NAME                = "deep_water_wave_angle";
 
 // GIS vector output codes and titles
 int const      VECTOR_PLOT_COAST                                           = 1;
@@ -579,10 +587,10 @@ int const      VECTOR_PLOT_INVALID_NORMALS                                 = 3;
 string const   VECTOR_PLOT_INVALID_NORMALS_TITLE                           = "INVALID Coastline-normal profiles";
 int const      VECTOR_PLOT_COAST_CURVATURE                                 = 4;
 string const   VECTOR_PLOT_COAST_CURVATURE_TITLE                           = "Coastline curvature";
-int const      VECTOR_PLOT_WAVE_ORIENTATION_AND_HEIGHT                     = 5;
-string const   VECTOR_PLOT_WAVE_ORIENTATION_AND_HEIGHT_TITLE               = "Wave orientation and height";
-int const      VECTOR_PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT                 = 6;
-string const   VECTOR_PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT_TITLE           = "Average wave orientation and height";
+int const      VECTOR_PLOT_WAVE_ANGLE_AND_HEIGHT                           = 5;
+string const   VECTOR_PLOT_WAVE_ANGLE_AND_HEIGHT_TITLE                     = "Wave orientation and height";
+int const      VECTOR_PLOT_AVG_WAVE_ANGLE_AND_HEIGHT                       = 6;
+string const   VECTOR_PLOT_AVG_WAVE_ANGLE_AND_HEIGHT_TITLE                 = "Average wave orientation and height";
 int const      VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE                      = 7;
 string const   VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE_TITLE                = "Wave energy since collapse";
 int const      VECTOR_PLOT_MEAN_WAVE_ENERGY                                = 8;
@@ -599,13 +607,15 @@ int const      VECTOR_PLOT_SHADOW_BOUNDARY                                 = 13;
 string const   VECTOR_PLOT_SHADOW_BOUNDARY_TITLE                           = "Shadow zone boundary";
 int const      VECTOR_PLOT_DOWNDRIFT_BOUNDARY                              = 14;
 string const   VECTOR_PLOT_DOWNDRIFT_BOUNDARY_TITLE                        = "Downdrift zone boundary";
+int const      VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT                = 15;
+string const   VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_TITLE          = "Deep water wave orientation and height";
 
 // Time series codes
 string const   TIME_SERIES_SEA_AREA_NAME                                   = "sea_area";
-string const   TIME_SERIES_SEA_AREA_CODE                                   = "seaarea";
+string const   TIME_SERIES_SEA_AREA_CODE                                   = "sea_area";
 
 string const   TIME_SERIES_STILL_WATER_LEVEL_NAME                          = "still_water_level";
-string const   TIME_SERIES_STILL_WATER_LEVEL_CODE                          = "waterlevel";
+string const   TIME_SERIES_STILL_WATER_LEVEL_CODE                          = "water_level";
 
 string const   TIME_SERIES_PLATFORM_EROSION_NAME                           = "platform_erosion";
 string const   TIME_SERIES_PLATFORM_EROSION_CODE                           = "platform_erosion";
@@ -695,33 +705,34 @@ int const      RTN_ERR_GRIDCREATE                     = 52;
 int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 53;
 int const      RTN_ERR_CSHORE_ERROR                   = 54;
 int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 55;
+int const      RTN_ERR_ESTIMATED_EROSION_IS_ZERO      = 56;
 
 // Elevation and 'slice' codes
-int const      ELEV_IN_BASEMENT                    = -1;
-int const      ELEV_ABOVE_SEDIMENT_TOP             = -2;
-int const      NO_NONZERO_THICKNESS_LAYERS         = -3;
+int const      ELEV_IN_BASEMENT                       = -1;
+int const      ELEV_ABOVE_SEDIMENT_TOP                = -2;
+int const      NO_NONZERO_THICKNESS_LAYERS            = -3;
 
 // Vector smoothing codes
-int const      SMOOTH_NONE                         = 0;
-int const      SMOOTH_RUNNING_MEAN                 = 1;
-int const      SMOOTH_SAVITZKY_GOLAY               = 2;
+int const      SMOOTH_NONE                            = 0;
+int const      SMOOTH_RUNNING_MEAN                    = 1;
+int const      SMOOTH_SAVITZKY_GOLAY                  = 2;
 
 // Grid-edge boundary treatment for unconsolidated sediment movement
-int const      GRID_EDGE_CLOSED                    = 0;
-int const      GRID_EDGE_OPEN                      = 1;
-int const      GRID_EDGE_RECIRCULATE               = 2;
+int const      GRID_EDGE_CLOSED                       = 0;
+int const      GRID_EDGE_OPEN                         = 1;
+int const      GRID_EDGE_RECIRCULATE                  = 2;
 
 // Model for wave propagation
-int const      MODEL_COVE                          = 0;
-int const      MODEL_CSHORE                        = 1;
+int const      MODEL_COVE                             = 0;
+int const      MODEL_CSHORE                           = 1;
 
 // CShore interpolation method
-int const      CSHORE_INTERPOLATION_LINEAR         = 0;
-int const      CSHORE_INTERPOLATION_HERMITE_CUBIC  = 1;
+int const      CSHORE_INTERPOLATION_LINEAR            = 0;
+int const      CSHORE_INTERPOLATION_HERMITE_CUBIC     = 1;
 
 // Equation for estimating erosion of unconsolidated sediment
-int const      EQUATION_CERC                       = 0;
-int const      EQUATION_KAMPHUIS                   = 1;
+int const      EQUATION_CERC                          = 0;
+int const      EQUATION_KAMPHUIS                      = 1;
 
 
 //================================================ Globally-available functions =================================================

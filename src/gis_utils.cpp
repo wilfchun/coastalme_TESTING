@@ -37,7 +37,7 @@ using std::ios;
 
 #include "cme.h"
 #include "simulation.h"
-#include "simulation.h"
+#include "coast.h"
 #include "raster_grid.h"
 
 
@@ -1108,7 +1108,7 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
       if (! bWriteRasterGISInt(RASTER_PLOT_SHADOW_ZONE, &RASTER_PLOT_SHADOW_ZONE_TITLE))
          return false;
       
-      if (! bWriteRasterGISInt(RASTER_PLOT_DOWNDRIFT_ZONE, &RASTER_PLOT_DOWNDRIFT_ZONE_TITLE))
+      if (! bWriteRasterGISInt(RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE, &RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE_TITLE))
          return false;
    }
    
@@ -1121,6 +1121,18 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
    if (m_bDeepWaterWaveHeightSave)
    {
       if (! bWriteRasterGISFloat(RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT, &RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE))
+         return false;
+   }
+   
+   if (m_bPolygonUnconsSedUpOrDownDrift)
+   {
+      if (! bWriteRasterGISInt(RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT, &RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT_TITLE))
+         return false;
+   }
+   
+   if (m_bPolygonUnconssedGainOrLoss)
+   {
+      if (! bWriteRasterGISFloat(RASTER_PLOT_POLYGON_GAIN_OR_LOSS, &RASTER_PLOT_POLYGON_GAIN_OR_LOSS_TITLE))
          return false;
    }
    
@@ -1154,15 +1166,15 @@ bool CSimulation::bSaveAllVectorGISFiles(void)
          return false;
    }
 
-   if (m_bWaveAngleSave)
+   if (m_bWaveAngleAndHeightSave)
    {
-      if (! bWriteVectorGIS(VECTOR_PLOT_WAVE_ORIENTATION_AND_HEIGHT, &VECTOR_PLOT_WAVE_ORIENTATION_AND_HEIGHT_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_WAVE_ANGLE_AND_HEIGHT_TITLE))
          return false;
    }
 
-   if (m_bAvgWaveAngleSave)
+   if (m_bAvgWaveAngleAndHeightSave)
    {
-      if (! bWriteVectorGIS(VECTOR_PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT, &VECTOR_PLOT_AVG_WAVE_ORIENTATION_AND_HEIGHT_TITLE))
+      if (! bWriteVectorGIS(VECTOR_PLOT_AVG_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_AVG_WAVE_ANGLE_AND_HEIGHT_TITLE))
          return false;
    }
 
@@ -1208,11 +1220,18 @@ bool CSimulation::bSaveAllVectorGISFiles(void)
          return false;
    }
 
-   if (m_bDowndriftBoundarySave)
+   if (m_bShadowDowndriftBoundarySave)
    {
       if (! bWriteVectorGIS(VECTOR_PLOT_DOWNDRIFT_BOUNDARY, &VECTOR_PLOT_DOWNDRIFT_BOUNDARY_TITLE))
          return false;
    }
+   
+   if (m_bDeepWaterWaveAngleAndHeightSave)
+   {
+      if (! bWriteVectorGIS(VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_TITLE))
+         return false;
+   }
+   
    
    return true;
 }
@@ -1231,7 +1250,8 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
        (nDataItem == RASTER_PLOT_BEACH_MASK) ||
        (nDataItem == RASTER_PLOT_COAST) ||
        (nDataItem == RASTER_PLOT_NORMAL) ||
-       (nDataItem == RASTER_PLOT_ACTIVE_ZONE))
+       (nDataItem == RASTER_PLOT_ACTIVE_ZONE) ||
+       (nDataItem == RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT))
    {
       dMin = 0;
       dMax = 1;
@@ -1321,7 +1341,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             case (RASTER_PLOT_WAVE_HEIGHT):
             {
                if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
-                  dTmp = DBL_NODATA;
+                  dTmp = m_dMissingValue;
                else
                   dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
                break;
@@ -1336,7 +1356,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             case (RASTER_PLOT_WAVE_ORIENTATION):
             {
                if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
-                  dTmp = DBL_NODATA;
+                  dTmp = m_dMissingValue;
                else
                   dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
                break;
@@ -1494,11 +1514,35 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
                break;
             }          
             
-            case (RASTER_PLOT_DOWNDRIFT_ZONE):
+            case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
                break;
-            }                        
+            }                  
+            
+            case (RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION):
+            {
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
+               break;
+            }                  
+            
+            case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
+            {
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
+               break;
+            }                  
+            
+            case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
+            {
+               int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+               
+               if (nPoly == INT_NODATA)
+                  dTmp = m_dMissingValue;
+               else
+                  dTmp = m_pVCoastPolygon[nPoly]->dGetDeltaActualTotalSediment();
+               
+               break;               
+            }
          }
 
          if (dTmp != DBL_NODATA)

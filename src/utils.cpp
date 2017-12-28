@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-//#include <assert.h>
+#include <assert.h>
 
 #ifdef _WIN32
    #include <windows.h>             // Needed for CalcProcessStats()
@@ -913,15 +913,15 @@ string CSimulation::strListVectorFiles(void) const
       strTmp.append(", ");
    }
 
-   if (m_bWaveAngleSave)
+   if (m_bWaveAngleAndHeightSave)
    {
-      strTmp.append(VECTOR_WAVE_ANGLE_CODE);
+      strTmp.append(VECTOR_WAVE_ANGLE_AND_HEIGHT_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bAvgWaveAngleSave)
+   if (m_bAvgWaveAngleAndHeightSave)
    {
-      strTmp.append(VECTOR_WAVE_ANGLE_CODE);
+      strTmp.append(VECTOR_WAVE_ANGLE_AND_HEIGHT_CODE);
       strTmp.append(", ");
    }
 
@@ -963,19 +963,25 @@ string CSimulation::strListVectorFiles(void) const
 
    if (m_bCliffNotchSave)
    {
-      strTmp.append(VECTOR_PLOT_CLIFF_NOTCH_SIZE_CODE);
+      strTmp.append(VECTOR_CLIFF_NOTCH_SIZE_CODE);
       strTmp.append(", ");
    }
 
    if (m_bShadowBoundarySave)
    {
-      strTmp.append(VECTOR_PLOT_SHADOW_BOUNDARY_CODE);
+      strTmp.append(VECTOR_SHADOW_BOUNDARY_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bDowndriftBoundarySave)
+   if (m_bShadowDowndriftBoundarySave)
    {
-      strTmp.append(VECTOR_PLOT_DOWNDRIFT_BOUNDARY_CODE);
+      strTmp.append(VECTOR_DOWNDRIFT_BOUNDARY_CODE);
+      strTmp.append(", ");
+   }
+   
+   if (m_bDeepWaterWaveAngleAndHeightSave)
+   {
+      strTmp.append(VECTOR_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_CODE);
       strTmp.append(", ");
    }
    
@@ -1582,7 +1588,6 @@ string CSimulation::strDispSimTime(const double dTimeIn)
    double dTime = tMax(dTimeIn, 0.0);
 
    string strTime;
-
    unsigned long ulTimeIn = static_cast<unsigned long>(floor(dTime));
 
    // Constants
@@ -1605,6 +1610,7 @@ string CSimulation::strDispSimTime(const double dTimeIn)
    if (ulTimeIn >= ulHoursInDay)
    {
       unsigned long ulJDays = ulTimeIn / ulHoursInDay;
+      assert(ulJDays < 360);
       ulTimeIn -= (ulJDays * ulHoursInDay);
 
       stringstream ststrTmp;
@@ -1741,15 +1747,24 @@ void CSimulation::AnnounceProgress(void)
 }
 
 
+/*==============================================================================================================================
+ 
+ Calculates the Tausworthe value for the random number generator
+ 
+==============================================================================================================================*/
 unsigned long CSimulation::ulGetTausworthe(unsigned long const ulS, unsigned long const ulA, unsigned long const ulB, unsigned long const ulC, unsigned long const ulD)
 {
    return (((ulS & ulC) << ulD) & MASK) ^ ((((ulS << ulA) & MASK) ^ ulS) >> ulB);
 }
 
 
+/*==============================================================================================================================
+ 
+ Uses ulGetRand0() to return a double precision floating point number uniformly distributed in the range [0, 1) i.e. includes 0.0 but excludes 1.0. Based on a routine in taus.c from gsl-1.2
+ 
+==============================================================================================================================*/
 double CSimulation::dGetRand0d1(void)
 {
-   // Uses ulGetRand0() to return a double precision floating point number uniformly distributed in the range [0, 1) i.e. includes 0.0 but excludes 1.0. Based on a routine in taus.c from gsl-1.2
    return (ulGetRand0() / 4294967296.0);
 }
 
@@ -1767,9 +1782,13 @@ double CSimulation::dGetRand0d1(void)
 // }
 
 
+/*==============================================================================================================================
+ 
+ Uses ulGetRand1() to return a double precision floating point number uniformly distributed in the range [0, 1) i.e. includes 0.0 but excludes 1.0. Based on a routine in taus.c from gsl-1.2
+ 
+==============================================================================================================================*/
 int CSimulation::nGetRand1To(int const nBound)
 {
-   // As above, but uses ulGetRand1()
    int nRtn;
    unsigned long ulScale = 4294967295ul / nBound;                 // nBound must be > 1
    do
@@ -2142,6 +2161,9 @@ string CSimulation::strGetErrorText(int const nErr)
       break;
    case RTN_ERR_NO_CELL_UNDER_COASTLINE:
       strErr = "Could not find cell under coastline";
+      break;
+   case RTN_ERR_ESTIMATED_EROSION_IS_ZERO:
+      strErr = "Estimated erosion on polygon is zero";
       break;
    default:
       // should never get here
@@ -2558,7 +2580,7 @@ void CSimulation::CalcDeanProfile(vector<double>* pdVDeanProfile, double const d
 
 /*==============================================================================================================================
 
- Calculate the total elevation difference when one elevation profile is subtracted from another
+ Calculate the total elevation difference when every point in the second elevation profile is subtracted from the equivalent point in the first elevation profile
 
 ==============================================================================================================================*/
 double CSimulation::dSubtractProfiles(vector<double> const* pdVFirstProfile, vector<double> const* pdVSecondProfile, vector<bool> const* pbVIsValid)

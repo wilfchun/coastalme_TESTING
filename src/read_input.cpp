@@ -541,7 +541,9 @@ bool CSimulation::bReadRunData(void)
                m_bInterventionHeightSave           =
                m_bShadowZoneCodesSave              = 
                m_bDeepWaterWaveOrientationSave     = 
-               m_bDeepWaterWaveHeightSave          = true;
+               m_bDeepWaterWaveHeightSave          = 
+               m_bPolygonUnconsSedUpOrDownDrift    = 
+               m_bPolygonUnconssedGainOrLoss       = true;
             }
             else
             {
@@ -720,6 +722,18 @@ bool CSimulation::bReadRunData(void)
                   strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_HEIGHT_NAME);
                }
                
+               if (strRH.find(RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME) != string::npos)
+               {
+                  m_bPolygonUnconsSedUpOrDownDrift = true;
+                  strRH = strRemoveSubstr(&strRH, &RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME);
+               }
+               
+               if (strRH.find(RASTER_POLYGON_GAIN_OR_LOSS_NAME) != string::npos)
+               {
+                  m_bPolygonUnconssedGainOrLoss = true;
+                  strRH = strRemoveSubstr(&strRH, &RASTER_POLYGON_GAIN_OR_LOSS_NAME);
+               }
+                  
                // Check to see if all codes have been removed
                strRH = strTrimLeft(&strRH);
                if (! strRH.empty())
@@ -787,14 +801,14 @@ bool CSimulation::bReadRunData(void)
 
             // These are always saved
             m_bCoastSave =
-            m_bWaveAngleSave = true;
+            m_bWaveAngleAndHeightSave = true;
 
                // First look for "all"
             if (strRH.find(VECTOR_ALL_OUTPUT_CODE) != string::npos)
             {
                m_bNormalsSave                 =
                m_bInvalidNormalsSave          =
-               m_bAvgWaveAngleSave            =
+               m_bAvgWaveAngleAndHeightSave            =
                m_bWaveEnergySinceCollapseSave =
                m_bMeanWaveEnergySave          =
                m_bBreakingWaveHeightSave      =
@@ -803,7 +817,8 @@ bool CSimulation::bReadRunData(void)
                m_bPolygonBoundarySave         =
                m_bCliffNotchSave              =
                m_bShadowBoundarySave          = 
-               m_bDowndriftBoundarySave       = true;
+               m_bShadowDowndriftBoundarySave =
+               m_bDeepWaterWaveAngleAndHeightSave      = true;
             }
             else
             {
@@ -820,10 +835,10 @@ bool CSimulation::bReadRunData(void)
                   strRH = strRemoveSubstr(&strRH, &VECTOR_INVALID_NORMALS_CODE);
                }
 
-               if (strRH.find(VECTOR_AVG_WAVE_ANGLE_CODE) != string::npos)
+               if (strRH.find(VECTOR_AVG_WAVE_ANGLE_AND_HEIGHT_CODE) != string::npos)
                {
-                  m_bAvgWaveAngleSave = true;
-                  strRH = strRemoveSubstr(&strRH, &VECTOR_AVG_WAVE_ANGLE_CODE);
+                  m_bAvgWaveAngleAndHeightSave = true;
+                  strRH = strRemoveSubstr(&strRH, &VECTOR_AVG_WAVE_ANGLE_AND_HEIGHT_CODE);
                }
 
                if (strRH.find(VECTOR_COAST_CURVATURE_CODE) != string::npos)
@@ -862,22 +877,28 @@ bool CSimulation::bReadRunData(void)
                   strRH = strRemoveSubstr(&strRH, &VECTOR_POLYGON_BOUNDARY_SAVE_CODE);
                }
 
-               if (strRH.find(VECTOR_PLOT_CLIFF_NOTCH_SIZE_CODE) != string::npos)
+               if (strRH.find(VECTOR_CLIFF_NOTCH_SIZE_CODE) != string::npos)
                {
                   m_bCliffNotchSave = true;
-                  strRH = strRemoveSubstr(&strRH, &VECTOR_PLOT_CLIFF_NOTCH_SIZE_CODE);
+                  strRH = strRemoveSubstr(&strRH, &VECTOR_CLIFF_NOTCH_SIZE_CODE);
                }
 
-               if (strRH.find(VECTOR_PLOT_SHADOW_BOUNDARY_CODE) != string::npos)
+               if (strRH.find(VECTOR_SHADOW_BOUNDARY_CODE) != string::npos)
                {
                   m_bShadowBoundarySave = true;
-                  strRH = strRemoveSubstr(&strRH, &VECTOR_PLOT_SHADOW_BOUNDARY_CODE);
+                  strRH = strRemoveSubstr(&strRH, &VECTOR_SHADOW_BOUNDARY_CODE);
                }
 
-               if (strRH.find(VECTOR_PLOT_DOWNDRIFT_BOUNDARY_CODE) != string::npos)
+               if (strRH.find(VECTOR_DOWNDRIFT_BOUNDARY_CODE) != string::npos)
                {
-                  m_bDowndriftBoundarySave = true;
-                  strRH = strRemoveSubstr(&strRH, &VECTOR_PLOT_DOWNDRIFT_BOUNDARY_CODE);
+                  m_bShadowDowndriftBoundarySave = true;
+                  strRH = strRemoveSubstr(&strRH, &VECTOR_DOWNDRIFT_BOUNDARY_CODE);
+               }
+               
+               if (strRH.find(VECTOR_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_CODE) != string::npos)
+               {
+                  m_bDeepWaterWaveAngleAndHeightSave = true;
+                  strRH = strRemoveSubstr(&strRH, &VECTOR_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_CODE);
                }
                
                // Check to see if all codes have been removed

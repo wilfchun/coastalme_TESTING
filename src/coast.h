@@ -88,7 +88,7 @@ private:
    vector<CGeomLine>
       m_LShadowBoundary;            // Lines which delineate the edge of a shadow zone, ext CRS
    vector<CGeomLine>
-      m_LDowndriftBoundary;         // Lines which delineate the edge of a downdrift zone, ext CRS
+      m_LShadowDowndriftBoundary;         // Lines which delineate the edge of a downdrift zone, ext CRS
       
 public:
    CRWCoast(void);
@@ -187,9 +187,9 @@ public:
    void AppendShadowBoundary(const CGeomLine);
    CGeomLine* pGetShadowBoundary(int const);
    
-   int nGetNumDowndriftBoundaries(void);
-   void AppendDowndriftBoundary(const CGeomLine);
-   CGeomLine* pGetDowndriftBoundary(int const);
+   int nGetNumShadowDowndriftBoundaries(void);
+   void AppendShadowDowndriftBoundary(const CGeomLine);
+   CGeomLine* pGetShadowDowndriftBoundary(int const);
 };
 #endif //COAST_H
 

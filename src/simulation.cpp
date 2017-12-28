@@ -53,8 +53,9 @@ CSimulation::CSimulation(void)
    m_bWaveHeightSave                               =
    m_bAvgWaveHeightSave                            =
    m_bAvgWaveOrientationSave                       =
-   m_bWaveAngleSave                                =
-   m_bAvgWaveAngleSave                             =
+   m_bWaveAngleAndHeightSave                                =
+   m_bAvgWaveAngleAndHeightSave                             =
+   m_bDeepWaterWaveAngleAndHeightSave                       =
    m_bBeachProtectionSave                          =
    m_bWaveEnergySinceCollapseSave                  =
    m_bMeanWaveEnergySave                           =
@@ -100,9 +101,11 @@ CSimulation::CSimulation(void)
    m_bPolygonBoundarySave                          =
    m_bCliffNotchSave                               =
    m_bShadowBoundarySave                           =
-   m_bDowndriftBoundarySave                        =
+   m_bShadowDowndriftBoundarySave                  =
    m_bDeepWaterWaveOrientationSave                 =
    m_bDeepWaterWaveHeightSave                      =
+   m_bPolygonUnconsSedUpOrDownDrift                =
+   m_bPolygonUnconssedGainOrLoss                   =
    m_bSeaAreaTS                                    =
    m_bStillWaterLevelTS                            =
    m_bActualPlatformErosionTS                      =

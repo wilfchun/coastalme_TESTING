@@ -40,10 +40,10 @@ CGeomILine::~CGeomILine(void)
 {
 }
 
-CGeom2DIPoint* CGeomILine::pPtiGetAt(int const n)
-{
-   return &m_VPoints[n];
-}
+// CGeom2DIPoint* CGeomILine::pPtiGetAt(int const n)
+// {
+//    return &m_VPoints[n];
+// }
 
 
 // int CGeomILine::nGetXAt(int const n)

@@ -35,7 +35,7 @@ class CGeomILine : public CA2DIShape
 public:
    CGeomILine(void);
    ~CGeomILine(void);
-   CGeom2DIPoint* pPtiGetAt(int const);
+//    CGeom2DIPoint* pPtiGetAt(int const);
 //    int nGetXAt(int const);
 //    int nGetYAt(int const);
    void SetXAt(int const, int const);

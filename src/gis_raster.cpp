@@ -45,7 +45,7 @@ using std::to_string;
 #include "cme.h"
 #include "simulation.h"
 #include "raster_grid.h"
-
+#include "coast.h"
 
 /*==============================================================================================================================
 
@@ -597,8 +597,8 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       }
 
       // If present, get the missing value setting
-      int nMissingValue = INT_NODATA;
-      double dMissingValue = DBL_NODATA;
+      int nMissingValue = m_nMissingValue;
+      double dMissingValue = m_dMissingValue;
       string strTmp = strToLower(&strDataType);
       if (strTmp.find("int") != string::npos)
       {
@@ -1077,6 +1077,12 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
          strFilePathName.append(RASTER_DEEP_WATER_WAVE_HEIGHT_NAME);
          break;
       }
+      
+      case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
+      {
+         strFilePathName.append(RASTER_POLYGON_GAIN_OR_LOSS_NAME);
+         break;
+      }
    }
 
    // Append the 'save number' to the filename, and prepend zeros to the save number
@@ -1240,8 +1246,12 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             case (RASTER_PLOT_BEACH_PROTECTION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBeachProtectionFactor();
-               if (dTmp != DBL_NODATA)
+               
+               if (dTmp == DBL_NODATA)
+                  dTmp = m_dMissingValue;
+               else
                   dTmp = 1 - dTmp;                 // Output the inverse, seems more intuitive
+                  
                break;
             }
 
@@ -1394,6 +1404,19 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight();
                break;
             }
+            
+            case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
+            {
+               int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+               
+               if (nPoly == INT_NODATA)
+                  dTmp = m_dMissingValue;
+               else
+                  dTmp = m_pVCoastPolygon[nPoly]->dGetDeltaActualTotalSediment();
+
+               break;
+            }
+            
          }
          
          // If necessary, scale this value
@@ -1448,6 +1471,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
       case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
       case (RASTER_PLOT_INTERVENTION_HEIGHT):
       case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
+      case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
       {
          strcpy(szUnits, "m");
          break;
@@ -1612,9 +1636,15 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
          break;
       }
       
-      case (RASTER_PLOT_DOWNDRIFT_ZONE):
+      case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
       {
-         strFilePathName.append(RASTER_DOWNDRIFT_ZONE_NAME);
+         strFilePathName.append(RASTER_SHADOW_DOWNDRIFT_ZONE_NAME);
+         break;
+      }
+      
+      case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+      {
+         strFilePathName.append(RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME);
          break;
       }
    }
@@ -1662,7 +1692,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
 
    // Set projection info for output dataset (will be same as was read in from DEM)
    CPLPushErrorHandler(CPLQuietErrorHandler);                              // Needed to get next line to fail silently, if it fails
-   pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());     // Will fail for some formats
+   pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());        // Will fail for some formats
    CPLPopErrorHandler();
 
    // Set geotransformation info for output dataset (will be same as was read in from DEM)
@@ -1789,9 +1819,26 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
                break;
             }          
             
-            case (RASTER_PLOT_DOWNDRIFT_ZONE):
+            case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
             {
                nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
+               break;
+            }            
+            
+            case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+            {
+               int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+               
+               if (nPoly == INT_NODATA)
+                  nTmp = m_nMissingValue;
+               else
+               {               
+                  if (m_pVCoastPolygon[nPoly]->bDownCoastThisTimestep())
+                     nTmp = 1;
+                  else
+                     nTmp = 0;
+               }
+               
                break;
             }            
          }
@@ -1823,9 +1870,11 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
       case (RASTER_PLOT_ACTIVE_ZONE):
       case (RASTER_PLOT_POLYGON):
       case (RASTER_PLOT_SHADOW_ZONE):
-      case (RASTER_PLOT_DOWNDRIFT_ZONE):
+      case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+      case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
       {
          strUnits = "none";
+         break;         
       }
    }
 
@@ -1928,9 +1977,23 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
       }
 
       case (RASTER_PLOT_SHADOW_ZONE):
-      case (RASTER_PLOT_DOWNDRIFT_ZONE):
       {
-         // TODO
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow zone");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow zone");
+         break;
+      }
+      
+      case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+      {
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow downdrift zone");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow downdrift zone");
+         break;
+      }
+      
+      case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+      {
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Updrift movement of unconsolidated sediment ");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Downdrift movement of unconsolidated sediment");
          break;
       }
    }
@@ -2040,8 +2103,8 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
       // Use the GDALGridCreate() linear interpolation algorithm: this computes a Delaunay triangulation of the point cloud, finding in which triangle of the triangulation the point is, and by doing linear interpolation from its barycentric coordinates within the triangle. If the point is not in any triangle, depending on the radius, the algorithm will use the value of the nearest point or the nodata value. Only available in GDAL 2.1 and later
       GDALGridLinearOptions options;
       memset(&options, 0, sizeof(options));
-      options.dfNoDataValue = DBL_NODATA;    // No data marker to fill empty points
-      options.dfRadius = -1;                 // Set the search radius to infinite
+      options.dfNoDataValue = m_dMissingValue;     // No data marker to fill empty points
+      options.dfRadius = -1;                       // Set the search radius to infinite
 
       // For the gridded output, must be a c-style array
       double* dOut = new double[nGridSize];
@@ -2198,7 +2261,7 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
    // Call GDALGridCreate() with the nearest neighbour interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0).
    GDALGridNearestNeighborOptions options;
    memset(&options, 0, sizeof(options));
-   options.dfNoDataValue = INT_NODATA;
+   options.dfNoDataValue = m_nMissingValue;
 
    // For the gridded output, must be a c-style array
    int* nOut = new int[nGridSize];
@@ -2323,7 +2386,7 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    options.dfRadius2 = 0;
    options.nMaxPoints = 0;
    options.nMinPoints = 0;
-   options.dfNoDataValue = INT_NODATA;
+   options.dfNoDataValue = m_nMissingValue;
    
 //    CPLSetConfigOption("CPL_DEBUG", "ON");
 //    CPLSetConfigOption("GDAL_NUM_THREADS", "1");

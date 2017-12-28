@@ -97,6 +97,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    int nRet = RTN_OK;
 
    LogStream << "ADJACENT POLYGONS, POLYGON-TO-POLYGON SHARES, AND POLYGON D50 VALUES" << endl;
+   LogStream << "Note that a zero D50 value for a polygon means that there is no unconsolidated sediment on that polygon" << endl;
    LogStream << "Num \tGlobal\tCoast\t\tUncons\t(Dirn Adj Share)..." << endl;
    LogStream << "    \tID    \tID   \t\td50" << endl;
    for (unsigned int n = 0; n < m_pVCoastPolygon.size(); n++)
@@ -281,26 +282,22 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
 
       if (m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() > 0)
          dCheckActualDeposition += m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment();
-
-      if (m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() < 0)
+      else if (m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() < 0)
          dCheckActualErosion += m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment();
 
       if (m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine() > 0)
          dCheckActualFineDeposition += m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine();
-
-      if (m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine() < 0)
+      else if (m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine() < 0)
          dCheckActualFineErosion += m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine();
 
       if (m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand() > 0)
          dCheckActualSandDeposition += m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand();
-
-      if (m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand() < 0)
+      else if (m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand() < 0)
          dCheckActualSandErosion += m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand();
 
       if (m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse() > 0)
          dCheckActualCoarseDeposition += m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse();
-
-      if (m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse() < 0)
+      else if (m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse() < 0)
          dCheckActualCoarseErosion += m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse();
    }
    LogStream << endl;
@@ -398,8 +395,8 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
             }
             else if (nPoly == nNumPolygons-1)
             {
-               // TEST DFM 
-               pPolygon->AddDeltaActualUnconsSand(1);               
+               // TEST DFM  Could make this a user option: add in uncons sediment at end of coastline, however need to make further changes to keep maintain mass balance 
+//                pPolygon->AddDeltaActualUnconsSand(1);               
                
                // This is the polygon at the down-coast end of the coastline, and uncons sediment movement is down-coast. Decide what to do based on the user setting m_nUnconsSedimentHandlingAtGridEdges
                if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
@@ -489,8 +486,8 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
             }
             else if (nPoly == 0)
             {
-               // TEST DFM 
-               pPolygon->AddDeltaActualUnconsSand(1);
+               // TEST DFM Could make this a user option: add in uncons sediment at beginning of coastline, however need to make further changes to keep maintain mass balance 
+//                pPolygon->AddDeltaActualUnconsSand(1);
                
                // This is the polygon at the up-coast end of the coastline, and uncons sediment movement is up-coast. Decide what to do based on the user setting m_nUnconsSedimentHandlingAtGridEdges
                if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)

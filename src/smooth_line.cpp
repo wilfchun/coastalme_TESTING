@@ -118,15 +118,17 @@ CGeomLine CSimulation::LSmoothCoastSavitzkyGolay(CGeomLine* pLineIn, int const n
             case NORTH:
             case SOUTH:
                // Don't apply the filter in the Y direction
-               LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
-               LTemp.SetYAt(i, pLineIn->dGetYAt(i));
+               LTemp[i] = CGeom2DPoint(dWindowTotX / nTmpWindow, pLineIn->dGetYAt(i));
+//                LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
+//                LTemp.SetYAt(i, pLineIn->dGetYAt(i));
                break;
 
             case EAST:
             case WEST:
                // Don't apply the filter in the X direction
-               LTemp.SetXAt(i, pLineIn->dGetXAt(i));
-               LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
+               LTemp[i] = CGeom2DPoint(pLineIn->dGetXAt(i), dWindowTotY / nTmpWindow);
+//                LTemp.SetXAt(i, pLineIn->dGetXAt(i));
+//                LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
                break;
          }
       }
@@ -152,15 +154,17 @@ CGeomLine CSimulation::LSmoothCoastSavitzkyGolay(CGeomLine* pLineIn, int const n
             case NORTH:
             case SOUTH:
                // Don't apply the filter in the Y direction
-               LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
-               LTemp.SetYAt(i, pLineIn->dGetYAt(i));
+               LTemp[i] = CGeom2DPoint(dWindowTotX / nTmpWindow, pLineIn->dGetYAt(i));
+//                LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
+//                LTemp.SetYAt(i, pLineIn->dGetYAt(i));
                break;
 
             case EAST:
             case WEST:
                // Don't apply the filter in the X direction
-               LTemp.SetXAt(i, pLineIn->dGetXAt(i));
-               LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
+               LTemp[i] = CGeom2DPoint(pLineIn->dGetXAt(i), dWindowTotY / nTmpWindow);
+//                LTemp.SetXAt(i, pLineIn->dGetXAt(i));
+//                LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
                break;
          }
       }
@@ -174,11 +178,13 @@ CGeomLine CSimulation::LSmoothCoastSavitzkyGolay(CGeomLine* pLineIn, int const n
             {
                double dX = LTemp.dGetXAt(i);
                dX += m_VdSavGolFCRWCoast[j+1] * pLineIn->dGetXAt(k);
-               LTemp.SetXAt(i, dX);
+//                LTemp.SetXAt(i, dX);
 
                double dY = LTemp.dGetYAt(i);
                dY += m_VdSavGolFCRWCoast[j+1] * pLineIn->dGetYAt(k);
-               LTemp.SetYAt(i, dY);
+               
+               LTemp[i] = CGeom2DPoint(dX, dY);
+//                LTemp.SetYAt(i, dY);
             }
          }
       }
@@ -271,8 +277,9 @@ CGeomLine CSimulation::LSmoothCoastRunningMean(CGeomLine* pLineIn, int const nSt
       else
       {
          // Not near any edge, apply both x and y filters
-         LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
-         LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
+         LTemp[i] = CGeom2DPoint(dWindowTotX / nTmpWindow, dWindowTotY / nTmpWindow);
+//          LTemp.SetXAt(i, dWindowTotX / static_cast<double>(nTmpWindow));
+//          LTemp.SetYAt(i, dWindowTotY / static_cast<double>(nTmpWindow));
       }
    }
 
