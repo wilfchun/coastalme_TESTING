@@ -133,14 +133,17 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
          double dSedChange = m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaPotentialErosion();
          m_dThisTimestepPotentialBeachErosion -= dSedChange;
 
-         // And determine actual erosion on this polygon, in sediment size categories
-         nRet = nEstimateActualBeachErosionOnPolygon(nCoast, nPoly, -dSedChange);
-         if (nRet != RTN_OK)
-            return nRet;
+         if (! bFPIsEqual(dSedChange, 0, TOLERANCE))
+         {
+            // Potential erosion on this polygon is not zero, so determine actual erosion on this polygon, in sediment size categories
+            nRet = nEstimateActualBeachErosionOnPolygon(nCoast, nPoly, -dSedChange);
+            if (nRet != RTN_OK)
+               return nRet;
+         }
       }
    }
 
-   LogStream << "BEFORE BETWEEN-POLYGON BEACH SEDIMENT ROUTING:" << endl;
+   LogStream << endl << "BEFORE BETWEEN-POLYGON BEACH SEDIMENT ROUTING:" << endl;
    LogStream << "PER-POLYGON ESTIMATED ACTUAL BEACH EROSION (-ve) AND DEPOSITION (+ve). This does not include any unconsolidated sediment from platform erosion" << endl;
    LogStream << "Num \t\tGlobal\tCoast\t\tEstimated\t\tEstimated\tEstimated\tEstimated" << endl;
    LogStream << "    \t\tID    \tID   \t\tTotal    \t\tFine     \tSand     \tCoarse" << endl;
@@ -181,7 +184,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    if (dCheckTotErosion != 0)
       dActualSedimentDeliveryRatio = (-dCheckTotErosion - dCheckTotDeposition) / -dCheckTotErosion;
 
-   LogStream << endl << m_ulIteration<< ": total estimated erosion = " << -dCheckTotErosion << " total estimated deposition = " << dCheckTotDeposition << " (sediment delivery ratio = " << dActualSedimentDeliveryRatio << ")" << endl;
+   LogStream << endl << m_ulIteration<< ": total estimated erosion = " << dCheckTotErosion << " total estimated deposition = " << dCheckTotDeposition << " (sediment delivery ratio = " << dActualSedimentDeliveryRatio << ")" << endl;
 
    LogStream << m_ulIteration<< ": estimated fine erosion = " << -dCheckFineErosion << " estimated fine deposition = " << dCheckFineDeposition << endl;
    LogStream << m_ulIteration<< ": estimated sand erosion = " << -dCheckSandErosion << " estimated sand deposition = " << dCheckSandDeposition << endl;

@@ -142,132 +142,133 @@ using std::ostringstream;
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                      = "CoastalME 0.9.9 TESTING - 28 December 2017";
-string const   SHORTNAME                     = "CME";
-string const   CME_INI                       = "cme.ini";
+string const   PROGNAME                                                    = "CoastalME 0.9.9 TESTING - 29 December 2017";
+string const   SHORTNAME                                                   = "CME";
+string const   CME_INI                                                     = "cme.ini";
 
-string const   COPYRIGHT                     = "(C) 2017 David Favis-Mortlock and Andres Payo";
-string const   LINE                          = "-------------------------------------------------------------------------------";
-string const   DISCLAIMER1                   = "This program is distributed in the hope that it will be useful, but WITHOUT ANY";
-string const   DISCLAIMER2                   = "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A";
-string const   DISCLAIMER3                   = "PARTICULAR PURPOSE. See the GNU General Public License for more details. You";
-string const   DISCLAIMER4                   = "should have received a copy of the GNU General Public License along with this";
-string const   DISCLAIMER5                   = "program; if not, contact the Free Software Foundation, Inc., 675 Mass Ave,";
-string const   DISCLAIMER6                   = "Cambridge, MA 02139, USA.";
+string const   COPYRIGHT                                                   = "(C) 2017 David Favis-Mortlock and Andres Payo";
+string const   LINE                                                        = "-------------------------------------------------------------------------------";
+string const   DISCLAIMER1                                                 = "This program is distributed in the hope that it will be useful, but WITHOUT ANY";
+string const   DISCLAIMER2                                                 = "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A";
+string const   DISCLAIMER3                                                 = "PARTICULAR PURPOSE. See the GNU General Public License for more details. You";
+string const   DISCLAIMER4                                                 = "should have received a copy of the GNU General Public License along with this";
+string const   DISCLAIMER5                                                 = "program; if not, contact the Free Software Foundation, Inc., 675 Mass Ave,";
+string const   DISCLAIMER6                                                 = "Cambridge, MA 02139, USA.";
 
-string const   ABOUT                         = "simulates the long-term behaviour of a coast. This initial version considers only simple soft cliff cross-shore effects";
-string const   THANKS                        = "Many thanks to:\n\tJim W. Hall\n\tMartin D. Hurst\n\tMike J.A. Walkden\n\tIan Townend\n\tMark Dickson\n\tMatthew Ives\n\tRobert J. Nicholls";
-string const   GDALDRIVERS                   = "GDAL drivers";
+string const   ABOUT                                                       = "simulates the long-term behaviour of a coast. This initial version considers only simple soft cliff cross-shore effects";
+string const   THANKS                                                      = "Many thanks to:\n\tJim W. Hall\n\tMartin D. Hurst\n\tMike J.A. Walkden\n\tIan Townend\n\tMark Dickson\n\tMatthew Ives\n\tRobert J. Nicholls";
+string const   GDALDRIVERS                                                 = "GDAL drivers";
 
-string const   USAGE                         = "Usage: cme [OPTION]...";
-string const   USAGE1                        = "  --gdal             List GDAL drivers";
-string const   USAGE2                        = "  --about            Information about this program";
-string const   USAGE3                        = "  --help             Display this text";
-string const   USAGE4                        = "  --home=DIRECTORY   Specify the location of the .ini file etc.";
-string const   USAGE5                        = "  --datafile=FILE    Specify the location and name of the main datafile";
+string const   USAGE                                                       = "Usage: cme [OPTION]...";
+string const   USAGE1                                                      = "  --gdal             List GDAL drivers";
+string const   USAGE2                                                      = "  --about            Information about this program";
+string const   USAGE3                                                      = "  --help             Display this text";
+string const   USAGE4                                                      = "  --home=DIRECTORY   Specify the location of the .ini file etc.";
+string const   USAGE5                                                      = "  --datafile=FILE    Specify the location and name of the main datafile";
 
-string const   STARTNOTICE                   = "- Started on ";
-string const   INITNOTICE                    = "- Initializing";
-string const   READFILELOC                   = "  - Reading file locations: ";
-string const   READRUNDATA                   = "  - Reading run data file: ";
-string const   READBASEMENT                  = "  - Reading basement DEM: ";
-string const   READRASTERFILES               = "  - Reading raster GIS files";
-string const   READLFILE                     = "    - Landform class: ";
-string const   READICFILE                    = "    - Intervention class: ";
-string const   READIHFILE                    = "    - Intervention height: ";
-string const   READISSFILE                   = "    - Suspended sediment: ";
-string const   READIFUCSFILE                 = "    - Unconsolidated fine sediment (layer ";
-string const   READISUCSFILE                 = "    - Unconsolidated sand sediment (layer ";
-string const   READICUCSFILE                 = "    - Unconsolidated coarse sediment (layer ";
-string const   READIFCSFILE                  = "    - Consolidated fine sediment (layer ";
-string const   READISCSFILE                  = "    - Consolidated sand sediment (layer ";
-string const   READICCSFILE                  = "    - Consolidated coarse sediment (layer ";
-string const   READVECTORFILES               = "  - Reading vector GIS files";
-string const   READDWWVFILE                  = "    - Deep water wave values: ";
-string const   READSCAPESHAPEFUNCTIONFILE    = "  - Reading SCAPE shape function file";
-string const   READTIDEDATAFILE              = "  - Reading tide data file: ";
-string const   ALLOCATEMEMORY                = "  - Allocating memory for raster grid";
-string const   ADDLAYERS                     = "  - Adding sediment layers to raster grid";
-string const   INITIALIZING                  = "  - Initializing";
-string const   RUNNOTICE                     = "- Running simulation";
-string const   SIMULATING                    = "\r  - Simulating ";
-string const   FINALOUTPUT                   = "- Writing final output";
-string const   SENDEMAIL                     = "  - Sending email to ";
-string const   RUNENDNOTICE                  = "- Run ended at ";
-string const   PRESSKEY                      = "Press any key to continue...";
+string const   STARTNOTICE                                                 = "- Started on ";
+string const   INITNOTICE                                                  = "- Initializing";
+string const   READFILELOC                                                 = "  - Reading file locations: ";
+string const   READRUNDATA                                                 = "  - Reading run data file: ";
+string const   READBASEMENT                                                = "  - Reading basement DEM: ";
+string const   READRASTERFILES                                             = "  - Reading raster GIS files";
+string const   READLFILE                                                   = "    - Landform class: ";
+string const   READICFILE                                                  = "    - Intervention class: ";
+string const   READIHFILE                                                  = "    - Intervention height: ";
+string const   READISSFILE                                                 = "    - Suspended sediment: ";
+string const   READIFUCSFILE                                               = "    - Unconsolidated fine sediment (layer ";
+string const   READISUCSFILE                                               = "    - Unconsolidated sand sediment (layer ";
+string const   READICUCSFILE                                               = "    - Unconsolidated coarse sediment (layer ";
+string const   READIFCSFILE                                                = "    - Consolidated fine sediment (layer ";
+string const   READISCSFILE                                                = "    - Consolidated sand sediment (layer ";
+string const   READICCSFILE                                                = "    - Consolidated coarse sediment (layer ";
+string const   READVECTORFILES                                             = "  - Reading vector GIS files";
+string const   READDWWVFILE                                                = "    - Deep water wave values: ";
+string const   READSCAPESHAPEFUNCTIONFILE                                  = "  - Reading SCAPE shape function file";
+string const   READTIDEDATAFILE                                            = "  - Reading tide data file: ";
+string const   ALLOCATEMEMORY                                              = "  - Allocating memory for raster grid";
+string const   ADDLAYERS                                                   = "  - Adding sediment layers to raster grid";
+string const   INITIALIZING                                                = "  - Initializing";
+string const   RUNNOTICE                                                   = "- Running simulation";
+string const   SIMULATING                                                  = "\r  - Simulating ";
+string const   FINALOUTPUT                                                 = "- Writing final output";
+string const   SENDEMAIL                                                   = "  - Sending email to ";
+string const   RUNENDNOTICE                                                = "- Run ended at ";
+string const   PRESSKEY                                                    = "Press any key to continue...";
 
-string const   ERRORNOTICE                   = "- Run ended with error code ";
-string const   EMAILERROR                    = "Could not send email";
+string const   ERRORNOTICE                                                 = "- Run ended with error code ";
+string const   EMAILERROR                                                  = "Could not send email";
 
-string const   SCAPEDIR                      = "scape/";
-string const   SCAPESHAPEFUNCTIONFILE        = "ShapeFunction.dat";
-string const   EROSIONPOTENTIALLOOKUPFILE    = "ErosionPotential.csv";
+string const   SCAPEDIR                                                    = "scape/";
+string const   SCAPESHAPEFUNCTIONFILE                                      = "ShapeFunction.dat";
+string const   EROSIONPOTENTIALLOOKUPFILE                                  = "ErosionPotential.csv";
 
-string const   CSHOREDIR                     = "cshore/";
+string const   CSHOREDIR                                                   = "cshore/";
 
-char const     PATH_SEPARATOR                = '/';               // Works for Windows too!
-char const     SPACE                         = ' ';
-char const     QUOTE1                        = ';';
-char const     QUOTE2                        = '#';
-string const   SPACESTR                      = " ";
+char const     PATH_SEPARATOR                                              = '/';               // Works for Windows too!
+char const     SPACE                                                       = ' ';
+char const     QUOTE1                                                      = ';';
+char const     QUOTE2                                                      = '#';
+string const   SPACESTR                                                    = " ";
 
-int const      BUF_SIZE                      = 2048;              // Max length (inc. terminating NULL) of any C-type string
-int const      MAX_SAVE_DIGITS               = 3;                 // Maximum number of digits for GIS save number
-int const      CLOCK_CHECK_ITERATION         = 5000;
-int const      SAVGOL_POLYNOMIAL_MAX_ORDER   = 6;                 // Maximum order of Savitsky-Golay smoothing polynomial
-int const      COAST_LENGTH_MAX              = 10;                // For safety check when tracing coast
-int const      COAST_LENGTH_MIN_X_PROF_SPACE = 2;                 // Ignore very short coasts less than this x profile spacing
-int const      MAX_NUM_SHADOW_ZONES          = 10;                // Consider at most this number of shadow zones
-int const      GRID_MARGIN                   = 10;                // Ignore this many along-coast grid-edge points re. shadow zone calcs
+int const      BUF_SIZE                                                    = 2048;        // Max length (inc. terminating NULL) of any C-type string
+int const      MAX_SAVE_DIGITS                                             = 3;           // Maximum number of digits for GIS save number
+int const      CLOCK_CHECK_ITERATION                                       = 5000;
+int const      SAVGOL_POLYNOMIAL_MAX_ORDER                                 = 6;           // Maximum order of Savitsky-Golay smoothing polynomial
+int const      COAST_LENGTH_MAX                                            = 10;          // For safety check when tracing coast
+int const      COAST_LENGTH_MIN_X_PROF_SPACE                               = 2;           // Ignore very short coasts less than this x profile spacing
+int const      MAX_NUM_SHADOW_ZONES                                        = 10;          // Consider at most this number of shadow zones
+int const      GRID_MARGIN                                                 = 10;          // Ignore this many along-coast grid-edge points re. shadow zone calcs
 
-unsigned long const  MASK                             = 0xfffffffful;
+unsigned long const  MASK                                                  = 0xfffffffful;
 
 // Physically-based constants
-double const   PI                                     = 3.141592653589793238462643;
+double const   PI                                                          = 3.141592653589793238462643;
 
-double const   WAVEHEIGHT_OVER_WATERDEPTH_AT_BREAKING = 0.78;              // In active zone if wave height / water depth exceeds this
-double const   TESTDEPTH_DECREMENT                    = 0.05;              // For the wave breaking timestep
-double const   BEACH_PROTECTION_HB_RATIO              = 0.23;              // The beach protection factor is this times breaking depth
-double const   WALKDEN_HALL_PARAM_1                   = 3.25;              // First param in Equation 4 from Walkden & Hall, 2005
-double const   WALKDEN_HALL_PARAM_2                   = 0.75;              // Second param in Equation 4 from Walkden & Hall, 2005
+double const   WAVEHEIGHT_OVER_WATERDEPTH_AT_BREAKING                      = 0.78;        // In active zone if wave height / water depth exceeds this
+double const   TESTDEPTH_DECREMENT                                         = 0.05;        // For the wave breaking timestep
+double const   BEACH_PROTECTION_HB_RATIO                                   = 0.23;        // The beach protection factor is this times breaking depth
+double const   WALKDEN_HALL_PARAM_1                                        = 3.25;        // First param in Equation 4 from Walkden & Hall, 2005
+double const   WALKDEN_HALL_PARAM_2                                        = 0.75;        // Second param in Equation 4 from Walkden & Hall, 2005
 
-double const   DEPTH_OVER_DB_INCREMENT                = 0.001;             // Depth Over DB increment for erosion potential look-up function
-double const   INVERSE_DEPTH_OVER_DB_INCREMENT        = 1000;              // Inverse of the above
-double const   DEAN_POWER                             = 2.0 / 3.0;         // Dean profile exponent
+double const   DEPTH_OVER_DB_INCREMENT                                     = 0.001;       // Depth Over DB increment for erosion potential look-up function
+double const   INVERSE_DEPTH_OVER_DB_INCREMENT                             = 1000;        // Inverse of the above
+double const   DEAN_POWER                                                  = 2.0 / 3.0;   // Dean profile exponent
 
 // TODO Let the user define the CShore wave friction factor
-double const   CSHORE_FRICTION_FACTOR                 = 0.015;             // Friction factor for CShore model
+double const   CSHORE_FRICTION_FACTOR                                      = 0.015;       // Friction factor for CShore model
 
 // Arbitrary constants
-bool const     USE_DEEP_WATER_FOR_SHADOW_LINE         = true;              // Use deep water wave orintation in determining shadow line orientation?
-bool const     CREATE_SHADOW_ZONE_IF_HITS_GRID_EDGE   = true;              // If shadow line tracing hits grid edge, create shadow zone?
+bool const     USE_DEEP_WATER_FOR_SHADOW_LINE                              = true;        // Use deep water wave orintation in determining shadow line orientation?
+bool const     CREATE_SHADOW_ZONE_IF_HITS_GRID_EDGE                        = true;        // If shadow line tracing hits grid edge, create shadow zone?
 
-int const      MIN_PROFILE_SPACING                    = 20;                // In cells: profile creation does not work well if profiles are too closely spaced
-int const      CAPE_POINT_MIN_SPACING                 = 10;                // In cells: for shadow zone stuff, cape points must not be closer than this
-int const      FLOOD_FILL_START_OFFSET                = 2;                 // In cells: flood fill starts this distance inside polygon
-int const      SHADOW_LINE_MIN_SINCE_HIT_SEA          = 5;
-int const      MAX_LEN_SHADOW_LINE_TO_IGNORE          = 200;               // In cells: if can't find flood fill start point, continue if short shadow line
-int const      MAX_EDGE_SEARCH_DIST                   = 30;                // In cells: search for edge cells this far in from grid edge
-int const      MIN_PAR_PROFILE_SIZE                   = 3;                 // In cells: min size for uncons sed parallel profile
-int const      MAX_NUM_PREV_ORIENTATION_VALUES        = 10;                // Max length of deque used in tracing shadow boundary
+int const      MIN_PROFILE_SPACING                                         = 20;          // In cells: profile creation does not work well if profiles are too closely spaced
+int const      CAPE_POINT_MIN_SPACING                                      = 10;          // In cells: for shadow zone stuff, cape points must not be closer than this
+int const      FLOOD_FILL_START_OFFSET                                     = 2;           // In cells: flood fill starts this distance inside polygon
+int const      SHADOW_LINE_MIN_SINCE_HIT_SEA                               = 5;
+int const      MAX_LEN_SHADOW_LINE_TO_IGNORE                               = 200;         // In cells: if can't find flood fill start point, continue if short shadow line
+int const      MAX_EDGE_SEARCH_DIST                                        = 30;          // In cells: search for edge cells this far in from grid edge
+int const      MIN_PAR_PROFILE_SIZE                                        = 3;           // In cells: min size for uncons sed parallel profile
+int const      MAX_NUM_PREV_ORIENTATION_VALUES                             = 10;          // Max length of deque used in tracing shadow boundary
+int const      MIN_INLAND_OFFSET_FOR_BEACH_EROSION_ESTIMATION              = 5;           // Used in estimation of beach erosion
 
-double const   TOLERANCE                              = 1e-4;              // For bFPIsEqual, if too small (e.g. 1e-10), get spurious "rounding" errors
-double const   SEDIMENT_ELEV_TOLERANCE                = 1e-10;             // Throughout, differences in depth-equivalent sediment amount (m) less than this are ignored
-double const   STRAIGHT_COAST_MAX_DETAILED_CURVATURE  = -5;
-double const   STRAIGHT_COAST_MAX_SMOOTH_CURVATURE    = -1;
-double const   MIN_LENGTH_OF_SHADOW_ZONE_LINE         = 10;                // Used in shadow line tracing
-double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE    = 5;                 // Used in shadow line tracing
+double const   TOLERANCE                                                   = 1e-4;        // For bFPIsEqual, if too small (e.g. 1e-10), get spurious "rounding" errors
+double const   SEDIMENT_ELEV_TOLERANCE                                     = 1e-10;       // Differences in depth-equivalent sediment amount (m) less than this are ignored
+double const   STRAIGHT_COAST_MAX_DETAILED_CURVATURE                       = -5;
+double const   STRAIGHT_COAST_MAX_SMOOTH_CURVATURE                         = -1;
+double const   MIN_LENGTH_OF_SHADOW_ZONE_LINE                              = 10;          // Used in shadow line tracing
+double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5;           // Used in shadow line tracing
 
 
 // Error/warning, NODATA etc.
-string const   ERR                                    = "ERROR ";
-string const   WARN                                   = "WARNING ";
+string const   ERR                                                         = "ERROR ";
+string const   WARN                                                        = "WARNING ";
 
-int const      INT_NODATA                             = -999;
-double const   DBL_NODATA                             = -9999;
+int const      INT_NODATA                                                  = -999;
+double const   DBL_NODATA                                                  = -9999;
 
 // TEST
-bool const     ACCEPT_SHORT_PROFILES                  = true;
+bool const     ACCEPT_SHORT_PROFILES                                       = true;
 
 
 string const   PERITERHEAD1 =

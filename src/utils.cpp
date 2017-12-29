@@ -1610,7 +1610,7 @@ string CSimulation::strDispSimTime(const double dTimeIn)
    if (ulTimeIn >= ulHoursInDay)
    {
       unsigned long ulJDays = ulTimeIn / ulHoursInDay;
-      assert(ulJDays < 360);
+      assert(ulJDays <= 365);
       ulTimeIn -= (ulJDays * ulHoursInDay);
 
       stringstream ststrTmp;
@@ -2580,7 +2580,7 @@ void CSimulation::CalcDeanProfile(vector<double>* pdVDeanProfile, double const d
 
 /*==============================================================================================================================
 
- Calculate the total elevation difference when every point in the second elevation profile is subtracted from the equivalent point in the first elevation profile
+ Calculate the total elevation difference between every point in two elevation profiles (first profile - second profile)
 
 ==============================================================================================================================*/
 double CSimulation::dSubtractProfiles(vector<double> const* pdVFirstProfile, vector<double> const* pdVSecondProfile, vector<bool> const* pbVIsValid)

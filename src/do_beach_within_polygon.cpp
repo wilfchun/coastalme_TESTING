@@ -1300,7 +1300,7 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
          if (nParProfLen > (pUpCoastProfile->nGetNumCellsInProfile()))
          {
             // We've reached the seaward end of the up-coast profile, and still cannot deposit sufficient sediment. Need to quit, since mass balance will not be preserved (TODO find a way round this)
-            LogStream << m_ulIteration << ": " << ERR << "reached seaward end of up-coast profile during DOWN-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
+            LogStream << m_ulIteration << ": " << WARN << "reached seaward end of up-coast profile during DOWN-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
 
             break;
          }
@@ -1758,7 +1758,7 @@ int CSimulation::nDoBeachDepositionOnCells(int const nCoast, int const nPoly, do
             if (nParProfLen > (pDownCoastProfile->nGetNumCellsInProfile()))
             {
                // We've reached the seaward end of the down-coast profile, and still cannot deposit sufficient sediment. Need to quit, since mass balance will not be preserved (TODO find a way round this)
-               LogStream << m_ulIteration << ": " << ERR << "reached seaward end of down-coast profile during UP-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
+               LogStream << m_ulIteration << ": " << WARN << "reached seaward end of down-coast profile during UP-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
 
                break;
             }

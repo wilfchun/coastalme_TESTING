@@ -537,13 +537,13 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
             dA = (dTalusTopElev - dVProfileNow[nRasterProfileLength-1]) /  pow(dTalusSlopeLength, DEAN_POWER);
 
          double dInc = dTalusSlopeLength / (nRasterProfileLength - nSeawardOffset - 2);
-         vector<double> dVEquiProfile(nRasterProfileLength);
+         vector<double> dVDeanProfile(nRasterProfileLength);
 
          // Calculate the Dean equilibrium profile of the talus h(y) = A * y^(2/3) where h(y) is the distance below the talus-top elevation (the highest point in the Dean profile) at a distance y from the cliff (the landward start of the profile)
-         CalcDeanProfile(&dVEquiProfile, dInc, dTalusTopElev, dA, true, nSeawardOffset, dCliffTopElev);
+         CalcDeanProfile(&dVDeanProfile, dInc, dTalusTopElev, dA, true, nSeawardOffset, dCliffTopElev);
 
-         // Get the total difference in elevation between the two profiles
-         double dTotElevDiff = dSubtractProfiles(&dVEquiProfile, &dVProfileNow, &bVProfileValid);
+         // Get the total difference in elevation between the two profiles (present profile - Dean profile)
+         double dTotElevDiff = dSubtractProfiles(&dVProfileNow, &dVDeanProfile, &bVProfileValid);
 
 //          // DEBUG STUFF -----------------------------------------------------
 //          LogStream << endl;
@@ -562,13 +562,13 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 //          LogStream << "Dean equilibrium profile (inc. cliff cell) = ";
 //          for (int n = 0; n < nRasterProfileLength; n++)
 //          {
-//             LogStream << dVEquiProfile[n] << " ";
+//             LogStream << dVDeanProfile[n] << " ";
 //          }
 //          LogStream << endl;
 //          LogStream << "Difference (inc. cliff cell) = ";
 //          for (int n = 0; n < nRasterProfileLength; n++)
 //          {
-//             LogStream << dVEquiProfile[n] - dVProfileNow[n] << " ";
+//             LogStream << dVDeanProfile[n] - dVProfileNow[n] << " ";
 //          }
 //          LogStream << endl;
 //          // DEBUG STUFF -----------------------------------------------------
@@ -614,14 +614,14 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
             }
 
             // Only do deposition on this cell if its elevation is below the Dean elevation, and the cell is either a sea cell or a drift cell
-            if ((dVEquiProfile[n] > dVProfileNow[n]) && ((m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()) || (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_DRIFT)))
+            if ((dVDeanProfile[n] > dVProfileNow[n]) && ((m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()) || (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_DRIFT)))
             {
 //               LogStream << "DEPOSIT ";
                // At this point along the profile, the equilibrium profile is higher than the present profile. So we can deposit some sediment here
                double dPotentialSandToDeposit = 0;
                if (dTotSandToDeposit > 0)
                {
-                  dPotentialSandToDeposit = (dVEquiProfile[n] - dVProfileNow[n]) * dSandProp * dPropToDeposit;
+                  dPotentialSandToDeposit = (dVDeanProfile[n] - dVProfileNow[n]) * dSandProp * dPropToDeposit;
                   dPotentialSandToDeposit = tMin(dPotentialSandToDeposit, dTotSandToDeposit);
 
                   double dSandNow = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->dGetSand();
@@ -637,7 +637,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
                double dPotentialCoarseToDeposit = 0;
                if (dTotCoarseToDeposit > 0)
                {
-                  dPotentialCoarseToDeposit = (dVEquiProfile[n] - dVProfileNow[n]) * dCoarseProp * dPropToDeposit;
+                  dPotentialCoarseToDeposit = (dVDeanProfile[n] - dVProfileNow[n]) * dCoarseProp * dPropToDeposit;
                   dPotentialCoarseToDeposit = tMin(dPotentialCoarseToDeposit, dTotCoarseToDeposit);
 
                   double dCoarseNow = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->dGetCoarse();
@@ -663,11 +663,11 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
                m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFSubCategory(LF_SUBCAT_DRIFT_TALUS);
             }
 
-            else if (dVEquiProfile[n] < dVProfileNow[n])
+            else if (dVDeanProfile[n] < dVProfileNow[n])
             {
                // The Dean equilibrium profile is lower than the present profile, so we must remove some some sediment from here
 //               LogStream << "REMOVE ";
-               double dThisLowering = dVProfileNow[n] - dVEquiProfile[n];
+               double dThisLowering = dVProfileNow[n] - dVDeanProfile[n];
 
                // Find out how much sediment we have available on this cell
                double dExistingAvailableFine = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->dGetFine();
