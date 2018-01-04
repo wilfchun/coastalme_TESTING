@@ -21,7 +21,7 @@
    Where land runs out and nothing’s sound.\n
    Nothing lasts long on Shingle Street.\n
    \n
-   By Blake Morrison (2017). See <a href="http://www.randomhouse.co.uk/editions/shingle-street/9780701188771" target="_blank">http://www.randomhouse.co.uk/editions/shingle-street/9780701188771</a>\n
+   By Blake Morrison (2018). See <a href="http://www.randomhouse.co.uk/editions/shingle-street/9780701188771" target="_blank">http://www.randomhouse.co.uk/editions/shingle-street/9780701188771</a>\n
 
  * \section install_sec Installation
 
@@ -142,11 +142,11 @@ using std::ostringstream;
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                                                    = "CoastalME 0.9.9 TESTING - 29 December 2017";
+string const   PROGNAME                                                    = "CoastalME 0.9.9 TESTING - 3 January 2018";
 string const   SHORTNAME                                                   = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
-string const   COPYRIGHT                                                   = "(C) 2017 David Favis-Mortlock and Andres Payo";
+string const   COPYRIGHT                                                   = "(C) 2018 David Favis-Mortlock and Andres Payo";
 string const   LINE                                                        = "-------------------------------------------------------------------------------";
 string const   DISCLAIMER1                                                 = "This program is distributed in the hope that it will be useful, but WITHOUT ANY";
 string const   DISCLAIMER2                                                 = "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A";

@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2017
+ * \date 2018
  * \copyright GNU General Public License
  *
  */
@@ -285,7 +285,21 @@ int CSimulation::nDoAllPropagateWaves(void)
 
             // Calculate total wave energy at each coast point during this timestep
             double dWaveEnergy = dErosiveWaveForce * m_dTimeStep * 3600;
+            
             m_VCoast[nCoast].SetWaveEnergy(nCoastPoint, dWaveEnergy);
+            
+//             // TODO DFM check with Andres
+//             double dFluxOrientation = m_VCoast[nCoast].dGetFluxOrientation(nCoastPoint);
+//             double dBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nCoastPoint);
+//             double dAngleBetween = dCalcWaveAngleToCoastNormal(dFluxOrientation, dBreakingWaveOrientation, m_VCoast[nCoast].nGetSeaHandedness());
+//             if (dAngleBetween != DBL_NODATA)
+//             {
+//                double dIncidentWaveEnergy = dWaveEnergy * cos(dAngleBetween * PI / 180);
+//                
+// //                LogStream << m_ulIteration << ": at coastpoint " << nCoastPoint << ", dFluxOrientation = " << dFluxOrientation << " dBreakingWaveOrientation = " << dBreakingWaveOrientation << " dAngleBetween = " << dAngleBetween << " dIncidentWaveEnergy = " << dIncidentWaveEnergy << endl;
+//             
+//                m_VCoast[nCoast].SetWaveEnergy(nCoastPoint, dIncidentWaveEnergy);
+//             }
          }
       }
    }

@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2017
+ * \date 2018
  * \copyright GNU General Public License
  *
  * \file simulation.h
@@ -595,8 +595,8 @@ private:
    void DoAllPotentialBeachErosion(void);
    int nDoAllActualBeachErosionAndDeposition(void);
    int nEstimateActualBeachErosionOnPolygon(int const, int const, double const);
-   int nEstimateActualBeachErosionDownCoast(int const, int const, double&, double&, double&, double&);
-   int nEstimateActualBeachErosionUpCoast(int const, int const, double&, double&, double&, double&);
+   int nEstimateActualBeachErosionDownCoast(int const, int const, double const, double&, double&, double&);
+   int nEstimateActualBeachErosionUpCoast(int const, int const, double const, double&, double&, double&);
    void EstimateActualBeachErosionOnCell(int const, int const, int const, double const, double&, double&, double&);
    void ErodeBeachConstrained(int const, int const, int const, double const, double&, double&, double&);
    int nRouteActualBeachErosionToAdjacentPolygons(int const, int const);

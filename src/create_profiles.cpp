@@ -5,7 +5,7 @@
  * \details TODO A more detailed description of these routines.
  * \author David Favis-Mortlock
  * \author Andres Payo
- * \date 2017
+ * \date 2018
  * \copyright GNU General Public License
  *
  */
@@ -459,7 +459,8 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                   else
                      nProfileStartPoint--;
 
-                  LogStream << m_ulIteration << ": excessive detailed convexity = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << ") at nThisPoint = " << nThisPoint << " when attempting to create nProfile = " << nProfile+1 << ", possible nProfileStartPoint changed to " << nProfileStartPoint << endl;
+//                   LogStream << m_ulIteration << ": excessive detailed convexity = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << ") at nThisPoint = " << nThisPoint << " when attempting to create nProfile = " << nProfile+1 << ", possible nProfileStartPoint changed to " << nProfileStartPoint << endl;
+                  
                   continue;
                }
 

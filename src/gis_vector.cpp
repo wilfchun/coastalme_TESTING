@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2017
+ * \date 2018
  * \copyright GNU General Public License
  *
  */
@@ -1066,7 +1066,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                   dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveOrientation(),
                   dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight();
                
-               if ((dHeight == DBL_NODATA) || (dOrientation == DBL_NODATA))
+               if ((dHeight == DBL_NODATA) || (dOrientation == DBL_NODATA) || (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()))
                   continue;
                
                // Set the feature's attributes

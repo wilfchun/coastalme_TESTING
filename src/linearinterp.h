@@ -3,7 +3,7 @@
  * \brief Declarations of some routines from the linear interp library
  * \details TODO This is a more detailed description of the linear interp routiness.
  * \author Modified by Andres Payo and David Favis-Mortlock
- * \date 2017
+ * \date 2018
  * \copyright GNU Lesser General Public License
  *
  * \file linearinterp.h

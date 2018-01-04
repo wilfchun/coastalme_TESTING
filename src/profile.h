@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2017
+ * \date 2018
  * \copyright GNU General Public License
  *
  * \file profile.h

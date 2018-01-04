@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2017
+ * \date 2018
  * \copyright GNU General Public License
  *
  */
@@ -105,7 +105,7 @@ void CRWCoast::SetCoastlineExtCRS(CGeomLine const* pLCoast)
    m_VdBreakingWaveOrientation = vector<double>(nLen, DBL_NODATA);
    m_VdDepthOfBreaking = vector<double>(nLen, DBL_NODATA);
    m_VdFluxOrientation = vector<double>(nLen, DBL_NODATA);
-   m_VdWaveEnergy = vector<double>(nLen, DBL_NODATA);  
+   m_VdWaveEnergy = vector<double>(nLen, 0);  
 }
 
 
@@ -126,7 +126,7 @@ void CRWCoast::AppendPointToCoastlineExtCRS(double const dX, double const dY)
    m_VdBreakingWaveOrientation.push_back(DBL_NODATA);
    m_VdDepthOfBreaking.push_back(DBL_NODATA);
    m_VdFluxOrientation.push_back(DBL_NODATA);
-   m_VdWaveEnergy.push_back(DBL_NODATA);
+   m_VdWaveEnergy.push_back(0);
 }
 
 CGeomLine* CRWCoast::pLGetCoastlineExtCRS(void)

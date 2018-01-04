@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2017
+ * \date 2018
  * \copyright GNU General Public License
  *
  */
@@ -143,7 +143,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
       }
    }
 
-   LogStream << endl << "BEFORE BETWEEN-POLYGON BEACH SEDIMENT ROUTING:" << endl;
+   LogStream << "BEFORE BETWEEN-POLYGON BEACH SEDIMENT ROUTING:" << endl;
    LogStream << "PER-POLYGON ESTIMATED ACTUAL BEACH EROSION (-ve) AND DEPOSITION (+ve). This does not include any unconsolidated sediment from platform erosion" << endl;
    LogStream << "Num \t\tGlobal\tCoast\t\tEstimated\t\tEstimated\tEstimated\tEstimated" << endl;
    LogStream << "    \t\tID    \tID   \t\tTotal    \t\tFine     \tSand     \tCoarse" << endl;

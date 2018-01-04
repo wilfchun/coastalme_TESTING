@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2017
+ * \date 2018
  * \copyright GNU General Public License
  *
  */
@@ -1585,36 +1585,34 @@ void CSimulation::CalcTime(double const dRunLength)
 string CSimulation::strDispSimTime(const double dTimeIn)
 {
    // Make sure no negative times
-   double dTime = tMax(dTimeIn, 0.0);
+   double dTmpTime = tMax(dTimeIn, 0.0);
 
    string strTime;
-   unsigned long ulTimeIn = static_cast<unsigned long>(floor(dTime));
 
    // Constants
    double const dHoursInYear = 24 * 365.25;
-   unsigned long const ulHoursInDay = 24;
+   double dHoursInDay = 24;
 
    // Display years
-   if (ulTimeIn >= dHoursInYear)
+   if (dTmpTime >= dHoursInYear)
    {
-      unsigned long ulYears = static_cast<unsigned long>(dRound(ulTimeIn / dHoursInYear));
-      ulTimeIn -= static_cast<unsigned long>(dRound(ulYears * dHoursInYear));
+      double dYears = dTmpTime / dHoursInYear;
+      dTmpTime -= (dYears * dHoursInYear);
 
-      strTime = to_string(ulYears);
+      strTime = to_string(static_cast<int>(dYears));
       strTime.append("y ");
    }
    else
       strTime = "0y ";
 
    // Display Julian days
-   if (ulTimeIn >= ulHoursInDay)
+   if (dTmpTime >= dHoursInDay)
    {
-      unsigned long ulJDays = ulTimeIn / ulHoursInDay;
-      assert(ulJDays <= 365);
-      ulTimeIn -= (ulJDays * ulHoursInDay);
+      double dJDays = dTmpTime / dHoursInDay;
+      dTmpTime -= (dJDays * dHoursInDay);
 
       stringstream ststrTmp;
-      ststrTmp << FillToWidth('0', 3) << ulJDays;
+      ststrTmp << FillToWidth('0', 3) << static_cast<int>(dJDays);
       strTime.append(ststrTmp.str());
       strTime.append("d ");
    }
@@ -1623,7 +1621,7 @@ string CSimulation::strDispSimTime(const double dTimeIn)
 
    // Display hours
    stringstream ststrTmp;
-   ststrTmp << FillToWidth('0', 2) << ulTimeIn;
+   ststrTmp << FillToWidth('0', 2) << dTmpTime;
    strTime.append(ststrTmp.str());
    strTime.append("h");
 
