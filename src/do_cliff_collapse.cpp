@@ -97,7 +97,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
       }
    }
 
-   LogStream << m_ulIteration << ": cliff collapse = " << m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse << " (fine = " << m_dThisTimestepCliffCollapseErosionFine << ", sand = " << m_dThisTimestepCliffCollapseErosionSand << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse << "), talus deposition = " << m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse << " (sand = " << m_dThisTimestepCliffDepositionSand << ", coarse = " << m_dThisTimestepCliffDepositionSand << ")" << endl;
+   LogStream << endl << m_ulIteration << ": cliff collapse = " << m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse << " (fine = " << m_dThisTimestepCliffCollapseErosionFine << ", sand = " << m_dThisTimestepCliffCollapseErosionSand << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse << "), talus deposition = " << m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse << " (sand = " << m_dThisTimestepCliffDepositionSand << ", coarse = " << m_dThisTimestepCliffDepositionSand << ")" << endl;
 
    return RTN_OK;
 }

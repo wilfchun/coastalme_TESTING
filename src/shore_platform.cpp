@@ -100,7 +100,7 @@ int CSimulation::nDoAllShorePlatFormErosion(void)
       }
    }
 
-   LogStream << m_ulIteration << ": potential shore platform erosion = " << m_dThisTimestepPotentialPlatformErosion << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles << ")" << endl;
+   LogStream << endl << m_ulIteration << ": potential shore platform erosion = " << m_dThisTimestepPotentialPlatformErosion << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles << ")" << endl;
    LogStream << m_ulIteration << ": actual shore platform erosion = " << m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse << " (fine = " << m_dThisTimestepActualPlatformErosionFine << ", sand = " << m_dThisTimestepActualPlatformErosionSand << ", coarse = " << m_dThisTimestepActualPlatformErosionCoarse << ")" << endl;
 
    return RTN_OK;
