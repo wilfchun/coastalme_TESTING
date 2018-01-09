@@ -451,16 +451,16 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
    {
       if (dTotalErosion < dErosionTarget)
       {
-         LogStream << ERR << "on polygon " << nPoly << " actual beach erosion LESS THAN target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << endl;
+         LogStream << m_ulIteration << ": on polygon " << nPoly << " actual beach erosion is less than target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << ", will reduce sediment exported from this polygon" << endl;
       }
       else
       {
-         LogStream << ERR << "on polygon " << nPoly << " actual beach erosion GREATER THAN target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << endl;
+         LogStream << ERR << "on polygon " << nPoly << " actual beach erosion is GREATER THAN target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << endl;
       }
       
       double dTotError = dErosionTarget - dTotalErosion;
       m_dThisTimestepMassBalanceErosionError += dTotError;
-      LogStream << "m_dThisTimestepMassBalanceErosionError = " << m_dThisTimestepMassBalanceErosionError << endl;
+//       LogStream << "m_dThisTimestepMassBalanceErosionError = " << m_dThisTimestepMassBalanceErosionError << endl;
       
       dFineError = dTotError * dTotFineEroded / dTotalErosion;
       dSandError = dTotError * dTotSandEroded / dTotalErosion;

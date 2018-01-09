@@ -239,7 +239,7 @@ int CSimulation::nTraceAllCoasts(void)
          {
             // It has not, so flag it
             m_pRasterGrid->m_Cell[nXThis][nYThis].SetPossibleCoastStartCell();
-            LogStream << "Flagging [" << nXThis << "][" << nYThis << "] as possible coast start cell LEFT_HANDED EDGE" << endl;
+//             LogStream << "Flagging [" << nXThis << "][" << nYThis << "] as possible coast start cell LEFT_HANDED EDGE" << endl;
             
             // And try to trace a coastline from 'this' cell
             int nSearchDirection = nGetOppositeDirection(m_VEdgeCellEdge[n]);
@@ -255,7 +255,7 @@ int CSimulation::nTraceAllCoasts(void)
          {
             // It has not, so flag it
             m_pRasterGrid->m_Cell[nXThis][nYThis].SetPossibleCoastStartCell();
-            LogStream << "Flagging [" << nXThis << "][" << nYThis << "] as possible coast start cell RIGHT_HANDED EDGE" << endl;
+//             LogStream << "Flagging [" << nXThis << "][" << nYThis << "] as possible coast start cell RIGHT_HANDED EDGE" << endl;
             
             // And try to trace a coastline from 'this' cell
             int nSearchDirection = nGetOppositeDirection(m_VEdgeCellEdge[n+1]);
@@ -327,7 +327,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
          
          // Flag this cell to ensure that it is not chosen as a coastline start cell later
          m_pRasterGrid->m_Cell[nX][nY].SetPossibleCoastStartCell();
-         LogStream << "Flagging [" << nX << "][" << nY << "] as possible coast start cell NOT YET LEFT EDGE" << endl;         
+//          LogStream << "Flagging [" << nX << "][" << nY << "] as possible coast start cell NOT YET LEFT EDGE" << endl;         
       }
 
       // Leave the loop if the vector coastline has left the start edge, then we find a coast cell which is at an edge (note that this edge could be the same edge from which this coastline started)
@@ -335,7 +335,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
          {
-            LogStream << "XXXXX" << endl;
+//             LogStream << "XXXXX" << endl;
             break;
          }
       }
@@ -693,7 +693,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    if (nCoastSize == 0)
    {
       // Zero-length coastline, so abandon it
-      LogStream << m_ulIteration << ": " << WARN << "abandoning zero-length coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}" << endl;
+      LogStream << m_ulIteration << ": abandoning zero-length coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}" << endl;
 
       return RTN_OK;
    }
