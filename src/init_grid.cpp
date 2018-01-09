@@ -80,11 +80,11 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
    m_dThisTimestepEstimatedActualCoarseBeachErosion =
    m_dThisTimestepSandSedLostCliffCollapse          =
    m_dThisTimestepCoarseSedLostCliffCollapse        =
-   m_dThisTimestepCliffCollapseErosionFine                 =
-   m_dThisTimestepCliffCollapseErosionSand                 =
-   m_dThisTimestepCliffCollapseErosionCoarse               =
-   m_dThisTimestepCliffDepositionSand          =
-   m_dThisTimestepCliffDepositionCoarse        =
+   m_dThisTimestepCliffCollapseErosionFine          =
+   m_dThisTimestepCliffCollapseErosionSand          =
+   m_dThisTimestepCliffCollapseErosionCoarse        =
+   m_dThisTimestepCliffDepositionSand               =
+   m_dThisTimestepCliffDepositionCoarse             =
    m_dThisTimestepFineSedimentToSuspension          =
    m_dThisTimestepMassBalanceErosionError           =
    m_dThisTimestepMassBalanceDepositionError        = 0;

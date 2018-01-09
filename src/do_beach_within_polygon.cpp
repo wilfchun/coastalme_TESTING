@@ -37,49 +37,12 @@ using std::endl;
 
 /*===============================================================================================================================
 
- Does within-polygon redistribution (erosion or deposition) of unconsolidated beach sediment, on a single polygon
-
-===============================================================================================================================*/
-int CSimulation::nBeachRedistributionOnPolygon(int const nCoast, int const nPoly, double& dError)
-{
-   // Get the depth of sediment to be redistributed on this polygon. Is a depth in m: -ve for erosion, +ve for deposition
-   double dSedChange = m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaActualTotalSediment();
-
-   int nRet = RTN_OK;
-   if (tAbs(dSedChange) < SEDIMENT_ELEV_TOLERANCE)
-   {
-      // Do nothing for tiny amounts
-      LogStream << m_ulIteration << ": polygon " << nPoly << " has no change in unconsolidated sediment" << endl;
-      
-      return nRet;
-   }
-
-   if (dSedChange > 0)
-   {
-      // Net deposition on this polygon: we will be depositing sand and coarse sediment
-      dSedChange = m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaActualUnconsSand() + m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaActualUnconsCoarse();
-      
-      // Calculate a net increase in depth of unconsolidated sediment on the cells within the polygon by depositing fine and sand. Note that some cells may decrease in elevation (i.e. have some unconsolidated sediment erosion) however
-      nRet = nDoBeachDepositionOnPolygon(nCoast, nPoly, dSedChange);
-   }
-   else
-   {
-      // Net erosion on this polygon, so calculate a net decrease in depth of unconsolidated sediment (fine, sand, coarse) on the cells within the polygon. Note however that some cells may gain in elevation (i.e. have some unconsolidated sediment deposition) 
-      nRet = nDoBeachErosionOnPolygon(nCoast, nPoly, -dSedChange, dError);
-   }
-
-   return nRet;
-}
-
-
-/*===============================================================================================================================
-
  Erodes unconsolidated beach sediment on the cells within a polygon
 
  As with the estimation of actual erosion, this is done by working down the coastline and constructing profiles which are parallel to the up-coast polygon boundary; then reversing direction and going up-coast, constructing profiles parallel to the down-coast boundary. Then iteratively fit a Dean equilibrium profile until the normal's share of the change in total depth of unconsolidated sediment is accommodated under the revised profile. For erosion, this reduces the beach volume
 
 ===============================================================================================================================*/
-int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, double const dErosionTarget, double& dError)
+int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, double const dErosionTarget, double& dFineError, double& dSandError, double& dCoarseError)
 {
    double
       dTotFineEroded = 0,
@@ -479,24 +442,29 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
    // How much have we been able to erode?
 //    LogStream << m_ulIteration << ": nPoly = " << nPoly << " dTotFineEroded = " << dTotFineEroded << " dTotSandEroded = " << dTotSandEroded << " dTotCoarseEroded = " << dTotCoarseEroded << endl;
    
-   double dActualErosion = dTotFineEroded + dTotSandEroded + dTotCoarseEroded;
+   double dTotalErosion = dTotFineEroded + dTotSandEroded + dTotCoarseEroded;
    
    // Is the depth eroded within TOLERANCE of the target depth-equivalent?
-   if (bFPIsEqual(dActualErosion, dErosionTarget, TOLERANCE))
-      LogStream << m_ulIteration << ": polygon " << nPoly << " actual beach erosion approx equal to target beach erosion: actual = " << dActualErosion << " target = " << dErosionTarget << endl;
+   if (bFPIsEqual(dTotalErosion, dErosionTarget, TOLERANCE))
+      LogStream << m_ulIteration << ": polygon " << nPoly << " actual beach erosion approx equal to target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << endl;
    else
    {
-      if (dActualErosion < dErosionTarget)
+      if (dTotalErosion < dErosionTarget)
       {
-         LogStream << ERR << "on polygon " << nPoly << " actual beach erosion LESS THAN target beach erosion: actual = " << dActualErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dActualErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << endl;
+         LogStream << ERR << "on polygon " << nPoly << " actual beach erosion LESS THAN target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << endl;
       }
       else
       {
-         LogStream << ERR << "on polygon " << nPoly << " actual beach erosion GREATER THAN target beach erosion: actual = " << dActualErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dActualErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << endl;
+         LogStream << ERR << "on polygon " << nPoly << " actual beach erosion GREATER THAN target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << endl;
       }
       
-      dError = dErosionTarget - dActualErosion;
-      m_dThisTimestepMassBalanceErosionError += dError;
+      double dTotError = dErosionTarget - dTotalErosion;
+      m_dThisTimestepMassBalanceErosionError += dTotError;
+      LogStream << "m_dThisTimestepMassBalanceErosionError = " << m_dThisTimestepMassBalanceErosionError << endl;
+      
+      dFineError = dTotError * dTotFineEroded / dTotalErosion;
+      dSandError = dTotError * dTotSandEroded / dTotalErosion;
+      dCoarseError = dTotError * dTotCoarseEroded / dTotalErosion; 
    }  
    
    return RTN_OK;
@@ -583,7 +551,7 @@ int CSimulation::nDoBeachErosionOnParallelProfile(/* int const nPoly, int const 
                   dSand = 0,
                   dCoarse = 0;
                
-               assert(dToErode > 0);
+//                assert(dToErode > 0);
                
                ErodeBeachSedimentOnCellSupplyLimited(nX, nY, nThisLayer, dToErode, dFine, dSand, dCoarse);
                
@@ -616,70 +584,72 @@ int CSimulation::nDoBeachErosionOnParallelProfile(/* int const nPoly, int const 
          else if ((dElevDiff < 0) && ((m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()) || (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_DRIFT)))
          {
             // The current elevation is below the Dean elevation, so we have can have beach deposition here provided that we have some previously-eroded unconsolidated sediment (sand and coarse only) to deposit
-            double dTotSandAndCoarseEroded = dTotSandEroded + dTotCoarseEroded;
-            
-            // Assume that the sediment size fractions which are deposited are in the same ratios as the previously-eroded sediment
-            double
-               dTotToDeposit = tMin(-dElevDiff, dTotSandAndCoarseEroded),
-               dSandToDeposit = dTotToDeposit * dTotSandEroded / dTotSandAndCoarseEroded,
-               dCoarseToDeposit = dTotToDeposit * dTotCoarseEroded / dTotSandAndCoarseEroded;
-            
-            int nTopLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopLayerAboveBasement();
-            
-            // Safety check
-            if (nTopLayer == INT_NODATA)
-               return RTN_ERR_NO_TOP_LAYER;
-            
-            if (dSandToDeposit > SEDIMENT_ELEV_TOLERANCE)
-            {
-               dSandToDeposit = tMin(dSandToDeposit, dTotSandEroded);
+            double dTotSandAndCoarseEroded = dTotSandEroded + dTotCoarseEroded;            
+            if (dTotSandAndCoarseEroded > SEDIMENT_ELEV_TOLERANCE)
+            {            
+               // Assume that the sediment size fractions which are deposited are in the same ratios as the previously-eroded sediment
+               double
+                  dTotToDeposit = tMin(-dElevDiff, dTotSandAndCoarseEroded),
+                  dSandToDeposit = dTotToDeposit * dTotSandEroded / dTotSandAndCoarseEroded,
+                  dCoarseToDeposit = dTotToDeposit * dTotCoarseEroded / dTotSandAndCoarseEroded;
                
-               double dSandNow = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->dGetSand();
-               m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->SetSand(dSandNow + dSandToDeposit);
+               int nTopLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopLayerAboveBasement();
                
-               // Set the changed-this-timestep switch
-               m_bUnconsChangedThisTimestep[nTopLayer] = true;
+               // Safety check
+               if (nTopLayer == INT_NODATA)
+                  return RTN_ERR_NO_TOP_LAYER;
                
-               dTotSandEroded -= dSandToDeposit;
+               if (dSandToDeposit > SEDIMENT_ELEV_TOLERANCE)
+               {
+                  dSandToDeposit = tMin(dSandToDeposit, dTotSandEroded);
+                  
+                  double dSandNow = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->dGetSand();
+                  m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->SetSand(dSandNow + dSandToDeposit);
+                  
+                  // Set the changed-this-timestep switch
+                  m_bUnconsChangedThisTimestep[nTopLayer] = true;
+                  
+                  dTotSandEroded -= dSandToDeposit;
+                  
+                  dStillToErodeOnProfile += dSandToDeposit;
+                  dStillToErodeOnPolygon += dSandToDeposit;
+               }
                
-               dStillToErodeOnProfile += dSandToDeposit;
-               dStillToErodeOnPolygon += dSandToDeposit;
+               if (dCoarseToDeposit > SEDIMENT_ELEV_TOLERANCE)
+               {
+                  dCoarseToDeposit = tMin(dCoarseToDeposit, dTotCoarseEroded);
+                  
+                  double dCoarseNow = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->dGetCoarse();
+                  m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->SetCoarse(dCoarseNow + dCoarseToDeposit);
+                  
+                  // Set the changed-this-timestep switch
+                  m_bUnconsChangedThisTimestep[nTopLayer] = true;
+                  
+                  dTotCoarseEroded -= dCoarseToDeposit;
+                  
+                  dStillToErodeOnProfile += dCoarseToDeposit;
+                  dStillToErodeOnPolygon += dCoarseToDeposit;
+               }
+               
+               // Now update the cell's layer elevations
+               m_pRasterGrid->m_Cell[nX][nY].CalcAllLayerElevsAndD50();
+               
+               // Update the cell's sea depth
+               m_pRasterGrid->m_Cell[nX][nY].SetSeaDepth();
+               
+               // Update the cell's beach deposition, and total beach deposition, values
+               m_pRasterGrid->m_Cell[nX][nY].IncrBeachDeposition(dSandToDeposit + dCoarseToDeposit);
+               
+               // And set the landform category
+               m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFSubCategory(LF_SUBCAT_DRIFT_BEACH);
+               
+               // Update per-timestep totals
+               m_ulThisTimestepNumBeachDepositionCells++;
+               m_dThisTimestepBeachDepositionSand += dSandToDeposit;
+               m_dThisTimestepBeachDepositionCoarse += dCoarseToDeposit;
+               
+   //             LogStream << m_ulIteration << ": nPoly = " << nPoly << ", beach deposition = " << dTotToDeposit << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "} nCoastPoint = " << nCoastPoint << " nDistSeawardFromNewCoast = " << nDistSeawardFromNewCoast << endl;
             }
-            
-            if (dCoarseToDeposit > SEDIMENT_ELEV_TOLERANCE)
-            {
-               dCoarseToDeposit = tMin(dCoarseToDeposit, dTotCoarseEroded);
-               
-               double dCoarseNow = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->dGetCoarse();
-               m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->SetCoarse(dCoarseNow + dCoarseToDeposit);
-               
-               // Set the changed-this-timestep switch
-               m_bUnconsChangedThisTimestep[nTopLayer] = true;
-               
-               dTotCoarseEroded -= dCoarseToDeposit;
-               
-               dStillToErodeOnProfile += dCoarseToDeposit;
-               dStillToErodeOnPolygon += dCoarseToDeposit;
-            }
-            
-            // Now update the cell's layer elevations
-            m_pRasterGrid->m_Cell[nX][nY].CalcAllLayerElevsAndD50();
-            
-            // Update the cell's sea depth
-            m_pRasterGrid->m_Cell[nX][nY].SetSeaDepth();
-            
-            // Update the cell's beach deposition, and total beach deposition, values
-            m_pRasterGrid->m_Cell[nX][nY].IncrBeachDeposition(dSandToDeposit + dCoarseToDeposit);
-            
-            // And set the landform category
-            m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFSubCategory(LF_SUBCAT_DRIFT_BEACH);
-            
-            // Update per-timestep totals
-            m_ulThisTimestepNumBeachDepositionCells++;
-            m_dThisTimestepBeachDepositionSand += dSandToDeposit;
-            m_dThisTimestepBeachDepositionCoarse += dCoarseToDeposit;
-            
-//             LogStream << m_ulIteration << ": nPoly = " << nPoly << ", beach deposition = " << dTotToDeposit << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "} nCoastPoint = " << nCoastPoint << " nDistSeawardFromNewCoast = " << nDistSeawardFromNewCoast << endl;
          }
       }
    }
@@ -1076,7 +1046,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
          // Leave the loop if we have deposited enough for this polygon
          if ((dSandToDepositOnPoly <= 0) && (dCoarseToDepositOnPoly <= 0))
          {
-//             LogStream << "\tIn nBeachRedistributionOnPolygon(), nPoly = " << nPoly << " nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << " leaving loop at start of timestep (" << nSeawardFromCoast << " / " << nParProfLen << ")  because enough deposition for polygon, dSandToDepositOnPoly = " << dSandToDepositOnPoly << " dCoarseToDepositOnPoly = " << dCoarseToDepositOnPoly << endl;
+//             LogStream << m_ulIteration << ": nPoly = " << nPoly << " nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << " leaving loop at start of timestep (" << nSeawardFromCoast << " / " << nParProfLen << ")  because enough deposition for polygon, dSandToDepositOnPoly = " << dSandToDepositOnPoly << " dCoarseToDepositOnPoly = " << dCoarseToDepositOnPoly << endl;
 
             break;
          }
@@ -1084,7 +1054,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
          // Leave the loop if we have done enough deposition for this profile
          if ((dSandToDepositOnProf <= 0) && (dCoarseToDepositOnProf <= 0))
          {
-//             LogStream << "\tIn nBeachRedistributionOnPolygon(), nPoly = " << nPoly << " nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << " leaving loop at start of timestep (" << nSeawardFromCoast << " / " << nParProfLen << ") because enough deposition for profile, dSandToDepositOnProf = " << dSandToDepositOnProf << " dCoarseToDepositOnProf = " << dCoarseToDepositOnProf << " dAllSedimentTargetPerProfile = " << dAllSedimentTargetPerProfile << endl;
+//             LogStream << m_ulIteration << ": nPoly = " << nPoly << " nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << " leaving loop at start of timestep (" << nSeawardFromCoast << " / " << nParProfLen << ") because enough deposition for profile, dSandToDepositOnProf = " << dSandToDepositOnProf << " dCoarseToDepositOnProf = " << dCoarseToDepositOnProf << " dAllSedimentTargetPerProfile = " << dAllSedimentTargetPerProfile << endl;
             break;
          }
 
@@ -1158,7 +1128,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
                      // Update the cell's beach deposition, and total beach deposition, values
                      m_pRasterGrid->m_Cell[nX][nY].IncrBeachDeposition(dSandToDeposit);
 
-//                      LogStream << "\tIn nBeachRedistributionOnPolygon(), nPoly = " << nPoly << ", sand deposition = " << dSandToDeposit << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "}  nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << endl;
+//                      LogStream << m_ulIteration << ": nPoly = " << nPoly << ", sand deposition = " << dSandToDeposit << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "}  nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << endl;
                   }
                }
 
@@ -1191,7 +1161,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
                      // Update the cell's beach deposition, and total beach deposition, values
                      m_pRasterGrid->m_Cell[nX][nY].IncrBeachDeposition(dCoarseToDeposit);
 
-   //                   LogStream << "\tIn nBeachRedistributionOnPolygon(), nPoly = " << nPoly << ", coarse deposition = " << dCoarseToDeposit << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << endl;
+   //                   LogStream << m_ulIteration << ": nPoly = " << nPoly << ", coarse deposition = " << dCoarseToDeposit << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << endl;
                   }
                }
 
@@ -1210,7 +1180,6 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
                   m_ulThisTimestepNumBeachDepositionCells++;
                   m_dThisTimestepBeachDepositionSand += dSandToDeposit;
                   m_dThisTimestepBeachDepositionCoarse += dCoarseToDeposit;
-
                }
             }
             else if ((dElevDiff < -SEDIMENT_ELEV_TOLERANCE) && ((m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()) || (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_DRIFT)))
@@ -1220,7 +1189,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
 
                m_pRasterGrid->m_Cell[nX][nY].SetPotentialBeachErosion(-dElevDiff);
 
-//                   LogStream << "\tIn nBeachRedistributionOnPolygon(), nPoly = " << nPoly << " going UP-COAST, potential beach erosion = " << -dElevDiff << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << " dThisElevNow = " << dThisElevNow << " Dean Elev = " << VdParProfileDeanElev[nSeawardFromCoast] << endl;
+//                   LogStream << m_ulIteration << ": nPoly = " << nPoly << " going UP-COAST, potential beach erosion = " << -dElevDiff << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << " dThisElevNow = " << dThisElevNow << " Dean Elev = " << VdParProfileDeanElev[nSeawardFromCoast] << endl;
 
                // Now get the number of the highest layer with non-zero thickness
                int nThisLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopNonZeroLayerAboveBasement();
@@ -1272,7 +1241,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
          }
       }
 
-//       LogStream << "\tIn nBeachRedistributionOnPolygon(), nPoly = " << nPoly << " nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << " dAllSedimentTargetPerProfile = " << dAllSedimentTargetPerProfile << " dSandToDepositOnProf = " << dSandToDepositOnProf << " dCoarseToDepositOnProf = " << dCoarseToDepositOnProf << " dSandToDepositOnPoly = " << dSandToDepositOnPoly << " dCoarseToDepositOnPoly = " << dCoarseToDepositOnPoly << endl;
+//       LogStream << m_ulIteration << ": nPoly = " << nPoly << " nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << " dAllSedimentTargetPerProfile = " << dAllSedimentTargetPerProfile << " dSandToDepositOnProf = " << dSandToDepositOnProf << " dCoarseToDepositOnProf = " << dCoarseToDepositOnProf << " dSandToDepositOnPoly = " << dSandToDepositOnPoly << " dCoarseToDepositOnPoly = " << dCoarseToDepositOnPoly << endl;
    }
 
    // Have we deposited the full amount?
@@ -1648,7 +1617,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
                         // Update the cell's beach deposition, and total beach deposition, values
                         m_pRasterGrid->m_Cell[nX][nY].IncrBeachDeposition(dCoarseToDeposit);
 
-//                         LogStream << "\tIn nBeachRedistributionOnPolygon(), nPoly = " << nPoly << " going UP-COAST, coarse deposition = " << dCoarseToDeposit << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << endl;
+//                         LogStream << m_ulIteration << ": nPoly = " << nPoly << " going UP-COAST, coarse deposition = " << dCoarseToDeposit << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << endl;
                      }
                   }
 
@@ -1667,7 +1636,6 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
                      m_ulThisTimestepNumBeachDepositionCells++;
                      m_dThisTimestepBeachDepositionSand += dSandToDeposit;
                      m_dThisTimestepBeachDepositionCoarse += dCoarseToDeposit;
-
                   }
                }
                else if ((dElevDiff < -SEDIMENT_ELEV_TOLERANCE) && ((m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()) || (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_DRIFT)))
@@ -1677,7 +1645,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
 
                   m_pRasterGrid->m_Cell[nX][nY].SetPotentialBeachErosion(-dElevDiff);
 
-//                   LogStream << "\tIn nBeachRedistributionOnPolygon(), nPoly = " << nPoly << " going UP-COAST, potential beach erosion = " << -dElevDiff << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << " dThisElevNow = " << dThisElevNow << " Dean Elev = " << VdParProfileDeanElev[nSeawardFromCoast] << endl;
+//                   LogStream << m_ulIteration << ": nPoly = " << nPoly << " going UP-COAST, potential beach erosion = " << -dElevDiff << " at [" << nX << "][" << nY << "] nCoastPoint = " << nCoastPoint << " nSeawardFromCoast = " << nSeawardFromCoast << " dThisElevNow = " << dThisElevNow << " Dean Elev = " << VdParProfileDeanElev[nSeawardFromCoast] << endl;
 
                   // Now get the number of the highest layer with non-zero thickness
                   int nThisLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopNonZeroLayerAboveBasement();

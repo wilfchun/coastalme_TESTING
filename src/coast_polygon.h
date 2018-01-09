@@ -52,7 +52,7 @@ private:
       m_dDeltaPotentialTotalSediment,     // Potential change (i.e. ignoring supply-limitation) in total sediment (depth in m, all size classes) this timestep (-ve values for erosion, +ve values for deposition)
       m_dDeltaEstimatedUnconsFine,        // Estimated actual change (i.e. considering supply-limitation) in fine-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
       m_dDeltaEstimatedUnconsSand,        // Estimated actual change (i.e. considering supply-limitation) in sand-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
-      m_dDeltaEstimatedUnconsCoarse,      // Estimatedactual change (i.e. considering supply-limitation) in coarse-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
+      m_dDeltaEstimatedUnconsCoarse,      // Estimated actual change (i.e. considering supply-limitation) in coarse-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
       m_dDeltaActualUnconsFine,           // Actual change (i.e. considering supply-limitation) in fine-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
       m_dDeltaActualUnconsSand,           // Actual change (i.e. considering supply-limitation) in sand-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
       m_dDeltaActualUnconsCoarse;         // Actual change (i.e. considering supply-limitation) in coarse-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)

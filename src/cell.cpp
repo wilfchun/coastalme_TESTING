@@ -34,6 +34,7 @@ CGeomCell::CGeomCell()
    m_bCoastline(false),
    m_bEstimated(false),
    m_bShadowBoundary(false),
+   m_bPossibleCoastStartCell(false),
    m_nEdgeCell(NO_DIRECTION),
    m_nPolygonID(INT_NODATA),
    m_nCoastlineNormal(INT_NODATA),
@@ -138,6 +139,19 @@ void CGeomCell::SetShadowZoneBoundary(void)
 bool CGeomCell::bIsShadowZoneBoundary(void) const
 {
    return m_bShadowBoundary;
+}
+
+
+//! Sets a flag to show that this cell has been flagged as a possible start- or end-point for a coastline
+void CGeomCell::SetPossibleCoastStartCell(void)
+{
+   m_bPossibleCoastStartCell = true;
+}
+
+//! Returns a flag which shows whether this cell has been flagged as a possible start- or end-point for a coastline
+bool CGeomCell::bIsPossibleCoastStartCell(void)
+{
+   return m_bPossibleCoastStartCell;
 }
 
 
@@ -561,7 +575,8 @@ void CGeomCell::InitCell(void)
    m_bCoastline                  =
    m_bIsInActiveZone             =
    m_bEstimated                  = 
-   m_bShadowBoundary             = false;
+   m_bShadowBoundary             = 
+   m_bPossibleCoastStartCell      = false;
 
    m_nPolygonID                  =
    m_nCoastlineNormal            = INT_NODATA;

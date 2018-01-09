@@ -142,7 +142,7 @@ using std::ostringstream;
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                                                    = "CoastalME 0.9.9 TESTING - 6 January 2018";
+string const   PROGNAME                                                    = "CoastalME 0.9.9 TESTING - 9 January 2018";
 string const   SHORTNAME                                                   = "CME";
 string const   CME_INI                                                     = "cme.ini";
 

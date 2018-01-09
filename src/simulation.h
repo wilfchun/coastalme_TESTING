@@ -601,8 +601,7 @@ private:
    void EstimateActualBeachErosionOnCell(int const, int const, int const, double const, double&, double&, double&);
    void ErodeBeachSedimentOnCellSupplyLimited(int const, int const, int const, double const, double&, double&, double&);
    int nRouteActualBeachErosionToAdjacentPolygons(int const, int const);
-   int nBeachRedistributionOnPolygon(int const, int const, double&);
-   int nDoBeachErosionOnPolygon(int const, int const, double const, double&);
+   int nDoBeachErosionOnPolygon(int const, int const, double const, double&, double&, double&);
    int nDoBeachDepositionOnPolygon(int const, int const, double const);
    void CalcDepthOfClosure(void);
    int nInterpolateAllDeepWaterWaveValues(void);

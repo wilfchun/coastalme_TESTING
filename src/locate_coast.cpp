@@ -234,10 +234,14 @@ int CSimulation::nTraceAllCoasts(void)
       // Are we at a coast?
       if ((! bThisCellIsSea) && bNextCellIsSea)
       {
-         // 'This' cell is just inland, has it already been flagged as a coast cell?
-         if (! m_pRasterGrid->m_Cell[nXThis][nYThis].bIsCoastline())
+         // 'This' cell is just inland, has it already been flagged as a possible start for a coastline (even if this subsequently 'failed' as a coastline)?
+         if (! m_pRasterGrid->m_Cell[nXThis][nYThis].bIsPossibleCoastStartCell())
          {
-            // It has not, so trace a coastline from 'this' cell
+            // It has not, so flag it
+            m_pRasterGrid->m_Cell[nXThis][nYThis].SetPossibleCoastStartCell();
+            LogStream << "Flagging [" << nXThis << "][" << nYThis << "] as possible coast start cell LEFT_HANDED EDGE" << endl;
+            
+            // And try to trace a coastline from 'this' cell
             int nSearchDirection = nGetOppositeDirection(m_VEdgeCellEdge[n]);
             int nRet = nTraceCoastLine(nSearchDirection, LEFT_HANDED, nXThis, nYThis);
             if (nRet != RTN_OK)
@@ -246,10 +250,14 @@ int CSimulation::nTraceAllCoasts(void)
       }
       else if (bThisCellIsSea && (! bNextCellIsSea))
       {
-         // The 'next' cell is just inland, has it already been flagged as a coast cell?
-         if (! m_pRasterGrid->m_Cell[nXNext][nYNext].bIsCoastline())
+         // The 'next' cell is just inland, has it already been flagged as a possible start for a coastline (even if this subsequently 'failed' as a coastline)?
+         if (! m_pRasterGrid->m_Cell[nXNext][nYNext].bIsPossibleCoastStartCell())
          {
-            // It has not, so trace a coastline from the 'next' cell
+            // It has not, so flag it
+            m_pRasterGrid->m_Cell[nXThis][nYThis].SetPossibleCoastStartCell();
+            LogStream << "Flagging [" << nXThis << "][" << nYThis << "] as possible coast start cell RIGHT_HANDED EDGE" << endl;
+            
+            // And try to trace a coastline from 'this' cell
             int nSearchDirection = nGetOppositeDirection(m_VEdgeCellEdge[n+1]);
             int nRet = nTraceCoastLine(nSearchDirection, RIGHT_HANDED, nXNext, nYNext);
             if (nRet != RTN_OK)
@@ -271,13 +279,14 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
 {
    bool
       bAtCoast = false,
-      bHasLeftStartEdge = false;
+      bHasLeftStartEdge = false,
+      bTooLong = false;
 
    int
       nX = nStartX,
       nY = nStartY,
       nSearchDirection = nStartSearchDirection,
-      nRoundTheLoop = 0;
+      nRoundLoop = -1;
 //       nThisLen = 0;
 //       nLastLen = 0,
 //       nPreLastLen = 0;
@@ -295,31 +304,40 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
 //       LogStream <<  "=================" << endl;
 
       // Safety check
-      if (++nRoundTheLoop > m_nCoastMax)
+      if (++nRoundLoop > m_nCoastMax)
       {
+         bTooLong = true;
+         
          LogStream << m_ulIteration << ": abandoning coastline tracing from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}, exceeded maximum search length (" << m_nCoastMax << ")" << endl;
 
          for (int n = 0; n < ILTempGridCRS.nGetSize(); n++)
             LogStream << "[" << ILTempGridCRS[n].nGetX() << "][" << ILTempGridCRS[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[n].nGetY()) << "}" << endl;
-
          LogStream << endl;
 
-         return RTN_OK;
+         break;
       }
 
       // OK so far: so have we left the start edge?
       if (! bHasLeftStartEdge)
       {
+         // We have not yet left the start edge
          if (((nStartSearchDirection == SOUTH) && (nY > nStartY)) || ((nStartSearchDirection == NORTH) && (nY < nStartY)) ||
              ((nStartSearchDirection == EAST) && (nX > nStartX))  || ((nStartSearchDirection == WEST) && (nX < nStartX)))
             bHasLeftStartEdge = true;
+         
+         // Flag this cell to ensure that it is not chosen as a coastline start cell later
+         m_pRasterGrid->m_Cell[nX][nY].SetPossibleCoastStartCell();
+         LogStream << "Flagging [" << nX << "][" << nY << "] as possible coast start cell NOT YET LEFT EDGE" << endl;         
       }
 
       // Leave the loop if the vector coastline has left the start edge, then we find a coast cell which is at an edge (note that this edge could be the same edge from which this coastline started)
       if (bHasLeftStartEdge && bAtCoast)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
+         {
+            LogStream << "XXXXX" << endl;
             break;
+         }
       }
 
       // OK now sort out the next iteration of the search
@@ -657,29 +675,42 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    }
    while (true);
 
+   // OK, we have finished tracing this coastline on the grid. But is the coastline too long or too short?
    int nCoastSize = ILTempGridCRS.nGetSize();
-
+   
+   if (bTooLong)
+   {
+      // The vector coastline is too long, so abandon it
+      LogStream << m_ulIteration << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} to [" << ILTempGridCRS[nCoastSize-1].nGetX() << "][" << ILTempGridCRS[nCoastSize-1].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[nCoastSize-1].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[nCoastSize-1].nGetY()) << "} since size (" << nCoastSize << ") is greater than maximum (" << m_nCoastMax << ")" << endl;
+      
+      // Unmark these cells as coast cells
+      for (int n = 0; n < nCoastSize; n++)
+         m_pRasterGrid->m_Cell[ILTempGridCRS[n].nGetX()][ILTempGridCRS[n].nGetY()].SetAsCoastline(false);
+      
+      return RTN_OK;
+   }
+   
    if (nCoastSize == 0)
    {
-      // Zero-length coastline
+      // Zero-length coastline, so abandon it
       LogStream << m_ulIteration << ": " << WARN << "abandoning zero-length coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}" << endl;
 
       return RTN_OK;
    }
 
-   // OK, we have finished tracing this coastline on the grid, so check to see if the coastline is too short
    if (nCoastSize < m_nCoastMin)
    {
-      // The vector coastline is unreasonably small, so abandon it
+      // The vector coastline is too small, so abandon it
       LogStream << m_ulIteration << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} to [" << ILTempGridCRS[nCoastSize-1].nGetX() << "][" << ILTempGridCRS[nCoastSize-1].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[nCoastSize-1].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[nCoastSize-1].nGetY()) << "} since size (" << nCoastSize << ") is less than minimum (" << m_nCoastMin << ")" << endl;
-
-      // Unmark these cells
+      
+      // Unmark these cells as coast cells
       for (int n = 0; n < nCoastSize; n++)
          m_pRasterGrid->m_Cell[ILTempGridCRS[n].nGetX()][ILTempGridCRS[n].nGetY()].SetAsCoastline(false);
 
       return RTN_OK;
    }
 
+   // OK this new coastline is fine
    int
       nEndX = nX,
       nEndY = nY,

@@ -42,7 +42,8 @@ private:
       m_bIsInActiveZone,
       m_bCoastline,
       m_bEstimated,
-      m_bShadowBoundary;
+      m_bShadowBoundary,
+      m_bPossibleCoastStartCell;
 
    int
       m_nEdgeCell,
@@ -118,6 +119,9 @@ public:
    void SetEdgeCell(int const);
    int nGetEdgeCell(void) const;
    bool bIsEdgeCell(void) const;
+   
+   void SetPossibleCoastStartCell(void);
+   bool bIsPossibleCoastStartCell(void);
    
    void SetPolygonID(int const);
    int nGetPolygonID(void) const;
