@@ -680,8 +680,12 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    
    if (bTooLong)
    {
-      // The vector coastline is too long, so abandon it
-      LogStream << m_ulIteration << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} to [" << ILTempGridCRS[nCoastSize-1].nGetX() << "][" << ILTempGridCRS[nCoastSize-1].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[nCoastSize-1].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[nCoastSize-1].nGetY()) << "} since size (" << nCoastSize << ") is greater than maximum (" << m_nCoastMax << ")" << endl;
+      // Around loop too many times, so abandon this coastline
+      LogStream << m_ulIteration << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} since round loop " << nRoundLoop << " times (m_nCoastMax = " << m_nCoastMax << "), coastline size is " << nCoastSize;
+      
+      if (nCoastSize > 0)
+         LogStream << ", it ended at [" << ILTempGridCRS[nCoastSize-1].nGetX() << "][" << ILTempGridCRS[nCoastSize-1].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[nCoastSize-1].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[nCoastSize-1].nGetY()) << "}";
+      LogStream << endl;
       
       // Unmark these cells as coast cells
       for (int n = 0; n < nCoastSize; n++)
