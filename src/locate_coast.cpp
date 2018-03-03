@@ -293,6 +293,11 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
 
    // Temporary coastline as integer points (grid CRS)
    CGeomILine ILTempGridCRS;
+   
+   // Mark the start cell as coast and add it to the vector object
+   m_pRasterGrid->m_Cell[nStartX][nStartY].SetAsCoastline(true);
+   CGeom2DIPoint PtiStart(nStartX, nStartY);
+   ILTempGridCRS.Append(&PtiStart);   
 
    // Start at this grid-edge point and trace the rest of the coastline using the 'wall follower' rule for maze traversal, trying to keep next to cells flagged as sea
    do
@@ -720,7 +725,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
       nEndY = nY,
       nCoastEndX = ILTempGridCRS[nCoastSize-1].nGetX(),
       nCoastEndY = ILTempGridCRS[nCoastSize-1].nGetY();
-
+      
    if ((nCoastEndX != nEndX) || (nCoastEndY != nEndY))
    {
       // The grid-edge cell at nEndX, nEndY is not already at end of ILTempGridCRS. But is the final cell in ILTempGridCRS already at the edge of the grid?

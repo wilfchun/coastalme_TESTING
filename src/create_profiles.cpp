@@ -566,8 +566,8 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    auto it = find(m_VEdgeCell.begin(), m_VEdgeCell.end(), PtiProfileStart);
    if (it == m_VEdgeCell.end())
    {
-      // Not found
-      LogStream << m_ulIteration << ": " << ERR << " when constructing start-of-coast profile, [" <<  PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] not found in list of edge cells" << endl;
+      // Not found. This can happen because of rounding problems, i.e. the cell which was stored as the first cell of the raster coastline 
+      LogStream << m_ulIteration << ": " << ERR << " when constructing start-of-coast profile, [" <<  PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiProfileStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiProfileStart.nGetY()) << "} not found in list of edge cells" << endl;
 
       return RTN_ERR_COAST_CANT_FIND_EDGE_CELL;
    }

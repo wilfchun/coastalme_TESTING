@@ -240,6 +240,7 @@ private:
       m_dC_0,                          // Deep water wave speed (m/s)
       m_dL_0,                          // Deep water wave length (m)
       m_dWaveDepthRatioForWaveCalcs,
+      m_dBreakingWaveHeightDeptRatio,
       m_dAllCellsDeepWaterWaveHeight,
       m_dAllCellsDeepWaterWaveOrientation,
       m_dMaxUserInputWaveHeight,
@@ -294,7 +295,7 @@ private:
       m_dProfileMaxSlope,
       m_dSimpleSmoothWeight,
       m_dBeachSmoothingVertTolerance,
-      m_dCliffErodibility,
+      m_dCliffErosionResistance,
       m_dNotchOverhangAtCollapse,
       m_dNotchBaseBelowSWL,
       m_dCliffDepositionA,
@@ -513,6 +514,7 @@ private:
    void SetRasterFileCreationDefaults(void);
    int nInterpolateWavePropertiesToWithinPolygonCells(vector<int> const*, vector<int> const*, vector<double> const*, vector<double> const*);
    int nInterpolateWavePropertiesToActiveZoneCells(vector<int> const*, vector<int> const*, vector<bool> const*);
+   int nInterpolateWavePropertiesToActiveZoneCells(void);
 
    // Initialization
    bool bCreateErosionPotentialLookUp(vector<double>*, vector<double>*, vector<double>*);

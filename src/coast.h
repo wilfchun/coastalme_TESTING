@@ -68,6 +68,7 @@ private:
       m_VdDeepWaterWaveHeight,      // The deep water wave height at the end of a normal drawn from each point on m_LCoastlineExtCRS
       m_VdDeepWaterWaveOrientation, // The deep water wave orientation at the end of a normal drawn from each point on m_LCoastlineExtCRS
       m_VdBreakingWaveHeight,       // The breaking wave height on a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdCoastWaveHeight,          // The wave height at coast point on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdBreakingWaveOrientation,  // The breaking wave orientation on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdDepthOfBreaking,          // The depth of breaking on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdFluxOrientation,          // As in the COVE model, is the orientation alongshore energy/sediment movement; a +ve flux is in direction of increasing indices along coast. At each point on m_LCoastlineExtCRS
@@ -155,6 +156,9 @@ public:
 
    void SetBreakingWaveHeight(int const, double const);
    double dGetBreakingWaveHeight(int const) const;
+
+   void SetCoastWaveHeight(int const, double const);
+   double dGetCoastWaveHeight(int const) const;
    
    void SetBreakingWaveOrientation(int const, double const);
    double dGetBreakingWaveOrientation(int const) const;
@@ -168,9 +172,9 @@ public:
    void SetFluxOrientation(int const, double const);
    double dGetFluxOrientation(int const) const;
    
-   void SetWaveEnergy(int const, double const);
-   double dGetWaveEnergy(int const) const;
-
+   void SetWaveEnergyatBreaking(int const, double const);
+   double dGetWaveEnergyatBreaking(int const) const;
+   
    void AppendCoastLandform(CACoastLandform*);
    CACoastLandform* pGetCoastLandform(int const);
 

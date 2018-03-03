@@ -266,7 +266,7 @@ int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int co
       // dVRecessionXY[i] = (dForce * dVBeachProtection[i] * dVErosionPotentialFunc[i] * dVSlope[i] * m_dTimeStep * 3600) / dVR[i]
       //
       // XY recession must be -ve or zero. If it is +ve then it represents accretion not erosion, which must be described by a different set of equations. So we also need to constrain XY recession to be <= 0
-      dVRecessionXY[i] = tMin(m_VCoast[nCoast].dGetWaveEnergy(nCoastPoint) * dVProfileErosionPotential[i] * dVConsSlope[i] / m_dR, 0.0);
+      dVRecessionXY[i] = tMin(m_VCoast[nCoast].dGetWaveEnergyatBreaking(nCoastPoint) * dVProfileErosionPotential[i] * dVConsSlope[i] / m_dR, 0.0);
       dVSCAPEXY[i] = VdProfileDistXY[i] - dVRecessionXY[i];
    }
 
@@ -567,10 +567,10 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
          //
          //
          // XY recession must be -ve or zero. If it is +ve then it represents accretion not erosion, which must be described by a different set of equations. So we also need to constrain XY recession to be <= 0
-         dVParRecessionXY[i] = tMin(m_VCoast[nCoast].dGetWaveEnergy(nThisPointOnCoast) * dVParProfileErosionPotential[i] * dVParConsSlope[i] / m_dR, 0.0);
+         dVParRecessionXY[i] = tMin(m_VCoast[nCoast].dGetWaveEnergyatBreaking(nThisPointOnCoast) * dVParProfileErosionPotential[i] * dVParConsSlope[i] / m_dR, 0.0);
          dVParSCAPEXY[i] = dVParProfileDistXY[i] - dVParRecessionXY[i];
 
-//         LogStream << m_ulIteration << ": [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " <<  dGridCentroidYToExtCRSY(nYPar) << "} wave energy = " << m_VCoast[nCoast].dGetWaveEnergy(nThisPointOnCoast) << " erosion potential = " << dVParProfileErosionPotential[i] << " slope = " << dVParProfileSlope[i] << " dVParZDiff[i] = " << dVParZDiff[i] << " nParProfSize = " << nParProfSize << endl;
+//         LogStream << m_ulIteration << ": [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " <<  dGridCentroidYToExtCRSY(nYPar) << "} wave energy = " << m_VCoast[nCoast].dGetWaveEnergyatBreaking(nThisPointOnCoast) << " erosion potential = " << dVParProfileErosionPotential[i] << " slope = " << dVParProfileSlope[i] << " dVParZDiff[i] = " << dVParZDiff[i] << " nParProfSize = " << nParProfSize << endl;
       }
 
       vector<double> dVParDeltaZ(nParProfSize, 0);

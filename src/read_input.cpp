@@ -1473,7 +1473,7 @@ bool CSimulation::bReadRunData(void)
          case 34:
             // Deep water wave height (m) or a file of point vectors giving deep water wave height (m) and orientation (for units, see below)
             // TODO need option for multiple files
-            if (bIsNumeric(&strRH))
+            if (isdigit(strRH.at(0)))    // if start with a number is a single value, if a file, filename must NOT start with number
             {
                // Just one value of wave height for all deep water cells
                m_bSingleDeepWaterWaveValues = true;
@@ -1550,8 +1550,14 @@ bool CSimulation::bReadRunData(void)
 //             }
 //             break;
 
+	 case 36:
+            // Breaking wave height-to-depth ratio 
+            m_dBreakingWaveHeightDeptRatio = atof(strRH.c_str());
+            if (m_dBreakingWaveHeightDeptRatio <= 0)
+               strErr = "breaking wave height to depth ratio must be greater than zero";
+            break;
          // ----------------------------------------------------- Sediment data ------------------------------------------------
-         case 36:
+         case 37:
             // Simulate coast platform erosion?
             strRH = strToLower(&strRH);
 
@@ -1560,28 +1566,28 @@ bool CSimulation::bReadRunData(void)
                m_bDoCoastPlatformErosion = true;
             break;
 
-         case 37:
-            // R values along profile, see Walkden & Hall, 2011
+         case 38:
+            // R (resistance to erosion) values along profile, see Walkden & Hall, 2011
             m_dR = atof(strRH.c_str());
             if (m_dR <= 0)
                strErr = "R values must be greater than zero";
             break;
 
-         case 38:
+         case 39:
             // Beach sediment transport at grid edges [0 = closed, 1 = open, 2 = re-circulate]
             m_nUnconsSedimentHandlingAtGridEdges = atoi(strRH.c_str());
             if ((m_nUnconsSedimentHandlingAtGridEdges < GRID_EDGE_CLOSED) || (m_nUnconsSedimentHandlingAtGridEdges > GRID_EDGE_RECIRCULATE))
                strErr = "switch for handling of beach sediment at grid edges must be 0, 1, or 2";
             break;
 
-         case 39:
+         case 40:
             // Beach erosion/deposition equation [0 = CERC, 1 = Kamphuis]
             m_nBeachErosionDepositionEquation = atoi(strRH.c_str());
             if ((m_nBeachErosionDepositionEquation != EQUATION_CERC) && (m_nBeachErosionDepositionEquation != EQUATION_KAMPHUIS))
                strErr = "switch for beach erosion/deposition equation must be 0 or 1";
             break;
 
-         case 40:
+         case 41:
             // Median size of fine sediment (mm)      [0 = default, only for Kamphuis eqn]
             m_dD50Fine = atof(strRH.c_str());
             if (m_dD50Fine < 0)
@@ -1591,7 +1597,7 @@ bool CSimulation::bReadRunData(void)
                m_dD50Fine = 0.0625;
             break;
 
-         case 41:
+         case 42:
             // Median size of sand sediment (mm)      [0 = default, only for Kamphuis eqn]
             m_dD50Sand = atof(strRH.c_str());
             if (m_dD50Sand < 0)
@@ -1601,7 +1607,7 @@ bool CSimulation::bReadRunData(void)
                m_dD50Sand = 0.42;
             break;
 
-         case 42:
+         case 43:
             // Median size of coarse sediment (mm)      [0 = default, only for Kamphuis eqn]
             m_dD50Coarse = atof(strRH.c_str());
             if (m_dD50Coarse < 0)
@@ -1611,35 +1617,35 @@ bool CSimulation::bReadRunData(void)
                m_dD50Coarse = 19.0;
             break;
 
-         case 43:
+         case 44:
             // Density of beach sediment (kg/m3)
             m_dBeachSedimentDensity = atof(strRH.c_str());
             if (m_dBeachSedimentDensity <= 0)
                strErr = "density of beach sediment must be greater than zero";
             break;
 
-         case 44:
+         case 45:
             // Beach sediment porosity
             m_dBeachSedimentPorosity = atof(strRH.c_str());
             if (m_dBeachSedimentPorosity <= 0)
                strErr = "porosity of beach sediment must be greater than zero";
             break;
 
-         case 45:
+         case 46:
             // Erodibility of fine-sized sediment
             m_dFineErodibility = atof(strRH.c_str());
             if (m_dFineErodibility < 0)
                strErr = "cannot have negative erodibility values";
             break;
 
-         case 46:
+         case 47:
             // Erodibility of sand-sized sediment
             m_dSandErodibility = atof(strRH.c_str());
             if (m_dSandErodibility < 0)
                strErr = "cannot have negative erodibility values";
             break;
 
-         case 47:
+         case 48:
             // Erodibility of coarse-sized sediment
             m_dCoarseErodibility = atof(strRH.c_str());
             if (m_dCoarseErodibility < 0)
@@ -1667,21 +1673,21 @@ bool CSimulation::bReadRunData(void)
    dErodCoarse                                                    : 0.3
 */
 
-         case 48:
+         case 49:
             // Transport parameter KLS in CERC equation
             m_dKLS = atof(strRH.c_str());
             if (m_dKLS <= 0)
                strErr = "transport parameter KLS for CERC equation must be greater than zero";
             break;
 
-         case 49:
+         case 50:
             // Transport parameter for Kamphuis equation
             m_dKamphuis = atof(strRH.c_str());
             if (m_dKamphuis <= 0)
                strErr = "transport parameter for Kamphuis equation must be greater than zero";
             break;
 
-         case 50:
+         case 51:
             // Dean profile start, height above still water level (m)
             m_dDeanProfileStartAboveSWL = atof(strRH.c_str());
             if (m_dDeanProfileStartAboveSWL < 0)
@@ -1689,7 +1695,7 @@ bool CSimulation::bReadRunData(void)
             break;
 
          // ------------------------------------------------ Cliff collapse data -----------------------------------------------
-         case 51:
+         case 52:
             // Simulate cliff collapse?
             strRH = strToLower(&strRH);
 
@@ -1698,35 +1704,35 @@ bool CSimulation::bReadRunData(void)
                m_bDoCliffCollapse = true;
             break;
 
-         case 52:
-            // Cliff erodibility
-            m_dCliffErodibility = atof(strRH.c_str());
-            if (m_dCliffErodibility <= 0)
-               strErr = "cliff erodibility must be greater than 0";
+         case 53:
+            // Cliff resistance to erosion
+            m_dCliffErosionResistance = atof(strRH.c_str());
+            if (m_dCliffErosionResistance <= 0)
+               strErr = "cliff resistance to erosion must be greater than 0";
             break;
 
-         case 53:
+         case 54:
             // Notch overhang at collapse (m)
             m_dNotchOverhangAtCollapse = atof(strRH.c_str());
             if (m_dNotchOverhangAtCollapse <= 0)
                strErr = "cliff notch overhang at collapse must be greater than 0";
             break;
 
-         case 54:
+         case 55:
             // Notch base below still water level (m)
             m_dNotchBaseBelowSWL = atof(strRH.c_str());
             if (m_dNotchBaseBelowSWL < 0)
                strErr = "cliff notch base below still water level must be greater than 0";
             break;
 
-         case 55:
+         case 56:
             // Scale parameter A for cliff deposition (m^(1/3)) [0 = auto]
             m_dCliffDepositionA = atof(strRH.c_str());
             if (m_dCliffDepositionA < 0)
                strErr = "scale parameter A for cliff deposition must be 0 [= auto] or greater";
             break;
 
-         case 56:
+         case 57:
             // Planview width of cliff deposition talus (in cells) [must be odd]
             m_nCliffDepositionPlanviewWidth = atoi(strRH.c_str());
             if ((m_nCliffDepositionPlanviewWidth % 2) == 0)
@@ -1735,14 +1741,14 @@ bool CSimulation::bReadRunData(void)
                strErr = "planview width of cliff deposition must be greater than 0";
             break;
 
-         case 57:
+         case 58:
             // Planview length of cliff deposition talus (m)
             m_dCliffDepositionPlanviewLength = atof(strRH.c_str());
             if (m_dCliffDepositionPlanviewLength <= 0)
                strErr = "planview length of cliff deposition must be greater than 0";
             break;
 
-         case 58:
+         case 59:
             // Height of landward end of talus, as a fraction of cliff elevation
             m_dCliffDepositionHeightFrac = atof(strRH.c_str());
             if (m_dCliffDepositionHeightFrac < 0)
@@ -1750,14 +1756,14 @@ bool CSimulation::bReadRunData(void)
             break;
 
          // ------------------------------------------------------ Other data --------------------------------------------------
-         case 59:
+         case 60:
             // Gravitational acceleration (m2/s)
             m_dG = atof(strRH.c_str());
             if (m_dG <= 0)
                strErr = "gravitational acceleration must be greater than zero";
             break;
 
-         case 60:
+         case 61:
             // Spacing of coastline normals (m)
             m_dCoastNormalAvgSpacing = atof(strRH.c_str());
             if (m_dCoastNormalAvgSpacing == 0)
@@ -1766,7 +1772,7 @@ bool CSimulation::bReadRunData(void)
                strErr = "spacing of coastline normals must be greater than zero";
             break;
 
-         case 61:
+         case 62:
             // Random factor for spacing of normals  [0 to 1, 0 = deterministic]
             m_dCoastNormalRandSpaceFact = atof(strRH.c_str());
             if (m_dCoastNormalRandSpaceFact < 0)
@@ -1775,21 +1781,21 @@ bool CSimulation::bReadRunData(void)
                strErr = "spacing of coastline normals must be less than one";
             break;
 
-         case 62:
+         case 63:
             // Length of coastline normals (m)
             m_dCoastNormalLength = atof(strRH.c_str());
             if (m_dCoastNormalLength <= 0)
                strErr = "length of coastline normals must be greater than zero";
             break;
 
-         case 63:
+         case 64:
             // Maximum number of 'cape' normals
             m_nNaturalCapeNormals = atoi(strRH.c_str());
             if (m_nNaturalCapeNormals < 0)
                strErr = "number of 'cape' normals must be zero or greater";
             break;
 
-         case 64:
+         case 65:
             // Start depth for wave calcs (ratio to deep water wave height)     : 5
             m_dWaveDepthRatioForWaveCalcs = atof(strRH.c_str());
 
@@ -1798,7 +1804,7 @@ bool CSimulation::bReadRunData(void)
             break;
 
          // ----------------------------------------------------- Testing only -------------------------------------------------
-         case 65:
+         case 66:
             // Output profile data?
             strRH = strToLower(&strRH);
 
@@ -1810,7 +1816,7 @@ bool CSimulation::bReadRunData(void)
 
             break;
 
-         case 66:
+         case 67:
             // Numbers of profiles to be saved
             if (m_bOutputProfileData)
             {
@@ -1830,7 +1836,7 @@ bool CSimulation::bReadRunData(void)
             }
             break;
 
-         case 67:
+         case 68:
            // Timesteps to save profile for output
             if (m_bOutputProfileData)
             {
@@ -1850,7 +1856,7 @@ bool CSimulation::bReadRunData(void)
             }
             break;
 
-         case 68:
+         case 69:
             // Output parallel profile data?
             strRH = strToLower(&strRH);
 
@@ -1859,7 +1865,7 @@ bool CSimulation::bReadRunData(void)
                m_bOutputParallelProfileData = true;
             break;
 
-         case 69:
+         case 70:
             // Output erosion potential look-up data?
             strRH = strToLower(&strRH);
 
@@ -1868,7 +1874,7 @@ bool CSimulation::bReadRunData(void)
                m_bOutputLookUpData = true;
             break;
 
-         case 70:
+         case 71:
             // Erode shore platform in alternate direction each timestep?
             strRH = strToLower(&strRH);
 

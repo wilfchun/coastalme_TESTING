@@ -2223,6 +2223,45 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
    return RTN_OK;
 }
 
+/*===============================================================================================================================
+
+ Locate active cells as cells where wave height to depth ratio is larger than breaking limit 
+
+===============================================================================================================================*/
+int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(void)
+{
+   int
+      nXSize = m_nXMaxBoundingBox - m_nXMinBoundingBox + 1,
+      nYSize = m_nYMaxBoundingBox - m_nYMinBoundingBox + 1;
+//       nGridSize = nXSize * nYSize;
+//       LogStream << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl;
+
+   // Calculate the wave height-to-depth ratio for each cell
+//    int n = 0;
+   for (int nY = 0; nY < nYSize; nY++)
+   {
+      for (int nX = 0; nX < nXSize; nX++)
+      {
+         int
+            nActualX = nX + m_nXMinBoundingBox,
+            nActualY = nY + m_nYMinBoundingBox;
+
+         double
+            dWaveHeight = m_pRasterGrid->m_Cell[nActualX][nActualY].dGetWaveHeight(),
+            dSeaDepth = m_pRasterGrid->m_Cell[nActualX][nActualY].dGetSeaDepth();
+
+         if (m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea())
+         {
+//                LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] active zone  = " << (VbOut[n] ? "true" : "false") << endl;
+            m_pRasterGrid->m_Cell[nActualX][nActualY].SetInActiveZone((dWaveHeight / dSeaDepth) >= m_dBreakingWaveHeightDeptRatio);
+         }
+//          n++;
+      }
+   }
+
+   return RTN_OK;
+}
+
 
 /*===============================================================================================================================
 

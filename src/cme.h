@@ -142,7 +142,7 @@ using std::ostringstream;
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                                                    = "CoastalME 0.9.9 TESTING - 10 January 2018";
+string const   PROGNAME                                                    = "CoastalME 0.9.9 TESTING - 3 March 2018";
 string const   SHORTNAME                                                   = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -225,11 +225,10 @@ unsigned long const  MASK                                                  = 0xf
 // Physically-based constants
 double const   PI                                                          = 3.141592653589793238462643;
 
-double const   WAVEHEIGHT_OVER_WATERDEPTH_AT_BREAKING                      = 0.78;        // In active zone if wave height / water depth exceeds this
 double const   TESTDEPTH_DECREMENT                                         = 0.05;        // For the wave breaking timestep
 double const   BEACH_PROTECTION_HB_RATIO                                   = 0.23;        // The beach protection factor is this times breaking depth
 double const   WALKDEN_HALL_PARAM_1                                        = 3.25;        // First param in Equation 4 from Walkden & Hall, 2005
-double const   WALKDEN_HALL_PARAM_2                                        = 0.75;        // Second param in Equation 4 from Walkden & Hall, 2005
+double const   WALKDEN_HALL_PARAM_2                                        = 1.50;        // Second param in Equation 4 from Walkden & Hall, 2005
 
 double const   DEPTH_OVER_DB_INCREMENT                                     = 0.001;       // Depth Over DB increment for erosion potential look-up function
 double const   INVERSE_DEPTH_OVER_DB_INCREMENT                             = 1000;        // Inverse of the above

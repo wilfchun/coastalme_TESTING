@@ -621,7 +621,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                else if (nDataItem == VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE)
                {
                   // Set the feature's attribute
-                  pOGRFeature->SetField(strFieldValue1.c_str(), m_VCoast[i].dGetWaveEnergy(j));
+                  pOGRFeature->SetField(strFieldValue1.c_str(), m_VCoast[i].dGetWaveEnergyatBreaking(j));
                }
                else if (nDataItem == VECTOR_PLOT_MEAN_WAVE_ENERGY)
                {
@@ -651,7 +651,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                {
                   CACoastLandform* pCoastLandform = m_VCoast[i].pGetCoastLandform(j);
                   int nCategory = pCoastLandform->nGetLandFormCategory();
-                  double dNotchOverhang = DBL_NODATA;
+                  double dNotchOverhang = 0.0; // WAS DBL_NODATA
 
                   if (nCategory == LF_CAT_CLIFF)
                   {

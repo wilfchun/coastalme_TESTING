@@ -54,7 +54,11 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
          CACoastLandform* pCoastLandform = m_VCoast[i].pGetCoastLandform(j);
 
          // Update accumulated wave energy for the coastal landform object
-         double dWaveEnergy = m_VCoast[i].dGetWaveEnergy(j);
+         double 
+            dWaveHeightAtCoast = m_VCoast[i].dGetCoastWaveHeight(j),
+            dWaveErosiveForce = pow(dWaveHeightAtCoast, WALKDEN_HALL_PARAM_1) * pow(m_dWavePeriod, WALKDEN_HALL_PARAM_2),
+            dWaveEnergy = dWaveErosiveForce * m_dTimeStep * 3600;
+    
 //          assert(bIsFinite(dWaveEnergy));
          pCoastLandform->IncTotAccumWaveEnergy(dWaveEnergy);
 
@@ -66,7 +70,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
             CRWCliff* pCliff = reinterpret_cast<CRWCliff*>(pCoastLandform);
 
             // Calculate this-timestep cliff notch erosion (is a length in external CRS units)
-            double dNotchExtension = m_dCliffErodibility * dWaveEnergy;
+            double dNotchExtension = dWaveEnergy / m_dCliffErosionResistance;
 
             // Constrain this-timestep notch extension if it is more than the length of one cell side (in external CRS units), since the most we can remove in a single timestep is one coastal cell
             dNotchExtension = tMin(m_dCellSide, dNotchExtension);

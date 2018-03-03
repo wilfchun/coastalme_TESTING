@@ -242,7 +242,8 @@ int CSimulation::nDoAllPropagateWaves(void)
       return nRet;
  
    // Interpolate the wave attributes from all profile points to all sea cells that are in the active zone
-   nRet = nInterpolateWavePropertiesToActiveZoneCells(&VnXAll, &VnYAll, &VbBreakingAll);
+   //nRet = nInterpolateWavePropertiesToActiveZoneCells(&VnXAll, &VnYAll, &VbBreakingAll);
+   nRet = nInterpolateWavePropertiesToActiveZoneCells();
    if (nRet != RTN_OK)
       return nRet;
 
@@ -286,7 +287,7 @@ int CSimulation::nDoAllPropagateWaves(void)
             // Calculate total wave energy at each coast point during this timestep
             double dWaveEnergy = dErosiveWaveForce * m_dTimeStep * 3600;
             
-            m_VCoast[nCoast].SetWaveEnergy(nCoastPoint, dWaveEnergy);
+            m_VCoast[nCoast].SetWaveEnergyatBreaking(nCoastPoint, dWaveEnergy);
             
 //             // TODO DFM check with Andres
 //             double dFluxOrientation = m_VCoast[nCoast].dGetFluxOrientation(nCoastPoint);
@@ -298,7 +299,7 @@ int CSimulation::nDoAllPropagateWaves(void)
 //                
 // //                LogStream << m_ulIteration << ": at coastpoint " << nCoastPoint << ", dFluxOrientation = " << dFluxOrientation << " dBreakingWaveOrientation = " << dBreakingWaveOrientation << " dAngleBetween = " << dAngleBetween << " dIncidentWaveEnergy = " << dIncidentWaveEnergy << endl;
 //             
-//                m_VCoast[nCoast].SetWaveEnergy(nCoastPoint, dIncidentWaveEnergy);
+//                m_VCoast[nCoast].SetWaveEnergyatBreaking(nCoastPoint, dIncidentWaveEnergy);
 //             }
          }
       }
@@ -653,7 +654,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
                   dProfileWaveOrientation = dKeepWithin360(dAlpha + 270 + dFluxOrientationThis);
                
                // Test to see if the wave breaks at this depth
-               if (dProfileWaveHeight > (dSeaDepth * WAVEHEIGHT_OVER_WATERDEPTH_AT_BREAKING))
+               if (dProfileWaveHeight > (dSeaDepth * m_dBreakingWaveHeightDeptRatio))
                {
                   // It does
                   bBreaking = true;
@@ -666,8 +667,10 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
             else
             {
                // Wave has already broken
-               dProfileWaveOrientation = dProfileBreakingWaveOrientation;                            // Wave orientation remains equal to wave orientation at breaking
-               dProfileWaveHeight = dProfileBreakingWaveHeight * (nProfilePoint / nProfileBreakingDist);    // Wave height decreases linearly to zero at shoreline
+               dProfileWaveOrientation = dProfileBreakingWaveOrientation;                          // Wave orientation remains equal to wave orientation at breaking
+               
+               //dProfileWaveHeight = dProfileBreakingWaveHeight * (nProfilePoint / nProfileBreakingDist);    // Wave height decreases linearly to zero at shoreline
+               dProfileWaveHeight = dSeaDepth * m_dBreakingWaveHeightDeptRatio;                    // Wave height is limited by depth
             }
          }
          
@@ -709,6 +712,11 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    }
    
    // Update wave attributes along the coastline object
+   // Wave height at the coast is calculated irrespectively if waves are breaking or not
+   
+   //cout << "Wave Height at the coast is " << VdWaveHeight[0] << endl;
+      m_VCoast[nCoast].SetCoastWaveHeight(nCoastPoint, VdWaveHeight[0]);
+   
    if (nProfileBreakingDist > 0)
    {
       // This coast point is in the active zone, so set breaking wave height, breaking wave angle, and depth of breaking for the coast point
@@ -756,6 +764,11 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
    }
    
    // OK, write to the file
+   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << m_dBreakingWaveHeightDeptRatio << "                        -> GAMMA" << endl;
+   OutStream << setiosflags(ios::fixed) << setprecision(0); OutStream << setw(11) << 0 << "                        -> ILAB" << endl;
+   OutStream << setiosflags(ios::fixed) << setprecision(0); OutStream << setw(11) << 1 << "                        -> NWAVE" << endl;
+   OutStream << setiosflags(ios::fixed) << setprecision(0); OutStream << setw(11) << 1 << "                        -> NSURGE" << endl;
+   
    OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << 0.0;
    OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
    OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << dTimestep;
@@ -1014,7 +1027,7 @@ void CSimulation::ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(int co
             dWaveHeight = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight(),
             dWaveOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
          
-         if (dWaveHeight > (dSeaDepth * WAVEHEIGHT_OVER_WATERDEPTH_AT_BREAKING) && (! bModfiedWaveHeightisBreaking))
+         if (dWaveHeight > (dSeaDepth * m_dBreakingWaveHeightDeptRatio) && (! bModfiedWaveHeightisBreaking))
          {
             // It is breaking
             bModfiedWaveHeightisBreaking = true;
@@ -1073,6 +1086,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
    int const nThisBreakingDist = m_VCoast[nCoast].nGetBreakingDistance(nThisCoastPoint);
    double
       dThisBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nThisCoastPoint),       // This could be DBL_NODATA
+      dThisCoastWaveHeight = m_VCoast[nCoast].dGetCoastWaveHeight(nThisCoastPoint),       
       dThisBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nThisCoastPoint),
       dThisBreakingDepth = m_VCoast[nCoast].dGetDepthOfBreaking(nThisCoastPoint);
 
@@ -1097,6 +1111,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
    int nNextBreakingDist = m_VCoast[nCoast].nGetBreakingDistance(nNextCoastPoint);
    double
       dNextBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nNextCoastPoint),          // This could be DBL_NODATA
+      dNextCoastWaveHeight = m_VCoast[nCoast].dGetCoastWaveHeight(nNextCoastPoint),          
       dNextBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nNextCoastPoint),
       dNextBreakingDepth = m_VCoast[nCoast].dGetDepthOfBreaking(nNextCoastPoint);
 
@@ -1115,6 +1130,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
       {
          // Set the breaking wave height, breaking wave angle, and depth of breaking for this coast point
          m_VCoast[nCoast].SetBreakingWaveHeight(n, dNextBreakingWaveHeight);
+	 m_VCoast[nCoast].SetCoastWaveHeight(n, dNextCoastWaveHeight);
          m_VCoast[nCoast].SetBreakingWaveOrientation(n, dNextBreakingWaveOrientation);
          m_VCoast[nCoast].SetDepthOfBreaking(n, dNextBreakingDepth);
          m_VCoast[nCoast].SetBreakingDistance(n, nNextBreakingDist);
@@ -1130,6 +1146,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
       {
          // Set the breaking wave height, breaking wave angle, and depth of breaking for this coast point
          m_VCoast[nCoast].SetBreakingWaveHeight(n, dThisBreakingWaveHeight);
+	 m_VCoast[nCoast].SetCoastWaveHeight(n, dThisCoastWaveHeight);
          m_VCoast[nCoast].SetBreakingWaveOrientation(n, dThisBreakingWaveOrientation);
          m_VCoast[nCoast].SetDepthOfBreaking(n, dThisBreakingDepth);
          m_VCoast[nCoast].SetBreakingDistance(n, nThisBreakingDist);
@@ -1145,6 +1162,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
 
       double
          dBreakingWaveHeight = 0,
+	 dCoastWaveHeight = 0,
          dBreakingWaveOrientation = 0,
          dBreakingDepth = 0,
          dBreakingDist = 0;
@@ -1178,8 +1196,15 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
          dBreakingDist = nThisBreakingDist;
       }
 
+      // Always interpolate the wave height at coast
+      double
+            dThisWeight = (nDistBetween - nDist) / static_cast<double>(nDistBetween),
+            dNextWeight = 1 - dThisWeight;
+	dCoastWaveHeight = (dThisWeight * dThisCoastWaveHeight) + (dNextWeight * dNextCoastWaveHeight);   
+	
       // Set the breaking wave height, breaking wave angle, and depth of breaking for this coast point
       m_VCoast[nCoast].SetBreakingWaveHeight(n, dBreakingWaveHeight);
+      m_VCoast[nCoast].SetCoastWaveHeight(n, dCoastWaveHeight);
       m_VCoast[nCoast].SetBreakingWaveOrientation(n, dBreakingWaveOrientation);
       m_VCoast[nCoast].SetDepthOfBreaking(n, dBreakingDepth);
       m_VCoast[nCoast].SetBreakingDistance(n, static_cast<int>(dRound(dBreakingDist)));

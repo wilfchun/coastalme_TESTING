@@ -381,7 +381,7 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << " Transport parameter for Kamphuis equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dKamphuis << endl;
    OutStream << " Height of Dean profile start above SWL                    \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dDeanProfileStartAboveSWL  << " m" << endl;
    OutStream << " Do cliff collapse?                                        \t: " << (m_bDoCliffCollapse ? "Y": "N") << endl;
-   OutStream << " Cliff erodibility                                         \t: " << m_dCliffErodibility << endl;
+   OutStream << " Cliff erodibility                                         \t: " << m_dCliffErosionResistance << endl;
    OutStream << " Notch overhang to initiate collapse                       \t: " << m_dNotchOverhangAtCollapse << " m" << endl;
    OutStream << " Notch base below SWL                                      \t: " << m_dNotchBaseBelowSWL << " m" << endl;
    OutStream << " Scale parameter A for cliff deposition                    \t: ";

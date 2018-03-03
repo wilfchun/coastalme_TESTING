@@ -274,7 +274,7 @@ CSimulation::CSimulation(void)
    m_dProfileMaxSlope                               =
    m_dSimpleSmoothWeight                            =
    m_dBeachSmoothingVertTolerance                   =
-   m_dCliffErodibility                              =
+   m_dCliffErosionResistance                              =
    m_dNotchOverhangAtCollapse                       =
    m_dNotchBaseBelowSWL                             =
    m_dCliffDepositionA                              =
@@ -506,12 +506,13 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    // Mark edge cells
    MarkEdgeCells();
 
-//    // DEBUG CODE
+//    // DEBUG CODE =================================================
 //    for (unsigned int n = 0; n < m_VEdgeCell.size(); n++)
 //    {
 //       LogStream << "[" << m_VEdgeCell[n].nGetX() << "][" << m_VEdgeCell[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(m_VEdgeCell[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(m_VEdgeCell[n].nGetY()) << "} " << m_VEdgeCellEdge[n] << endl;
 //    }
-
+//    // DEBUG CODE =================================================
+   
    // If we are using the default cell spacing, then now that we know the size of the raster cells, we can set the size of profile spacing in m
    if (m_dCoastNormalAvgSpacing == 0)
       m_dCoastNormalAvgSpacing = MIN_PROFILE_SPACING * m_dCellSide;

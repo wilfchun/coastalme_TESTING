@@ -11,7 +11,3 @@ CShore input file created by CoastalME
 0                                         ->IWIND
 0                                         ->ITIDE
      1.0000                                ->DXC
-     0.8000                                ->GAMMA
-0                                         ->ILAB
-1                                         ->NWAVE
-1                                         ->NSURGE
