@@ -322,7 +322,9 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 {
    // Fine sediment goes into suspension
    if (dFineCollapse > SEDIMENT_ELEV_TOLERANCE)
+   {
       m_dThisTimestepFineSedimentToSuspension += dFineCollapse;
+   }
 
    // Do we have any sand- or coarse-sized sediment to deposit?
    double dTotFromCollapse = dSandCollapse + dCoarseCollapse;

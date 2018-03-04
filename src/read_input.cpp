@@ -50,7 +50,7 @@ bool CSimulation::bReadIni(void)
    string strFilePathName(m_strCMEIni);
 
    // Tell the user what is happening
-   cout << READFILELOC << strFilePathName << endl;
+   cout << READING_FILE_LOCATIONS << strFilePathName << endl;
 
    // Create an ifstream object
    ifstream InStream;

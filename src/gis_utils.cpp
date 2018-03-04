@@ -1567,7 +1567,7 @@ void CSimulation::SetRasterFileCreationDefaults(void)
 {
    string
       strDriver = strToLower(&m_strRasterGISOutFormat),
-      strComment =  "Created by " + PROGNAME + " for " + PLATFORM + " " + strGetBuild() + " running on " + strGetComputerName();
+      strComment =  "Created by " + PROGRAM_NAME + " for " + PLATFORM + " " + strGetBuild() + " running on " + strGetComputerName();
 
    // TODO Do these for all commonly-used file types
    if (strDriver == "aaigrid")

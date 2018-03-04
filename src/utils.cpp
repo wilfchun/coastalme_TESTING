@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-#include <assert.h>
+// #include <assert.h>
 
 #ifdef _WIN32
    #include <windows.h>             // Needed for CalcProcessStats()
@@ -149,7 +149,7 @@ int CSimulation::nHandleCommandLineParams(int nArg, char* pcArgv[])
 ==============================================================================================================================*/
 void CSimulation::AnnounceStart(void)
 {
-   cout << endl << PROGNAME << " for " << PLATFORM << " " << strGetBuild() << endl;
+   cout << endl << PROGRAM_NAME << " for " << PLATFORM << " " << strGetBuild() << endl;
 }
 
 
@@ -234,8 +234,8 @@ void CSimulation::AnnounceLicence(void)
    cout << DISCLAIMER6 << endl;
    cout << LINE << endl << endl;
 
-   cout << STARTNOTICE << strGetComputerName() << " at " << put_time(localtime(&m_tSysStartTime), "%T on %A %d %B %Y") << endl;
-   cout << INITNOTICE << endl;
+   cout << START_NOTICE << strGetComputerName() << " at " << put_time(localtime(&m_tSysStartTime), "%T on %A %d %B %Y") << endl;
+   cout << INITIALIZING_NOTICE << endl;
 }
 
 
@@ -373,9 +373,9 @@ void CSimulation::AnnounceReadBasementDEM(void) const
 {
    // Tell the user what is happening
 #ifdef _WIN32
-   cout << READBASEMENT << pstrChangeToForwardSlash(&m_strInitialBasementDEMFile) << endl;
+   cout << READING_BASEMENT << pstrChangeToForwardSlash(&m_strInitialBasementDEMFile) << endl;
 #else
-   cout << READBASEMENT << m_strInitialBasementDEMFile << endl;
+   cout << READING_BASEMENT << m_strInitialBasementDEMFile << endl;
 #endif
 }
 
@@ -410,7 +410,7 @@ void CSimulation::AnnounceAddLayers(void)
 ==============================================================================================================================*/
 void CSimulation::AnnounceReadRasterFiles(void)
 {
-   cout << READRASTERFILES << endl;
+   cout << READING_RASTER_FILES << endl;
 }
 
 
@@ -435,9 +435,9 @@ void CSimulation::AnnounceReadLGIS(void) const
    // Tell the user what is happening
    if (! m_strInitialLandformFile.empty())
 #ifdef _WIN32
-      cout << READLFILE << pstrChangeToForwardSlash(&m_strInitialLandformFile) << endl;
+      cout << READING_LANDFORM_FILE << pstrChangeToForwardSlash(&m_strInitialLandformFile) << endl;
 #else
-      cout << READLFILE << m_strInitialLandformFile << endl;
+      cout << READING_LANDFORM_FILE << m_strInitialLandformFile << endl;
 #endif
 }
 
@@ -452,9 +452,9 @@ void CSimulation::AnnounceReadICGIS(void) const
    // Tell the user what is happening
    if (! m_strInterventionClassFile.empty())
 #ifdef _WIN32
-      cout << READICFILE << pstrChangeToForwardSlash(&m_strInterventionClassFile) << endl;
+      cout << READING_INTERVENTION_CLASS_FILE << pstrChangeToForwardSlash(&m_strInterventionClassFile) << endl;
 #else
-      cout << READICFILE << m_strInterventionHeightFile << endl;
+      cout << READING_INTERVENTION_CLASS_FILE << m_strInterventionHeightFile << endl;
 #endif
 }
 
@@ -469,9 +469,9 @@ void CSimulation::AnnounceReadIHGIS(void) const
    // Tell the user what is happening
    if (! m_strInterventionHeightFile.empty())
 #ifdef _WIN32
-      cout << READIHFILE << pstrChangeToForwardSlash(&m_strInterventionHeightFile) << endl;
+      cout << READING_INTERVENTION_HEIGHT_FILE << pstrChangeToForwardSlash(&m_strInterventionHeightFile) << endl;
 #else
-      cout << READIHFILE << m_strInterventionHeightFile << endl;
+      cout << READING_INTERVENTION_HEIGHT_FILE << m_strInterventionHeightFile << endl;
 #endif
 }
 
@@ -2109,8 +2109,8 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_EDGEOFGRID:
       strErr = "hit grid edge when eroding beach";
       break;
-   case RTN_ERR_BAD_BEACH_EROSION_PROFILE:
-      strErr = "could not create Dean profile for beach erosion";
+   case RTN_ERR_NO_SEAWARD_END_OF_PROFILE:
+      strErr = "could not locate seaward end of profile when creating Dean profile for beach erosion";
       break;
 //    case RTN_ERR_BAD_BEACH_DEPOSITION_PROFILE:
 //       strErr = "could not create Dean profile for beach deposition";
@@ -2242,7 +2242,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
             strCmd.append(", completed normally at ");
             strCmd.append(ststrTmp.str());
             strCmd.append("\" | mail -s \"");
-            strCmd.append(PROGNAME);
+            strCmd.append(PROGRAM_NAME);
             strCmd.append(": normal completion\" ");
             strCmd.append(m_strMailAddress);
          }
@@ -2264,7 +2264,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
             strCmd.append(").\n\nThis message sent at ");
             strCmd.append(ststrTmp.str());
             strCmd.append("\" | mail -s \"");
-            strCmd.append(PROGNAME);
+            strCmd.append(PROGRAM_NAME);
             strCmd.append(": ERROR\" ");
             strCmd.append(m_strMailAddress);
          }

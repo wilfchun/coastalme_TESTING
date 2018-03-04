@@ -280,7 +280,8 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    bool
       bAtCoast = false,
       bHasLeftStartEdge = false,
-      bTooLong = false;
+      bTooLong = false,
+      bOffEdge = false;
 
    int
       nX = nStartX,
@@ -307,7 +308,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
 //       for (int n = 0; n < ILTempGridCRS.nGetSize(); n++)
 //          LogStream << "[" << ILTempGridCRS[n].nGetX() << "][" << ILTempGridCRS[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[n].nGetY()) << "}" << endl;
 //       LogStream <<  "=================" << endl;
-
+      
       // Safety check
       if (++nRoundLoop > m_nCoastMax)
       {
@@ -315,9 +316,9 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
          
          LogStream << m_ulIteration << ": abandoning coastline tracing from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "}, exceeded maximum search length (" << m_nCoastMax << ")" << endl;
 
-         for (int n = 0; n < ILTempGridCRS.nGetSize(); n++)
-            LogStream << "[" << ILTempGridCRS[n].nGetX() << "][" << ILTempGridCRS[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[n].nGetY()) << "}" << endl;
-         LogStream << endl;
+//          for (int n = 0; n < ILTempGridCRS.nGetSize(); n++)
+//             LogStream << "[" << ILTempGridCRS[n].nGetX() << "][" << ILTempGridCRS[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[n].nGetY()) << "}" << endl;
+//          LogStream << endl;
 
          break;
       }
@@ -671,17 +672,37 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
          }
       }
 
-      // Could not move to the seaward side, move straight ahead, or move to the anti-seaward side, so we must be in a single-cell dead end! As a last resort, turn round and move back to where we just came from
-      nX = nXGoBack;
-      nY = nYGoBack;
+      // Could not move to the seaward side, move straight ahead, or move to the anti-seaward side, so we must be in a single-cell dead end! As a last resort, turn round and move back to where we just came from, but first check that this is a valid cell
+      if (bIsWithinValidGrid(nXGoBack, nYGoBack))
+      {
+         nX = nXGoBack;
+         nY = nYGoBack;
 
-      // And change the search direction
-      nSearchDirection = nGoBackNewDirection;
+         // And change the search direction
+         nSearchDirection = nGoBackNewDirection;
+      }
+      else
+      {
+         // Our final choice is not a valid cell, so give up
+         bOffEdge = true;
+         break;
+      }
    }
    while (true);
 
    // OK, we have finished tracing this coastline on the grid. But is the coastline too long or too short?
    int nCoastSize = ILTempGridCRS.nGetSize();
+   
+   if (bOffEdge)
+   {
+      LogStream << m_ulIteration << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} since hit off-edge cell at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, coastline size is " << nCoastSize;LogStream << "OFF EDGE" << endl;
+      
+      // Unmark these cells as coast cells
+      for (int n = 0; n < nCoastSize; n++)
+         m_pRasterGrid->m_Cell[ILTempGridCRS[n].nGetX()][ILTempGridCRS[n].nGetY()].SetAsCoastline(false);
+      
+      return RTN_OK;      
+   }
    
    if (bTooLong)
    {

@@ -598,7 +598,7 @@ private:
    int nDoAllActualBeachErosionAndDeposition(void);
 //    int nEstimateBeachErosionOnPolygon(int const, int const, double const);
    int nTraversePolygonAndEstimateBeachErosion(int const, int const, double const, double&, double&, double&);
-   int nEstimateBeachErosionOnParallelProfile(int const, int const, int const, int const, /* int const, */ int const, vector<CGeom2DIPoint> const*, vector<double> const*, double&, double&, double&, double&, double&);
+   int nEstimateBeachErosionOnParallelProfile(/*int const, int const,*/ int const, int const, /* int const, */ int const, vector<CGeom2DIPoint> const*, vector<double> const*, double&, double&, double&, double&, double&);
    int nDoBeachErosionOnParallelProfile(/* int const, int const, */ int const, int const, /* int const, */ int const, vector<CGeom2DIPoint> const*, vector<double> const*, double&, double&, double&, double&, double&);
    void EstimateActualBeachErosionOnCell(int const, int const, int const, double const, double&, double&, double&);
    void ErodeBeachSedimentOnCellSupplyLimited(int const, int const, int const, double const, double&, double&, double&);

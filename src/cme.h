@@ -142,8 +142,8 @@ using std::ostringstream;
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGNAME                                                    = "CoastalME 0.9.9 TESTING - 3 March 2018";
-string const   SHORTNAME                                                   = "CME";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 4 March 2018";
+string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
 string const   COPYRIGHT                                                   = "(C) 2018 David Favis-Mortlock and Andres Payo";
@@ -166,15 +166,15 @@ string const   USAGE3                                                      = "  
 string const   USAGE4                                                      = "  --home=DIRECTORY   Specify the location of the .ini file etc.";
 string const   USAGE5                                                      = "  --datafile=FILE    Specify the location and name of the main datafile";
 
-string const   STARTNOTICE                                                 = "- Started on ";
-string const   INITNOTICE                                                  = "- Initializing";
-string const   READFILELOC                                                 = "  - Reading file locations: ";
-string const   READRUNDATA                                                 = "  - Reading run data file: ";
-string const   READBASEMENT                                                = "  - Reading basement DEM: ";
-string const   READRASTERFILES                                             = "  - Reading raster GIS files";
-string const   READLFILE                                                   = "    - Landform class: ";
-string const   READICFILE                                                  = "    - Intervention class: ";
-string const   READIHFILE                                                  = "    - Intervention height: ";
+string const   START_NOTICE                                                = "- Started on ";
+string const   INITIALIZING_NOTICE                                         = "- Initializing";
+string const   READING_FILE_LOCATIONS                                      = "  - Reading file locations: ";
+string const   READING_RUN_DATA                                            = "  - Reading run data file: ";
+string const   READING_BASEMENT                                            = "  - Reading basement DEM: ";
+string const   READING_RASTER_FILES                                        = "  - Reading raster GIS files";
+string const   READING_LANDFORM_FILE                                       = "    - Landform class: ";
+string const   READING_INTERVENTION_CLASS_FILE                             = "    - Intervention class: ";
+string const   READING_INTERVENTION_HEIGHT_FILE                            = "    - Intervention height: ";
 string const   READISSFILE                                                 = "    - Suspended sediment: ";
 string const   READIFUCSFILE                                               = "    - Unconsolidated fine sediment (layer ";
 string const   READISUCSFILE                                               = "    - Unconsolidated sand sediment (layer ";
@@ -688,7 +688,7 @@ int const      RTN_ERR_CLIFFNOTCH                     = 36;
 int const      RTN_ERR_CLIFFDEPOSIT                   = 37;
 int const      RTN_ERR_BAD_INDEX                      = 38;
 int const      RTN_ERR_EDGEOFGRID                     = 39;
-int const      RTN_ERR_BAD_BEACH_EROSION_PROFILE      = 40;
+int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE      = 40;
 // int const      RTN_ERR_BAD_BEACH_DEPOSITION_PROFILE   = 39;
 int const      RTN_ERR_LANDFORM_TO_GRID               = 41;
 int const      RTN_ERR_NO_TOP_LAYER                   = 42;

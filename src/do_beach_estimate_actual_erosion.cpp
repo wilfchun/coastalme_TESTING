@@ -92,7 +92,7 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
    {
       LogStream << m_ulIteration << ": " << ERR << "in nTraversePolygonAndEstimateBeachErosion() for polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
 
-      return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
+      return RTN_ERR_NO_SEAWARD_END_OF_PROFILE;
    }
 
    // The part-profile length is one greater than nIndex, since pPtiGetCellGivenDepth() returns the index of the cell at the depth of closure
@@ -244,7 +244,7 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
             if (! bIsWithinValidGrid(nXUpCoastThisStart, nYUpCoastThisStart))
             {
                // It isn't
-               LogStream << WARN << "reached edge of grid at [" << nXUpCoastThisStart << "][" << nYUpCoastThisStart << "] = {" << dGridCentroidXToExtCRSX(nXUpCoastThisStart) << ", " << dGridCentroidYToExtCRSY(nYUpCoastThisStart) << "} during DOWN-COAST estimation of beach erosion for coast " << nCoast << " polygon " << nPoly << ", nCoastPoint = " << nCoastPoint << ", this is [" << nCoastX << "][" << nCoastY << "] = {" << dGridCentroidXToExtCRSX(nCoastX) << ", " <<  dGridCentroidYToExtCRSY(nCoastY) << "}, nInlandOffset = " << nInlandOffset << ")" << endl << endl;
+//                LogStream << WARN << "reached edge of grid at [" << nXUpCoastThisStart << "][" << nYUpCoastThisStart << "] = {" << dGridCentroidXToExtCRSX(nXUpCoastThisStart) << ", " << dGridCentroidYToExtCRSY(nYUpCoastThisStart) << "} during DOWN-COAST estimation of beach erosion for coast " << nCoast << " polygon " << nPoly << ", nCoastPoint = " << nCoastPoint << ", this is [" << nCoastX << "][" << nCoastY << "] = {" << dGridCentroidXToExtCRSX(nCoastX) << ", " <<  dGridCentroidYToExtCRSY(nCoastY) << "}, nInlandOffset = " << nInlandOffset << ")" << endl << endl;
 
                // TODO Need to improve this: at present we just abandon erosion on this coast point and move to another coast point
                bHitEdge = true;
@@ -265,7 +265,7 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
 
                KeepWithinValidGrid(nCoastX, nCoastY, nXParNew, nYParNew);
                
-               LogStream << "[" << nXParNew << "][" << nYParNew << "] = {" << dGridCentroidXToExtCRSX(nXParNew) << ", " <<  dGridCentroidYToExtCRSY(nYParNew) << "}" << endl;
+//                LogStream << "[" << nXParNew << "][" << nYParNew << "] = {" << dGridCentroidXToExtCRSX(nXParNew) << ", " <<  dGridCentroidYToExtCRSY(nYParNew) << "}" << endl;
 
                // Is this cell already in the parallel profile?
                if ((VPtiParProfile.back().nGetX() != nXParNew) || (VPtiParProfile.back().nGetY() != nYParNew))
@@ -445,7 +445,7 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
       }      
             
       // OK, this value of nInlandOffset gives us some (tho' maybe not enough) erosion. So calculate how much fine-, sand-, and coarse sized sediment can be obtained here by working along the parallel profile from the landward end (which is inland from the existing coast, if nInlandOffset > 0)
-      int nRet = nEstimateBeachErosionOnParallelProfile(nPoly, nCoastPoint, nCoastX, nCoastY, /* nInlandOffset, */ nParProfLen, &VPtiParProfile, &VdParProfileDeanElev, dStillToErodeOnProfile, dStillToErodeOnPolygon, dTotFineEroded, dTotSandEroded, dTotCoarseEroded);
+      int nRet = nEstimateBeachErosionOnParallelProfile(/*nPoly, nCoastPoint,*/ nCoastX, nCoastY, /* nInlandOffset, */ nParProfLen, &VPtiParProfile, &VdParProfileDeanElev, dStillToErodeOnProfile, dStillToErodeOnPolygon, dTotFineEroded, dTotSandEroded, dTotCoarseEroded);
       if (nRet != RTN_OK)
          return nRet;
 
@@ -461,7 +461,7 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
  This routine calculates the supply-limited amount of beach erosion, in three size categories, which can be eroded on this parallel profile. It does not do any actual erosion
  
  ===============================================================================================================================*/
-int CSimulation::nEstimateBeachErosionOnParallelProfile(int const nPoly, int const nCoastPoint, int const nCoastX, int const nCoastY, /* int const nInlandOffset, */ int const nParProfLen, vector<CGeom2DIPoint> const* pVPtiParProfile, vector<double> const* pVdParProfileDeanElev, double& dStillToErodeOnProfile, double& dStillToErodeOnPolygon, double& dTotFineEroded, double& dTotSandEroded, double& dTotCoarseEroded)
+int CSimulation::nEstimateBeachErosionOnParallelProfile(/*int const nPoly, int const nCoastPoint,*/ int const nCoastX, int const nCoastY, /* int const nInlandOffset, */ int const nParProfLen, vector<CGeom2DIPoint> const* pVPtiParProfile, vector<double> const* pVdParProfileDeanElev, double& dStillToErodeOnProfile, double& dStillToErodeOnPolygon, double& dTotFineEroded, double& dTotSandEroded, double& dTotCoarseEroded)
 {
    double
       dFineEroded = 0,                 // Totals for this parallel profile
@@ -599,7 +599,7 @@ int CSimulation::nEstimateBeachErosionOnParallelProfile(int const nPoly, int con
                   dStillToErodeOnPolygon += dCoarseToDeposit;
                }
                
-               LogStream << m_ulIteration << ": nPoly = " << nPoly << " nCoastPoint = " << nCoastPoint << " nDistSeawardFromNewCoast = " << nDistSeawardFromNewCoast << ", beach deposition = " << dSandToDeposit + dCoarseToDeposit << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "}" << endl;
+//                LogStream << m_ulIteration << ": nPoly = " << nPoly << " nCoastPoint = " << nCoastPoint << " nDistSeawardFromNewCoast = " << nDistSeawardFromNewCoast << ", beach deposition = " << dSandToDeposit + dCoarseToDeposit << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " <<  dGridCentroidYToExtCRSY(nY) << "}" << endl;
             }
          }
       }

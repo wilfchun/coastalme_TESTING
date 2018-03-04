@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-#include <assert.h>
+// #include <assert.h>
 
 #include <cmath>
 #include <cfloat>
@@ -66,7 +66,7 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
    {
       LogStream << m_ulIteration << ": " << ERR << "in polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
       
-      return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
+      return RTN_ERR_NO_SEAWARD_END_OF_PROFILE;
    }
    
    // The part-profile length is one greater than nIndex, since pPtiGetCellGivenDepth() returns the index of the cell at the depth of closure
@@ -214,7 +214,7 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
             if (! bIsWithinValidGrid(nXUpCoastThisStart, nYUpCoastThisStart))
             {
                // It isn't
-               LogStream << WARN << "reached edge of grid at [" << nXUpCoastThisStart << "][" << nYUpCoastThisStart << "] = {" << dGridCentroidXToExtCRSX(nXUpCoastThisStart) << ", " << dGridCentroidYToExtCRSY(nYUpCoastThisStart) << "} during DOWN-COAST beach erosion for coast " << nCoast << " polygon " << nPoly << ", nCoastPoint = " << nCoastPoint << ", this is [" << nCoastX << "][" << nCoastY << "] = {" << dGridCentroidXToExtCRSX(nCoastX) << ", " <<  dGridCentroidYToExtCRSY(nCoastY) << "}, nInlandOffset = " << nInlandOffset << ")" << endl << endl;
+//                LogStream << WARN << "reached edge of grid at [" << nXUpCoastThisStart << "][" << nYUpCoastThisStart << "] = {" << dGridCentroidXToExtCRSX(nXUpCoastThisStart) << ", " << dGridCentroidYToExtCRSY(nYUpCoastThisStart) << "} during DOWN-COAST beach erosion for coast " << nCoast << " polygon " << nPoly << ", nCoastPoint = " << nCoastPoint << ", this is [" << nCoastX << "][" << nCoastY << "] = {" << dGridCentroidXToExtCRSX(nCoastX) << ", " <<  dGridCentroidYToExtCRSY(nCoastY) << "}, nInlandOffset = " << nInlandOffset << ")" << endl << endl;
                
                // TODO Need to improve this: at present we just abandon erosion on this coast point and move to another coast point
                bHitEdge = true;
@@ -462,9 +462,12 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
       m_dThisTimestepMassBalanceErosionError += dTotError;
 //       LogStream << "m_dThisTimestepMassBalanceErosionError = " << m_dThisTimestepMassBalanceErosionError << endl;
       
-      dFineError = dTotError * dTotFineEroded / dTotalErosion;
-      dSandError = dTotError * dTotSandEroded / dTotalErosion;
-      dCoarseError = dTotError * dTotCoarseEroded / dTotalErosion; 
+      if (dTotalErosion != 0)
+      {
+         dFineError = dTotError * dTotFineEroded / dTotalErosion;
+         dSandError = dTotError * dTotSandEroded / dTotalErosion;
+         dCoarseError = dTotError * dTotCoarseEroded / dTotalErosion; 
+      }
    }  
    
    return RTN_OK;
@@ -788,7 +791,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
    {
       LogStream << m_ulIteration << ": " << ERR << "in nDoBeachDepositionOnPolygon() for polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
 
-      return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
+      return RTN_ERR_NO_SEAWARD_END_OF_PROFILE;
    }
 
    // The part-profile length is one greater than nIndex, since pPtiGetCellGivenDepth() returns the index of the cell at depth of closure. This will be the number of cells in the Dean profile portion of every parallel profile
@@ -1258,7 +1261,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
       if (nIndex == INT_NODATA)
       {
          LogStream << m_ulIteration << ": " << ERR << "in nDoBeachDepositionOnPolygon() for polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << ". Lengthen the coastline normals." << endl;
-         return RTN_ERR_BAD_BEACH_EROSION_PROFILE;
+         return RTN_ERR_NO_SEAWARD_END_OF_PROFILE;
       }
 
       // The part-profile length is one greater than nIndex, since pPtiGetCellGivenDepth() returns the index of the cell at depth of closure. This will be the number of cells in the Dean profile portion of every parallel profile

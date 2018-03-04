@@ -22,6 +22,8 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
+#include <assert.h>
+
 #include <iostream>
 using std::cout;
 using std::cerr;
@@ -823,7 +825,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Add the fine sediment that was eroded this timestep (from the shore platform, from beach erosion, and cliff collapse talus deposition, minus the fine that went off-grid) to the suspended sediment load
       double dFineThisTimestep = m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualBeachErosionFine + m_dThisTimestepCliffErosionFine - m_dThisTimestepActualFineSedLostBeachErosion;
       m_dThisTimestepFineSedimentToSuspension += dFineThisTimestep;
-
+      
       // Do some end-of-timestep updates to the raster grid, also update per-timestep and running totals
       nRet = nUpdateGrid();
       if (nRet != RTN_OK)
