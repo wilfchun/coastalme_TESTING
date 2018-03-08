@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ===============================================================================================================================*/
-#include <assert.h>
+// #include <assert.h>
 
 #include <vector>
 #include <algorithm>
@@ -379,15 +379,17 @@ int CRWCoast::nGetProfileNumber(int const nCoastPoint) const
 }
 
 
-void CRWCoast::CreateAlongCoastlineProfileIndex(void)
+void CRWCoast::CreateAlongCoastProfileIndex(void)
 {
    // Creates an index containing the numbers of the coastline-normal profiles in along-coast sequence
    for (int nCoastPoint = 0; nCoastPoint < m_LCoastlineExtCRS.nGetSize(); nCoastPoint++)
+   {
       if (m_VnProfileNumber[nCoastPoint] != INT_NODATA)
          m_VnProfileCoastIndex.push_back(m_VnProfileNumber[nCoastPoint]);
+   }
 }
 
-int CRWCoast::nGetProfileAtAlongCoastlinePosition(int const n) const
+int CRWCoast::nGetProfileFromAlongCoastProfileIndex(int const n) const
 {
    // Returns the number of the coastline-normal profile which is at position n in the along-coast sequence
    return m_VnProfileCoastIndex[n];

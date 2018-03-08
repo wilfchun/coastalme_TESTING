@@ -121,7 +121,7 @@ public:
    bool bIsEdgeCell(void) const;
    
    void SetPossibleCoastStartCell(void);
-   bool bIsPossibleCoastStartCell(void);
+   bool bIsPossibleCoastStartCell(void) const;
    
    void SetPolygonID(int const);
    int nGetPolygonID(void) const;

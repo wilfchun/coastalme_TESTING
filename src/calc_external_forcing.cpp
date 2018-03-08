@@ -25,6 +25,7 @@
 #include <iostream>
 using std::cerr;
 using std::endl;
+using std::cout;
 
 #include "cme.h"
 #include "simulation.h"
@@ -38,30 +39,31 @@ using std::endl;
 int CSimulation::nCalcExternalForcing(void)
 {
    // Increment SWL (note that increment may be zero)
-   m_dThisTimestepSWL += m_dDeltaSWLPerTimestep;
+   m_dAccumulatedSeaLevelChange += m_dDeltaSWLPerTimestep;
 
 
-//    int nSize = m_VdTideData.size();
-//
-//    if (nSize != 0)
-//    {
-//       // We have tide data
-//       static int nTideDataCount = 0;
-//
-//       // Wrap the tide data, i.e. start again with the first record if we do not have enough
-//       if (nTideDataCount > nSize-1)
-//       {
-//          // TODO If tide file is not long enough, then make this error message more informative and also give a warning message at start of simulation
-//          string const str1 = "reached end of tide data, starting again from first line";
-//          cerr << WARN << str1 << endl;
-//          LogStream << WARN << str1 << endl;
-//
-//          nTideDataCount = 0;
-//       }
-//
-//       m_dThisTimestepSWL = m_dOrigSWL + m_VdTideData[nTideDataCount];
-//       nTideDataCount++;
-//    }
+    int nSize = m_VdTideData.size();
+
+    if (nSize != 0)
+    {
+       // We have tide data
+       static int nTideDataCount = 0;
+
+       // Wrap the tide data, i.e. start again with the first record if we do not have enough
+       if (nTideDataCount > nSize-1)
+       {
+          // TODO If tide file is not long enough, then make this error message more informative and also give a warning message at start of simulation
+          string const str1 = "reached end of tide data, starting again from first line";
+          cerr << WARN << str1 << endl;
+          LogStream << WARN << str1 << endl;
+
+          nTideDataCount = 0;
+       }
+
+       m_dThisTimestepSWL = m_dOrigSWL + m_VdTideData[nTideDataCount] + m_dAccumulatedSeaLevelChange;
+      // cout << m_dThisTimestepSWL << endl;
+       nTideDataCount++;
+    }
 
    // Update min and max still water levels
    m_dMaxSWL = tMax(m_dThisTimestepSWL, m_dMaxSWL);

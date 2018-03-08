@@ -143,8 +143,8 @@ public:
    bool bIsProfileStartPoint(int const) const;
    int nGetProfileNumber(int const) const;
 
-   void CreateAlongCoastlineProfileIndex(void);
-   int nGetProfileAtAlongCoastlinePosition(int const) const;
+   void CreateAlongCoastProfileIndex(void);
+   int nGetProfileFromAlongCoastProfileIndex(int const) const;
    int nGetDownCoastProfileNumber(int const nProfile) const;   
 //    int nGetAlongCoastlineIndexOfProfile(int const);
 

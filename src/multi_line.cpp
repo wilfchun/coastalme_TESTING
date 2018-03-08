@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ===============================================================================================================================*/
-// #include <assert.h>
+#include <assert.h>
 
 #include "cme.h"
 #include "multi_line.h"
@@ -164,13 +164,16 @@ int CGeomMultiLine::nGetNumCoincidentProfilesInLineSegment(int const nSegment)
 //! Returns true if the given profile number is amongst the coincident profiles of the CGeomMultiLine object's final line segment
 bool CGeomMultiLine::bFindProfileInCoincidentProfilesOfLastLineSegment(int const nProfile)
 {
-   int
-      nLineSegSize = m_prVVLineSegment.size(),
-      nCoincidentSize = m_prVVLineSegment[nLineSegSize-1].size();
+   int nLineSegSize = m_prVVLineSegment.size();
+      
+   // Note no check to ensure that nLineSegSize < 0
+   int nCoincidentSize = m_prVVLineSegment[nLineSegSize-1].size();
 
    for (int i = 0; i < nCoincidentSize; i++)
+   {
       if (m_prVVLineSegment[nLineSegSize-1][i].first == nProfile)
          return true;
+   }
 
    return false;
 }

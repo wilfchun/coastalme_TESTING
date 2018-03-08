@@ -989,7 +989,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
 ===============================================================================================================================*/
 void CSimulation::ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(int const nCoast, int const nProfIndex)
 {
-   int nProfile = m_VCoast[nCoast].nGetProfileAtAlongCoastlinePosition(nProfIndex);
+   int nProfile = m_VCoast[nCoast].nGetProfileFromAlongCoastProfileIndex(nProfIndex);
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
    
    // Only do this for profiles without problems, including the start and end-of-coast profile
@@ -1073,7 +1073,7 @@ void CSimulation::ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(int co
 ===============================================================================================================================*/
 void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int const nProfIndex, int const nNumProfiles)
 {
-   int nProfile = m_VCoast[nCoast].nGetProfileAtAlongCoastlinePosition(nProfIndex);
+   int nProfile = m_VCoast[nCoast].nGetProfileFromAlongCoastProfileIndex(nProfIndex);
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
 
    // Only do this for profiles without problems, including the start-of-coast profile (but not the end-of-coast profile)
@@ -1094,7 +1094,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
    int nNextProfile = -1;
    for (int nNextProfIndex = nProfIndex+1; nNextProfIndex < nNumProfiles; nNextProfIndex++)
    {
-      nNextProfile = m_VCoast[nCoast].nGetProfileAtAlongCoastlinePosition(nNextProfIndex);
+      nNextProfile = m_VCoast[nCoast].nGetProfileFromAlongCoastProfileIndex(nNextProfIndex);
 
       if (m_VCoast[nCoast].pGetProfile(nNextProfile)->bOKIncStartAndEndOfCoast())
          break;

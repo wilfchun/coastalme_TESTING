@@ -610,14 +610,14 @@ void CSimulation::AnnounceReadInitialCoarseConsSedGIS(int const nLayer) const
  Now reading tide data file
 
 ==============================================================================================================================*/
-// void CSimulation::AnnounceReadTideData(void) const
-// {
-// #ifdef _WIN32
-//       cout << READTIDEDATAFILE << pstrChangeToForwardSlash(&m_strTideDataFile) << endl;
-// #else
-//       cout << READTIDEDATAFILE << m_strTideDataFile << endl;
-// #endif
-// }
+void CSimulation::AnnounceReadTideData(void) const
+ {
+ #ifdef _WIN32
+       cout << READTIDEDATAFILE << pstrChangeToForwardSlash(&m_strTideDataFile) << endl;
+ #else
+       cout << READTIDEDATAFILE << m_strTideDataFile << endl;
+ #endif
+ }
 
 
 /*==============================================================================================================================

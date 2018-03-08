@@ -344,7 +344,7 @@ int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int co
 int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, int const nProfIndex, int const nDirection)
 {
    // Get the number of the coastline-normal profile
-   int const nProfile = m_VCoast[nCoast].nGetProfileAtAlongCoastlinePosition(nProfIndex);
+   int const nProfile = m_VCoast[nCoast].nGetProfileFromAlongCoastProfileIndex(nProfIndex);
    CGeomProfile* const pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
 
    // Only work on this profile if it is problem-free

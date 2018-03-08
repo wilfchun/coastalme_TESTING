@@ -149,7 +149,7 @@ void CGeomCell::SetPossibleCoastStartCell(void)
 }
 
 //! Returns a flag which shows whether this cell has been flagged as a possible start- or end-point for a coastline
-bool CGeomCell::bIsPossibleCoastStartCell(void)
+bool CGeomCell::bIsPossibleCoastStartCell(void) const
 {
    return m_bPossibleCoastStartCell;
 }

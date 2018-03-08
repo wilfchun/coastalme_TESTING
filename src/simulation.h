@@ -233,6 +233,7 @@ private:
       m_dFinalSWL,
       m_dDeltaSWLPerTimestep,
       m_dThisTimestepSWL,
+      m_dAccumulatedSeaLevelChange,
       m_dMinSWL,
       m_dMaxSWL,
       m_dBreakingWaveHeight,
@@ -353,7 +354,7 @@ private:
       m_strInterventionHeightFile,
       m_strInitialSuspSedimentFile,
       m_strShapeFunctionFile,
-//       m_strTideDataFile,
+      m_strTideDataFile,
       m_strLogFile,
       m_strOutPath,
       m_strOutFile,
@@ -434,8 +435,8 @@ private:
       m_VdDeepWaterWavePointX,         // X co-ordinate (grid CRS) for deep water wave point
       m_VdDeepWaterWavePointY,         // Y co-ordinate (grid CRS) for deep water wave point
       m_VdDeepWaterWavePointHeight,    // Wave height at deep water wave point
-      m_VdDeepWaterWavePointAngle;     // Wave orientation at deep water wave point
-//       m_VdTideData;                    // Tide data: one record per timestep, is the change (m) from still water level for that timestep
+      m_VdDeepWaterWavePointAngle,     // Wave orientation at deep water wave point
+      m_VdTideData;                    // Tide data: one record per timestep, is the change (m) from still water level for that timestep
 
    vector<string>
       m_VstrInitialFineUnconsSedimentFile,
@@ -496,7 +497,7 @@ private:
    bool bWriteTSFiles(void);
    int nWriteEndRunDetails(void);
    int nReadShapeFunction(void);
-//    int nReadTideData(void);
+   int nReadTideData(void);
    int nSaveProfile(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
    bool bWriteProfileData(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*) const;
    int nSaveParProfile(int const, int const, int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
@@ -666,7 +667,7 @@ private:
    void AnnounceReadInitialSandConsSedGIS(int const) const;
    void AnnounceReadInitialCoarseConsSedGIS(int const) const;
    void AnnounceReadDeepWaterWaveValuesGIS(void) const;
-//    void AnnounceReadTideData(void) const;
+   void AnnounceReadTideData(void) const;
    static void AnnounceReadSCAPEShapeFunctionFile(void);
    static void AnnounceAllocateMemory(void);
    static void AnnounceIsRunning(void);

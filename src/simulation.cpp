@@ -55,9 +55,9 @@ CSimulation::CSimulation(void)
    m_bWaveHeightSave                               =
    m_bAvgWaveHeightSave                            =
    m_bAvgWaveOrientationSave                       =
-   m_bWaveAngleAndHeightSave                                =
-   m_bAvgWaveAngleAndHeightSave                             =
-   m_bDeepWaterWaveAngleAndHeightSave                       =
+   m_bWaveAngleAndHeightSave                       =
+   m_bAvgWaveAngleAndHeightSave                    =
+   m_bDeepWaterWaveAngleAndHeightSave              =
    m_bBeachProtectionSave                          =
    m_bWaveEnergySinceCollapseSave                  =
    m_bMeanWaveEnergySave                           =
@@ -276,22 +276,24 @@ CSimulation::CSimulation(void)
    m_dProfileMaxSlope                               =
    m_dSimpleSmoothWeight                            =
    m_dBeachSmoothingVertTolerance                   =
-   m_dCliffErosionResistance                              =
+   m_dCliffErosionResistance                        =
    m_dNotchOverhangAtCollapse                       =
    m_dNotchBaseBelowSWL                             =
    m_dCliffDepositionA                              =
    m_dCliffDepositionPlanviewLength                 =
    m_dCliffDepositionHeightFrac                     =
-   m_dThisTimestepCliffCollapseErosionFine                 =
-   m_dThisTimestepCliffCollapseErosionSand                 =
-   m_dThisTimestepCliffCollapseErosionCoarse               =
-   m_dThisTimestepCliffDepositionSand          =
-   m_dThisTimestepCliffDepositionCoarse        =
-   m_dThisTimestepCliffErosionFine             =
+   m_dThisTimestepCliffCollapseErosionFine          =
+   m_dThisTimestepCliffCollapseErosionSand          =
+   m_dThisTimestepCliffCollapseErosionCoarse        =
+   m_dThisTimestepCliffDepositionSand               =
+   m_dThisTimestepCliffDepositionCoarse             =
+   m_dThisTimestepCliffErosionFine                  =
    m_dThisTimestepCliffTalusSandErosion             =
    m_dThisTimestepCliffTalusCoarseErosion           =
    m_dCoastNormalRandSpaceFact                      =
-   m_dDeanProfileStartAboveSWL                      = 0;
+   m_dDeanProfileStartAboveSWL                      = 
+   m_dAccumulatedSeaLevelChange                     = 
+   m_dBreakingWaveHeightDeptRatio                   = 0;
 
    m_dMinSWL                                    = DBL_MAX;
    m_dMaxSWL                                    = DBL_MIN;
@@ -624,13 +626,13 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    }
 
    // Read in the tide data
-//    if (! m_strTideDataFile.empty())
-//    {
-//       AnnounceReadTideData();
-//       nRet = nReadTideData();
-//       if (nRet != RTN_OK)
-//          return (nRet);
-//    }
+    if (! m_strTideDataFile.empty())
+    {
+       AnnounceReadTideData();
+       nRet = nReadTideData();
+       if (nRet != RTN_OK)
+          return (nRet);
+    }
 
    // Read in the erosion potential shape function data
    AnnounceReadSCAPEShapeFunctionFile();
@@ -686,7 +688,8 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       m_dDeltaSWLPerTimestep = (m_dTimeStep * (m_dFinalSWL - m_dOrigSWL)) / m_dSimDuration;
 
       // nCalcExternalForcing() is called at the start of every timestep, so we need to pre-remove the first increment in order to start with m_dThisTimestepSWL == m_dOrigSWL
-      m_dThisTimestepSWL -= m_dDeltaSWLPerTimestep;
+     // m_dThisTimestepSWL -= m_dDeltaSWLPerTimestep;
+      m_dAccumulatedSeaLevelChange -= m_dDeltaSWLPerTimestep;
    }
 
    // ===================================================== The main loop ======================================================

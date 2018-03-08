@@ -183,8 +183,15 @@ int CSimulation::nCreateAllProfiles(void)
          return nRet;
 
       // Create an index to the profiles in along-coast sequence
-      m_VCoast[nCoast].CreateAlongCoastlineProfileIndex();
-
+      m_VCoast[nCoast].CreateAlongCoastProfileIndex();
+      
+//       // DEBUG CODE =======================================================
+//       int nProf = m_VCoast[nCoast].nGetNumProfiles();
+//       for (int n = 0; n < nProf; n++)
+//          LogStream << n << "\t" << m_VCoast[nCoast].nGetProfileFromAlongCoastProfileIndex(n) << endl;
+//       // DEBUG CODE =======================================================
+      
+//       // DEBUG CODE =======================================================
 //       for (int n = 0; n < nCoastSize; n++)
 //       {
 //          LogStream << n;
@@ -193,6 +200,7 @@ int CSimulation::nCreateAllProfiles(void)
 //          LogStream << endl;
 //       }
 //       LogStream << endl;
+//       // DEBUG CODE =======================================================
    }
 
    return RTN_OK;
@@ -224,9 +232,15 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile, in
 
    // Mark non-intervention coast points so they don't get searched
    for (int nCoastPoint = 0; nCoastPoint < nCoastSize; nCoastPoint++)
+   {
       if (m_VCoast[nCoast].pGetCoastLandform(nCoastPoint)->nGetLandFormCategory() != LF_CAT_INTERVENTION)
          bVCoastPointSearched[nCoastPoint] = true;
-
+   }
+      
+   // Also mark the coast endpoints, since we will be putting coast-end profiles there later
+   bVCoastPointSearched[0] = true;
+   bVCoastPointSearched[nCoastSize-1] = true;
+   
    // TODO make this a user input
    int const NINTERVENTIONCAPES = 3;
    int nInterventionProfilesCreated = 0;
@@ -254,9 +268,9 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile, in
          // This intervention cape profile is fine
          nInterventionProfilesCreated++;
 
-//          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
-//          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
-//          LogStream << m_ulIteration << ": intervention cape profile " << nProfile << " created at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
+         CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
+         CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
+         LogStream << m_ulIteration << ": profile " << nProfile << " created at an intervention cape, is at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
 
          // Mark points on either side of it
          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -293,6 +307,10 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
 
       // This convex point is a potential location for a natural cape profile
       int nThisCapePoint = prVCurvature->at(n).first;
+      
+      // If this point is at the start of end of the coast, then forget it since we will be putting coast-end profiles there later
+      if ((nThisCapePoint == 0) || (nThisCapePoint == nCoastSize-1))
+         continue;
 
       if (! bVCoastPointSearched->at(nThisCapePoint))
       {
@@ -309,7 +327,7 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
 
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
-         LogStream << m_ulIteration << ": natural cape profile " << nProfile << " created at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
+         LogStream << m_ulIteration << ": profile " << nProfile << " created at a natural cape, is at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
 
          // Mark points on either side of it
          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -470,7 +488,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                if (nRet == RTN_OK)
                {
                   // Profile created OK
-//                   LogStream << m_ulIteration << ": profile " << nProfile << " created at nThisPoint = " << nThisPoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << "). Started from nNodePoint = " << nNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nNodePoint) << endl;
+                  LogStream << m_ulIteration << ": profile " << nProfile << " created, is at coast point (" << nThisPoint << ") which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << "). Started from nNodePoint = " << nNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nNodePoint) << endl;
                }
                else
                {
@@ -700,7 +718,7 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    pProfile->AppendLineSegment();
    pProfile->AppendCoincidentProfileToLineSegments(make_pair(nProfile, 0));
 
-//    LogStream << setiosflags(ios::fixed) << m_ulIteration << ": coastline " << (bCoastStart ? "start" : "end") << " profile " << nProfile << " created, from [" << PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] to [" << VPtiNormalPoints.back().nGetX() << "][" << VPtiNormalPoints.back().nGetY() << "]" << endl;
+   LogStream << setiosflags(ios::fixed) << m_ulIteration << ": profile " << nProfile << " created at coastline " << (bCoastStart ? "start" : "end") << ", is from [" << PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] to [" << VPtiNormalPoints.back().nGetX() << "][" << VPtiNormalPoints.back().nGetY() << "]" << endl;
 
    return RTN_OK;
 }
@@ -960,7 +978,7 @@ int CSimulation::nModifyAllIntersectingProfiles(void)
          for (int nFirst = 0; nFirst < nNumProfiles; nFirst++)
          {
             // In coastline curvature sequence
-            int nFirstProfile = m_VCoast[nCoast].nGetProfileAtAlongCoastlinePosition(nFirst);
+            int nFirstProfile = m_VCoast[nCoast].nGetProfileFromAlongCoastProfileIndex(nFirst);
             if (nFirstProfile < 0)
                // Not found
                return RTN_ERR_BAD_INDEX;
@@ -985,7 +1003,7 @@ int CSimulation::nModifyAllIntersectingProfiles(void)
                   // Make sure that we don't go beyond the ends of the along-coast index
                   continue;
 
-               int nSecondProfile = m_VCoast[nCoast].nGetProfileAtAlongCoastlinePosition(nSecond);
+               int nSecondProfile = m_VCoast[nCoast].nGetProfileFromAlongCoastProfileIndex(nSecond);
 
 //               LogStream << m_ulIteration << ": " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast search, nFirst = " << nFirst << " nSecond = " << nSecond << " (profiles " << nFirstProfile << " and " << nSecondProfile << ")" << endl;
 
