@@ -62,32 +62,6 @@ bool bCurvaturePairCompareDescending(const pair<int, double> &prLeft, const pair
 
 /*===============================================================================================================================
 
- Create profiles normal to the coastline, modifies these if they intersect, then puts the profiles onto the raster grid
-
-===============================================================================================================================*/
-int CSimulation::nCreateAllProfilesAndCheckForIntersection(void)
-{
-   // Create all coastline-normal profiles, in coastline-concave-curvature sequence i.e. the first profiles are created 'around' the most concave bits of coast. An index is also created which allows profiles to be accessed in along-coast sequence. Also create 'special' profiles at the start and end of the coast, and put these onto the raster griid now
-   int nRet = nCreateAllProfiles();
-   if (nRet != RTN_OK)
-      return nRet;
-
-   // Check to see which coastline-normal profiles intersect. Then modify intersecting profiles so that the sections of each profile seaward of the point of intersection are 'shared' i.e. are multi-lines. This creates the boundaries of the triangular polygons
-   nRet = nModifyAllIntersectingProfiles();
-   if (nRet != RTN_OK)
-      return nRet;
-
-   // Put all valid coastline-normal profiles (apart from the profiles at the start and end of the coast, since they have already been done) onto the raster grid. But if the profile is not long enough, or crosses a coastline or hits dry land, then mark the profile as invalid
-   nRet = nPutAllProfilesOntoGrid();
-   if (nRet != RTN_OK)
-      return nRet;
-   
-   return RTN_OK;
-}
-
-
-/*===============================================================================================================================
-
  Create coastline-normal profiles for all coastlines: first at a limited number at natural and artificial cape positions, then at locations of greatest concave curvature of the vector coastline. Finally, grid-edge normal profiles are created
 
 ===============================================================================================================================*/
@@ -207,6 +181,32 @@ int CSimulation::nCreateAllProfiles(void)
 }
 
 
+/*===============================================================================================================================
+ 
+ Create profiles normal to the coastline, modifies these if they intersect, then puts the profiles onto the raster grid
+ 
+===============================================================================================================================*/
+int CSimulation::nCreateAllProfilesAndCheckForIntersection(void)
+{
+   // Create all coastline-normal profiles, in coastline-concave-curvature sequence i.e. the first profiles are created 'around' the most concave bits of coast. An index is also created which allows profiles to be accessed in along-coast sequence. Also create 'special' profiles at the start and end of the coast, and put these onto the raster griid now
+   int nRet = nCreateAllProfiles();
+   if (nRet != RTN_OK)
+      return nRet;
+   
+   // Check to see which coastline-normal profiles intersect. Then modify intersecting profiles so that the sections of each profile seaward of the point of intersection are 'shared' i.e. are multi-lines. This creates the boundaries of the triangular polygons
+   nRet = nModifyAllIntersectingProfiles();
+   if (nRet != RTN_OK)
+      return nRet;
+   
+   // Put all valid coastline-normal profiles (apart from the profiles at the start and end of the coast, since they have already been done) onto the raster grid. But if the profile is not long enough, or crosses a coastline or hits dry land, then mark the profile as invalid
+   nRet = nPutAllProfilesOntoGrid();
+   if (nRet != RTN_OK)
+      return nRet;
+   
+   return RTN_OK;
+}
+
+
 /*==============================================================================================================================
 
  Create normal profiles(s) on intervention(s) at points on the intervention coastline at which detailed convexity is high (a large -ve value)
@@ -270,7 +270,7 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile, in
 
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
-         LogStream << m_ulIteration << ": profile " << nProfile << " created at an intervention cape, is at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
+         LogStream << m_ulIteration << ": coastline " << nCoast << " profile " << nProfile << " created at an intervention cape, is at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
 
          // Mark points on either side of it
          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -327,7 +327,7 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
 
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
-         LogStream << m_ulIteration << ": profile " << nProfile << " created at a natural cape, is at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
+         LogStream << m_ulIteration << ": coastline " << nCoast << " profile " << nProfile << " created at a natural cape, is at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
 
          // Mark points on either side of it
          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -488,7 +488,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                if (nRet == RTN_OK)
                {
                   // Profile created OK
-                  LogStream << m_ulIteration << ": profile " << nProfile << " created, is at coast point (" << nThisPoint << ") which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << "). Started from nNodePoint = " << nNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nNodePoint) << endl;
+                  LogStream << m_ulIteration << ": coastline " << nCoast << " profile " << nProfile << " created, is at coast point (" << nThisPoint << ") which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << "). Started from nNodePoint = " << nNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nNodePoint) << endl;
                }
                else
                {
