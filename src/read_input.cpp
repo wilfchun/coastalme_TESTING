@@ -23,6 +23,9 @@
 
 ==============================================================================================================================*/
 #include <stdlib.h>                 // for atof()
+#include <string>
+using std::stoi;
+
 #include <fstream>
 using std::ifstream;
 
@@ -987,21 +990,21 @@ bool CSimulation::bReadRunData(void)
 
          case 14:
             // Vector coastline smoothing algorithm: 0 = none, 1 = running mean, 2 = Savitsky-Golay
-            m_nCoastSmooth = atoi(strRH.c_str());
+            m_nCoastSmooth = stoi(strRH.c_str());
             if ((m_nCoastSmooth < SMOOTH_NONE) || (m_nCoastSmooth > SMOOTH_SAVITZKY_GOLAY))
                strErr = "coastline vector smoothing algorithm";
             break;
 
          case 15:
             // Size of coastline smoothing window: must be odd
-            m_nCoastSmoothWindow = atoi(strRH.c_str());
+            m_nCoastSmoothWindow = stoi(strRH.c_str());
             if ((m_nCoastSmoothWindow <= 0) || !(m_nCoastSmoothWindow % 2))
                strErr = "size of coastline vector smoothing window (must be > 0 and odd)";
             break;
 
          case 16:
             // Order of coastline profile smoothing polynomial for Savitsky-Golay: usually 2 or 4, max is 6
-            m_nSavGolCoastPoly = atoi(strRH.c_str());
+            m_nSavGolCoastPoly = stoi(strRH.c_str());
             if ((m_nSavGolCoastPoly <= 0) || (m_nSavGolCoastPoly > 6))
                strErr = "value of Savitsky-Golay polynomial for coastline smoothing (must be <= 6)";
             break;
@@ -1022,7 +1025,7 @@ bool CSimulation::bReadRunData(void)
 
          case 18:
             // Profile slope running-mean smoothing window size: must be odd
-            m_nProfileSmoothWindow = atoi(strRH.c_str());
+            m_nProfileSmoothWindow = stoi(strRH.c_str());
             if ((m_nProfileSmoothWindow <= 0) || !(m_nProfileSmoothWindow % 2))
                strErr = "size of profile vector smoothing window (must be > 0 and odd)";
             break;
@@ -1054,7 +1057,7 @@ bool CSimulation::bReadRunData(void)
          // ------------------------------------------------- Raster GIS layers ------------------------------------------------
          case 22:
             // Number of sediment layers
-            m_nLayers = atoi(strRH.c_str());
+            m_nLayers = stoi(strRH.c_str());
             if (m_nLayers < 1)
             {
                strErr = "must be at least one sediment layer";
@@ -1438,7 +1441,7 @@ bool CSimulation::bReadRunData(void)
             // ---------------------------------------------------- Hydrology data ------------------------------------------------
          case 29:
             // Wave propagation model [0 = COVE, 1 = CShore]
-            m_nWavePropagationModel = atoi(strRH.c_str());
+            m_nWavePropagationModel = stoi(strRH.c_str());
             if ((m_nWavePropagationModel != MODEL_COVE) && (m_nWavePropagationModel != MODEL_CSHORE))
                strErr = "switch for wave propagation model must be 0 or 1";
             break;
@@ -1575,14 +1578,14 @@ bool CSimulation::bReadRunData(void)
 
          case 40:
             // Beach sediment transport at grid edges [0 = closed, 1 = open, 2 = re-circulate]
-            m_nUnconsSedimentHandlingAtGridEdges = atoi(strRH.c_str());
+            m_nUnconsSedimentHandlingAtGridEdges = stoi(strRH.c_str());
             if ((m_nUnconsSedimentHandlingAtGridEdges < GRID_EDGE_CLOSED) || (m_nUnconsSedimentHandlingAtGridEdges > GRID_EDGE_RECIRCULATE))
                strErr = "switch for handling of beach sediment at grid edges must be 0, 1, or 2";
             break;
 
          case 41:
             // Beach erosion/deposition equation [0 = CERC, 1 = Kamphuis]
-            m_nBeachErosionDepositionEquation = atoi(strRH.c_str());
+            m_nBeachErosionDepositionEquation = stoi(strRH.c_str());
             if ((m_nBeachErosionDepositionEquation != EQUATION_CERC) && (m_nBeachErosionDepositionEquation != EQUATION_KAMPHUIS))
                strErr = "switch for beach erosion/deposition equation must be 0 or 1";
             break;
@@ -1734,7 +1737,7 @@ bool CSimulation::bReadRunData(void)
 
          case 58:
             // Planview width of cliff deposition talus (in cells) [must be odd]
-            m_nCliffDepositionPlanviewWidth = atoi(strRH.c_str());
+            m_nCliffDepositionPlanviewWidth = stoi(strRH.c_str());
             if ((m_nCliffDepositionPlanviewWidth % 2) == 0)
                strErr = "planview width of cliff deposition must be odd";
             if (m_nCliffDepositionPlanviewWidth <= 0)
@@ -1790,7 +1793,7 @@ bool CSimulation::bReadRunData(void)
 
          case 65:
             // Maximum number of 'cape' normals
-            m_nNaturalCapeNormals = atoi(strRH.c_str());
+            m_nNaturalCapeNormals = stoi(strRH.c_str());
             if (m_nNaturalCapeNormals < 0)
                strErr = "number of 'cape' normals must be zero or greater";
             break;
@@ -1824,7 +1827,7 @@ bool CSimulation::bReadRunData(void)
                for (unsigned int j = 0; j < strTmp.size(); j++)
                {
                   strTmp[j] = strTrim(&strTmp[j]);
-                  int nTmp = atoi(strTmp[j].c_str());
+                  int nTmp = stoi(strTmp[j].c_str());
                   if (nTmp < 0)
                   {
                      strErr = "Profile number for saving must be zero or greater";

@@ -22,8 +22,11 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-#include <assert.h>
+// #include <assert.h>
 #include <cmath>
+
+#include <string>
+using std::stoi;
 
 #include <iostream>
 using std::ifstream;
@@ -891,7 +894,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
       {
          // The header line
          vector<string> VstrItems = strSplit(&strLineIn, SPACE);
-         nExpectedRows = atoi(VstrItems[1].c_str());
+         nExpectedRows = stoi(VstrItems[1].c_str());
       }
       else
       {
