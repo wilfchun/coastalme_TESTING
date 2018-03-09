@@ -70,7 +70,7 @@ using std::endl;
 
 /*===============================================================================================================================
 
- This routine estimates how much we can erode on this polygon from profiles which are parallel to the polygon's up-coast boundary, moving down-coast (i.e. in the direction of increasing coastpoint indices). It does not do any actual erosion
+ This routine estimates how much we can erode on this polygon from profiles which are parallel to the polygon's up-coast boundary, moving down-coast (i.e. in the direction of increasing coastpoint indices). It does not do any actual erosion. The estimated values for fine, sand, and coarse erosion are depths on a raster cell: to convert to volumes, multiply by m_dCellArea
 
 ===============================================================================================================================*/
 int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int const nPoly, double const dErosionTarget, double& dTotFineEroded, double& dTotSandEroded, double& dTotCoarseEroded)

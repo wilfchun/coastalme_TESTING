@@ -40,7 +40,7 @@ CGeomCoastPolygon::CGeomCoastPolygon(int const nGlobalID, int const nCoastID, in
    m_nProfileDownCoast(nProfileDownCoast),
    m_nProfileUpCoastNumPointsUsed(nLastPointUpCoast),
    m_nProfileDownCoastNumPointsUsed(nLastPointDownCoast),
-//    m_nNumCells(0),
+   m_nNumCells(0),
    m_nPointInPolygonSearchStartPoint(nPointInPolygonStartPoint),
 //    m_dSeawaterVolume(0),
    m_dAvgUnconsD50(0),
@@ -117,16 +117,16 @@ CGeom2DIPoint* CGeomCoastPolygon::pPtiGetAntinode(void)
 }
 
 
-// void CGeomCoastPolygon::SetNumCells(int const nCells)
-// {
-//    m_nNumCells = nCells;
-// }
+void CGeomCoastPolygon::SetNumCells(int const nCells)
+{
+   m_nNumCells = nCells;
+}
 
 
-// int CGeomCoastPolygon::nGetNumCells(void) const
-// {
-//    return m_nNumCells;
-// }
+int CGeomCoastPolygon::nGetNumCells(void) const
+{
+   return m_nNumCells;
+}
 
 
 int CGeomCoastPolygon::nGetUpCoastProfile(void) const
@@ -183,55 +183,55 @@ int CGeomCoastPolygon::nGetDownCoastProfileNumPointsUsed(void) const
 //    return m_dSeawaterVolume;
 // }
 
-//! Adds a change in potential erosion or deposition to this timestep's total change in depth of unconsolidated sediment (all size classes) on this polygon (-ve values for erosion, +ve values for deposition)
+//! Adds a change in potential erosion or deposition to this timestep's total change in depth of unconsolidated sediment (all size classes) on this polygon (-ve erosion, +ve deposition)
 void CGeomCoastPolygon::AddDeltaPotentialTotalSediment(double const dDepth)
 {
    m_dDeltaPotentialTotalSediment += dDepth;
 }
 
-//! Returns this timestep's total change in depth of unconsolidated sediment (all size classes) on this polygon (-ve values for erosion, +ve values for deposition)
+//! Returns this timestep's total change in depth of unconsolidated sediment (all size classes) on this polygon (-ve erosion, +ve deposition)
 double CGeomCoastPolygon::dGetDeltaPotentialErosion(void) const
 {
    return m_dDeltaPotentialTotalSediment;
 }
 
-//! Sets a value for this timestep's estimated total change in depth of fine unconsolidated sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Sets a value for this timestep's estimated total change in depth of fine unconsolidated sediment on this polygon (-ve erosion, +ve deposition)
 void CGeomCoastPolygon::SetDeltaEstimatedUnconsFine(double const dDepth)
 {
    m_dDeltaEstimatedUnconsFine = dDepth;
 }
 
-//! Returns this timestep's estimate of total change in depth of fine unconsolidated sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Returns this timestep's estimate of total change in depth of fine unconsolidated sediment on this polygon (-ve erosion, +ve deposition)
 double CGeomCoastPolygon::dGetDeltaEstimatedUnconsFine(void) const
 {
    return m_dDeltaEstimatedUnconsFine;
 }
 
-//! Sets a value for this timestep's estimated total change in depth of sand-sized unconsolidated sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Sets a value for this timestep's estimated total change in depth of sand-sized unconsolidated sediment on this polygon (-ve erosion, +ve deposition)
 void CGeomCoastPolygon::SetDeltaEstimatedUnconsSand(double const dDepth)
 {
    m_dDeltaEstimatedUnconsSand = dDepth;
 }
 
-//! Returns this timestep's estimate of total change in depth of sand-sized unconsolidated sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Returns this timestep's estimate of total change in depth of sand-sized unconsolidated sediment on this polygon (-ve erosion, +ve deposition)
 double CGeomCoastPolygon::dGetDeltaEstimatedUnconsSand(void) const
 {
    return m_dDeltaEstimatedUnconsSand;
 }
 
-//! Sets a value for this timestep's estimate of total change in depth of coarse unconsolidated sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Sets a value for this timestep's estimate of total change in depth of coarse unconsolidated sediment on this polygon (-ve erosion, +ve deposition)
 void CGeomCoastPolygon::SetDeltaEstimatedUnconsCoarse(double const dDepth)
 {
    m_dDeltaEstimatedUnconsCoarse = dDepth;
 }
 
-//! Returns this timestep's estimate of total change in depth of coarse unconsolidated sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Returns this timestep's estimate of total change in depth of coarse unconsolidated sediment on this polygon (-ve erosion, +ve deposition)
 double CGeomCoastPolygon::dGetDeltaEstimatedUnconsCoarse(void) const
 {
    return m_dDeltaEstimatedUnconsCoarse;
 }
 
-//! Adds a change in erosion or deposition to this timestep's total actual change in depth of unconsolidated fine sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Adds a change in erosion or deposition to this timestep's total actual change in depth of unconsolidated fine sediment on this polygon (-ve erosion, +ve deposition)
 void CGeomCoastPolygon::AddDeltaActualUnconsFine(double const dDepth)
 {
    m_dDeltaActualUnconsFine += dDepth;
@@ -242,13 +242,13 @@ void CGeomCoastPolygon::AddDeltaActualUnconsFine(double const dDepth)
 //    m_dDeltaActualUnconsFine = dDepth;
 // }
 
-//! Returns this timestep's actual total change in depth of fine unconsolidated sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Returns this timestep's actual total change in depth of fine unconsolidated sediment on this polygon (-ve erosion, +ve deposition)
 double CGeomCoastPolygon::dGetDeltaActualUnconsFine(void) const
 {
    return m_dDeltaActualUnconsFine;
 }
 
-//! Adds a change in erosion or deposition to this timestep's total actual change in depth of unconsolidated sand-sized sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Adds a change in erosion or deposition to this timestep's total actual change in depth of unconsolidated sand-sized sediment on this polygon (-ve erosion, +ve deposition)
 void CGeomCoastPolygon::AddDeltaActualUnconsSand(double const dDepth)
 {
    m_dDeltaActualUnconsSand += dDepth;
@@ -259,13 +259,13 @@ void CGeomCoastPolygon::AddDeltaActualUnconsSand(double const dDepth)
 //    m_dDeltaActualUnconsSand = dDepth;
 // }
 
-//! Returns this timestep's actual total change in depth of sand-sized unconsolidated sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Returns this timestep's actual total change in depth of sand-sized unconsolidated sediment on this polygon (-ve erosion, +ve deposition)
 double CGeomCoastPolygon::dGetDeltaActualUnconsSand(void) const
 {
    return m_dDeltaActualUnconsSand;
 }
 
-//! Adds a change in erosion or deposition to this timestep's total actual change in depth of unconsolidated coarse sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Adds a change in erosion or deposition to this timestep's total actual change in depth of unconsolidated coarse sediment on this polygon (-ve erosion, +ve deposition)
 void CGeomCoastPolygon::AddDeltaActualUnconsCoarse(double const dDepth)
 {
    m_dDeltaActualUnconsCoarse += dDepth;
@@ -276,13 +276,13 @@ void CGeomCoastPolygon::AddDeltaActualUnconsCoarse(double const dDepth)
 //    m_dDeltaActualUnconsCoarse = dDepth;
 // }
 
-//! Returns this timestep's actual total change in depth of coarse unconsolidated sediment on this polygon (-ve values for erosion, +ve values for deposition)
+//! Returns this timestep's actual total change in depth of coarse unconsolidated sediment on this polygon (-ve erosion, +ve deposition)
 double CGeomCoastPolygon::dGetDeltaActualUnconsCoarse(void) const
 {
    return m_dDeltaActualUnconsCoarse;
 }
 
-//! Returns this timestep's actual total change in depth of unconsolidated sediment (all size classes) on this polygon (-ve values for erosion, +ve values for deposition)
+//! Returns this timestep's actual total change in depth of unconsolidated sediment (all size classes) on this polygon (-ve erosion, +ve deposition)
 double CGeomCoastPolygon::dGetDeltaActualTotalSediment(void) const
 {
    return m_dDeltaActualUnconsFine + m_dDeltaActualUnconsSand + m_dDeltaActualUnconsCoarse;

@@ -142,7 +142,7 @@ using std::ostringstream;
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 8 March 2018";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 9 March 2018";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -175,13 +175,13 @@ string const   READING_RASTER_FILES                                        = "  
 string const   READING_LANDFORM_FILE                                       = "    - Landform class: ";
 string const   READING_INTERVENTION_CLASS_FILE                             = "    - Intervention class: ";
 string const   READING_INTERVENTION_HEIGHT_FILE                            = "    - Intervention height: ";
-string const   READISSFILE                                                 = "    - Suspended sediment: ";
-string const   READIFUCSFILE                                               = "    - Unconsolidated fine sediment (layer ";
-string const   READISUCSFILE                                               = "    - Unconsolidated sand sediment (layer ";
-string const   READICUCSFILE                                               = "    - Unconsolidated coarse sediment (layer ";
-string const   READIFCSFILE                                                = "    - Consolidated fine sediment (layer ";
-string const   READISCSFILE                                                = "    - Consolidated sand sediment (layer ";
-string const   READICCSFILE                                                = "    - Consolidated coarse sediment (layer ";
+string const   READ_SUSPENDED_SEDIMENT_FILE                                = "    - Suspended sediment: ";
+string const   READ_UNCONS_FINE_SEDIMENT_FILE                              = "    - Unconsolidated fine sediment (layer ";
+string const   READ_UNCONS_SAND_SEDIMENT_FILE                              = "    - Unconsolidated sand sediment (layer ";
+string const   READ_UNCONS_COARSE_SEDIMENT_FILE                            = "    - Unconsolidated coarse sediment (layer ";
+string const   READ_CONS_FINE_SEDIMENT_FILE                                = "    - Consolidated fine sediment (layer ";
+string const   READ_CONS_SAND_SEDIMENT_FILE                                = "    - Consolidated sand sediment (layer ";
+string const   READ_CONS_COARSE_SEDIMENT_FILE                              = "    - Consolidated coarse sediment (layer ";
 string const   READVECTORFILES                                             = "  - Reading vector GIS files";
 string const   READDWWVFILE                                                = "    - Deep water wave values: ";
 string const   READSCAPESHAPEFUNCTIONFILE                                  = "  - Reading SCAPE shape function file";
@@ -225,7 +225,10 @@ unsigned long const  MASK                                                  = 0xf
 // Physically-based constants
 double const   PI                                                          = 3.141592653589793238462643;
 
-double const   TESTDEPTH_DECREMENT                                         = 0.05;        // For the wave breaking timestep
+double const   D50_FINE_DEFAULT                                            = 0.0625;      // In mm
+double const   D50_SAND_DEFAULT                                            = 0.42;        // Ditto
+double const   D50_COARSE_DEFAULT                                          = 19.0;        // Ditto
+
 double const   BEACH_PROTECTION_HB_RATIO                                   = 0.23;        // The beach protection factor is this times breaking depth
 double const   WALKDEN_HALL_PARAM_1                                        = 3.25;        // First param in Equation 4 from Walkden & Hall, 2005
 double const   WALKDEN_HALL_PARAM_2                                        = 1.50;        // Second param in Equation 4 from Walkden & Hall, 2005

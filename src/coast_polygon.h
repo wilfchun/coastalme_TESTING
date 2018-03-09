@@ -32,30 +32,31 @@ class CGeomCoastPolygon : public CA2DShape
 {
 private:
    bool
-//       m_bIsPointedSeaward,                // Does the polygon meet at a point at its seaward end? (i.e. is it roughly triangular?)
+//       m_bIsPointedSeaward,                // Does the polygon meet at a point at its seaward end? (is it roughly triangular?)
       m_bDownCoastThisTimestep;
 
    int
       m_nGlobalID,                        // The simulation-global number of this polygon
       m_nCoastID,                         // This-coast-only number of this polygon
       m_nCoastNode,                       // The point on this polygon's coastline segment with maximum concave curvature, roughly at the middle of the coastline segment
-      m_nProfileUpCoast,            // The normal profile which bounds the polygon in the up-coast direction
-      m_nProfileDownCoast,          // Ditto for the down-coast direction
+      m_nProfileUpCoast,                  // The normal profile which bounds the polygon in the up-coast direction
+      m_nProfileDownCoast,                // Ditto for the down-coast direction
       m_nProfileUpCoastNumPointsUsed,     // The number of points from the up-coast normal which are part of this polygon (less than the normal's full length if the polygon is triangular)
       m_nProfileDownCoastNumPointsUsed,   // Ditto for the down-coast normal
-//       m_nNumCells,                        // The number of cells in the polygon
+      m_nNumCells,                        // The number of cells in the polygon
       m_nPointInPolygonSearchStartPoint;  // The number of the vector point from which we start the point-in-polygon search
 
+   // Note: all sediment depth here are depths on the area of a single raster cell: to convert to a volume, multiply by m_dCellArea
    double
       m_dAvgUnconsD50,                    // The average d50 of unconsolidated sediment on this polygon
 //       m_dSeawaterVolume,                  // The volume (m3) of seawater within the polygon
-      m_dDeltaPotentialTotalSediment,     // Potential change (i.e. ignoring supply-limitation) in total sediment (depth in m, all size classes) this timestep (-ve values for erosion, +ve values for deposition)
-      m_dDeltaEstimatedUnconsFine,        // Estimated actual change (i.e. considering supply-limitation) in fine-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
-      m_dDeltaEstimatedUnconsSand,        // Estimated actual change (i.e. considering supply-limitation) in sand-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
-      m_dDeltaEstimatedUnconsCoarse,      // Estimated actual change (i.e. considering supply-limitation) in coarse-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
-      m_dDeltaActualUnconsFine,           // Actual change (i.e. considering supply-limitation) in fine-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
-      m_dDeltaActualUnconsSand,           // Actual change (i.e. considering supply-limitation) in sand-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
-      m_dDeltaActualUnconsCoarse;         // Actual change (i.e. considering supply-limitation) in coarse-sized sediment (depth in m) this timestep (-ve values for erosion, +ve values for deposition)
+      m_dDeltaPotentialTotalSediment,     // Potential change (ignoring supply-limitation) in total sediment (depth in m, all size classes) this timestep (-ve erosion, +ve deposition)
+      m_dDeltaEstimatedUnconsFine,        // Estimated actual change (considering supply-limitation) in fine-sized sediment (depth in m) this timestep (-ve erosion, +ve deposition)
+      m_dDeltaEstimatedUnconsSand,        // Estimated actual change (considering supply-limitation) in sand-sized sediment (depth in m) this timestep (-ve erosion, +ve deposition)
+      m_dDeltaEstimatedUnconsCoarse,      // Estimated actual change (considering supply-limitation) in coarse-sized sediment (depth in m) this timestep (-ve erosion, +ve deposition)
+      m_dDeltaActualUnconsFine,           // Actual change (considering supply-limitation) in fine-sized sediment (depth in m) this timestep (-ve erosion, +ve deposition)
+      m_dDeltaActualUnconsSand,           // Actual change (considering supply-limitation) in sand-sized sediment (depth in m) this timestep (-ve erosion, +ve deposition)
+      m_dDeltaActualUnconsCoarse;         // Actual change (considering supply-limitation) in coarse-sized sediment (depth in m) this timestep (-ve erosion, +ve deposition)
 
    CGeom2DIPoint
       m_PtiNode,                          // Co-ords of the coast node cell (raster-grid CRS)
@@ -89,7 +90,7 @@ public:
 //    bool bIsPointed(void) const;
 
    void SetNumCells(int const);
-//    int nGetNumCells(void) const;
+   int nGetNumCells(void) const;
 
    int nGetUpCoastProfile(void) const;
    int nGetDownCoastProfile(void) const;

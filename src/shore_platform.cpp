@@ -100,8 +100,8 @@ int CSimulation::nDoAllShorePlatFormErosion(void)
       }
    }
 
-   LogStream << endl << m_ulIteration << ": potential shore platform erosion = " << m_dThisTimestepPotentialPlatformErosion << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles << ")" << endl;
-   LogStream << m_ulIteration << ": actual shore platform erosion = " << m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse << " (fine = " << m_dThisTimestepActualPlatformErosionFine << ", sand = " << m_dThisTimestepActualPlatformErosionSand << ", coarse = " << m_dThisTimestepActualPlatformErosionCoarse << ")" << endl;
+   LogStream << endl << m_ulIteration << ": potential shore platform erosion (m^3) = " << m_dThisTimestepPotentialPlatformErosion * m_dCellArea << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles * m_dCellArea << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles * m_dCellArea << ")" << endl;
+   LogStream << m_ulIteration << ": actual shore platform erosion (m^3) = " << (m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepActualPlatformErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepActualPlatformErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepActualPlatformErosionCoarse * m_dCellArea << ")" << endl;
 
    return RTN_OK;
 }
@@ -109,11 +109,7 @@ int CSimulation::nDoAllShorePlatFormErosion(void)
 
 /*==============================================================================================================================
 
- Calculates potential (i.e. unconstrained by available sediment) erosional lowering of the shore platform for a single coastline-normal profile, due to wave action.
-
- This routine uses a behavioural rule to modify the original surface elevation profile geometry, in which erosion rate/slope = f(d/Db) based on Walkden & Hall (2005)
-
- Originally coded in Matlab, by Andres Payo
+ Calculates potential (i.e. unconstrained by available sediment) erosional lowering of the shore platform for a single coastline-normal profile, due to wave action. This routine uses a behavioural rule to modify the original surface elevation profile geometry, in which erosion rate/slope = f(d/Db) based on Walkden & Hall (2005). Originally coded in Matlab, by Andres Payo
 
 ==============================================================================================================================*/
 int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int const nProfile)

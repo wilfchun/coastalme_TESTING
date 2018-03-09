@@ -394,9 +394,9 @@ void CSimulation::MarkPolygonCells(void)
             }
          }
 
-//          // Store the number of cells in the interior of the polygon (note that this is an underestimate, it does not include cells in the polygon boundary)
-//          pPolygon->SetNumCells(nCellsInPolygon);
-//          LogStream << m_ulIteration << ": N cells = " << nCellsInPolygon << " in polygon " << nPoly << endl;
+         // Store the number of cells in the interior of the polygon (note that this is an underestimate, it does not include cells in the polygon boundary)
+         pPolygon->SetNumCells(nCellsInPolygon);
+         LogStream << m_ulIteration << ": N cells = " << nCellsInPolygon << " in polygon " << nPoly << endl;
 
          // Calculate the total volume of seawater on the polygon (m3) and store it
 //          double dSeaVolume = dTotDepth * m_dCellSide;

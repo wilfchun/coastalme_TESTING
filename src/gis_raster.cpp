@@ -142,14 +142,11 @@ int CSimulation::nReadBasementDEMData(void)
    m_strGDALBasementDEMDataType = GDALGetDataTypeName(pGDALBand->GetRasterDataType());
 
    // If we have value units, then check them
-   char szUnits[10] = "";
-
-   strcpy(szUnits, pGDALBand->GetUnitType());
-
-   if ((*szUnits != '\0') && strcmp(szUnits, "m"))
+   string strUnits = pGDALBand->GetUnitType();
+   if ((! strUnits.empty()) && (strUnits.find("m") == string::npos))
    {
       // Error: value units must be m
-      cerr << ERR << "DEM vertical units are (" << szUnits << " ) in " << m_strInitialBasementDEMFile << ", should be 'm'" << endl;
+      cerr << ERR << "DEM vertical units are (" << strUnits << " ) in " << m_strInitialBasementDEMFile << ", should be 'm'" << endl;
       return RTN_ERR_DEMFILE;
    }
 
@@ -1412,7 +1409,13 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
                if (nPoly == INT_NODATA)
                   dTmp = m_dMissingValue;
                else
-                  dTmp = m_pVCoastPolygon[nPoly]->dGetDeltaActualTotalSediment();
+               {
+                  // Get total volume (all sediment size classes) of change in sediment for this polygon for this timestep (-ve erosion, +ve deposition)
+                  dTmp = m_pVCoastPolygon[nPoly]->dGetDeltaActualTotalSediment() * m_dCellArea;
+                  
+                  // Calculate the rate in m^3 / sec
+                  dTmp /= (m_dTimeStep * 3600);
+               }
 
                break;
             }
@@ -1437,7 +1440,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
    GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
 
    // Set value units for this band
-   char szUnits[10] = "";
+   string strUnits;
    switch (nDataItem)
    {
       case (RASTER_PLOT_BASEMENT_ELEVATION):
@@ -1471,28 +1474,33 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
       case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
       case (RASTER_PLOT_INTERVENTION_HEIGHT):
       case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
-      case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
       {
-         strcpy(szUnits, "m");
+         strUnits = "m";
          break;
       }
 
       case (RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT):
       {
-         strcpy(szUnits, "m/m");
+         strUnits = "m/m";
          break;
       }
       
       case (RASTER_PLOT_WAVE_ORIENTATION):
       case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
       {
-         strcpy(szUnits, "degrees");
+         strUnits = "degrees";
          break;         
+      }
+      
+      case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
+      {
+         strUnits = "cumecs";
+         break;
       }
    }
 
    CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails
-   pBand->SetUnitType(szUnits);                                // Not supported for some GIS formats
+   pBand->SetUnitType(strUnits.c_str());                                // Not supported for some GIS formats
    CPLPopErrorHandler();
 
    // Tell the output dataset about NODATA (missing values)

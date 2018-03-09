@@ -222,15 +222,15 @@ int CSimulation::nDoAllPropagateWaves(void)
       return RTN_OK;      
    }
 
-   // TEST
+//    // DEBUG CODE ============================================
 //    LogStream << "Out of loop" << endl;
 //    for (int nn = 0; nn < VnXAll.size(); nn++)
 //    {
 //       LogStream << "nn = " << nn << " VnXAll[nn] = " << VnXAll[nn] << " VnYAll[nn] = " << VnYAll[nn] << " VdHeightXAll[nn] = " << VdHeightXAll[nn] << " VdHeightYAll[nn] = " << VdHeightYAll[nn] << " VbBreakingAll[nn] = " << VbBreakingAll[nn] << endl;
 //    }
 //    LogStream << endl;
-   // TEST
-   
+//    // DEBUG CODE ============================================
+
    // Are the waves off-shore for every profile? If so, do nothing more
    if (VbBreakingAll.empty())
    {
@@ -290,20 +290,7 @@ int CSimulation::nDoAllPropagateWaves(void)
             // Calculate total wave energy at each coast point during this timestep
             double dWaveEnergy = dErosiveWaveForce * m_dTimeStep * 3600;
             
-            m_VCoast[nCoast].SetWaveEnergyatBreaking(nCoastPoint, dWaveEnergy);
-            
-//             // TODO DFM check with Andres
-//             double dFluxOrientation = m_VCoast[nCoast].dGetFluxOrientation(nCoastPoint);
-//             double dBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nCoastPoint);
-//             double dAngleBetween = dCalcWaveAngleToCoastNormal(dFluxOrientation, dBreakingWaveOrientation, m_VCoast[nCoast].nGetSeaHandedness());
-//             if (dAngleBetween != DBL_NODATA)
-//             {
-//                double dIncidentWaveEnergy = dWaveEnergy * cos(dAngleBetween * PI / 180);
-//                
-// //                LogStream << m_ulIteration << ": at coastpoint " << nCoastPoint << ", dFluxOrientation = " << dFluxOrientation << " dBreakingWaveOrientation = " << dBreakingWaveOrientation << " dAngleBetween = " << dAngleBetween << " dIncidentWaveEnergy = " << dIncidentWaveEnergy << endl;
-//             
-//                m_VCoast[nCoast].SetWaveEnergyatBreaking(nCoastPoint, dIncidentWaveEnergy);
-//             }
+            m_VCoast[nCoast].SetWaveEnergyAtBreaking(nCoastPoint, dWaveEnergy);
          }
       }
    }

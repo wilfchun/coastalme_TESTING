@@ -1725,7 +1725,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
       }
    }
 
-   LogStream << m_ulIteration << ": polygon " << nPoly << " " << strMsg << " deposited = " << (dTotSandDeposited + dTotCoarseDeposited) << " target = " << dTotTargetToDeposit << " (sand = " << dTotSandDeposited << " sand remaining = " << dSandToDepositOnPoly << " coarse = " << dTotCoarseDeposited << " coarse remaining = " << dCoarseToDepositOnPoly << ")" << endl;
+   LogStream << m_ulIteration << ": polygon " << nPoly << " " << strMsg << " deposited = " << (dTotSandDeposited + dTotCoarseDeposited) * m_dCellArea << " target = " << dTotTargetToDeposit * m_dCellArea << " (sand = " << dTotSandDeposited * m_dCellArea << " sand remaining = " << dSandToDepositOnPoly * m_dCellArea << " coarse = " << dTotCoarseDeposited * m_dCellArea << " coarse remaining = " << dCoarseToDepositOnPoly * m_dCellArea << "), all m^3" << endl;
 
    return RTN_OK;
 }

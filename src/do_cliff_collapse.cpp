@@ -101,7 +101,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
       }
    }
 
-   LogStream << endl << m_ulIteration << ": cliff collapse = " << m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse << " (fine = " << m_dThisTimestepCliffCollapseErosionFine << ", sand = " << m_dThisTimestepCliffCollapseErosionSand << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse << "), talus deposition = " << m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse << " (sand = " << m_dThisTimestepCliffDepositionSand << ", coarse = " << m_dThisTimestepCliffDepositionSand << ")" << endl;
+   LogStream << endl << m_ulIteration << ": cliff collapse (m^3) = " << (m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepCliffCollapseErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepCliffCollapseErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse * m_dCellArea << "), talus deposition (m^3) = " << (m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse) * m_dCellArea << " (sand = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ")" << endl;
 
    return RTN_OK;
 }
