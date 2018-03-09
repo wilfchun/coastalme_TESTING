@@ -996,6 +996,7 @@ int CSimulation::nWriteEndRunDetails(void)
    double dTotalLost = m_ldGTotActualFineSedLostBeachErosion + m_ldGTotActualSandSedLostBeachErosion + m_ldGTotActualCoarseSedLostBeachErosion + m_ldGTotSandSedLostCliffCollapse + m_ldGTotCoarseSedLostCliffCollapse;
    OutStream << "Total sediment lost from grid (all processes) = " << dTotalLost * m_dCellArea << " m^3" << endl;
    OutStream << "                                              = " << dTotalLost * m_dCellArea / m_dSimDuration << " m^3/hour" << endl << endl;
+   OutStream << "                                              = " << dTotalLost * m_dCellArea / (m_dSimDuration * 3600) << " m^3/sec" << endl << endl;
    OutStream << "NOTE: grid edge option is ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
       OutStream << "CLOSED, therefore values above are for fine sediment only";
