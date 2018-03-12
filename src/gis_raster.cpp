@@ -220,8 +220,8 @@ void CSimulation::MarkEdgeCells(void)
 {
    // Go round in a clockwise direction: top (north) edge first
    int
-      nLastX,
-      nLastY;
+      nLastX = 0,
+      nLastY = 0;
    for (int nX = 0; nX < m_nXGridMax; nX++)
    {
       for (int nY = 0; nY < MAX_EDGE_SEARCH_DIST; nY++)

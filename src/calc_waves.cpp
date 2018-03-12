@@ -71,10 +71,10 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
       nDistToNextProfile = 0;
       
    double
-      dPrevProfileDeepWaterWaveHeight,
-      dPrevProfileDeepWaterWaveOrientation,
-      dNextProfileDeepWaterWaveHeight,
-      dNextProfileDeepWaterWaveOrientation,
+      dPrevProfileDeepWaterWaveHeight = 0,
+      dPrevProfileDeepWaterWaveOrientation = 0,
+      dNextProfileDeepWaterWaveHeight = 0,
+      dNextProfileDeepWaterWaveOrientation = 0,
       dDist = 0;
       
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
@@ -514,7 +514,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       }
       
       // Move to the CShore folder
-      chdir(CSHOREDIR.c_str());
+      nRet = chdir(CSHOREDIR.c_str());
       
       char szBuf[BUF_SIZE] = "";
       string strCWD = getcwd(szBuf, BUF_SIZE);
@@ -563,13 +563,13 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       
       // Clean up the CShore outputs
 #ifdef _WIN32
-      system("./clean.bat")
+      nRet = system("./clean.bat")
 #else
-      system("./clean.sh");
+      nRet = system("./clean.sh");
 #endif
       
       // And return to the CoastalME folder
-      chdir(m_strCMEDir.c_str());
+      nRet = chdir(m_strCMEDir.c_str());
       
       // Convert CShore outputs to wave height and wave direction and update wave profile attributes
       for (int nProfilePoint = (nProfileSize-1); nProfilePoint >= 0; nProfilePoint--)
@@ -740,7 +740,10 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, double dWaveFriction, vector<double> const* pVdXdist, vector<double> const* pVdBottomElevation)
 {
    // Initialize inifile from infileTemplate
-   system("cp infileTemplate infile");       // The infileTemplate must be in the working directory
+   int nRet = system("cp infileTemplate infile");       // The infileTemplate must be in the working directory
+   if (nRet == -1)
+      return RTN_ERR_CSHORE_OUTPUT_FILE;
+   
    string strFName = "infile";
    
    // We have all the inputs in the CShore format, so we can create the input file
@@ -872,7 +875,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
    // And read in the data
    int 
       n = -1,
-      nExpectedRows;
+      nExpectedRows = 0;
    string strLineIn;
    while (getline(InStream, strLineIn))
    {
