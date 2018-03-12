@@ -430,6 +430,7 @@ private:
    vector<double>
       m_VdSliceElev,
       m_VdErosionPotential,            // For erosion potential lookup
+      m_VdDepthOverDB,            // For erosion potential lookup
       m_VdSavGolFCRWCoast,             // Savitzky-Golay filter coefficients for the coastline vector(s)
       m_VdSavGolFCGeomProfile,         // Savitzky-Golay filter coefficients for the profile vectors
       m_VdDeepWaterWavePointX,         // X co-ordinate (grid CRS) for deep water wave point
@@ -577,6 +578,7 @@ private:
    static double dCalcWaveAngleToCoastNormal(double const, double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);
+   void InterpolateWavePropertiesToCoastlineCells(int const);
    void InterpolateWavePropertiesToCells(int const, int const, int const);
    void ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(int const, int const);
    static double dCalcCurvature(int const, CGeom2DPoint const*, CGeom2DPoint const*, CGeom2DPoint const*);

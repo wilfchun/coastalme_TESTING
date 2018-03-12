@@ -36,6 +36,7 @@ using std::setiosflags;
 
 #include "cme.h"
 #include "hermite_cubic.h"
+#include "interpolate.h"
 #include "simulation.h"
 #include "coast.h"
 
@@ -974,19 +975,7 @@ double CSimulation::dLookUpErosionPotential(double const dDepthOverDB) const
       return 0;
 
    // OK, dDepthOverDB is less than the maximum so look up a corresponding value for erosion potential. The look-up index is dDepthOverDB divided by (the Depth Over DB increment used when creating the look-up vector). But since this look-up index may not be an integer, split the look-up index into integer and fractional parts and deal with each separately
-   double dIntPart = 0;
-   double dFractPart = modf(dDepthOverDB * INVERSE_DEPTH_OVER_DB_INCREMENT, &dIntPart);
-   unsigned int nIndex = static_cast<unsigned int>(dIntPart);
-
-   // Use the integer part of the look-up index to get a preliminary value of erosion potential
-   double dErosionPotential = m_VdErosionPotential[nIndex];
-
-   if (dFractPart > 0)
-   {
-      // If the fractional part is non-zero, do a linear interpolation between this and the next value of erosion potential in the look-up table (note that the final value of erosion potential in the look-up table is always zero)
-      double dInterpolated = dFractPart * (dErosionPotential - m_VdErosionPotential[nIndex + 1]);
-      dErosionPotential -= dInterpolated;    // Because erosion potential is -ve
-   }
+   double dErosionPotential = interpolate( m_VdDepthOverDB, m_VdErosionPotential, dDepthOverDB, false );
 
    return dErosionPotential;
 }

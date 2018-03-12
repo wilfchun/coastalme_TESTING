@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-// #include <assert.h>
+#include <assert.h>
 #include <cmath>
 
 #include <string>
@@ -54,6 +54,7 @@ using std::stack;
 
 #include "hermite_cubic.h"
 #include "linearinterp.h"
+#include "interpolate.h"
 
 
 
@@ -276,7 +277,10 @@ int CSimulation::nDoAllPropagateWaves(void)
 
       // Interpolate these wave properties for all remaining coastline points. Do this in along-coastline sequence, but do not do this for the end-of-coastline profile (which is the final one)
       for (int n = 0; n < nNumProfiles-1; n++)
-         InterpolateWavePropertiesToCoastline(nCoast, n, nNumProfiles);
+      InterpolateWavePropertiesToCoastline(nCoast, n, nNumProfiles);
+      
+      InterpolateWavePropertiesToCoastlineCells(nCoast);
+      
 
       // Calculate wave energy at every point on the coastline
       for (int nCoastPoint = 0; nCoastPoint < nCoastSize; nCoastPoint++)
@@ -586,7 +590,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          else
             VdWaveDirection[nProfilePoint] = dKeepWithin360(dAlpha + 270 + dFluxOrientationThis);
          
-         if ((VdFractionBreakingWaves[nProfilePoint] >= 0.99) & (! bBreaking))
+         if ((VdFractionBreakingWaves[nProfilePoint] >= 0.70) & (! bBreaking))
          {
             bBreaking = true;
             dProfileBreakingWaveHeight = VdWaveHeight[nProfilePoint];
@@ -1079,7 +1083,6 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
    int const nThisBreakingDist = m_VCoast[nCoast].nGetBreakingDistance(nThisCoastPoint);
    double
       dThisBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nThisCoastPoint),       // This could be DBL_NODATA
-      dThisCoastWaveHeight = m_VCoast[nCoast].dGetCoastWaveHeight(nThisCoastPoint),       
       dThisBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nThisCoastPoint),
       dThisBreakingDepth = m_VCoast[nCoast].dGetDepthOfBreaking(nThisCoastPoint);
 
@@ -1104,7 +1107,6 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
    int nNextBreakingDist = m_VCoast[nCoast].nGetBreakingDistance(nNextCoastPoint);
    double
       dNextBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nNextCoastPoint),          // This could be DBL_NODATA
-      dNextCoastWaveHeight = m_VCoast[nCoast].dGetCoastWaveHeight(nNextCoastPoint),          
       dNextBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nNextCoastPoint),
       dNextBreakingDepth = m_VCoast[nCoast].dGetDepthOfBreaking(nNextCoastPoint);
 
@@ -1123,7 +1125,6 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
       {
          // Set the breaking wave height, breaking wave angle, and depth of breaking for this coast point
          m_VCoast[nCoast].SetBreakingWaveHeight(n, dNextBreakingWaveHeight);
-	 m_VCoast[nCoast].SetCoastWaveHeight(n, dNextCoastWaveHeight);
          m_VCoast[nCoast].SetBreakingWaveOrientation(n, dNextBreakingWaveOrientation);
          m_VCoast[nCoast].SetDepthOfBreaking(n, dNextBreakingDepth);
          m_VCoast[nCoast].SetBreakingDistance(n, nNextBreakingDist);
@@ -1139,7 +1140,6 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
       {
          // Set the breaking wave height, breaking wave angle, and depth of breaking for this coast point
          m_VCoast[nCoast].SetBreakingWaveHeight(n, dThisBreakingWaveHeight);
-	 m_VCoast[nCoast].SetCoastWaveHeight(n, dThisCoastWaveHeight);
          m_VCoast[nCoast].SetBreakingWaveOrientation(n, dThisBreakingWaveOrientation);
          m_VCoast[nCoast].SetDepthOfBreaking(n, dThisBreakingDepth);
          m_VCoast[nCoast].SetBreakingDistance(n, nThisBreakingDist);
@@ -1155,7 +1155,6 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
 
       double
          dBreakingWaveHeight = 0,
-	 dCoastWaveHeight = 0,
          dBreakingWaveOrientation = 0,
          dBreakingDepth = 0,
          dBreakingDist = 0;
@@ -1189,21 +1188,55 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
          dBreakingDist = nThisBreakingDist;
       }
 
-      // Always interpolate the wave height at coast
-      double
-            dThisWeight = (nDistBetween - nDist) / static_cast<double>(nDistBetween),
-            dNextWeight = 1 - dThisWeight;
-	dCoastWaveHeight = (dThisWeight * dThisCoastWaveHeight) + (dNextWeight * dNextCoastWaveHeight);   
 	
       // Set the breaking wave height, breaking wave angle, and depth of breaking for this coast point
       m_VCoast[nCoast].SetBreakingWaveHeight(n, dBreakingWaveHeight);
-      m_VCoast[nCoast].SetCoastWaveHeight(n, dCoastWaveHeight);
       m_VCoast[nCoast].SetBreakingWaveOrientation(n, dBreakingWaveOrientation);
       m_VCoast[nCoast].SetDepthOfBreaking(n, dBreakingDepth);
       m_VCoast[nCoast].SetBreakingDistance(n, static_cast<int>(dRound(dBreakingDist)));
    }
 }
 
+/*===============================================================================================================================
+
+ Interpolates wave properties from profiles to the coastline cells between two profiles. 
+ Do this by linear interpolation between profiles
+
+===============================================================================================================================*/
+void CSimulation::InterpolateWavePropertiesToCoastlineCells(int const nCoast)
+{
+   int nCoastPoints = m_VCoast[nCoast].nGetCoastlineSize();
+   
+   // Initialize all vectors pairs (x,y) for each variable
+   vector<int> 
+      nVCoastWaveHeightX;
+   vector<double> 
+      dVCoastWaveHeightY;
+   
+   
+   // Search all coast points for non NAN values and store them into temporary variables for later interporlation
+    for (int n = 0; n < nCoastPoints; n++)
+    {
+       double dCoastWaveHeight = m_VCoast[nCoast].dGetCoastWaveHeight(n);
+       
+       if(dCoastWaveHeight!= DBL_NODATA)
+       {
+	nVCoastWaveHeightX.push_back(n);
+	dVCoastWaveHeightY.push_back(dCoastWaveHeight);
+       }
+     }
+     
+   // Interpolate all coast points. Check first that x,y have more than 3 points and are both of equal size
+   if((nVCoastWaveHeightX.size()>=3) & (nVCoastWaveHeightX.size()==dVCoastWaveHeightY.size()))
+   {
+      for(int n = 0; n < nCoastPoints; n++)
+      {
+	 double dInterpCoastWaveHeight = interpolate( nVCoastWaveHeightX, dVCoastWaveHeightY, n, false );
+	 m_VCoast[nCoast].SetCoastWaveHeight(n,dInterpCoastWaveHeight);
+      }
+   }
+   
+}
 
 /*===============================================================================================================================
 

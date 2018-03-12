@@ -45,6 +45,7 @@ using std::stringstream;
 
 #include "cme.h"
 #include "simulation.h"
+#include "interpolate.h"
 
 
 /*==============================================================================================================================
@@ -721,11 +722,12 @@ void CSimulation::WriteLookUpData(void)
    {
       // File opened OK, so output the values
       LookUpOutStream << "DepthOverDB, \tErosionPotential" << endl;
-      double dDepthOverBD = 0;
-      for (unsigned int i = 0; i < m_VdErosionPotential.size(); i++)
+      double dDepthOverDB = 0.0;
+      while (dDepthOverDB <= m_dDepthOverDBMax)
       {
-         LookUpOutStream << dDepthOverBD << ",\t" << dLookUpErosionPotential(dDepthOverBD) << endl;
-         dDepthOverBD += DEPTH_OVER_DB_INCREMENT;
+	 double dErosionPotential = interpolate( m_VdDepthOverDB, m_VdErosionPotential, dDepthOverDB, false );
+         LookUpOutStream << dDepthOverDB << ",\t" << dErosionPotential << endl;
+	 dDepthOverDB += DEPTH_OVER_DB_INCREMENT;
       }
       LookUpOutStream << endl;
 

@@ -34,6 +34,7 @@ using std::ios;
 
 #include "cme.h"
 #include "simulation.h"
+#include <cmath>
 
 
 /*==============================================================================================================================
@@ -2028,6 +2029,11 @@ int CSimulation::nReadShapeFunction()
       VdErosionPotential.push_back(strtod(strTmp[1].c_str(), NULL));
       VdErosionPotentialFirstDeriv.push_back(strtod(strTmp[2].c_str(), NULL));
    }
+   // Now create the look up table values
+    m_VdErosionPotential = VdErosionPotential;
+    m_VdDepthOverDB = VdDepthOverDB;
+    m_dDepthOverDBMax = VdDepthOverDB[nRead-1];
+
 
    // Close file
    InStream.close();
@@ -2039,12 +2045,22 @@ int CSimulation::nReadShapeFunction()
       return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
    }
 
-   // OK, now use this data to create a look-up table to be used for the rest of the simulation
-   if (! bCreateErosionPotentialLookUp(&VdDepthOverDB, &VdErosionPotential, &VdErosionPotentialFirstDeriv))
+   // Is the shape funcion well defined? i.e. it must be -ve or 0.0 for all values 
+   for (unsigned int j = 0; j < m_VdErosionPotential.size(); j++ )
    {
-      cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function is unbounded for high values of depth over DB" << endl;
-      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+      if (m_VdErosionPotential[j]>0)
+      {
+	 cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function cannot be positive" << endl;
+	 return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+      }
    }
-
+   
+   // OK, now use this data to create a look-up table to be used for the rest of the simulation
+//   if (! bCreateErosionPotentialLookUp(&VdDepthOverDB, &VdErosionPotential, &VdErosionPotentialFirstDeriv))
+//   {
+//      cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function is unbounded for high values of depth over DB" << endl;
+//      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+//   }
+//
    return RTN_OK;
 }
