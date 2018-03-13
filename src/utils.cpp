@@ -454,7 +454,7 @@ void CSimulation::AnnounceReadICGIS(void) const
 #ifdef _WIN32
       cout << READING_INTERVENTION_CLASS_FILE << pstrChangeToForwardSlash(&m_strInterventionClassFile) << endl;
 #else
-      cout << READING_INTERVENTION_CLASS_FILE << m_strInterventionHeightFile << endl;
+      cout << READING_INTERVENTION_CLASS_FILE << m_strInterventionClassFile << endl;
 #endif
 }
 

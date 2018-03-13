@@ -835,7 +835,7 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
          return RTN_OK;
       
       // Get the elevation for both consolidated and unconsolidated sediment on this cell
-      double VdProfileZ = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() - m_dThisTimestepSWL;
+      double VdProfileZ = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentPlusInterventionTopElev() - m_dThisTimestepSWL;
       VdVZ->push_back(VdProfileZ);
       
       // And store the X-Y plane distance from the start of the profile
