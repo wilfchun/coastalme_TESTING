@@ -6,7 +6,7 @@ See <a href="https://github.com/coastalme/coastalme" target="_blank">https://git
 
 INSTRUCTIONS
 
-CoatalME builds easily using Linux. If you wish to run CoastalME on Windows, then we currently recommend using the Cygwin pseudo-Linux software to do this.
+CoastalME builds easily using Linux. If you wish to run CoastalME on Windows, then we currently recommend using the Cygwin pseudo-Linux software to do this.
 
 1. Create a local copy of the github repository, for example by downloading a zipfile, then unpacking it
 
