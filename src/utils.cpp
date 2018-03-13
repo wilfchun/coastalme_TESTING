@@ -2167,7 +2167,7 @@ string CSimulation::strGetErrorText(int const nErr)
       // should never get here
       strErr = "unknown cause";
    }
-
+   
    return strErr;
 }
 
@@ -2197,7 +2197,14 @@ void CSimulation::DoSimulationEnd(int const nRtn)
    default:
       // Aborting because of some error
       cerr << ERRORNOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
+      
+      // Output all GIS files: is helpful in tracking down problems
+      m_bSaveGISThisTimestep = true;
+      m_nGISSave = 998;
+      bSaveAllRasterGISFiles();
+      bSaveAllVectorGISFiles();
 
+      // Write the error message to the logfile and to stdout
       if (LogStream && LogStream.is_open())
       {
          LogStream << ERR << strGetErrorText(nRtn) << " (error code " << nRtn << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
