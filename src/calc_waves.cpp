@@ -24,6 +24,7 @@
 ==============================================================================================================================*/
 #include <assert.h>
 #include <cmath>
+#include <unistd.h>
 
 #include <string>
 using std::stoi;
@@ -519,6 +520,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       
       // Move to the CShore folder
       nRet = chdir(CSHOREDIR.c_str());
+      if (nRet != RTN_OK)
+         return nRet;
       
       char szBuf[BUF_SIZE] = "";
       string strCWD = getcwd(szBuf, BUF_SIZE);
@@ -571,9 +574,13 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 #else
       nRet = system("./clean.sh");
 #endif
+      if (nRet != RTN_OK)
+         return nRet;
       
       // And return to the CoastalME folder
       nRet = chdir(m_strCMEDir.c_str());
+      if (nRet != RTN_OK)
+         return nRet;
       
       // Convert CShore outputs to wave height and wave direction and update wave profile attributes
       for (int nProfilePoint = (nProfileSize-1); nProfilePoint >= 0; nProfilePoint--)
