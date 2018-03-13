@@ -97,12 +97,12 @@ int CSimulation::nAssignAllCoastalLandforms(void)
             {
                // First timestep: we have consolidated sediment at SWL, so this is a cliff cell. Set some initial values for the cliff object's attributes
                m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFSubCategory(LF_SUBCAT_CLIFF_ON_COASTLINE);
-               m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffNotchBaseElev(m_dMinSWL);
+               m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffNotchBaseElev(m_dThisTimestepSWL); // APayo March 2018 replaced m_dMinSWL by m_dThisTimestepSWL 
                m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffNotchOverhang(0);
                m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffRemaining(m_dCellSide);
 
                // Create a cliff object on the vector coastline with these attributes
-               CACoastLandform* pCliff = new CRWCliff(&m_VCoast[nCoast], nCoast, j, m_dCellSide, m_dMinSWL, 0, 0);
+               CACoastLandform* pCliff = new CRWCliff(&m_VCoast[nCoast], nCoast, j, m_dCellSide, m_dThisTimestepSWL, 0, 0); // APayo March 2018 replaced m_dMinSWL by m_dThisTimestepSWL 
                m_VCoast[nCoast].AppendCoastLandform(pCliff);
 
 //                LogStream << m_ulIteration << ": CLIFF CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
@@ -129,7 +129,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
                // We have consolidated sediment at SWL, so this is a cliff cell. Set some default values
                double
                   dAccumWaveEnergy  = 0,
-                  dNotchBaseElev    = m_dMinSWL,
+                  dNotchBaseElev    = m_dThisTimestepSWL, // APayo March 2018 replaced m_dMinSWL by m_dThisTimestepSWL 
                   dNotchOverhang    = 0,
                   dRemaining        = m_dCellSide;
 
