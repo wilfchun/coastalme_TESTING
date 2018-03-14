@@ -621,7 +621,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                else if (nDataItem == VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE)
                {
                   // Set the feature's attribute
-                  pOGRFeature->SetField(strFieldValue1.c_str(), m_VCoast[i].dGetWaveEnergyatBreaking(j));
+                  pOGRFeature->SetField(strFieldValue1.c_str(), m_VCoast[i].pGetCoastLandform(j)->dGetTotAccumWaveEnergy());
                }
                else if (nDataItem == VECTOR_PLOT_MEAN_WAVE_ENERGY)
                {

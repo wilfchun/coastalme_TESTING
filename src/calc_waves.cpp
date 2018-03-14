@@ -283,7 +283,7 @@ int CSimulation::nDoAllPropagateWaves(void)
       InterpolateWavePropertiesToCoastlineCells(nCoast);
       
 
-      // Calculate wave energy at every point on the coastline
+      // Calculate wave energy at breaking for every point on the coastline
       for (int nCoastPoint = 0; nCoastPoint < nCoastSize; nCoastPoint++)
       {
          // Equation 4 from Walkden & Hall, 2005
@@ -1203,6 +1203,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
       m_VCoast[nCoast].SetBreakingDistance(n, static_cast<int>(dRound(dBreakingDist)));
    }
 }
+
 
 /*===============================================================================================================================
 

@@ -281,8 +281,7 @@ void CSimulation::MarkPolygonCells(void)
       // Do this for every coastal polygon
       for (int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
       {
-         int
-            nCellsInPolygon = 0;
+//          int nCellsInPolygon = 0;
 //       double dTotDepth = 0;
 
          CGeomCoastPolygon* pPolygon = m_VCoast[nCoast].pGetPolygon(nPoly);
@@ -365,7 +364,7 @@ void CSimulation::MarkPolygonCells(void)
 //                LogStream << "[" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 
                // Increment the running totals for this polygon
-               nCellsInPolygon++;
+//                nCellsInPolygon++;
 //                dTotDepth += m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
 
                if ((! bSpanAbove) && (nY > 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() == INT_NODATA))
@@ -395,8 +394,8 @@ void CSimulation::MarkPolygonCells(void)
          }
 
          // Store the number of cells in the interior of the polygon (note that this is an underestimate, it does not include cells in the polygon boundary)
-         pPolygon->SetNumCells(nCellsInPolygon);
-         LogStream << m_ulIteration << ": N cells = " << nCellsInPolygon << " in polygon " << nPoly << endl;
+//          pPolygon->SetNumCellsInPolygon(nCellsInPolygon);
+//          LogStream << m_ulIteration << ": N cells = " << nCellsInPolygon << " in polygon " << nPoly << endl;
 
          // Calculate the total volume of seawater on the polygon (m3) and store it
 //          double dSeaVolume = dTotDepth * m_dCellSide;
@@ -574,7 +573,7 @@ void CSimulation::DoPolygonSharedBoundaries(void)
                pPolygon->SetDownCoastAdjacentPolygonBoundaryShares(&dVDownCoastBoundaryShare);
 
                // Finally, calculate the distance between the coast node and the antinode of the polygon
-               double dPolygonSeawardLen = dGetDistanceBetween(pPolygon->pPtiGetNode(), pPolygon->pPtiGetAntinode());
+               double dPolygonSeawardLen = dGetDistanceBetween(pPolygon->pPtiGetNode(), pPolygon->pPtiGetAntiNode());
 
                // And store it
                m_VCoast[nCoast].AppendPolygonLength(dPolygonSeawardLen);

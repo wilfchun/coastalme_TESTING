@@ -106,7 +106,7 @@ void CRWCoast::SetCoastlineExtCRS(CGeomLine const* pLCoast)
    m_VdBreakingWaveOrientation = vector<double>(nLen, DBL_NODATA);
    m_VdDepthOfBreaking = vector<double>(nLen, DBL_NODATA);
    m_VdFluxOrientation = vector<double>(nLen, DBL_NODATA);
-   m_VdWaveEnergy = vector<double>(nLen, 0);  
+   m_VdWaveEnergyAtBreaking = vector<double>(nLen, 0);  
 }
 
 
@@ -127,7 +127,7 @@ void CRWCoast::AppendPointToCoastlineExtCRS(double const dX, double const dY)
    m_VdBreakingWaveOrientation.push_back(DBL_NODATA);
    m_VdDepthOfBreaking.push_back(DBL_NODATA);
    m_VdFluxOrientation.push_back(DBL_NODATA);
-   m_VdWaveEnergy.push_back(0);
+   m_VdWaveEnergyAtBreaking.push_back(0);
 }
 
 CGeomLine* CRWCoast::pLGetCoastlineExtCRS(void)
@@ -521,17 +521,16 @@ double CRWCoast::dGetFluxOrientation(int const nCoastPoint) const
 
 void CRWCoast::SetWaveEnergyAtBreaking(int const nCoastPoint, double const dEnergy)
 {
-   // NOTE no check to see if nCoastPoint < m_VdWaveEnergy.size()
+   // NOTE no check to see if nCoastPoint < m_VdWaveEnergyAtBreaking.size()
 //    assert(bIsFinite(dEnergy));
-   m_VdWaveEnergy[nCoastPoint] = dEnergy;
+   m_VdWaveEnergyAtBreaking[nCoastPoint] = dEnergy;
 }
 
 double CRWCoast::dGetWaveEnergyatBreaking(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_VdWaveEnergy.size()
-//    assert(bIsFinite(m_VdWaveEnergy[nCoastPoint]));
-
-   return m_VdWaveEnergy[nCoastPoint];
+   // NOTE no check to see if nCoastPoint < m_VdWaveEnergyAtBreaking.size()
+//    assert(bIsFinite(m_VdWaveEnergyAtBreaking[nCoastPoint]));
+   return m_VdWaveEnergyAtBreaking[nCoastPoint];
 }
 
 

@@ -43,7 +43,7 @@ private:
       m_nProfileDownCoast,                // Ditto for the down-coast direction
       m_nProfileUpCoastNumPointsUsed,     // The number of points from the up-coast normal which are part of this polygon (less than the normal's full length if the polygon is triangular)
       m_nProfileDownCoastNumPointsUsed,   // Ditto for the down-coast normal
-      m_nNumCells,                        // The number of cells in the polygon
+//       m_nNumCells,                        // The number of cells in the polygon
       m_nPointInPolygonSearchStartPoint;  // The number of the vector point from which we start the point-in-polygon search
 
    // Note: all sediment depth here are depths on the area of a single raster cell: to convert to a volume, multiply by m_dCellArea
@@ -84,13 +84,13 @@ public:
 //    void SetCoastNode(int const);
    int nGetNodeCoastPoint(void) const;
    CGeom2DIPoint* pPtiGetNode(void);
-   CGeom2DIPoint* pPtiGetAntinode(void);
+   CGeom2DIPoint* pPtiGetAntiNode(void);
 
 //    void SetNotPointed(void);
 //    bool bIsPointed(void) const;
 
-   void SetNumCells(int const);
-   int nGetNumCells(void) const;
+//    void SetNumCellsInPolygon(int const);
+//    int nGetNumCellsinPolygon(void) const;
 
    int nGetUpCoastProfile(void) const;
    int nGetDownCoastProfile(void) const;

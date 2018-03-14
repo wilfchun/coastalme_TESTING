@@ -40,7 +40,7 @@ CGeomCoastPolygon::CGeomCoastPolygon(int const nGlobalID, int const nCoastID, in
    m_nProfileDownCoast(nProfileDownCoast),
    m_nProfileUpCoastNumPointsUsed(nLastPointUpCoast),
    m_nProfileDownCoastNumPointsUsed(nLastPointDownCoast),
-   m_nNumCells(0),
+//    m_nNumCells(0),
    m_nPointInPolygonSearchStartPoint(nPointInPolygonStartPoint),
 //    m_dSeawaterVolume(0),
    m_dAvgUnconsD50(0),
@@ -111,22 +111,22 @@ CGeom2DIPoint* CGeomCoastPolygon::pPtiGetNode(void)
 
 }
 
-CGeom2DIPoint* CGeomCoastPolygon::pPtiGetAntinode(void)
+CGeom2DIPoint* CGeomCoastPolygon::pPtiGetAntiNode(void)
 {
    return &m_PtiAntinode;
 }
 
 
-void CGeomCoastPolygon::SetNumCells(int const nCells)
-{
-   m_nNumCells = nCells;
-}
-
-
-int CGeomCoastPolygon::nGetNumCells(void) const
-{
-   return m_nNumCells;
-}
+// void CGeomCoastPolygon::SetNumCellsInPolygon(int const nCells)
+// {
+//    m_nNumCells = nCells;
+// }
+// 
+// 
+// int CGeomCoastPolygon::nGetNumCellsinPolygon(void) const
+// {
+//    return m_nNumCells;
+// }
 
 
 int CGeomCoastPolygon::nGetUpCoastProfile(void) const

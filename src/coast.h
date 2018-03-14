@@ -72,7 +72,7 @@ private:
       m_VdBreakingWaveOrientation,  // The breaking wave orientation on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdDepthOfBreaking,          // The depth of breaking on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdFluxOrientation,          // As in the COVE model, is the orientation alongshore energy/sediment movement; a +ve flux is in direction of increasing indices along coast. At each point on m_LCoastlineExtCRS
-      m_VdWaveEnergy;               // Wave energy at each point on m_LCoastlineExtCRS
+      m_VdWaveEnergyAtBreaking;               // Wave energy at each point on m_LCoastlineExtCRS
       
    vector<CACoastLandform*>
       m_pVLandforms;                // Pointer to a coastal landform object, at each point on m_LCoastlineExtCRS
