@@ -67,7 +67,7 @@ set(FIND_LIBRARY_USE_LIB64_PATHS true)
 if (CMAKE_COMPILER_IS_GNUCC)
    message("C++ compiler is ${CMAKE_CXX_COMPILER_ID} g++ ${CMAKE_CXX_COMPILER_VERSION}")
 
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -W -Wall -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -W -Wall -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls -Wno-strict-overflow")
 
    # For Debug builds under gcc
    if (CMAKE_BUILD_TYPE MATCHES Debug)

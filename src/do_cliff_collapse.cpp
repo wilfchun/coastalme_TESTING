@@ -440,13 +440,14 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
          double dThisProfileLength = (nVProfileLength[nAcross] + nSeawardOffset + 1) * m_dCellSide;
 
          // Get the end point of this coastline-normal line
-         int nRtn = nGetCoastNormalEndPoint(nCoast, nThisPoint, nCoastSize, &PtStart, dThisProfileLength, &PtEnd);
+         CGeom2DIPoint PtiEnd;                                     // In grid CRS
+         int nRtn = nGetCoastNormalEndPoint(nCoast, nThisPoint, nCoastSize, &PtStart, dThisProfileLength, &PtEnd, &PtiEnd);
          if (nRtn != RTN_OK)
          {
             // Could not find an end point so forget this profile
 //            LogStream << endl << m_ulIteration << ": ABANDONING PROFILE with nWidthDistSigned = " << nWidthDistSigned << endl;
 
-            if (nRtn == RTN_ERR_OFFGRID_ENDPOINT)
+            if (nRtn == RTN_ERR_PROFILE_ENDPOINT_IS_OFFGRID)
             {
 //                LogStream << "dTotSandToDeposit WAS = " << dTotSandToDeposit << " dTotCoarseToDeposit WAS = " << dTotCoarseToDeposit << endl;
 //                LogStream << "END point of profile would have been outside the grid, so " << dVToDepositPerProfile[nAcross] << " exported from grid" << endl;
@@ -461,7 +462,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 //                LogStream << "dTotSandToDeposit NOW = " << dTotSandToDeposit << " dTotCoarseToDeposit NOW = " << dTotCoarseToDeposit << endl;
             }
 
-            if (nRtn == RTN_ERR_BADENDPOINT)
+            if (nRtn == RTN_ERR_NO_SOLUTION_FOR_ENDPOINT)
             {
                // The profile has a different problem, so (if possible) move one point along the coast and try again. Must add this profile's sediment to the amount remaining per profile however
 //                for (int n = 0; n < m_nCliffDepositionPlanviewWidth; n++)

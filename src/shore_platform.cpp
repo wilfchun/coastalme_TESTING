@@ -204,8 +204,11 @@ int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int co
    // Sort out the final value
    dVConsSlope[nProfSize-1] = dVConsSlope[nProfSize-2];
 
-   // Smooth the vector of slopes for the consolidated-only profile, using a running mean
-   dVConsSlope = dVSmoothProfileSlope(&dVConsSlope);
+   if (m_nProfileSmoothWindow > 0)
+   {
+      // Smooth the vector of slopes for the consolidated-only profile
+      dVConsSlope = dVSmoothProfileSlope(&dVConsSlope);
+   }
 
    vector<double>
       dVProfileDepthOverDB(nProfSize, 0),          // Depth over wave breaking depth at the coastline-normal sample points
@@ -502,8 +505,11 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       // Sort out the final slope value
       dVParConsSlope[nParProfSize-1] = dVParConsSlope[nParProfSize-2];
 
-      // Smooth the vector of slopes for the consolidated-only profile, using a running mean
-      dVParConsSlope = dVSmoothProfileSlope(&dVParConsSlope);
+      if (m_nProfileSmoothWindow > 0)
+      {   
+         // Smooth the vector of slopes for the consolidated-only profile
+         dVParConsSlope = dVSmoothProfileSlope(&dVParConsSlope);
+      }
 
       // Initialize the parallel profile vector with depth / m_dWaveBreakingDepth
       vector<double>

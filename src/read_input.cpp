@@ -1024,8 +1024,8 @@ bool CSimulation::bReadRunData(void)
          case 18:
             // Profile slope running-mean smoothing window size: must be odd
             m_nProfileSmoothWindow = atoi(strRH.c_str());
-            if ((m_nProfileSmoothWindow < 0) || (m_nProfileSmoothWindow >0 && !(m_nProfileSmoothWindow % 2)))
-               strErr = "size of profile vector smoothing window (must be > 0 and odd)";
+            if ((m_nProfileSmoothWindow < 0) || (m_nProfileSmoothWindow > 0 && !(m_nProfileSmoothWindow % 2)))
+               strErr = "size of profile vector smoothing window (must be >= 0, if > 0 must be odd)";
             break;
 
          case 19:

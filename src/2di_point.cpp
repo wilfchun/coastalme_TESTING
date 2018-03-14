@@ -83,11 +83,11 @@ void CGeom2DIPoint::SetY(int const nNewY)
 }
 
 //! The two integer parameters set values for the CGeom2DIPoint object's X and Y co-ordinates
-// void CGeom2DIPoint::SetXY(int const nNewX, int const nNewY)
-// {
-//    nX = nNewX;
-//    nY = nNewY;
-// }
+void CGeom2DIPoint::SetXY(int const nNewX, int const nNewY)
+{
+   nX = nNewX;
+   nY = nNewY;
+}
 
 //! The parameter is a pointer to a CGeom2DIPoint object, this is used to set values for the CGeom2DIPoint object's X and Y co-ordinates
 // void CGeom2DIPoint::SetXY(CGeom2DIPoint const* Pti)

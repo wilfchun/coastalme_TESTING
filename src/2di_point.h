@@ -42,7 +42,7 @@ public:
    int* pnGetY();
    void SetX(int const);
    void SetY(int const);
-//    void SetXY(int const, int const);
+   void SetXY(int const, int const);
 //    void SetXY(CGeom2DIPoint const*);
    
    void AddXAddY(int const, int const);

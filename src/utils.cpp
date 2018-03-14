@@ -2085,11 +2085,14 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_TIMEUNITS:
       strErr = "error in time units";
       break;
-   case RTN_ERR_BADENDPOINT:
-      strErr = "finding end point for coastline-normal line";
+   case RTN_ERR_NO_SOLUTION_FOR_ENDPOINT:
+      strErr = "no solution when finding end point for coastline-normal line";
       break;
-   case RTN_ERR_OFFGRID_ENDPOINT:
+   case RTN_ERR_PROFILE_ENDPOINT_IS_OFFGRID:
       strErr = "end point for coastline-normal line is off the grid";
+      break;
+   case RTN_ERR_PROFILE_ENDPOINT_IS_INLAND:
+      strErr = "end point for coastline-normal line is not in the contiguous sea";
       break;
    case RTN_ERR_CLIFFNOTCH:
       strErr = "cliff notch is above sediment top elevation";
@@ -2179,7 +2182,7 @@ string CSimulation::strGetErrorText(int const nErr)
 ==============================================================================================================================*/
 void CSimulation::DoSimulationEnd(int const nRtn)
 {
-   // If we don't know the time that the run ended (e.g. because it did not finish correctly), get it now
+   // If we don't know the time that the run ended (e.g. because it did not finish correctly), then get it now
    if (m_tSysEndTime == 0)
       m_tSysEndTime = time(nullptr);
 
@@ -2187,7 +2190,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
    {
    case (RTN_OK):
       // normal ending
-      cout << RUNENDNOTICE << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
+      cout << RUN_END_NOTICE << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
       break;
 
    case (RTN_HELPONLY):
@@ -2196,11 +2199,11 @@ void CSimulation::DoSimulationEnd(int const nRtn)
 
    default:
       // Aborting because of some error
-      cerr << ERRORNOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
+      cerr << RUN_END_NOTICE << "iteration " << m_ulIteration << ERROR_NOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
       
-      // Output all GIS files: is helpful in tracking down problems
+      // Output all GIS files: this is very helpful in tracking down problems
       m_bSaveGISThisTimestep = true;
-      m_nGISSave = 998;
+      m_nGISSave = 998;       // Will get incremented when we write
       bSaveAllRasterGISFiles();
       bSaveAllVectorGISFiles();
 

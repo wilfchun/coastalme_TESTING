@@ -299,14 +299,8 @@ vector<double> CSimulation::dVSmoothProfileSlope(vector<double>* pdVSlope)
    int const nSize = pdVSlope->size();
    vector<double> dVSmoothed = *pdVSlope;
    
-   // User has selected 0 as window size = no smoothing is applied
-   if(m_nProfileSmoothWindow == 0)
-      return dVSmoothed;
-   
    // Note that m_nProfileSmoothWindow must be odd (have already checked this)
-   int const nHalfWindow = m_nProfileSmoothWindow / 2;
-
-   
+   int const nHalfWindow = m_nProfileSmoothWindow / 2;   
 
    // Apply the running mean smoothing filter, with a variable window size at both ends of the line
    for (int i = 0; i < nSize; i++)
