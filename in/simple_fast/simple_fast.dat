@@ -77,13 +77,13 @@ Wave propagation model                                       [0 = COVE, 1 = CSho
 
 Density of sea water (kg/m3)                                                       : 1029
 
-Initial still water level (m), or per-timestep SWL file                            : 24         ; use 165 with all consolidated layers
+Initial still water level (m), or per-timestep SWL file                            : 29
 Final still water level (m)                           [blank = same as initial SWL]:
 Wave period (sec)                                                                  : 10
 Deep water wave height (m)                                                         : 0.5
 Deep water wave orientation (degrees)                                              : 310        ; 225 270 355 200 265 310 190 340
 
-Tide data file                                               [may be blank]:
+Tide data file                                                       [may be blank]:
 
 Breaking wave height to water depth ratio (non dimensional)                        : 0.8   	
 
@@ -108,7 +108,7 @@ Sand erosivity                                                                  
 Coarse erosivity                                                                   : 0.3
 
 Transport parameter KLS                                         [only for CERC eqn]: 0.5        ; Should vary between 0.4 to 0.79
-Transport parameter                                         [only for Kamphuis eqn]: 0.1        ; was 0.01
+Transport parameter                                         [only for Kamphuis eqn]: 0.5        ; was 0.1 0.01
 
 Berm height i.e. height above SWL of start of depositional Dean profile (m)        : 0.25
 
@@ -128,7 +128,7 @@ Gravitational acceleration (m2/s)                                               
 ; TEMPORARY ONLY, CHANGE DYNAMICALLY LATER
 Spacing of coastline normals (m)                              [0 = default minimum]: 0
 Random factor for spacing of normals                    [0 to 1, 0 = deterministic]: 0.1        ; was 0.3
-Length of coastline normals (m)                                                    : 500
+Length of coastline normals (m)                                                    : 100
 Maximum number of 'cape' normals                                                   : 6
 
 Start depth for wave calcs (ratio to deep water wave height)                       : 30         ; was 10 30 15
