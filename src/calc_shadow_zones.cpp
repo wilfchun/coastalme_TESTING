@@ -420,9 +420,7 @@ int CSimulation::nDoAllShadowZones(void)
                   if (nDist >= MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE)
                   {
                      // If we have travelled MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE cells without hitting sea, then abandon this shadow boundary
-                     bStillInland = true;              
-                     if (m_ulIteration == 34)
-                        cout << endl;
+                     bStillInland = true;
                      break;
                   }
                }
