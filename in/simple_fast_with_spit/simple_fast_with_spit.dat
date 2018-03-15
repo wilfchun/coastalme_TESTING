@@ -99,6 +99,9 @@ Deep water wave height (m), or file TODO need multiple file input option   : in/
 #Deep water wave height (m), or file TODO need multiple file input option   : in/simple_fast_with_spit/deep_sea_waves.shp
 ;Deep water wave height (m), or file                                        : 3
 Deep water wave orientation (degrees)                                      : 300 ; 225 270 355 200 265 310 190 340
+
+Tide data file                                               [may be blank]:
+
 Breaking wave height to water depth ratio (non dimensional)                        : 0.8   	
 
 ; Sediment data --------------------------------------------------------------------------------------------------------

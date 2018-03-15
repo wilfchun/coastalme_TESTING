@@ -82,6 +82,9 @@ Final still water level (m)                           [blank = same as initial S
 Wave period (sec)                                                                  : 10
 Deep water wave height (m)                                                         : 0.5
 Deep water wave orientation (degrees)                                              : 310        ; 225 270 355 200 265 310 190 340
+
+Tide data file                                               [may be blank]:
+
 Breaking wave height to water depth ratio (non dimensional)                        : 0.8   	
 
 ; Sediment data --------------------------------------------------------------------------------------------------------
