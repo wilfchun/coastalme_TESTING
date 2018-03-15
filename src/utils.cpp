@@ -2198,11 +2198,14 @@ void CSimulation::DoSimulationEnd(int const nRtn)
       // Aborting because of some error
       cerr << RUN_END_NOTICE << "iteration " << m_ulIteration << ERROR_NOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
       
-      // Output all GIS files: this is very helpful in tracking down problems
-      m_bSaveGISThisTimestep = true;
-      m_nGISSave = 998;       // Will get incremented when we write
-      bSaveAllRasterGISFiles();
-      bSaveAllVectorGISFiles();
+      if (m_ulIteration > 1)
+      {
+         // If the run has actually started, then output all GIS files: this is very helpful in tracking down problems
+         m_bSaveGISThisTimestep = true;
+         m_nGISSave = 998;                   // Will get incremented to 999 when we write the files
+         bSaveAllRasterGISFiles();
+         bSaveAllVectorGISFiles();
+      }
 
       // Write the error message to the logfile and to stdout
       if (LogStream && LogStream.is_open())

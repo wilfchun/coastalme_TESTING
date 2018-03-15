@@ -47,5 +47,5 @@ int main (int argc, char* argv[])
    delete pSimulation;
 
    // Go back to the OS
-   return (nRtn);
+   return nRtn;
 }

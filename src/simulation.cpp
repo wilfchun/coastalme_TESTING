@@ -470,7 +470,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 
    // We have the name of the run-data input file, so read it
    if (! bReadRunData())
-      return (RTN_ERR_RUNDATA);
+      return RTN_ERR_RUNDATA;
 
    // Check raster GIS output format
    if (! bCheckRasterGISOutputFormat())
