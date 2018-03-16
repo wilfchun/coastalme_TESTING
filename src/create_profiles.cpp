@@ -155,7 +155,12 @@ int CSimulation::nCreateAllProfiles(void)
       nRet = nCreateGridEdgeProfile(false, nCoast, nProfile);
       if (nRet != RTN_OK)
          return nRet;
-
+      
+      // Check all profiles for adequate length
+      nRet = nCheckAllProfilesForLength(nCoast);
+      if (nRet != RTN_OK)
+         return nRet;
+      
       // Create an index to the profiles in along-coast sequence
       m_VCoast[nCoast].CreateAlongCoastProfileIndex();
       
@@ -2018,4 +2023,31 @@ void CSimulation::TruncateProfileAndAppendNew(int const nCoast, int const nMainP
 //       }
 //    }
    // END: FOR CHECKING PURPOSES ******************************************************************
+}
+
+
+/*===============================================================================================================================
+ 
+ Checks all profiles on this coast for adequate length
+ 
+===============================================================================================================================*/
+int CSimulation::nCheckAllProfilesForLength(int const nCoast)
+{
+   int nProfiles = m_VCoast[nCoast].nGetNumProfiles();
+   
+   for (int nProf = 0; nProf < nProfiles; nProf++)
+   {
+      CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProf);
+      if (pProfile->bProfileOK())
+      {
+         if (! pProfile->bCheckDepthAtProfileEnd(this, m_pRasterGrid, m_dDepthOfClosure))
+         {
+            LogStream << m_ulIteration << ": profile " << nProf << " is too short for depth of closure " << m_dDepthOfClosure << ", ignoring" << endl;
+
+            pProfile->SetTooShort(true);
+         }
+      }
+   }
+
+   return RTN_OK;   
 }

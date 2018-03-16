@@ -130,7 +130,8 @@ public:
    void AppendCellInProfileExtCRS(CGeom2DPoint const*);
 //    vector<CGeom2DPoint>* PtVGetCellsInProfileExtCRS(void);
 
-   int nGetCellGivenDepth(CGeomRasterGrid const*, double const);
+   int nGetCellGivenDepth(CGeomRasterGrid const*, double const);   
+   bool bCheckDepthAtProfileEnd(CSimulation const*, CGeomRasterGrid const*, double const);
    
    void SetDeepWaterWaveHeight(double const);
    double dGetDeepWaterWaveHeight(void) const;

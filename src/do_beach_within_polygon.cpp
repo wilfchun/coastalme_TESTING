@@ -786,9 +786,6 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
    // We are using only part of each profile, seaward as far as the depth of closure. First find the seaward end point of the up-coast part-profile
 //    CGeom2DIPoint PtiUpCoastPartProfileSeawardEnd;
 //    int nIndex =  pUpCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure, &PtiUpCoastPartProfileSeawardEnd);
-   if (m_ulIteration == 18 && nUpCoastProfile == 6)
-      cout << endl;
-      
    int nIndex =  pUpCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
    if (nIndex == INT_NODATA)
    {

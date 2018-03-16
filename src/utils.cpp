@@ -2665,3 +2665,4 @@ bool CSimulation::bIsNumeric(string const* strIn)
 {
    return all_of(strIn->begin(), strIn->end(), isdigit);
 }
+

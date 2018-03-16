@@ -611,6 +611,7 @@ private:
    void CalcDepthOfClosure(void);
    int nInterpolateAllDeepWaterWaveValues(void);
    int nSetAllCoastpointDeepWaterWaveValues(void);
+   int nCheckAllProfilesForLength(int const);
 
    // GIS utility routines
    void MarkEdgeCells(void);
@@ -626,10 +627,6 @@ private:
    double dGridYToExtCRSY(double const) const;
    double dExtCRSXToGridCentroidX(double const) const;
    double dExtCRSYToGridCentroidY(double const) const;
-   double dExtCRSXToGridX(double const) const;
-   double dExtCRSYToGridY(double const) const;
-   int nExtCRSXToGridX(double const) const;
-   int nExtCRSYToGridY(double const) const;
    CGeom2DIPoint PtiExtCRSToGrid(CGeom2DPoint const*) const;
    CGeom2DPoint PtGridCentroidToExt(CGeom2DIPoint const*) const;
    static double dGetDistanceBetween(CGeom2DPoint const*, CGeom2DPoint const*);
@@ -774,5 +771,11 @@ public:
 
    //! Carries out end-of-simulation tidying (error messages etc.)
    void DoSimulationEnd(int const);
+   
+   //! Transforms an X-axis ordinate in the external CRS to the equivalent X-axis ordinate in the raster-grid CRS
+   double dExtCRSXToGridX(double const) const;
+
+   //! Transforms a Y-axis ordinate in the external CRS to the equivalent Y-axis ordinate in the raster-grid CRS
+   double dExtCRSYToGridY(double const) const;
 };
 #endif // SIMULATION_H
