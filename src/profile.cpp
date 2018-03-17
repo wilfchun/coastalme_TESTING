@@ -445,31 +445,6 @@ int CGeomProfile::nGetCellGivenDepth(CGeomRasterGrid const* pGrid, double const 
    return nIndex;
 }
 
-//! If water depth at the end of the profile is less than a given depth, returns false; otherwise returns true
-bool CGeomProfile::bCheckDepthAtProfileEnd(CSimulation const* pSim, CGeomRasterGrid const* pGrid, double const dDepthIn)
-{
-   int nSize = m_VPoints.size();
-   
-   // Safety check
-   if (nSize < 1)
-      return false;
-   
-   double
-      dX = m_VPoints[nSize-1].dGetX(),       // Ext CRS
-      dY = m_VPoints[nSize-1].dGetY();       // Ditto
-   
-   int
-      nX = pSim->dExtCRSXToGridX(dX),
-      nY = pSim->dExtCRSYToGridY(dY);
-      
-   double dCellDepth = pGrid->m_Cell[nX][nY].dGetSeaDepth();
-      
-   if (dCellDepth < dDepthIn)
-      return false;
-
-   return true;         
-}
-
 
 //! Set the deep-water wave height for this profile
 void CGeomProfile::SetDeepWaterWaveHeight(double const dWaveHeight)

@@ -585,7 +585,7 @@ private:
    void CalcD50AndFillWaveCalcHoles(void);
    int nDoAllShadowZones(void);
    static bool bOnOrOffShoreAndUpOrDownCoast(double const, double const, int const, bool&);
-   /*static*/ CGeom2DIPoint PtiFollowWaveOrientation(CGeom2DIPoint const*, double const, double&);   
+   static CGeom2DIPoint PtiFollowWaveOrientation(CGeom2DIPoint const*, double const, double&);   
    int nFindAllShadowZones(void);
    int nFloodFillShadowZone(int const, CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
    int nDoShadowZoneAndDownDriftZone(int const, int const, int const, int const);
@@ -611,7 +611,6 @@ private:
    void CalcDepthOfClosure(void);
    int nInterpolateAllDeepWaterWaveValues(void);
    int nSetAllCoastpointDeepWaterWaveValues(void);
-   int nCheckAllProfilesForLength(int const);
 
    // GIS utility routines
    void MarkEdgeCells(void);
@@ -629,6 +628,8 @@ private:
    double dExtCRSYToGridCentroidY(double const) const;
    CGeom2DIPoint PtiExtCRSToGrid(CGeom2DPoint const*) const;
    CGeom2DPoint PtGridCentroidToExt(CGeom2DIPoint const*) const;
+   double dExtCRSXToGridX(double const) const;
+   double dExtCRSYToGridY(double const) const;   
    static double dGetDistanceBetween(CGeom2DPoint const*, CGeom2DPoint const*);
    static double dGetDistanceBetween(CGeom2DIPoint const*, CGeom2DIPoint const*);
    static double dTriangleAreax2(CGeom2DPoint const*, CGeom2DPoint const*, CGeom2DPoint const*);
@@ -771,11 +772,5 @@ public:
 
    //! Carries out end-of-simulation tidying (error messages etc.)
    void DoSimulationEnd(int const);
-   
-   //! Transforms an X-axis ordinate in the external CRS to the equivalent X-axis ordinate in the raster-grid CRS
-   double dExtCRSXToGridX(double const) const;
-
-   //! Transforms a Y-axis ordinate in the external CRS to the equivalent Y-axis ordinate in the raster-grid CRS
-   double dExtCRSYToGridY(double const) const;
 };
 #endif // SIMULATION_H

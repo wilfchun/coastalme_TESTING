@@ -21,141 +21,141 @@
 ; SIMPLE TEST DATA FOR SPIT
 ;
 ; Run information -----------------------------------------------------------------------------------------------------
-Main output/log file names                        [omit path and extension]: simple
+Main output/log file names                                [omit path and extension]: simple
 
-#Duration of simulation                         [hours, days, months, years]: 30 days
-#Timestep (hours or days)                                                   : 6 hours
-#Save times                                     [hours, days, months, years]: 6 12 24 48 100 200 300 400 500 600 hours
+#Duration of simulation                                [hours, days, months, years]: 30 days
+#Timestep (hours or days)                                                          : 6 hours
+#Save times                                            [hours, days, months, years]: 6 12 24 48 100 200 300 400 500 600 hours
 
-#Duration of simulation                         [hours, days, months, years]: 100 days
-#Timestep (hours or days)                                                   : 6 hours
-#Save times                                     [hours, days, months, years]: 1 2 3 5 10 20 30 50 60 80 days
+Duration of simulation                                 [hours, days, months, years]: 100 days
+Timestep (hours or days)                                                           : 6 hours
+Save times                                             [hours, days, months, years]: 1 2 3 5 10 20 30 50 60 80 days
 
-Duration of simulation                         [hours, days, months, years]: 365 days
-Timestep (hours or days)                                                   : 6 hours
-Save times                                     [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
+#Duration of simulation                                [hours, days, months, years]: 365 days
+#Timestep (hours or days)                                                          : 6 hours
+#Save times                                            [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
 
-#Duration of simulation                         [hours, days, months, years]: 3 years
-#Timestep (hours or days)                                                   : 6 hours
-#Save times                                     [hours, days, months, years]: 0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.25 2.5  years
+#Duration of simulation                                [hours, days, months, years]: 3 years
+#Timestep (hours or days)                                                          : 6 hours
+#Save times                                            [hours, days, months, years]: 0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.25 2.5  years
 
-#Duration of simulation                         [hours, days, months, years]: 5 years
-#Timestep (hours or days)                                                   : 6 hours
-#Save times                                     [hours, days, months, years]: 0.25 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 years
+#Duration of simulation                                [hours, days, months, years]: 5 years
+#Timestep (hours or days)                                                          : 6 hours
+#Save times                                            [hours, days, months, years]: 0.25 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 years
 
 
-Random number seed(s)                                                      : 280764
+Random number seed(s)                                                              : 280764
 
-GIS raster files to output                                  [see codes.txt]: all
-GIS raster output format                          [blank=same as DEM input]: gtiff                    ; gdal-config --formats for others
-   If needed, also output GIS raster world file?                      [y/n]: y
-   If needed, scale GIS raster output values?                         [y/n]: y
-GIS raster 'slice' elevation(s) (m)                                        :
-GIS vector files to output                                  [see codes.txt]: all
-GIS vector output format                                                   : ESRI Shapefile           ; ogrinfo --formats for others
-Time series files to output                                 [see codes.txt]: all
+GIS raster files to output                                          [see codes.txt]: all
+GIS raster output format                                  [blank=same as DEM input]: gtiff                    ; gdal-config --formats for others
+   If needed, also output GIS raster world file?                              [y/n]: y
+   If needed, scale GIS raster output values?                                 [y/n]: y
+GIS raster 'slice' elevation(s) (m)                                                :
+GIS vector files to output                                          [see codes.txt]: all
+GIS vector output format                                                           : ESRI Shapefile           ; ogrinfo --formats for others
+Time series files to output                                         [see codes.txt]: all
 
-Coastline smoothing              [0=none, 1=running mean, 2=Savitsky-Golay]: 1
-Coastline smoothing window size                               [must be odd]: 15                        ; was 55 for S-G
-Polynomial order for Savitsky-Golay coastline smoothing            [2 or 4]: 4
-Grid edge(s) to omit when searching for coastline                    [NSWE]:
+Coastline smoothing                      [0=none, 1=running mean, 2=Savitsky-Golay]: 1
+Coastline smoothing window size                                       [must be odd]: 11                       ; was 13 15, 55 for S-G
+Polynomial order for Savitsky-Golay coastline smoothing                    [2 or 4]: 4
+Grid edge(s) to omit when searching for coastline                            [NSWE]:
 
-Profile slope running-mean smoothing window size              [must be odd]: 5                        ; was 11 33
-Max local slope (m/m)                                                      : 1.18
+Profile slope running-mean smoothing window size                      [must be odd]: 0                        ; was 5 11 33
+Max local slope (m/m)                                                              : 1.18
 
-Weighting for simple smoothing of sediment layers                          : 0.3                      ; must be less than 1
-Vertical tolerance to include beach cells in smoothing                  [m]: 10
+Weighting for simple smoothing of sediment layers                                  : 0.3                      ; must be less than 1
+Vertical tolerance to include beach cells in smoothing                          [m]: 10
 
 ; Initial raster GIS layers --------------------------------------------------------------------------------------------
-Number of layers                                                           : 1
+Number of layers                                                                   : 1
 ; BASEMENT DEM MUST BE PRESENT
-Basement DEM file                                           [path and name]: in/simple_fast_with_spit/basement.asc
+Basement DEM file                                                   [path and name]: in/simple_fast_with_spit/basement.asc
    ; LAYER 0 THICKNESS FILES, LAYER 0 IS LOWEST
    ; *** MUST HAVE AT LEAST ONE THICKNESS FILE FOR THE FIRST LAYER
-   Initial Unconsolidated fine sediment file                [path and name]:
-   Initial Unconsolidated sand sediment file                [path and name]: in/simple_fast_with_spit/curve_to_north_steeper.tif
-   Initial Unconsolidated coarse sediment file              [path and name]:
-   Initial Consolidated fine sediment file                  [path and name]:
-   Initial Consolidated sand sediment file                  [path and name]: 
-   Initial Consolidated coarse sediment file                [path and name]:
+   Initial Unconsolidated fine sediment file                        [path and name]:
+   Initial Unconsolidated sand sediment file                        [path and name]: in/simple_fast_with_spit/curve_to_north_steeper.tif
+   Initial Unconsolidated coarse sediment file                      [path and name]:
+   Initial Consolidated fine sediment file                          [path and name]:
+   Initial Consolidated sand sediment file                          [path and name]: 
+   Initial Consolidated coarse sediment file                        [path and name]:
 
 ; OPTIONAL THICKNESS FILE
-Initial Suspended sediment file                             [path and name]:
+Initial Suspended sediment file                                     [path and name]:
 
 ; OTHER OPTIONAL RASTER FILES
-Initial Landform file                                       [path and name]:
-Intervention class file                                     [path and name]:
-Intervention height file                                    [path and name]:
+Initial Landform file                                               [path and name]:
+Intervention class file                                             [path and name]:
+Intervention height file                                            [path and name]:
 
 ; Hydrology data -------------------------------------------------------------------------------------------------------
-Wave propagation model                               [0 = COVE, 1 = CShore]: 1
+Wave propagation model                                       [0 = COVE, 1 = CShore]: 1
 
-Density of sea water (kg/m3)                                               : 1029
+Density of sea water (kg/m3)                                                       : 1029
 
-Initial still water level (m), or per-timestep SWL file                    : 83    ; use with gentlest slope 172
-Final still water level (m)                   [blank = same as initial SWL]:
-Wave period (sec)                                                          : 10
-Deep water wave height (m), or file TODO need multiple file input option   : in/simple_fast_with_spit/deep_sea_waves_plus_river.shp
-#Deep water wave height (m), or file TODO need multiple file input option   : in/simple_fast_with_spit/deep_sea_waves.shp
-;Deep water wave height (m), or file                                        : 3
-Deep water wave orientation (degrees)                                      : 300 ; 225 270 355 200 265 310 190 340
+Initial still water level (m), or per-timestep SWL file                            : 86                     ; 83 with steepest, 86 with steeper
+Final still water level (m)                           [blank = same as initial SWL]:
+Wave period (sec)                                                                  : 10
+Deep water wave height (m), or file TODO need multiple file input option           : in/simple_fast_with_spit/deep_sea_waves_plus_river.shp
+#Deep water wave height (m), or file TODO need multiple file input option          : in/simple_fast_with_spit/deep_sea_waves.shp
+;Deep water wave height (m), or file                                               : 3
+Deep water wave orientation (degrees)                                              : 300 ; 225 270 355 200 265 310 190 340
 
 Tide data file                                                       [may be blank]:
 
 Breaking wave height to water depth ratio (non dimensional)                        : 0.8   	
 
 ; Sediment data --------------------------------------------------------------------------------------------------------
-Simulate coast platform erosion?                                           : y
-Resistance to erosion of coast platform (m^(9/4)s^(3/2))                           : 2e6       ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011)
+Simulate coast platform erosion?                                                   : y
+Resistance to erosion of coast platform (m^(9/4)s^(3/2))                           : 3e7    ; was 2e6       ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011)
 
-Beach sediment transport at grid edges [0 = closed, 1 = open, 2 = re-circulate]: 1
+Beach sediment transport at grid edges     [0 = closed, 1 = open, 2 = re-circulate]: 1
 
-Beach potential erosion/deposition equation        [0 = CERC, 1 = Kamphuis]: 1
+Beach potential erosion/deposition equation                [0 = CERC, 1 = Kamphuis]: 1
 
-Median size of fine sediment (mm)      [0 = default, only for Kamphuis eqn]: 0
-Median size of sand sediment (mm)      [0 = default, only for Kamphuis eqn]: 0
-Median size of coarse sediment (mm)    [0 = default, only for Kamphuis eqn]: 0
+Median size of fine sediment (mm)              [0 = default, only for Kamphuis eqn]: 0
+Median size of sand sediment (mm)              [0 = default, only for Kamphuis eqn]: 0
+Median size of coarse sediment (mm)            [0 = default, only for Kamphuis eqn]: 0
 
-Density of beach sediment (kg/m3)                                          : 2650      ; For quartz
-Beach sediment porosity                                                    : 0.4
+Density of beach sediment (kg/m3)                                                  : 2650      ; For quartz
+Beach sediment porosity                                                            : 0.4
 
 ; Arbitrary values of relative erosivities
-Fine erosivity                                                             : 1
-Sand erosivity                                                             : 0.7
-Coarse erosivity                                                           : 0.3
+Fine erosivity                                                                     : 1
+Sand erosivity                                                                     : 0.7
+Coarse erosivity                                                                   : 0.3
 
-Transport parameter KLS                                 [only for CERC eqn]: 0.5       ; Should vary between 0.4 to 0.79
-Transport parameter                                 [only for Kamphuis eqn]: 0.1
+Transport parameter KLS                                         [only for CERC eqn]: 0.5       ; Should vary between 0.4 to 0.79
+Transport parameter                                         [only for Kamphuis eqn]: 0.1
 
-Berm height i.e. height above SWL of start of depositional Dean profile (m): 0.25
+Berm height i.e. height above SWL of start of depositional Dean profile (m)        : 0.25
 
 
 ; Cliff collapse data --------------------------------------------------------------------------------------------------
-Simulate cliff collapse?                                                   : y
-Resistance to erosion of cliff (m^(9/4)s^(3/2))                                    : 3e6    ; *** LAST 2e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011),
-Notch overhang to initiate collapse (m)                                    : 0.5
-Notch base below still water level (m)                                     : 0.3
-Scale parameter A for cliff deposition (m^(1/3))                 [0 = auto]: 0         ; For a 0.2 mm D50, will be 0.1
-Planview width of cliff deposition talus (in cells)           [must be odd]: 9         ; was 11 5 7
-Planview length of cliff deposition talus (m)                              : 20        ; was 50 15 30 15
-Height of landward talus end, as fraction of cliff elevation               : 0.1       ; was 0
+Simulate cliff collapse?                                                           : y
+Resistance to erosion of cliff (m^(9/4)s^(3/2))                                    : 2e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011),
+Notch overhang to initiate collapse (m)                                            : 0.5
+Notch base below still water level (m)                                             : 0.3
+Scale parameter A for cliff deposition (m^(1/3))                         [0 = auto]: 0         ; For a 0.2 mm D50, will be 0.1
+Planview width of cliff deposition talus (in cells)                   [must be odd]: 9         ; was 11 5 7
+Planview length of cliff deposition talus (m)                                      : 20        ; was 50 15 30 15
+Height of landward talus end, as fraction of cliff elevation                       : 0.1       ; was 0
 
 ; Other data -----------------------------------------------------------------------------------------------------------
-Gravitational acceleration (m2/s)                                          : 9.81
+Gravitational acceleration (m2/s)                                                  : 9.81
 
 ; TEMPORARY ONLY, CHANGE DYNAMICALLY LATER
-Spacing of coastline normals (m)                      [0 = default minimum]: 0
-Random factor for spacing of normals            [0 to 1, 0 = deterministic]: 0.1
-Length of coastline normals (m)                                            : 150
-Maximum number of 'cape' normals                                           : 6
+Spacing of coastline normals (m)                              [0 = default minimum]: 0
+Random factor for spacing of normals                    [0 to 1, 0 = deterministic]: 0.1
+Length of coastline normals (m)                                                    : 130
+Maximum number of 'cape' normals                                                   : 6
 
-Start depth for wave calcs (ratio to deep water wave height)               : 30
+Start depth for wave calcs (ratio to deep water wave height)                       : 30
 
 ; For testing only -----------------------------------------------------------------------------------------------------
-Save profile data?                                                         : n
-Profile number(s) to save                                                  : 4 12 20 21
-Timesteps to save profile(s)                                               : 1 6 12 24 36 48 60 72 84 96 108 120 144 156 168 180 192 204 216 228 240 252 264 276 288 300
-Save parallel profiles?                                                    : n
-Output erosion potential look-up values                                    : y
-Erode coast in alternate direction each timestep?                          : n
+Save profile data?                                                                 : n
+Profile number(s) to save                                                          : 4 12 20 21
+Timesteps to save profile(s)                                                       : 1 6 12 24 36 48 60 72 84 96 108 120 144 156 168 180 192 204 216 228 240 252 264 276 288 300
+Save parallel profiles?                                                            : n
+Output erosion potential look-up values                                            : y
+Erode coast in alternate direction each timestep?                                  : n
 ; END OF FILE ----------------------------------------------------------------------------------------------------------

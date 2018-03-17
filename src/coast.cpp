@@ -208,46 +208,52 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
    }
    
    // This cell is not under a coastline, so try the adjacent cells
-   int n = -1;
-   while (n <= 7)
-   {
-      int
-         nX = pPtiCell->nGetX(),
-         nY = pPtiCell->nGetY();
+   int 
+      n = -1,
+      nX = pPtiCell->nGetX(),
+      nY = pPtiCell->nGetY(),
+      nXAdj = 0,
+      nYAdj = 0;
       
+   while (n <= 7)
+   {      
       switch (++n)
       {
          case 0:
-            nY--;
+            nXAdj = nX;
+            nYAdj = nY-1;
             break;
          case 1:
-            nY--;
-            nX++;
+            nXAdj = nX+1;
+            nYAdj = nY-1;
             break;
          case 2:
-            nX++;
+            nXAdj = nX+1;
+            nYAdj = nY;
             break;
          case 3:
-            nX++;
-            nY++;
+            nXAdj = nX+1;
+            nYAdj = nY+1;
             break;
          case 4:
-            nY++;
+            nXAdj = nX;
+            nYAdj = nY+1;
             break;
          case 5:
-            nX--;
-            nY++;
+            nXAdj = nX-1;
+            nYAdj = nY+1;
             break;
          case 6:
-            nX--;
+            nXAdj = nX-1;
+            nYAdj = nY;
             break;
          case 7:
-            nX--;
-            nY--;
+            nXAdj = nX-1;
+            nYAdj = nY-1;
             break;
       }
       
-      CGeom2DIPoint PtiTmp(nX, nY);
+      CGeom2DIPoint PtiTmp(nXAdj, nYAdj);
       for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
       {
          if (m_ILCellsMarkedAsCoastline[nCoastPoint] == PtiTmp)
