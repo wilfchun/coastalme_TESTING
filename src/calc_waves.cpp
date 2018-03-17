@@ -343,7 +343,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    // Only do this for profiles without problems. Still do start- and end-of-coast profiles however
    if (! pProfile->bOKIncStartAndEndOfCoast())
    {
-      LogStream << m_ulIteration << ": invalid profile " << nProfile << endl;
+      LogStream << m_ulIteration << ": profile " << nProfile << " is invalid, will not calc wave properties on this profile" << endl;
       
       return RTN_OK;
    }

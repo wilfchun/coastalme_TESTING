@@ -27,13 +27,13 @@ Main output/log file names                        [omit path and extension]: sim
 #Timestep (hours or days)                                                   : 6 hours
 #Save times                                     [hours, days, months, years]: 6 12 24 48 100 200 300 400 500 600 hours
 
-Duration of simulation                         [hours, days, months, years]: 100 days
-Timestep (hours or days)                                                   : 6 hours
-Save times                                     [hours, days, months, years]: 1 2 3 5 10 20 30 50 60 80 days
-
-#Duration of simulation                         [hours, days, months, years]: 365 days
+#Duration of simulation                         [hours, days, months, years]: 100 days
 #Timestep (hours or days)                                                   : 6 hours
-#Save times                                     [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
+#Save times                                     [hours, days, months, years]: 1 2 3 5 10 20 30 50 60 80 days
+
+Duration of simulation                         [hours, days, months, years]: 365 days
+Timestep (hours or days)                                                   : 6 hours
+Save times                                     [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
 
 #Duration of simulation                         [hours, days, months, years]: 3 years
 #Timestep (hours or days)                                                   : 6 hours
@@ -73,10 +73,10 @@ Basement DEM file                                           [path and name]: in/
    ; LAYER 0 THICKNESS FILES, LAYER 0 IS LOWEST
    ; *** MUST HAVE AT LEAST ONE THICKNESS FILE FOR THE FIRST LAYER
    Initial Unconsolidated fine sediment file                [path and name]:
-   Initial Unconsolidated sand sediment file                [path and name]:
+   Initial Unconsolidated sand sediment file                [path and name]: in/simple_fast_with_spit/curve_to_north_steeper.tif
    Initial Unconsolidated coarse sediment file              [path and name]:
    Initial Consolidated fine sediment file                  [path and name]:
-   Initial Consolidated sand sediment file                  [path and name]: in/simple_fast_with_spit/curve_to_north_steeper.tif
+   Initial Consolidated sand sediment file                  [path and name]: 
    Initial Consolidated coarse sediment file                [path and name]:
 
 ; OPTIONAL THICKNESS FILE
@@ -146,7 +146,7 @@ Gravitational acceleration (m2/s)                                          : 9.8
 ; TEMPORARY ONLY, CHANGE DYNAMICALLY LATER
 Spacing of coastline normals (m)                      [0 = default minimum]: 0
 Random factor for spacing of normals            [0 to 1, 0 = deterministic]: 0.1
-Length of coastline normals (m)                                            : 400
+Length of coastline normals (m)                                            : 150
 Maximum number of 'cape' normals                                           : 6
 
 Start depth for wave calcs (ratio to deep water wave height)               : 30
