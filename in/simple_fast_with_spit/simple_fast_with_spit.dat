@@ -27,13 +27,13 @@ Main output/log file names                                [omit path and extensi
 #Timestep (hours or days)                                                          : 6 hours
 #Save times                                            [hours, days, months, years]: 6 12 24 48 100 200 300 400 500 600 hours
 
-Duration of simulation                                 [hours, days, months, years]: 100 days
-Timestep (hours or days)                                                           : 6 hours
-Save times                                             [hours, days, months, years]: 1 2 3 5 10 20 30 50 60 80 days
+#Duration of simulation                                 [hours, days, months, years]: 100 days
+#Timestep (hours or days)                                                           : 6 hours
+#Save times                                             [hours, days, months, years]: 1 2 3 5 10 20 30 50 60 80 days
 
-#Duration of simulation                                [hours, days, months, years]: 365 days
-#Timestep (hours or days)                                                          : 6 hours
-#Save times                                            [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
+Duration of simulation                                [hours, days, months, years]: 365 days
+Timestep (hours or days)                                                          : 6 hours
+Save times                                            [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
 
 #Duration of simulation                                [hours, days, months, years]: 3 years
 #Timestep (hours or days)                                                          : 6 hours
@@ -55,8 +55,8 @@ GIS vector files to output                                          [see codes.t
 GIS vector output format                                                           : ESRI Shapefile           ; ogrinfo --formats for others
 Time series files to output                                         [see codes.txt]: all
 
-Coastline smoothing                      [0=none, 1=running mean, 2=Savitsky-Golay]: 1
-Coastline smoothing window size                                       [must be odd]: 11                       ; was 13 15, 55 for S-G
+Coastline smoothing                      [0=none, 1=running mean, 2=Savitsky-Golay]: 2
+Coastline smoothing window size                                       [must be odd]: 9                        ; was 11 13 15, 55 for S-G
 Polynomial order for Savitsky-Golay coastline smoothing                    [2 or 4]: 4
 Grid edge(s) to omit when searching for coastline                            [NSWE]:
 
@@ -146,7 +146,7 @@ Gravitational acceleration (m2/s)                                               
 ; TEMPORARY ONLY, CHANGE DYNAMICALLY LATER
 Spacing of coastline normals (m)                              [0 = default minimum]: 0
 Random factor for spacing of normals                    [0 to 1, 0 = deterministic]: 0.1
-Length of coastline normals (m)                                                    : 130
+Length of coastline normals (m)                                                    : 120
 Maximum number of 'cape' normals                                                   : 6
 
 Start depth for wave calcs (ratio to deep water wave height)                       : 30
