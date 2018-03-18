@@ -2112,8 +2112,17 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_EDGEOFGRID:
       strErr = "hit grid edge when eroding beach";
       break;
-   case RTN_ERR_NO_SEAWARD_END_OF_PROFILE:
+   case RTN_ERR_NO_SEAWARD_END_OF_PROFILE_1:
+      strErr = "could not locate seaward end of profile when creating Dean profile during estimation of beach erosion";
+      break;
+   case RTN_ERR_NO_SEAWARD_END_OF_PROFILE_2:
       strErr = "could not locate seaward end of profile when creating Dean profile for beach erosion";
+      break;
+   case RTN_ERR_NO_SEAWARD_END_OF_PROFILE_3:
+      strErr = "could not locate seaward end of profile when creating Dean profile for beach deposition (up-coast)";
+      break;
+   case RTN_ERR_NO_SEAWARD_END_OF_PROFILE_4:
+      strErr = "could not locate seaward end of profile when creating Dean profile for beach deposition (down-coast)";
       break;
    case RTN_ERR_LANDFORM_TO_GRID:
       strErr = "updating grid with landforms";

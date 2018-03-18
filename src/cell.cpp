@@ -410,7 +410,7 @@ bool CGeomCell::bIsInundated(void) const
    return ((m_VdAllHorizonTopElev.back() + m_dInterventionHeight) < m_pGrid->pGetSim()->CSimulation::dGetThisTimestepSWL());
 }
 
-//! Returns true if the elevation of the sediment top surface for this cell is greater than or equal to the grid's this-timestep still water elevation, or if the cell has unconsolidated sediment on it and the elevation of the sediment top surface for this cell, minus a tolerance value, is less than the grid's this-timestep still water elevation
+//! Returns true if the elevation of the sediment top surface for this cell is greater than or equal to the grid's this-timestep still water elevation. Also returns true if the cell has unconsolidated sediment on it and the elevation of the sediment top surface, minus a tolerance value, is less than the grid's this-timestep still water elevation
 bool CGeomCell::bIsSeaIncBeach(void) const
 {
    if (m_bInContiguousSea)
@@ -422,7 +422,7 @@ bool CGeomCell::bIsSeaIncBeach(void) const
       dSedTop = m_VdAllHorizonTopElev.back();
 
    // Beach
-   if ((m_VLayerAboveBasement.back().dGetUnconsolidatedThickness() > 0) && ((dSedTop - m_pGrid->pGetSim()->CSimulation::dGetBeachSmoothingVertTolerance()) < dWaterLevel))
+   if ((m_VLayerAboveBasement.back().dGetUnconsolidatedThickness() > 0) && ((dSedTop - m_pGrid->pGetSim()->CSimulation::dGetMaxBeachElevAboveSWL()) < dWaterLevel))
       return true;
 
    return false;

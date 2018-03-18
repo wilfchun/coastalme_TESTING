@@ -48,8 +48,7 @@ Grid edge(s) to omit when searching for coastline                           [NSW
 Profile slope running-mean smoothing window size                     [must be odd]: 0                        ; was 5 11 33
 Max local slope (m/m)                                                             : 1.18
 
-Weighting for simple smoothing of sediment layers                                 : 0.3                      ; must be less than 1
-Vertical tolerance to include beach cells in smoothing                         [m]: 10
+Maximum elevation of beach above SWL                                            [m]: 10
 
 ; Initial raster GIS layers --------------------------------------------------------------------------------------------
 Number of layers                                                                  : 1

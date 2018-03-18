@@ -497,7 +497,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // We are using CShore to propagate the waves, so create an input file for this profile
       double
          dCShoreTimeStep = 3600,     // In seconds, not important because we are not using CShore to erode the profile, just to get the hydrodynamics
-         dSurgeLevel = 0.0,          // Not used, but in the future we might include surge in the calculations
+         dSurgeLevel = CSHORE_SURGE_LEVEL,
          dWaveFriction = CSHORE_FRICTION_FACTOR;
       
       // Set up vectors for the coastline-normal profile elevations. The length of this vector line is given by the number of cells 'under' the profile. Thus each point on the vector relates to a single cell in the grid. This assumes that all points on the profile vector are equally spaced (not quite true, depends on the orientation of the line segments which comprise the profile)
@@ -526,7 +526,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       char szBuf[BUF_SIZE] = "";
       string strCWD = getcwd(szBuf, BUF_SIZE);
       
-      // TODO Andres check this re. CShore input requirements. Constrain the wave to normal angle to be between -80 and 80 degrees, this is a requirement of CShore
+      // Constrain the wave to normal angle to be between -80 and 80 degrees, this is a requirement of CShore
       dWaveToNormalAngle = tMax(dWaveToNormalAngle, -80.0);
       dWaveToNormalAngle = tMin(dWaveToNormalAngle, 80.0);
       

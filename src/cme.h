@@ -142,7 +142,7 @@ using std::ostringstream;
 
 
 //===================================================== hard-wired constants ====================================================
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 17 March 2018";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 18 March 2018";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -237,8 +237,9 @@ double const   DEPTH_OVER_DB_INCREMENT                                     = 0.0
 double const   INVERSE_DEPTH_OVER_DB_INCREMENT                             = 1000;        // Inverse of the above
 double const   DEAN_POWER                                                  = 2.0 / 3.0;   // Dean profile exponent
 
-// TODO Let the user define the CShore wave friction factor
+// TODO Let the user define these CShore input parameters
 double const   CSHORE_FRICTION_FACTOR                                      = 0.015;       // Friction factor for CShore model
+double const   CSHORE_SURGE_LEVEL                                          = 0.0;         // Not used, but in the future we might include surge in the calculations
 
 // Arbitrary constants
 bool const     USE_DEEP_WATER_FOR_SHADOW_LINE                              = true;        // Use deep water wave orintation in determining shadow line orientation?
@@ -253,6 +254,8 @@ int const      MAX_EDGE_SEARCH_DIST                                        = 30;
 int const      MIN_PAR_PROFILE_SIZE                                        = 3;           // In cells: min size for uncons sed parallel profile
 int const      MAX_NUM_PREV_ORIENTATION_VALUES                             = 10;          // Max length of deque used in tracing shadow boundary
 int const      MIN_INLAND_OFFSET_FOR_BEACH_EROSION_ESTIMATION              = 5;           // Used in estimation of beach erosion
+// TODO make this a user input
+int const      NUMBER_OF_INTERVENTION_CAPES                                = 3;
 
 double const   TOLERANCE                                                   = 1e-4;        // For bFPIsEqual, if too small (e.g. 1e-10), get spurious "rounding" errors
 double const   SEDIMENT_ELEV_TOLERANCE                                     = 1e-10;       // Differences in depth-equivalent sediment amount (m) less than this are ignored
@@ -260,7 +263,6 @@ double const   STRAIGHT_COAST_MAX_DETAILED_CURVATURE                       = -5;
 double const   STRAIGHT_COAST_MAX_SMOOTH_CURVATURE                         = -1;
 double const   MIN_LENGTH_OF_SHADOW_ZONE_LINE                              = 10;          // Used in shadow line tracing
 double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5;           // Used in shadow line tracing
-
 
 // Error/warning, NODATA etc.
 string const   ERR                                                         = "ERROR ";
@@ -693,23 +695,26 @@ int const      RTN_ERR_CLIFFNOTCH                     = 38;
 int const      RTN_ERR_CLIFFDEPOSIT                   = 39;
 int const      RTN_ERR_BAD_INDEX                      = 40;
 int const      RTN_ERR_EDGEOFGRID                     = 41;
-int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE      = 42;
-int const      RTN_ERR_LANDFORM_TO_GRID               = 43;
-int const      RTN_ERR_NO_TOP_LAYER                   = 44;
-int const      RTN_ERR_NO_ADJACENT_POLYGON            = 45;
-int const      RTN_ERR_BAD_MULTILINE                  = 46;
-int const      RTN_ERR_CANNOT_INSERT_POINT            = 47;
-int const      RTN_ERR_CANNOT_ASSIGN_COASTAL_LANDFORM = 48;
-int const      RTN_ERR_SHADOW_ZONE_FLOOD_FILL_NOGRID  = 49;
-int const      RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT  = 50;
-int const      RTN_ERR_CSHORE_EMPTY_PROFILE           = 51;
-int const      RTN_ERR_CSHORE_OUTPUT_FILE             = 52;
-int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 53;
-int const      RTN_ERR_GRIDCREATE                     = 54;
-int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 55;
-int const      RTN_ERR_CSHORE_ERROR                   = 56;
-int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 57;
-int const      RTN_ERR_ESTIMATED_EROSION_IS_ZERO      = 58;
+int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_1    = 42;
+int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_2    = 43;
+int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_3    = 44;
+int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_4    = 45;
+int const      RTN_ERR_LANDFORM_TO_GRID               = 46;
+int const      RTN_ERR_NO_TOP_LAYER                   = 47;
+int const      RTN_ERR_NO_ADJACENT_POLYGON            = 48;
+int const      RTN_ERR_BAD_MULTILINE                  = 49;
+int const      RTN_ERR_CANNOT_INSERT_POINT            = 50;
+int const      RTN_ERR_CANNOT_ASSIGN_COASTAL_LANDFORM = 51;
+int const      RTN_ERR_SHADOW_ZONE_FLOOD_FILL_NOGRID  = 52;
+int const      RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT  = 53;
+int const      RTN_ERR_CSHORE_EMPTY_PROFILE           = 54;
+int const      RTN_ERR_CSHORE_OUTPUT_FILE             = 55;
+int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 56;
+int const      RTN_ERR_GRIDCREATE                     = 57;
+int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 58;
+int const      RTN_ERR_CSHORE_ERROR                   = 59;
+int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 60;
+int const      RTN_ERR_ESTIMATED_EROSION_IS_ZERO      = 61;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                       = -1;

@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Change this to change build type
-#buildtype=Debug
-buildtype=Release
+buildtype=Debug
+#buildtype=Release
 #buildtype=RelWithDebInfo
 #buildtype=MinSizeRel
 #buildtype=gcov

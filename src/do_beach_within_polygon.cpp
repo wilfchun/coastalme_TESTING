@@ -64,9 +64,9 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
    int nIndex = pUpCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
    if (nIndex == INT_NODATA)
    {
-      LogStream << m_ulIteration << ": " << ERR << "in polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
+      LogStream << m_ulIteration << ": " << ERR << "while eroding beach in polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
       
-      return RTN_ERR_NO_SEAWARD_END_OF_PROFILE;
+      return RTN_ERR_NO_SEAWARD_END_OF_PROFILE_2;
    }
    
    // The part-profile length is one greater than nIndex, since pPtiGetCellGivenDepth() returns the index of the cell at the depth of closure
@@ -789,9 +789,9 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
    int nIndex =  pUpCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
    if (nIndex == INT_NODATA)
    {
-      LogStream << m_ulIteration << ": " << ERR << "in nDoBeachDepositionOnPolygon() for polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
+      LogStream << m_ulIteration << ": " << ERR << "while depositing beach in polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
 
-      return RTN_ERR_NO_SEAWARD_END_OF_PROFILE;
+      return RTN_ERR_NO_SEAWARD_END_OF_PROFILE_3;
    }
 
    // The part-profile length is one greater than nIndex, since pPtiGetCellGivenDepth() returns the index of the cell at depth of closure. This will be the number of cells in the Dean profile portion of every parallel profile
@@ -1260,8 +1260,8 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
       int nIndex = pDownCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
       if (nIndex == INT_NODATA)
       {
-         LogStream << m_ulIteration << ": " << ERR << "in nDoBeachDepositionOnPolygon() for polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
-         return RTN_ERR_NO_SEAWARD_END_OF_PROFILE;
+         LogStream << m_ulIteration << ": " << ERR << "while depositing beach in polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
+         return RTN_ERR_NO_SEAWARD_END_OF_PROFILE_4;
       }
 
       // The part-profile length is one greater than nIndex, since pPtiGetCellGivenDepth() returns the index of the cell at depth of closure. This will be the number of cells in the Dean profile portion of every parallel profile

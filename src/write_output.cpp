@@ -182,8 +182,7 @@ void CSimulation::WriteStartRunDetails(void)
    }
    OutStream << " Size of profile slope smoothing window                    \t: " << m_nProfileSmoothWindow << endl;
    OutStream << " Max local slope on profile (m/m)                          \t: " << m_dProfileMaxSlope << endl;
-   OutStream << " Weighting for simple smoothing of sediment layers         \t: " << m_dSimpleSmoothWeight << endl;
-   OutStream << " Vertical tolerance for beach to be included in smoothing  \t: " << m_dBeachSmoothingVertTolerance << " m" << endl;
+   OutStream << " Vertical tolerance for beach to be included in smoothing  \t: " << m_dMaxBeachElevAboveSWL << " m" << endl;
    OutStream << endl;
 
 

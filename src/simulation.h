@@ -294,8 +294,7 @@ private:
       m_dTotPotentialPlatformErosionOnProfiles,
       m_dTotPotentialPlatformErosionBetweenProfiles,
       m_dProfileMaxSlope,
-      m_dSimpleSmoothWeight,
-      m_dBeachSmoothingVertTolerance,
+      m_dMaxBeachElevAboveSWL,
       m_dCliffErosionResistance,
       m_dNotchOverhangAtCollapse,
       m_dNotchBaseBelowSWL,
@@ -747,7 +746,7 @@ public:
    double dGetThisTimestepSWL(void) const;
 
    //! Returns the vertical tolerance for beach cells to be included in smoothing
-   double dGetBeachSmoothingVertTolerance(void) const;
+   double dGetMaxBeachElevAboveSWL(void) const;
 
    //! Returns the cell size
 //    double dGetCellSide(void) const;

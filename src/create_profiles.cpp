@@ -241,15 +241,12 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile, in
    bVCoastPointSearched[0] = true;
    bVCoastPointSearched[nCoastSize-1] = true;
    
-   // TODO make this a user input
-   int const NINTERVENTIONCAPES = 3;
    int nInterventionProfilesCreated = 0;
-
    // Work along the vector of curvature pairs starting at the convex end
    for (int nCapePoint = nCoastSize-1; nCapePoint >= 0; nCapePoint--)
    {
       // Have we created enough intervention cape profiles?
-      if (nInterventionProfilesCreated == NINTERVENTIONCAPES)
+      if (nInterventionProfilesCreated == NUMBER_OF_INTERVENTION_CAPES)
          return;
 
       // This convex point is a potential location for an intervention cape profile
@@ -353,6 +350,9 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
 void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const nProfileToNodeSpacing, double const dCoastProfileConvexityThreshold, vector<bool>* bVCoastPointSearched, vector<pair<int, double> > const* prVCurvature)
 {
    int nCoastSize = m_VCoast[nCoast].nGetCoastlineSize();
+   
+   if (m_ulIteration == 227)
+      cout << endl;
 
    // Work along the vector of curvature pairs starting at the concave end
    for (int n = 0; n < nCoastSize; n++)

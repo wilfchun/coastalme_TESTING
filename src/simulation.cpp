@@ -274,8 +274,7 @@ CSimulation::CSimulation(void)
    m_dTotPotentialPlatformErosionOnProfiles         =
    m_dTotPotentialPlatformErosionBetweenProfiles    =
    m_dProfileMaxSlope                               =
-   m_dSimpleSmoothWeight                            =
-   m_dBeachSmoothingVertTolerance                   =
+   m_dMaxBeachElevAboveSWL                          =
    m_dCliffErosionResistance                        =
    m_dNotchOverhangAtCollapse                       =
    m_dNotchBaseBelowSWL                             =
@@ -397,9 +396,9 @@ double CSimulation::dGetThisTimestepSWL(void) const
 }
 
 
-double CSimulation::dGetBeachSmoothingVertTolerance(void) const
+double CSimulation::dGetMaxBeachElevAboveSWL(void) const
 {
-   return m_dBeachSmoothingVertTolerance;
+   return m_dMaxBeachElevAboveSWL;
 }
 
 // double CSimulation::dGetCellSide(void) const
