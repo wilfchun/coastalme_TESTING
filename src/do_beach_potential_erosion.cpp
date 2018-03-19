@@ -157,7 +157,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
 
             // Calculate the immersed weight of sediment transport
             double dImmersedWeightTransport = 0;
-            if (m_nBeachErosionDepositionEquation == EQUATION_CERC)
+            if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_CERC)
             {
                /*
                Use the CERC equation (Komar and Inman, 1970; USACE, 1984), this describes the immersive weight transport of sand (i.e. sand transport in suspension). Depth-integrated alongshore volumetric sediment transport is a function of breaking wave height Hb and angle αb:
@@ -168,7 +168,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
                */
                dImmersedWeightTransport = m_dKLS * pow(dAvgBreakingWaveHeight, 2.5) * sin((PI / 180) * 2 * dThetaBr);
             }
-            else if (m_nBeachErosionDepositionEquation == EQUATION_KAMPHUIS)
+            else if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_KAMPHUIS)
             {
                /*
                Use the Kamphuis (1990) equation to estimate the immersive weight transport of sand in kg/s:

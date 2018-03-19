@@ -492,7 +492,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       VdWaveHeight(nProfileSize,0),
       VdWaveDirection(nProfileSize,0);
    
-   if (m_nWavePropagationModel == MODEL_CSHORE)
+   if (m_nWavePropagationModel == WAVE_MODEL_CSHORE)
    {
       // We are using CShore to propagate the waves, so create an input file for this profile
       double
@@ -612,7 +612,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       }
    }
    
-   else if (m_nWavePropagationModel == MODEL_COVE)
+   else if (m_nWavePropagationModel == WAVE_MODEL_COVE)
    {
       // We are using COVE's linear wave theory to propagate the waves
       double dDepthLookupMax = m_dWaveDepthRatioForWaveCalcs * dProfileDeepWaterWaveHeight;
@@ -860,10 +860,9 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
 ==============================================================================================================================*/
 int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>* pVdMyInterpolatedValues)
 {
-   // TODO Make this a user input
-   // Select the interpolation method to be used: 0 for simple linear or 1 for hermite cubic
-   int InterpMethodOption = CSHORE_INTERPOLATION_LINEAR;
-//       int InterpMethodOption = CSHORE_INTERPOLATION_HERMITE_CUBIC;
+   // Select the interpolation method to be used
+//    int nInterpolationMethod = CSHORE_INTERPOLATION_LINEAR;
+   int nInterpolationMethod = CSHORE_INTERPOLATION_HERMITE_CUBIC;
    
    // Read in the first column (contains XY distance relative to seaward limit) and CShore column from the CShore output file
    ifstream InStream;
@@ -891,6 +890,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
    while (getline(InStream, strLineIn))
    {
       n++;
+      
       if (n == 0)
       {
          // The header line
@@ -906,7 +906,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
          if (nCols != nExpectedColumns)
          {
             // Error: did not get nExpectedColumns CShore output columns
-            LogStream << m_ulIteration << ": " << ERR << "expected " << nExpectedColumns << " CShore output columns but read " << nCols << " columns from header section of file " << strCShoreFilename << endl;
+            LogStream << m_ulIteration << ": " << ERR << "expected " << nExpectedColumns << " CShore output columns but read " << nCols << " columns from header section of file " << *strCShoreFilename << endl;
             
             return RTN_ERR_CSHORE_OUTPUT_FILE;        
          }
@@ -921,7 +921,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
    if (nReadRows != nExpectedRows)
    {
       // Error: did not get nExpectedRows CShore output rows
-      LogStream << m_ulIteration << ": " << ERR << "expected " << nExpectedRows << " CShore output rows, but read " << nReadRows << " rows from file " << strCShoreFilename << endl;
+      LogStream << m_ulIteration << ": " << ERR << "expected " << nExpectedRows << " CShore output rows, but read " << nReadRows << " rows from file " << *strCShoreFilename << endl;
       
       return RTN_ERR_CSHORE_OUTPUT_FILE;
    }
@@ -929,7 +929,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
    if (nReadRows < 2)
    {
       // Error: cannot interpolate values if we have only one value
-      LogStream << m_ulIteration << ": " << ERR << "only " << nReadRows << " CShore output rows in file " << strCShoreFilename << ". Try lengthening the coastline normals." << endl;
+      LogStream << m_ulIteration << ": " << ERR << "only " << nReadRows << " CShore output rows in file " << *strCShoreFilename << endl;
       
       return RTN_ERR_CSHORE_OUTPUT_FILE;
    }   
@@ -944,7 +944,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
    reverse(VdValuesCShore.begin(), VdValuesCShore.end());
    
    // Now we have everything ready to do the interpolation
-   if (InterpMethodOption == CSHORE_INTERPOLATION_HERMITE_CUBIC)
+   if (nInterpolationMethod == CSHORE_INTERPOLATION_HERMITE_CUBIC)
    {
       // Using the hermite cubic approach: calculate the first derivative of CShore values (needed for the hermite interpolant)
       vector<double> VdValuesCShoreDeriv(nReadRows, 0);
@@ -973,11 +973,6 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
    else
    {
       // Using the simple linear approach
-      
-      // TODO We get an error if pVdDistXY->size() == 1, Andres to check why we get this
-//       if (pVdDistXY->size() == 1)
-      
-      
       vector<double> VdDistXYCopy(pVdDistXY->begin(), pVdDistXY->end());
       *pVdMyInterpolatedValues = VdInterp1(&VdXYDistCME, &VdValuesCShore, &VdDistXYCopy);
    }

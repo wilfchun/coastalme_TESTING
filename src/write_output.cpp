@@ -334,9 +334,9 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << "Other Input Data" << endl;
 
    OutStream << " Wave propagation model                                    \t: ";
-   if (m_nWavePropagationModel == MODEL_COVE)
+   if (m_nWavePropagationModel == WAVE_MODEL_COVE)
       OutStream << "COVE";
-   else if (m_nWavePropagationModel == MODEL_CSHORE)
+   else if (m_nWavePropagationModel == WAVE_MODEL_CSHORE)
       OutStream << "CShore";
    OutStream << endl;
    OutStream << " Density of sea water                                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(0) << m_dSeaWaterDensity << " kg/m^3" << endl;
@@ -362,9 +362,9 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << "recirculate";
    OutStream << endl;
    OutStream << " Beach potential erosion/deposition equation               \t: ";
-   if (m_nBeachErosionDepositionEquation == EQUATION_CERC)
+   if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_CERC)
       OutStream << "CERC";
-   else if (m_nBeachErosionDepositionEquation == EQUATION_KAMPHUIS)
+   else if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_KAMPHUIS)
       OutStream << "Kamphuis";
    OutStream << endl;
    OutStream << " Median particle size of fine sediment                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dD50Fine << " mm" << endl;
@@ -375,9 +375,9 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << " Fine-sized sediment relative erodibility                  \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dFineErodibility << endl;
    OutStream << " Sand-sized sediment relative erodibility                  \t: " << resetiosflags(ios::floatfield) << m_dSandErodibility << endl;
    OutStream << " Coarse-sized sediment relative erodibility                \t: " << m_dCoarseErodibility << endl;
-   if (m_nBeachErosionDepositionEquation == EQUATION_CERC)
+   if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_CERC)
       OutStream << " Transport parameter KLS for CERC equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dKLS << endl;
-   if (m_nBeachErosionDepositionEquation == EQUATION_KAMPHUIS)
+   if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_KAMPHUIS)
       OutStream << " Transport parameter for Kamphuis equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dKamphuis << endl;
    OutStream << " Height of Dean profile start above SWL                    \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dDeanProfileStartAboveSWL  << " m" << endl;
    OutStream << " Do cliff collapse?                                        \t: " << (m_bDoCliffCollapse ? "Y": "N") << endl;

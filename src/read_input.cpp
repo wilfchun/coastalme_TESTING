@@ -1431,7 +1431,7 @@ bool CSimulation::bReadRunData(void)
          case 28:
             // Wave propagation model [0 = COVE, 1 = CShore]
             m_nWavePropagationModel = atoi(strRH.c_str());
-            if ((m_nWavePropagationModel != MODEL_COVE) && (m_nWavePropagationModel != MODEL_CSHORE))
+            if ((m_nWavePropagationModel != WAVE_MODEL_COVE) && (m_nWavePropagationModel != WAVE_MODEL_CSHORE))
                strErr = "switch for wave propagation model must be 0 or 1";
             break;
 
@@ -1576,7 +1576,7 @@ bool CSimulation::bReadRunData(void)
          case 40:
             // Beach erosion/deposition equation [0 = CERC, 1 = Kamphuis]
             m_nBeachErosionDepositionEquation = atoi(strRH.c_str());
-            if ((m_nBeachErosionDepositionEquation != EQUATION_CERC) && (m_nBeachErosionDepositionEquation != EQUATION_KAMPHUIS))
+            if ((m_nBeachErosionDepositionEquation != UNCONS_SEDIMENT_EQUATION_CERC) && (m_nBeachErosionDepositionEquation != UNCONS_SEDIMENT_EQUATION_KAMPHUIS))
                strErr = "switch for beach erosion/deposition equation must be 0 or 1";
             break;
 

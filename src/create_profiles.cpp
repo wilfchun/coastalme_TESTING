@@ -198,6 +198,31 @@ int CSimulation::nCreateAllProfilesAndCheckForIntersection(void)
    if (nRet != RTN_OK)
       return nRet;
    
+   // Again check the normal profiles for insufficient length: is the water depth at the end point less than the depth of closure? We do this again because some profiles may have been shortened as a result of intersection. Do once for every coastline object
+   for (unsigned int nCoast = 0; nCoast < m_VCoast.size(); nCoast++)
+   {
+      for (int nProf = 0; nProf < m_VCoast[nCoast].nGetNumProfiles(); nProf++)
+      {
+         CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProf);
+         
+         if (pProfile->bProfileOK())
+         {
+            CGeom2DPoint* pPtEnd = pProfile->pPtGetPointInProfile(pProfile->nGetProfileSize()-1);
+            CGeom2DIPoint PtiEnd = PtiExtCRSToGrid(pPtEnd);
+            int
+               nXEnd = PtiEnd.nGetX(),
+               nYEnd = PtiEnd.nGetY();
+            
+            if (m_pRasterGrid->m_Cell[nXEnd][nYEnd].dGetSeaDepth() < m_dDepthOfClosure)
+            {
+               LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProf << " is too short for depth of closure " << m_dDepthOfClosure << " at end point [" << nXEnd << "][" << nYEnd << "] = {" << pPtEnd->dGetX() << ", " << pPtEnd->dGetY() << "}, flagging as too short" << endl;
+               
+               pProfile->SetTooShort(true);
+            }            
+         }
+      }
+   }
+   
    // Put all valid coastline-normal profiles (apart from the profiles at the start and end of the coast, since they have already been done) onto the raster grid. But if the profile is not long enough, or crosses a coastline or hits dry land, then mark the profile as invalid
    nRet = nPutAllProfilesOntoGrid();
    if (nRet != RTN_OK)
@@ -351,9 +376,6 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
 {
    int nCoastSize = m_VCoast[nCoast].nGetCoastlineSize();
    
-   if (m_ulIteration == 227)
-      cout << endl;
-
    // Work along the vector of curvature pairs starting at the concave end
    for (int n = 0; n < nCoastSize; n++)
    {
