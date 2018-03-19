@@ -860,7 +860,7 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
 ==============================================================================================================================*/
 int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>* pVdMyInterpolatedValues)
 {
-   // Select the interpolation method to be used
+   // Select the interpolation method to be used: CSHORE_INTERPOLATION_HERMITE_CUBIC seems to work better for spit growth
 //    int nInterpolationMethod = CSHORE_INTERPOLATION_LINEAR;
    int nInterpolationMethod = CSHORE_INTERPOLATION_HERMITE_CUBIC;
    
