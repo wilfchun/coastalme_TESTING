@@ -145,7 +145,7 @@ double CSimulation::dExtCRSYToGridY(double const dExtCRSY) const
 
 /*==============================================================================================================================
 
- Transforms a pointer to a CGeom2DPoint in the external CRS to the equivalent CGeom2DIPoint in the raster-grid CRS (both values rounded)
+ Transforms a pointer to a CGeom2DPoint in the external CRS to the equivalent CGeom2DIPoint in the raster-grid CRS (both values rounded). Note that the result may be outside the grid, because of rounding
 
 ===============================================================================================================================*/
 CGeom2DIPoint CSimulation::PtiExtCRSToGrid(CGeom2DPoint const* pPtIn) const

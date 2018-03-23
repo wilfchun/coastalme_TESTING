@@ -34,6 +34,7 @@
 #endif
 
 #include <cmath>
+using std::floor;
 
 #include <ctime>
 using std::time;
@@ -1590,13 +1591,13 @@ string CSimulation::strDispSimTime(const double dTimeIn)
    string strTime;
 
    // Constants
-   double const dHoursInYear = 24 * 365.25;
+   double const dHoursInYear = 24 * 365; // it was 365.25
    double dHoursInDay = 24;
 
    // Display years
    if (dTmpTime >= dHoursInYear)
    {
-      double dYears = dTmpTime / dHoursInYear;
+      double dYears = floor(dTmpTime / dHoursInYear);
       dTmpTime -= (dYears * dHoursInYear);
 
       strTime = to_string(static_cast<int>(dYears));
@@ -1621,7 +1622,7 @@ string CSimulation::strDispSimTime(const double dTimeIn)
 
    // Display hours
    stringstream ststrTmp;
-   ststrTmp << FillToWidth('0', 2) << dTmpTime;
+   ststrTmp << FillToWidth('0', 2) << static_cast<int>(dTmpTime);
    strTime.append(ststrTmp.str());
    strTime.append("h");
 

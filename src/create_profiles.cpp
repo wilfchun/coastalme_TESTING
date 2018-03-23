@@ -212,6 +212,12 @@ int CSimulation::nCreateAllProfilesAndCheckForIntersection(void)
             int
                nXEnd = PtiEnd.nGetX(),
                nYEnd = PtiEnd.nGetY();
+               
+            // Safety check: the point may be outside the grid because of rounding, so keep it within the grid
+            nXEnd = tMax(nXEnd, 0);
+            nXEnd = tMin(nXEnd, m_nXGridMax-1);
+            nYEnd = tMax(nYEnd, 0);
+            nYEnd = tMin(nYEnd, m_nYGridMax-1);
             
             if (m_pRasterGrid->m_Cell[nXEnd][nYEnd].dGetSeaDepth() < m_dDepthOfClosure)
             {
@@ -282,7 +288,7 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile, in
          // We have not already searched this coast point, so try putting an intervention cape profile here
          int nRet = nCreateProfile(nCoast, nThisCapePoint, nProfile);
          bVCoastPointSearched[nThisCapePoint] = true;
-
+         
          if (nRet != RTN_OK)
             // This intervention cape profile is no good (has hit coast, or hit dry land, etc.) so forget about it
             continue;
@@ -533,7 +539,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
 
 /*==============================================================================================================================
 
- Creates a single coastline-normal profile
+ Creates a single coastline-normal profile (which may be an intervention profile or a cape profile)
 
 ===============================================================================================================================*/
 int CSimulation::nCreateProfile(int const nCoast, int const nProfileStartPoint, int& nProfile)
