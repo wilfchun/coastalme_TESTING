@@ -47,7 +47,7 @@ using std::stringstream;
  Reads vector GIS datafiles
 
 ===============================================================================================================================*/
-int CSimulation::nReadVectorGISData(int const nDataItem)
+/*int CSimulation::nReadVectorGISData(int const nDataItem)
 {
    int
       nMaxLayer = 0,
@@ -66,7 +66,7 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
    switch (nDataItem)
    {
       case (DEEP_WATER_WAVE_VALUES_VEC):
-         strGISFile = m_strDeepWaterWaveValuesFile;
+         strGISFile = m_strDeepWaterWaveStationsFile;
          nMaxLayer = DEEP_WATER_WAVE_VALUES_MAX_LAYER;
          nNeedGeometry = DEEP_WATER_WAVE_VALUES_GEOMETRY;
          break;
@@ -278,8 +278,205 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
    GDALClose(pOGRDataSource);
 
    return RTN_OK;
-}
+}*/
 
+/*==============================================================================================================================
+
+ Reads vector GIS datafiles
+
+===============================================================================================================================*/
+int CSimulation::nReadVectorGISData(int const nDataItem)
+{
+   int
+      nMaxLayer = 0,
+      nNeedGeometry = 0;
+   string
+      strGISFile,
+      strDriverCode,
+      strGeometry,
+      strDataType,
+      strDataValue;
+
+   // Set up file name and constraints
+   switch (nDataItem)
+   {
+      case (DEEP_WATER_WAVE_VALUES_VEC):
+         strGISFile = m_strDeepWaterWaveStationsFile;
+         nMaxLayer = DEEP_WATER_WAVE_VALUES_MAX_LAYER;
+         nNeedGeometry = DEEP_WATER_WAVE_VALUES_GEOMETRY;
+         break;
+
+      // TODO Others
+   }
+
+   // Open the GDAL/OGR datasource
+   GDALDataset* pOGRDataSource = (GDALDataset*) GDALOpenEx(strGISFile.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL );
+   if (pOGRDataSource == NULL)
+   {
+      // Can't open file (note will already have sent GDAL error message to stdout)
+      cerr << ERR << "cannot open " << strGISFile << " for input: " << CPLGetLastErrorMsg() << endl;
+      return RTN_ERR_VECTOR_FILE_READ;
+   }
+
+   // Find out number of layers, and compare with the required number
+   int nLayer = pOGRDataSource->GetLayerCount();
+   if (nLayer > nMaxLayer)
+      LogStream << WARN << "need " << nMaxLayer << (nMaxLayer > 1 ? "layers" : "layer") << " in " << strGISFile << ", " << nLayer << " found. Only the first " << nMaxLayer << (nMaxLayer > 1 ? "layers" : "layer") << " will be read." << endl;
+
+   for (int n = 0; n < nMaxLayer; n++)
+   {
+      // Open this layer
+      OGRLayer* pOGRLayer;
+      pOGRLayer = pOGRDataSource->GetLayer(n);
+
+      // Get features from the layer
+      OGRFeature* pOGRFeature;
+
+      // Make sure we are at the beginning of the layer
+      pOGRLayer->ResetReading();
+
+      // Now iterate for all features in the layer
+      while ((pOGRFeature = pOGRLayer->GetNextFeature()) != NULL)
+      {
+         // First get the geometry for this feature
+         OGRGeometry* pOGRGeometry;
+         pOGRGeometry = pOGRFeature->GetGeometryRef();
+         if (pOGRGeometry == NULL)
+         {
+            cerr << ERR << " null geometry in " << strGISFile << "." << endl;
+            return RTN_ERR_VECTOR_FILE_READ;
+         }
+
+         // Now get the geometry type
+         int nGeometry = wkbFlatten(pOGRGeometry->getGeometryType());
+         int nThisGeometry = 0;
+         switch (nGeometry)
+         {
+            case wkbPoint:
+               nThisGeometry = VEC_GEOMETRY_POINT;
+               strGeometry = "point";
+               break;
+
+            case wkbLineString:
+               nThisGeometry = VEC_GEOMETRY_LINE;
+               strGeometry = "line";
+               break;
+
+            case wkbPolygon:
+               nThisGeometry = VEC_GEOMETRY_POLYGON;
+               strGeometry = "polygon";
+               break;
+
+            default:
+               // NOTE may need wkbMultiLineString or similar for channel network
+               nThisGeometry = VEC_GEOMETRY_OTHER;
+               strGeometry = "other";
+               break;
+         }
+
+         // Have we got the expected geometry type?
+         if (nThisGeometry != nNeedGeometry)
+         {
+            // Error, we do not have the desired geometry
+            string strNeedGeometry;
+            switch (nNeedGeometry)
+            {
+               case VEC_FIELD_DATA_INT:
+                  strNeedGeometry = "integer";
+                  break;
+
+               case VEC_FIELD_DATA_REAL:
+                  strNeedGeometry = "real";
+                  break;
+
+               case VEC_FIELD_DATA_STRING:
+                  strNeedGeometry = "string";
+                  break;
+
+               case VEC_FIELD_DATA_OTHER:
+                  strNeedGeometry = "other";
+                  break;
+            }
+
+            cerr << strGeometry << " data found in " << strGISFile << ", but " << strNeedGeometry << " data is needed" << endl;
+            return RTN_ERR_VECTOR_FILE_READ;
+         }
+
+         // The geometry type is OK, so process the geometry data
+//          int nPoints = 0;
+         OGRPoint* pOGRPoint;
+//          OGRLineString* pOGRLineString;
+         switch (nDataItem)
+         {
+            case (DEEP_WATER_WAVE_VALUES_VEC):
+               // Point data
+               pOGRPoint = (OGRPoint *) pOGRGeometry;
+
+               // Convert the co-ords to grid CRS and store them: we will use these in the spatial interpolation of deep water waves
+               m_VdDeepWaterWavePointX.push_back(dExtCRSXToGridX(pOGRPoint->getX()));
+               m_VdDeepWaterWavePointY.push_back(dExtCRSYToGridY(pOGRPoint->getY()));
+               break;
+
+            // TODO others
+   //          case (XXXX):
+   //             // Line data
+   //             pOGRLineString = (OGRLineString *) pOGRGeometry;
+   //
+   //             nPoints = pOGRLineString->getNumPoints();
+   //             for (int i = 0; i < nPoints; i++)
+   //             {
+   //                m_VCoast[0].AppendPointToCoastlineExtCRS(pOGRLineString->getX(i), pOGRLineString->getY(i));
+   //             }
+   //             break;
+         }
+
+         // Now get the attributes of this feature
+         OGRFeatureDefn* pOGRFeatureDefn = pOGRLayer->GetLayerDefn();
+
+         int nFieldIndex = -1;
+         switch (nDataItem)
+         {
+            case (DEEP_WATER_WAVE_VALUES_VEC):
+               // First get the station ID
+               nFieldIndex = pOGRFeatureDefn->GetFieldIndex(DEEP_WATER_WAVE_STATION_ID.c_str());
+               if (nFieldIndex == -1)
+               {
+                  // Can't find this field in the vector file
+                  cerr << ERR << "cannot find " << DEEP_WATER_WAVE_STATION_ID << " field in " << strGISFile << ": " << CPLGetLastErrorMsg() << endl;
+                  return RTN_ERR_VECTOR_FILE_READ;
+               }
+
+               // Get the Station ID for this point
+               int nStationID = pOGRFeature->GetFieldAsInteger(nFieldIndex);
+               m_VnDeepWaterWavePointID.push_back(nStationID);
+
+               break;
+
+               // TODO others
+         }
+
+         // Get rid of the Feature object
+         OGRFeature::DestroyFeature(pOGRFeature);
+      }
+   }
+
+   // Save some info, to be shown in the text output
+   switch (nDataItem)
+   {
+      case (DEEP_WATER_WAVE_VALUES_VEC):
+         m_strOGRDWWVDriverCode = pOGRDataSource->GetDriverName();
+         m_strOGRDWWVDataType   = "double";
+         m_strOGRDWWVGeometry   = strGeometry;
+         break;
+
+         // TODO Others
+   }
+
+   // Clean up: get rid of the data source object
+   GDALClose(pOGRDataSource);
+
+   return RTN_OK;
+}
 
 /*==============================================================================================================================
 

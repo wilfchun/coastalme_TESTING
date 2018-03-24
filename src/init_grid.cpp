@@ -135,7 +135,11 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
    if (! m_bSingleDeepWaterWaveValues)
    {
       // Each cell's value for deep water wave height and deep water wave orientation is interpolated from multiple user-supplied values
-      for (unsigned int n = 0; n < m_VulDeepWaterWaveValuesAtTimestep.size(); n++)
+      int nRet = nInterpolateAllDeepWaterWaveValues();
+      if (nRet != RTN_OK)
+         return nRet;
+        
+      /*for (unsigned int n = 0; n < m_VulDeepWaterWaveValuesAtTimestep.size(); n++)
       {
          if (m_ulIteration == m_VulDeepWaterWaveValuesAtTimestep[n])
          {
@@ -150,7 +154,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
             if (nRet != RTN_OK)
                return nRet;
          }
-      }
+      }*/
    }
    
    if (nZeroThickness > 0)

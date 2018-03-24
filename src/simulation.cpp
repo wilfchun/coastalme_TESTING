@@ -614,12 +614,17 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 
    if (! m_bSingleDeepWaterWaveValues)
    {
-      // We are reading deep water wave height and orientation from a file of vector points
+      // We are reading deep water wave height, orientation and period from a file of vector points and file time series
       AnnounceReadVectorFiles();
       AnnounceReadDeepWaterWaveValuesGIS();
 
-      // Read in
+      // Read in vector points
       nRet = nReadVectorGISData(DEEP_WATER_WAVE_VALUES_VEC);
+      if (nRet != RTN_OK)
+         return (nRet);
+      
+      // Read in time series values and initialize vector to store this time step deep water wave height, orientation and period
+      nRet = nReadWaveTimeSeries(m_VnDeepWaterWavePointID.size());
       if (nRet != RTN_OK)
          return (nRet);
    }

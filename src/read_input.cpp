@@ -1476,15 +1476,46 @@ bool CSimulation::bReadRunData(void)
             }
             else
             {
-               // We are reading deep water wave height and deep water wave orientation from a file
+               // We are reading deep water wave height and deep water wave orientation from two files
+	       // This first file is a point shape file with the location of the buoys and integer ID for each one
                m_bSingleDeepWaterWaveValues = false;
                
-               // TODO for the moment, calculate these values in only at the first timestep
-               m_VulDeepWaterWaveValuesAtTimestep.push_back(1);
-
+               
                if (strRH.empty())
                {
                   strErr = "deep water wave height must be either a number or a filename";
+                  break;
+               }
+
+               #ifdef _WIN32
+               // For Windows, make sure has backslashes, not Unix-style slashes
+               strRH = pstrChangeToBackslash(&strRH);
+               #endif
+
+               // Now check for leading slash, or leading Unix home dir symbol, or occurrence of a drive letter
+               if ((strRH[0] == PATH_SEPARATOR) || (strRH[0] == '~') || (strRH[1] == ':'))
+               {
+                  // It has an absolute path, so use it 'as is'
+                  m_strDeepWaterWaveStationsFile = strRH;
+               }
+               else
+               {
+                  // It has a relative path, so prepend the CoastalME dir
+                  m_strDeepWaterWaveStationsFile = m_strCMEDir;
+                  m_strDeepWaterWaveStationsFile.append(strRH);
+               }
+            }
+            break;
+
+	 case 33:
+	    // Deep water wave height Time series file:
+	    if (!m_bSingleDeepWaterWaveValues)
+            {
+	       // Only read this if we have a file for wave height points
+	       // For each point at m_strDeepWaterWaveValuesFile a triad of wave height, orientation and period for each time step
+	       if (strRH.empty())
+               {
+                  strErr = "deep water wave height time series filename missing";
                   break;
                }
 
@@ -1505,10 +1536,14 @@ bool CSimulation::bReadRunData(void)
                   m_strDeepWaterWaveValuesFile = m_strCMEDir;
                   m_strDeepWaterWaveValuesFile.append(strRH);
                }
-            }
-            break;
+               
+               // TODO for the moment, calculate these values in only at the first timestep
+               //m_VulDeepWaterWaveValuesAtTimestep.push_back(1);
 
-         case 33:
+	    }
+	    break;
+	    
+         case 34:
             // Deep water wave orientation in input CRS: this is the oceanographic convention i.e. direction TOWARDS which the waves move (in degrees clockwise from north)
             if (m_bSingleDeepWaterWaveValues)
             {
@@ -1521,7 +1556,7 @@ bool CSimulation::bReadRunData(void)
             }
             break;
 
-	 case 34:
+	 case 35:
             // Wave period (sec)
 	    if (m_bSingleDeepWaterWaveValues)
             {
@@ -1533,7 +1568,7 @@ bool CSimulation::bReadRunData(void)
             break;
 	    
 	    
-          case 35:
+          case 36:
              // Tide data file (can be blank)
              if (! strRH.empty())
              {
@@ -1554,7 +1589,7 @@ bool CSimulation::bReadRunData(void)
              }
              break;
 
-         case 36:
+         case 37:
             // Breaking wave height-to-depth ratio 
             m_dBreakingWaveHeightDeptRatio = atof(strRH.c_str());
             if (m_dBreakingWaveHeightDeptRatio <= 0)
@@ -1562,7 +1597,7 @@ bool CSimulation::bReadRunData(void)
             break;
             
          // ----------------------------------------------------- Sediment data ------------------------------------------------
-         case 37:
+         case 38:
             // Simulate coast platform erosion?
             strRH = strToLower(&strRH);
 
@@ -1571,28 +1606,28 @@ bool CSimulation::bReadRunData(void)
                m_bDoCoastPlatformErosion = true;
             break;
 
-         case 38:
+         case 39:
             // R (resistance to erosion) values along profile, see Walkden & Hall, 2011
             m_dR = atof(strRH.c_str());
             if (m_dR <= 0)
                strErr = "R values must be greater than zero";
             break;
 
-         case 39:
+         case 40:
             // Beach sediment transport at grid edges [0 = closed, 1 = open, 2 = re-circulate]
             m_nUnconsSedimentHandlingAtGridEdges = atoi(strRH.c_str());
             if ((m_nUnconsSedimentHandlingAtGridEdges < GRID_EDGE_CLOSED) || (m_nUnconsSedimentHandlingAtGridEdges > GRID_EDGE_RECIRCULATE))
                strErr = "switch for handling of beach sediment at grid edges must be 0, 1, or 2";
             break;
 
-         case 40:
+         case 41:
             // Beach erosion/deposition equation [0 = CERC, 1 = Kamphuis]
             m_nBeachErosionDepositionEquation = atoi(strRH.c_str());
             if ((m_nBeachErosionDepositionEquation != UNCONS_SEDIMENT_EQUATION_CERC) && (m_nBeachErosionDepositionEquation != UNCONS_SEDIMENT_EQUATION_KAMPHUIS))
                strErr = "switch for beach erosion/deposition equation must be 0 or 1";
             break;
 
-         case 41:
+         case 42:
             // Median size of fine sediment (mm)      [0 = default, only for Kamphuis eqn]
             m_dD50Fine = atof(strRH.c_str());
             if (m_dD50Fine < 0)
@@ -1602,7 +1637,7 @@ bool CSimulation::bReadRunData(void)
                m_dD50Fine = D50_FINE_DEFAULT;
             break;
 
-         case 42:
+         case 43:
             // Median size of sand sediment (mm)      [0 = default, only for Kamphuis eqn]
             m_dD50Sand = atof(strRH.c_str());
             if (m_dD50Sand < 0)
@@ -1612,7 +1647,7 @@ bool CSimulation::bReadRunData(void)
                m_dD50Sand = D50_SAND_DEFAULT;
             break;
 
-         case 43:
+         case 44:
             // Median size of coarse sediment (mm)      [0 = default, only for Kamphuis eqn]
             m_dD50Coarse = atof(strRH.c_str());
             if (m_dD50Coarse < 0)
@@ -1622,35 +1657,35 @@ bool CSimulation::bReadRunData(void)
                m_dD50Coarse = D50_COARSE_DEFAULT;
             break;
 
-         case 44:
+         case 45:
             // Density of beach sediment (kg/m3)
             m_dBeachSedimentDensity = atof(strRH.c_str());
             if (m_dBeachSedimentDensity <= 0)
                strErr = "density of beach sediment must be greater than zero";
             break;
 
-         case 45:
+         case 46:
             // Beach sediment porosity
             m_dBeachSedimentPorosity = atof(strRH.c_str());
             if (m_dBeachSedimentPorosity <= 0)
                strErr = "porosity of beach sediment must be greater than zero";
             break;
 
-         case 46:
+         case 47:
             // Erodibility of fine-sized sediment
             m_dFineErodibility = atof(strRH.c_str());
             if (m_dFineErodibility < 0)
                strErr = "cannot have negative erodibility values";
             break;
 
-         case 47:
+         case 48:
             // Erodibility of sand-sized sediment
             m_dSandErodibility = atof(strRH.c_str());
             if (m_dSandErodibility < 0)
                strErr = "cannot have negative erodibility values";
             break;
 
-         case 48:
+         case 49:
             // Erodibility of coarse-sized sediment
             m_dCoarseErodibility = atof(strRH.c_str());
             if (m_dCoarseErodibility < 0)
@@ -1678,21 +1713,21 @@ bool CSimulation::bReadRunData(void)
    dErodCoarse                                                    : 0.3
 */
 
-         case 49:
+         case 50:
             // Transport parameter KLS in CERC equation
             m_dKLS = atof(strRH.c_str());
             if (m_dKLS <= 0)
                strErr = "transport parameter KLS for CERC equation must be greater than zero";
             break;
 
-         case 50:
+         case 51:
             // Transport parameter for Kamphuis equation
             m_dKamphuis = atof(strRH.c_str());
             if (m_dKamphuis <= 0)
                strErr = "transport parameter for Kamphuis equation must be greater than zero";
             break;
 
-         case 51:
+         case 52:
             // Dean profile start, height above still water level (m)
             m_dDeanProfileStartAboveSWL = atof(strRH.c_str());
             if (m_dDeanProfileStartAboveSWL < 0)
@@ -1700,7 +1735,7 @@ bool CSimulation::bReadRunData(void)
             break;
 
          // ------------------------------------------------ Cliff collapse data -----------------------------------------------
-         case 52:
+         case 53:
             // Simulate cliff collapse?
             strRH = strToLower(&strRH);
 
@@ -1709,35 +1744,35 @@ bool CSimulation::bReadRunData(void)
                m_bDoCliffCollapse = true;
             break;
 
-         case 53:
+         case 54:
             // Cliff resistance to erosion
             m_dCliffErosionResistance = atof(strRH.c_str());
             if (m_dCliffErosionResistance <= 0)
                strErr = "cliff resistance to erosion must be greater than 0";
             break;
 
-         case 54:
+         case 55:
             // Notch overhang at collapse (m)
             m_dNotchOverhangAtCollapse = atof(strRH.c_str());
             if (m_dNotchOverhangAtCollapse <= 0)
                strErr = "cliff notch overhang at collapse must be greater than 0";
             break;
 
-         case 55:
+         case 56:
             // Notch base below still water level (m)
             m_dNotchBaseBelowSWL = atof(strRH.c_str());
             if (m_dNotchBaseBelowSWL < 0)
                strErr = "cliff notch base below still water level must be greater than 0";
             break;
 
-         case 56:
+         case 57:
             // Scale parameter A for cliff deposition (m^(1/3)) [0 = auto]
             m_dCliffDepositionA = atof(strRH.c_str());
             if (m_dCliffDepositionA < 0)
                strErr = "scale parameter A for cliff deposition must be 0 [= auto] or greater";
             break;
 
-         case 57:
+         case 58:
             // Planview width of cliff deposition talus (in cells) [must be odd]
             m_nCliffDepositionPlanviewWidth = atoi(strRH.c_str());
             if ((m_nCliffDepositionPlanviewWidth % 2) == 0)
@@ -1746,14 +1781,14 @@ bool CSimulation::bReadRunData(void)
                strErr = "planview width of cliff deposition must be greater than 0";
             break;
 
-         case 58:
+         case 59:
             // Planview length of cliff deposition talus (m)
             m_dCliffDepositionPlanviewLength = atof(strRH.c_str());
             if (m_dCliffDepositionPlanviewLength <= 0)
                strErr = "planview length of cliff deposition must be greater than 0";
             break;
 
-         case 59:
+         case 60:
             // Height of landward end of talus, as a fraction of cliff elevation
             m_dCliffDepositionHeightFrac = atof(strRH.c_str());
             if (m_dCliffDepositionHeightFrac < 0)
@@ -1761,14 +1796,14 @@ bool CSimulation::bReadRunData(void)
             break;
 
          // ------------------------------------------------------ Other data --------------------------------------------------
-         case 60:
+         case 61:
             // Gravitational acceleration (m2/s)
             m_dG = atof(strRH.c_str());
             if (m_dG <= 0)
                strErr = "gravitational acceleration must be greater than zero";
             break;
 
-         case 61:
+         case 62:
             // Spacing of coastline normals (m)
             m_dCoastNormalAvgSpacing = atof(strRH.c_str());
             if (m_dCoastNormalAvgSpacing == 0)
@@ -1777,7 +1812,7 @@ bool CSimulation::bReadRunData(void)
                strErr = "spacing of coastline normals must be greater than zero";
             break;
 
-         case 62:
+         case 63:
             // Random factor for spacing of normals  [0 to 1, 0 = deterministic]
             m_dCoastNormalRandSpaceFact = atof(strRH.c_str());
             if (m_dCoastNormalRandSpaceFact < 0)
@@ -1786,21 +1821,21 @@ bool CSimulation::bReadRunData(void)
                strErr = "spacing of coastline normals must be less than one";
             break;
 
-         case 63:
+         case 64:
             // Length of coastline normals (m)
             m_dCoastNormalLength = atof(strRH.c_str());
             if (m_dCoastNormalLength <= 0)
                strErr = "length of coastline normals must be greater than zero";
             break;
 
-         case 64:
+         case 65:
             // Maximum number of 'cape' normals
             m_nNaturalCapeNormals = atoi(strRH.c_str());
             if (m_nNaturalCapeNormals < 0)
                strErr = "number of 'cape' normals must be zero or greater";
             break;
 
-         case 65:
+         case 66:
             // Start depth for wave calcs (ratio to deep water wave height)     : 5
             m_dWaveDepthRatioForWaveCalcs = atof(strRH.c_str());
 
@@ -1809,7 +1844,7 @@ bool CSimulation::bReadRunData(void)
             break;
 
          // ----------------------------------------------------- Testing only -------------------------------------------------
-         case 66:
+         case 67:
             // Output profile data?
             strRH = strToLower(&strRH);
 
@@ -1821,7 +1856,7 @@ bool CSimulation::bReadRunData(void)
 
             break;
 
-         case 67:
+         case 68:
             // Numbers of profiles to be saved
             if (m_bOutputProfileData)
             {
@@ -1841,7 +1876,7 @@ bool CSimulation::bReadRunData(void)
             }
             break;
 
-         case 68:
+         case 69:
            // Timesteps to save profile for output
             if (m_bOutputProfileData)
             {
@@ -1861,7 +1896,7 @@ bool CSimulation::bReadRunData(void)
             }
             break;
 
-         case 69:
+         case 70:
             // Output parallel profile data?
             strRH = strToLower(&strRH);
 
@@ -1870,7 +1905,7 @@ bool CSimulation::bReadRunData(void)
                m_bOutputParallelProfileData = true;
             break;
 
-         case 70:
+         case 71:
             // Output erosion potential look-up data?
             strRH = strToLower(&strRH);
 
@@ -1879,7 +1914,7 @@ bool CSimulation::bReadRunData(void)
                m_bOutputLookUpData = true;
             break;
 
-         case 71:
+         case 72:
             // Erode shore platform in alternate direction each timestep?
             strRH = strToLower(&strRH);
 
@@ -2066,5 +2101,158 @@ int CSimulation::nReadShapeFunction()
 //      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
 //   }
 //
+   return RTN_OK;
+}
+
+/*==============================================================================================================================
+
+ Reads the deep water wave time series and initialize vector to store this time step deep water wave height, orientation, Period
+
+==============================================================================================================================*/
+int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
+{
+   // Create an ifstream object
+   ifstream InStream;
+
+   // Try to open the file for input
+   InStream.open(m_strDeepWaterWaveValuesFile.c_str(), ios::in);
+
+   // Did it open OK?
+   if (! InStream.is_open())
+   {
+      // Error: cannot open shape function file for input
+      cerr << ERR << "cannot open " << m_strDeepWaterWaveValuesFile << " for input" << endl;
+      return  RTN_ERR_READ_WAVE_TIME_SERIES;
+   }
+
+   // Opened OK
+   unsigned int nExpectedStations = 0, nExpectedTimeSteps = 0, nRead = 0;
+   string strRec;
+
+   // Read each line avoiding comments of first two lines
+   while (getline(InStream, strRec))
+   {
+      // Trim off leading and trailing whitespace
+      strRec = strTrimLeft(&strRec);
+      strRec = strTrimRight(&strRec);
+
+         
+	 // If it is a blank line or a comment then ignore it
+      if ((! strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
+      {
+         // It isn't so increment counter
+         nRead++;
+
+         // The two first lines contains leading description separated by a colon from the data
+	 if (nRead ==1 || nRead ==2)
+	 {
+	    // Find the colon: note that lines MUST have a colon separating data from leading description portion
+	    size_t nPos = strRec.find(':');
+	    if (nPos == string::npos)
+	    {
+	       // Error: badly formatted line (no colon)
+	       cerr << ERR << "badly formatted line (no ':') in " << m_strDeepWaterWaveValuesFile << endl << "'" << strRec << "'" << endl;
+	       return false;
+	    }
+
+	    if (nPos == strRec.size()-1)
+	    {
+	       // Error: badly formatted line (colon with nothing following)
+	       cerr << ERR << "badly formatted line (nothing following ':') in " << m_strDeepWaterWaveValuesFile << endl << "'" << strRec << "'" << endl;
+	       return false;
+	    }
+
+	    // Strip off leading portion (the bit up to and including the colon)
+	    string strRH = strRec.substr(nPos+1);
+
+	    // Remove leading whitespace
+	    strRH = strTrimLeft(&strRH);
+
+	    // Look for a trailing comment, if found then terminate string at that point and trim off any trailing whitespace
+	    nPos = strRH.rfind(QUOTE1);
+	    if (nPos != string::npos)
+	       strRH = strRH.substr(0, nPos+1);
+
+	    nPos = strRH.rfind(QUOTE2);
+	    if (nPos != string::npos)
+	       strRH = strRH.substr(0, nPos+1);
+
+	    // Remove trailing whitespace
+	    strRH = strTrimRight(&strRH);
+	 
+	    // Read the number of stations on the file
+	    if (nRead==1) nExpectedStations = atoi(strRH.c_str());
+	 
+	    // Check that the number of expected stations is equal to the number of stations on the point shape file
+	    if (nExpectedStations != nNumberStations)
+	    {
+	    // Error: number of points on shape file does not match the number of stations on the wave time series file
+	       cerr << ERR << "number of stations on " << m_strDeepWaterWaveStationsFile << " is " << nNumberStations << " and number of stations on "<<  m_strDeepWaterWaveValuesFile << " is" << nExpectedStations << endl;
+	       return  RTN_ERR_READ_WAVE_TIME_SERIES;
+	    }
+	 
+	    // Read the expected number of time steps on the file
+	    if (nRead==2) nExpectedTimeSteps = atoi(strRH.c_str());
+	 
+	    if ((nRead ==2 ) && (nExpectedTimeSteps < 1))
+	    {
+	       // Error: number of points on shape file does not match the number of stations on the wave time series file
+	       cerr << ERR << "number of time steps on " << m_strDeepWaterWaveValuesFile << " is " << nExpectedTimeSteps << " and must be greater that 1 "<< endl;
+	       return  RTN_ERR_READ_WAVE_TIME_SERIES;
+	    }
+	 } 
+	 // The number of expected stations and time steps are OK so read in each wave attribute for each time step and station
+	 if ((nRead >2 ) && (nExpectedStations == nNumberStations) && nExpectedTimeSteps >= 1)
+	 {
+	    // Split the string, and remove whitespace
+	    vector<string> strTmp = strSplit(&strRec, COMMA);
+	    for (unsigned int i = 0; i < strTmp.size(); i++) // strTmp.size() should be 3 x nExpectedStations
+	       strTmp[i] = strTrim(&strTmp[i]);
+
+	    // Convert to doubles then append the values to the vectors TODO check for floating point validity
+	    for (unsigned int i = 0; i < nExpectedStations; i++)
+	    {
+	       m_VdDeepWaterWavePointHeightTS.push_back(strtod(strTmp[i*nExpectedStations].c_str(), NULL));
+	       m_VdDeepWaterWavePointAngleTS.push_back(strtod(strTmp[i*nExpectedStations+1].c_str(), NULL));
+	       m_VdDeepWaterWavePointPeriodTS.push_back(strtod(strTmp[i*nExpectedStations+2].c_str(), NULL));
+	       
+	       // Check some simple wave input stats
+	       if (m_VdDeepWaterWavePointHeightTS.back()>m_dMaxUserInputWaveHeight)
+		  m_dMaxUserInputWaveHeight = m_VdDeepWaterWavePointHeightTS.back();
+	       if (m_VdDeepWaterWavePointPeriodTS.back() > m_dMaxUserInputWavePeriod)
+		  m_dMaxUserInputWavePeriod = m_VdDeepWaterWavePointPeriodTS.back();
+	    }
+	 }
+      }
+   }
+
+   // Close file
+   InStream.close();
+
+   // Did we read in what we expected?
+   if (m_VdDeepWaterWavePointHeightTS.size() != nExpectedStations*nExpectedTimeSteps)
+   {
+      cout << ERR << "read in " << m_VdDeepWaterWavePointHeightTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nExpectedStations*nExpectedTimeSteps << " values expected" << endl;
+      return RTN_ERR_READ_WAVE_TIME_SERIES;
+   }
+   if (m_VdDeepWaterWavePointAngleTS.size() != nExpectedStations*nExpectedTimeSteps)
+   {
+      cout << ERR << "read in " << m_VdDeepWaterWavePointAngleTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nExpectedStations*nExpectedTimeSteps << " values expected" << endl;
+      return RTN_ERR_READ_WAVE_TIME_SERIES;
+   }
+   if (m_VdDeepWaterWavePointPeriodTS.size() != nExpectedStations*nExpectedTimeSteps)
+   {
+      cout << ERR << "read in " << m_VdDeepWaterWavePointPeriodTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nExpectedStations*nExpectedTimeSteps << " values expected" << endl;
+      return RTN_ERR_READ_WAVE_TIME_SERIES;
+   }
+
+   // We can now initialize the vectors that will store this time step deep water wave values
+   for (unsigned int j = 0; j < nExpectedStations; j++)
+   {
+      m_VdDeepWaterWavePointHeight.push_back(DBL_NODATA);
+      m_VdDeepWaterWavePointAngle.push_back(DBL_NODATA);
+      m_VdDeepWaterWavePointPeriod.push_back(DBL_NODATA);
+   }
+   
    return RTN_OK;
 }

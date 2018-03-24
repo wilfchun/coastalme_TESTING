@@ -1426,7 +1426,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                if (! ACCEPT_SHORT_PROFILES)
                   pProfile->SetTruncated(true);
 
-               LogStream << m_ulIteration << ": profile " << nProfile << " truncated at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+               LogStream << m_ulIteration << ": profile " << nProfile << " truncated at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, HitLand?" << bHitLand << endl;
 
                break;
             }
@@ -1525,7 +1525,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
       bTooShort = true;
       pProfile->SetTooShort(true);
 
-      LogStream << m_ulIteration << ": profile " << nProfile << " from [" << pVIPointsOut->at(0).nGetX() << "][" << pVIPointsOut->at(0).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(0).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(0).nGetY()) << "} to [" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetX() << "][" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(pVIPointsOut->size()-1).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(pVIPointsOut->size()-1).nGetY()) << "} is too short, only " << pVIPointsOut->size() << " points" << endl;
+      LogStream << m_ulIteration << ": profile " << nProfile << " from [" << pVIPointsOut->at(0).nGetX() << "][" << pVIPointsOut->at(0).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(0).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(0).nGetY()) << "} to [" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetX() << "][" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(pVIPointsOut->size()-1).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(pVIPointsOut->size()-1).nGetY()) << "} is too short, only " << pVIPointsOut->size() << " points, HitLand?" << bHitLand << endl;
    }
 }
 

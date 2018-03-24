@@ -146,6 +146,7 @@ char const     PATH_SEPARATOR                                              = '/'
 char const     SPACE                                                       = ' ';
 char const     QUOTE1                                                      = ';';
 char const     QUOTE2                                                      = '#';
+char const     COMMA                                                       = ',';
 
 
 bool const     USE_DEEP_WATER_FOR_SHADOW_LINE                              = true;        // Use deep water wave orintation in determining shadow line orientation?
@@ -404,6 +405,7 @@ int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 58;
 int const      RTN_ERR_CSHORE_ERROR                   = 59;
 int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 60;
 int const      RTN_ERR_ESTIMATED_EROSION_IS_ZERO      = 61;
+int const      RTN_ERR_READ_WAVE_TIME_SERIES          = 62;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                       = -1;
@@ -554,6 +556,7 @@ string const   OUTEXT                                                      = ".o
 string const   LOGEXT                                                      = ".log";
 string const   CSVEXT                                                      = ".csv";
 
+string const   DEEP_WATER_WAVE_STATION_ID                                  = "id";
 string const   DEEP_WATER_WAVE_VALUES_HEIGHT                               = "HEIGHT";
 string const   DEEP_WATER_WAVE_VALUES_ANGLE                                = "ANGLE";
 string const   DEEP_WATER_WAVE_VALUES_PERIOD                               = "PERIOD";

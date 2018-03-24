@@ -392,6 +392,7 @@ private:
       m_strOGRVectorOutputExtension,
       m_strRunName,
       m_strDurationUnits,
+      m_strDeepWaterWaveStationsFile,
       m_strDeepWaterWaveValuesFile;
 
    struct RandState
@@ -422,6 +423,7 @@ private:
 
    vector<int>
       m_VnProfileToSave,
+      m_VnDeepWaterWavePointID,        // ID for deep water wave point = integer that correspond with the columns on wave time series file
       m_VnSavGolIndexCoast;            // Savitzky-Golay shift index for the coastline vector(s)
 
    vector<unsigned long>
@@ -436,9 +438,13 @@ private:
       m_VdSavGolFCGeomProfile,         // Savitzky-Golay filter coefficients for the profile vectors
       m_VdDeepWaterWavePointX,         // X co-ordinate (grid CRS) for deep water wave point
       m_VdDeepWaterWavePointY,         // Y co-ordinate (grid CRS) for deep water wave point
-      m_VdDeepWaterWavePointHeight,    // Wave height at deep water wave point
-      m_VdDeepWaterWavePointAngle,     // Wave orientation at deep water wave point
-      m_VdDeepWaterWavePointPeriod,     // Wave period at deep water wave point
+      m_VdDeepWaterWavePointHeight,    // This time step Wave height at deep water wave point
+      m_VdDeepWaterWavePointAngle,     // This time step Wave orientation at deep water wave point
+      m_VdDeepWaterWavePointPeriod,     //This time step Wave period at deep water wave point
+      m_VdDeepWaterWavePointHeightTS,    // Time series Wave height at deep water wave points
+      m_VdDeepWaterWavePointAngleTS,     // Time series Wave orientation at deep water wave points
+      m_VdDeepWaterWavePointPeriodTS,    // Time series Wave period at deep water wave points
+      
       m_VdTideData;                    // Tide data: one record per timestep, is the change (m) from still water level for that timestep
 
    vector<string>
@@ -500,6 +506,7 @@ private:
    bool bWriteTSFiles(void);
    int nWriteEndRunDetails(void);
    int nReadShapeFunction(void);
+   int nReadWaveTimeSeries(unsigned int const);
    int nReadTideData(void);
    int nSaveProfile(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
    bool bWriteProfileData(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*) const;
