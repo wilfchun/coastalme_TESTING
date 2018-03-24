@@ -2648,11 +2648,20 @@ double CSimulation::dSubtractProfiles(vector<double> const* pdVFirstProfile, vec
 ==============================================================================================================================*/
 void CSimulation::CalcDepthOfClosure(void)
 {
-   double dDeepWaterWaveHeight;
+   double 
+      dDeepWaterWaveHeight,
+      dDeepWaterPeriod;
+      
    if (m_bSingleDeepWaterWaveValues)
+   {
       dDeepWaterWaveHeight = m_dAllCellsDeepWaterWaveHeight;
+      dDeepWaterPeriod = m_dAllCellsDeepWaterWavePeriod;
+   }
    else
+   {
       dDeepWaterWaveHeight = m_dMaxUserInputWaveHeight;   
+      dDeepWaterPeriod     = m_dMaxUserInputWavePeriod;
+   }
    
    // TODO Calculate depth of closure using 'average of the maximum values observed during a typical year'
    //    dL = 2.28 * Hsx − (68.5 * Hsx^2 / (g * Tsx^2))
@@ -2662,7 +2671,7 @@ void CSimulation::CalcDepthOfClosure(void)
    // from Hallermeier, R.J. (1978). Uses for a calculated limit depth to beach erosion. Proc. 16th Coastal Engineering Conf., ASCE, New York. Pp 1493 - 1512
    //
    // For the time being, and since we assume wave height and period constant just use the actual wave height and period to calculate the depth of closure
-   m_dDepthOfClosure = (2.28 * dDeepWaterWaveHeight) - (68.5 * dDeepWaterWaveHeight * dDeepWaterWaveHeight / (m_dG * m_dWavePeriod * m_dWavePeriod));
+   m_dDepthOfClosure = (2.28 * dDeepWaterWaveHeight) - (68.5 * dDeepWaterWaveHeight * dDeepWaterWaveHeight / (m_dG * dDeepWaterPeriod * dDeepWaterPeriod));
 }
 
 

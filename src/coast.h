@@ -67,6 +67,7 @@ private:
       m_VdCurvatureSmooth,          // Smoothed curvature at each point on m_LCoastlineExtCRS
       m_VdDeepWaterWaveHeight,      // The deep water wave height at the end of a normal drawn from each point on m_LCoastlineExtCRS
       m_VdDeepWaterWaveOrientation, // The deep water wave orientation at the end of a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdDeepWaterWavePeriod,      // The deep water wave period at the end of a normal drawn from each point on m_LCoastlineExtCRS
       m_VdBreakingWaveHeight,       // The breaking wave height on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdCoastWaveHeight,          // The wave height at coast point on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdBreakingWaveOrientation,  // The breaking wave orientation on a normal drawn from each point on m_LCoastlineExtCRS
@@ -153,6 +154,9 @@ public:
    
    void SetDeepWaterWaveOrientation(int const, double const);
    double dGetDeepWaterWaveOrientation(int const) const;
+
+   void SetDeepWaterWavePeriod(int const, double const);
+   double dGetDeepWaterWavePeriod(int const) const;
 
    void SetBreakingWaveHeight(int const, double const);
    double dGetBreakingWaveHeight(int const) const;

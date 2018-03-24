@@ -664,12 +664,24 @@ double CGeomCell::dGetDeepWaterWaveOrientation(void) const
    return m_dDeepWaterWaveOrientation;
 }
 
+//! Sets the deep water wave Period on this cell
+void CGeomCell::SetDeepWaterWavePeriod(double const dWavePeriod)
+{
+   m_dDeepWaterWavePeriod = dWavePeriod;
+}
+
+//! Returns the deep water wave period on this cell
+double CGeomCell::dGetDeepWaterWavePeriod(void) const
+{
+   return m_dDeepWaterWavePeriod;
+}
 
 //! Sets wave height to the deep water wave height value, and sets wave orientation to the deep water wave orientation value
 void CGeomCell::SetWaveValuesToDeepWaterWaveValues(void)
 {
    m_dWaveHeight = m_dDeepWaterWaveHeight;
    m_dWaveOrientation = m_dDeepWaterWaveOrientation;
+   m_dWavePeriod = m_dDeepWaterWavePeriod;
 }
 
 

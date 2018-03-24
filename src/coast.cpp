@@ -101,6 +101,7 @@ void CRWCoast::SetCoastlineExtCRS(CGeomLine const* pLCoast)
    m_VdCurvatureSmooth = vector<double>(nLen, DBL_NODATA);
    m_VdDeepWaterWaveHeight = vector<double>(nLen, DBL_NODATA);
    m_VdDeepWaterWaveOrientation = vector<double>(nLen, DBL_NODATA);
+   m_VdDeepWaterWavePeriod = vector<double>(nLen, DBL_NODATA);
    m_VdBreakingWaveHeight = vector<double>(nLen, DBL_NODATA);
    m_VdCoastWaveHeight = vector<double>(nLen, DBL_NODATA);
    m_VdBreakingWaveOrientation = vector<double>(nLen, DBL_NODATA);
@@ -448,6 +449,15 @@ double CRWCoast::dGetDeepWaterWaveOrientation(int const nCoastPoint) const
    return m_VdDeepWaterWaveOrientation[nCoastPoint];
 }
 
+void CRWCoast::SetDeepWaterWavePeriod(int const nCoastPoint, double const dPeriod)
+{
+   m_VdDeepWaterWavePeriod[nCoastPoint] = dPeriod;
+}
+
+double CRWCoast::dGetDeepWaterWavePeriod(int const nCoastPoint) const
+{
+   return m_VdDeepWaterWavePeriod[nCoastPoint];
+}
 
 void CRWCoast::SetBreakingWaveHeight(int const nCoastPoint, double const dHeight)
 {

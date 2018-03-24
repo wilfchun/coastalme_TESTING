@@ -53,7 +53,8 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
       nMaxLayer = 0,
       nNeedGeometry = 0;
    double
-      dMaxVal = DBL_MIN;
+      dMaxVal = DBL_MIN,
+      dMaxPeriodVAl = DBL_MIN; 
    string
       strGISFile,
       strDriverCode,
@@ -217,7 +218,8 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
                // TODO this is too simple CHECK WITH ANDRES
                if (dWaveHeight > dMaxVal)
                   dMaxVal = dWaveHeight;               
-
+	       
+	       // Second get the wave orientation
                nFieldIndex = pOGRFeatureDefn->GetFieldIndex(DEEP_WATER_WAVE_VALUES_ANGLE.c_str());
                if (nFieldIndex == -1)
                {
@@ -230,6 +232,23 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
                double dWaveOrientation = pOGRFeature->GetFieldAsDouble(nFieldIndex);
                m_VdDeepWaterWavePointAngle.push_back(dWaveOrientation);
 
+	       // Third get the wave period
+	       nFieldIndex = pOGRFeatureDefn->GetFieldIndex(DEEP_WATER_WAVE_VALUES_PERIOD.c_str());
+               if (nFieldIndex == -1)
+               {
+                  // Can't find this field in the vector file
+                  cerr << ERR << "cannot find " << DEEP_WATER_WAVE_VALUES_PERIOD << " field in " << strGISFile << ": " << CPLGetLastErrorMsg() << endl;
+                  return RTN_ERR_VECTOR_FILE_READ;
+               }
+
+               // Store the wave orientation for this point, will use it in the spatial interpolation routine later
+               double dWavePeriod = pOGRFeature->GetFieldAsDouble(nFieldIndex);
+               m_VdDeepWaterWavePointPeriod.push_back(dWavePeriod);
+	       
+	       // Save the maximun user input Wave Period
+               if (dWavePeriod > dMaxPeriodVAl)
+                  dMaxPeriodVAl = dWavePeriod;        
+	       
                break;
 
                // TODO others
@@ -244,7 +263,8 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
    switch (nDataItem)
    {
       case (DEEP_WATER_WAVE_VALUES_VEC):
-         m_dMaxUserInputWaveHeight = dMaxVal;         
+         m_dMaxUserInputWaveHeight = dMaxVal;
+	 m_dMaxUserInputWavePeriod = dMaxPeriodVAl;
          
          m_strOGRDWWVDriverCode = pOGRDataSource->GetDriverName();
          m_strOGRDWWVDataType   = "double";

@@ -49,7 +49,8 @@ private:
       m_nNumCoastPoint;             // The coastline point at which this profile hits the coast (not necessarily coincident wih the profile start cell)
    double
       m_dDeepWaterWaveHeight,       // The wave height at the end of the profile
-      m_dDeepWaterWaveOrientation;  // The wave orientation at the end of the profile
+      m_dDeepWaterWaveOrientation,  // The wave orientation at the end of the profile
+      m_dDeepWaterWavePeriod;       // The wave orientation at the end of the profile
 
    vector<CGeom2DIPoint>
       m_VCellInProfile;             // In grid CRS, the integer coords of the cells 'under' this profile. NOTE Point zero is the same as 'cell marked as coastline' in coast object
@@ -137,6 +138,9 @@ public:
    
    void SetDeepWaterWaveOrientation(double const);
    double dGetDeepWaterWaveOrientation(void) const;
+   
+   void SetDeepWaterWavePeriod(double const);
+   double dGetDeepWaterWavePeriod(void) const;
 };
 #endif //PROFILE_H
 

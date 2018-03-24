@@ -469,3 +469,15 @@ double CGeomProfile::dGetDeepWaterWaveOrientation(void) const
 {
    return m_dDeepWaterWaveOrientation;
 }
+
+//! Set the deep-water wave Period for this profile
+void CGeomProfile::SetDeepWaterWavePeriod(double const dWavePeriod)
+{
+   m_dDeepWaterWavePeriod = dWavePeriod;
+}
+
+//! Returns the deep-water wave Period for this profile
+double CGeomProfile::dGetDeepWaterWavePeriod(void) const
+{
+   return m_dDeepWaterWavePeriod;
+}

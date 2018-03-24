@@ -221,12 +221,12 @@ CSimulation::CSimulation(void)
    m_dFinalSWL                                  =
    m_dDeltaSWLPerTimestep                       =
    m_dBreakingWaveHeight                        =
-   m_dWavePeriod                                =
    m_dC_0                                       =
    m_dL_0                                       =
    m_dWaveDepthRatioForWaveCalcs                =
    m_dAllCellsDeepWaterWaveHeight               =
    m_dAllCellsDeepWaterWaveOrientation          =
+   m_dAllCellsDeepWaterWavePeriod               =
    m_dMaxUserInputWaveHeight                    =   
    m_dR                                         =
    m_dD50Fine                                   =

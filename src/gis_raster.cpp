@@ -912,7 +912,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
          strFilePathName.append(RASTER_AVG_WAVE_ORIENTATION_NAME);
          break;
       }
-      
+
       case (RASTER_PLOT_BEACH_PROTECTION):
       {
          strFilePathName.append(RASTER_BEACH_PROTECTION_NAME);
@@ -1078,6 +1078,12 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
       case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
       {
          strFilePathName.append(RASTER_POLYGON_GAIN_OR_LOSS_NAME);
+         break;
+      }
+      
+      case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
+      {
+         strFilePathName.append(RASTER_WAVE_PERIOD_NAME);
          break;
       }
    }
@@ -1402,6 +1408,12 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
                break;
             }
             
+            case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
+            {
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWavePeriod();
+               break;
+            }
+            
             case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
             {
                int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
@@ -1495,6 +1507,11 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
       case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
       {
          strUnits = "cumecs";
+         break;
+      }
+      case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
+      {
+         strUnits = "secs";
          break;
       }
    }
@@ -2481,10 +2498,32 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    // And finally, get rid of the context
    GDALGridContextFree(pContext);   
 
-   // The output from GDALGridCreate() is in dHeightOut and dAngleOut but must be reversed
+    // OK, now create a gridded version of wave period: first create the GDAL context
+   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints, &m_VdDeepWaterWavePointX[0], &m_VdDeepWaterWavePointY[0], &m_VdDeepWaterWavePointPeriod[0], true);   
+   if (pContext == NULL)
+   {
+      return RTN_ERR_GRIDCREATE;
+   }
+   
+   // Now process the context
+   double* dPeriodOut = new double[m_ulNumCells];
+   nRet = GDALGridContextProcess(pContext, 0, m_nXGridMax-1, 0, m_nYGridMax-1, m_nXGridMax, m_nYGridMax, GDT_Float64, dPeriodOut, NULL, NULL);
+   if (nRet == CE_Failure)
+   {
+      delete[] dPeriodOut;
+      
+      return RTN_ERR_GRIDCREATE;
+   }
+   
+   // And finally, get rid of the context
+   GDALGridContextFree(pContext);
+   
+   
+   // The output from GDALGridCreate() is in dHeightOut, dAngleOut and dPeriodOut but must be reversed
    vector<double>
       VdHeight,
-      VdAngle;
+      VdAngle,
+      VdPeriod;
 
    int n = 0;
    for (int nY = m_nYGridMax-1; nY >= 0; nY--)
@@ -2493,6 +2532,7 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
       {
          VdHeight.push_back(dHeightOut[n]);
          VdAngle.push_back(dAngleOut[n]);
+	 VdPeriod.push_back(dPeriodOut[n]);
 //          LogStream << " nX = " << nX << " nY = " << nY << " n = " << n << " dHeightOut[n] = " << dHeightOut[n] << " dAngleOut[n] = " << dAngleOut[n] << endl;
          n++;
       }
@@ -2500,6 +2540,7 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
 
    delete[] dHeightOut;
    delete[] dAngleOut;
+   delete[] dPeriodOut;
 
 //    // TEST ===========================================
 //    string strOutFile = "./testHeight.tif";
@@ -2563,6 +2604,7 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
       {
          m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveHeight(VdHeight[n]);
          m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveOrientation(VdAngle[n]);
+	 m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWavePeriod(VdPeriod[n]);
 
 //          LogStream << " [" << nX << "][" << nY << "] deep water wave height = " << m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight() << " deep water wave angle = " << m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveOrientation() << endl;
          n++;

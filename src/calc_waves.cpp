@@ -75,8 +75,10 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
    double
       dPrevProfileDeepWaterWaveHeight = 0,
       dPrevProfileDeepWaterWaveOrientation = 0,
+      dPrevProfileDeepWaterWavePeriod = 0,
       dNextProfileDeepWaterWaveHeight = 0,
       dNextProfileDeepWaterWaveOrientation = 0,
+      dNextProfileDeepWaterWavePeriod = 0,
       dDist = 0;
       
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
@@ -92,15 +94,18 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
             
             double
                dThisDeepWaterWaveHeight = pProfile->dGetDeepWaterWaveHeight(),
-               dThisDeepWaterWaveOrientation = pProfile->dGetDeepWaterWaveOrientation();
+               dThisDeepWaterWaveOrientation = pProfile->dGetDeepWaterWaveOrientation(),
+               dThisDeepWaterWavePeriod = pProfile->dGetDeepWaterWavePeriod();
                
             m_VCoast[nCoast].SetDeepWaterWaveHeight(nPoint, dThisDeepWaterWaveHeight);
             m_VCoast[nCoast].SetDeepWaterWaveOrientation(nPoint, dThisDeepWaterWaveOrientation);
+	    m_VCoast[nCoast].SetDeepWaterWavePeriod(nPoint, dThisDeepWaterWavePeriod);
             
             // Reset for next time
             nDistFromPrevProfile = 0;
             dPrevProfileDeepWaterWaveHeight = dThisDeepWaterWaveHeight;
-            dPrevProfileDeepWaterWaveOrientation = dThisDeepWaterWaveOrientation;            
+            dPrevProfileDeepWaterWaveOrientation = dThisDeepWaterWaveOrientation;
+	    dPrevProfileDeepWaterWaveHeight = dThisDeepWaterWavePeriod;
             
             // Find the next profile
             nNextProfile = m_VCoast[nCoast].nGetDownCoastProfileNumber(nProfile);
@@ -118,7 +123,8 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
             
             // And the next profile's deep water wave values
             dNextProfileDeepWaterWaveHeight = pNextProfile->dGetDeepWaterWaveHeight();
-            dNextProfileDeepWaterWaveOrientation = pNextProfile->dGetDeepWaterWaveOrientation();            
+            dNextProfileDeepWaterWaveOrientation = pNextProfile->dGetDeepWaterWaveOrientation();
+	    dNextProfileDeepWaterWavePeriod = pNextProfile->dGetDeepWaterWavePeriod();
                         
 //             LogStream << m_ulIteration << ": coast point = " << nPoint << " IS PROFILE START, dThisDeepWaterWaveHeight = " << dThisDeepWaterWaveHeight << ", dThisDeepWaterWaveOrientation = " << dThisDeepWaterWaveOrientation << endl;
          }
@@ -133,10 +139,12 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
                dPrevWeight = (dDist - nDistFromPrevProfile) / dDist,
                dNextWeight = (dDist - nDistToNextProfile) / dDist,
                dThisDeepWaterWaveHeight = (dPrevWeight * dPrevProfileDeepWaterWaveHeight) + (dNextWeight * dNextProfileDeepWaterWaveHeight),
-               dThisDeepWaterWaveOrientation = dKeepWithin360((dPrevWeight * dPrevProfileDeepWaterWaveOrientation) + (dNextWeight * dNextProfileDeepWaterWaveOrientation));
+               dThisDeepWaterWaveOrientation = dKeepWithin360((dPrevWeight * dPrevProfileDeepWaterWaveOrientation) + (dNextWeight * dNextProfileDeepWaterWaveOrientation)),
+               dThisDeepWaterWavePeriod = (dPrevWeight * dPrevProfileDeepWaterWavePeriod) + (dNextWeight * dNextProfileDeepWaterWavePeriod);
                
             m_VCoast[nCoast].SetDeepWaterWaveHeight(nPoint, dThisDeepWaterWaveHeight);
             m_VCoast[nCoast].SetDeepWaterWaveOrientation(nPoint, dThisDeepWaterWaveOrientation);
+	    m_VCoast[nCoast].SetDeepWaterWavePeriod(nPoint, dThisDeepWaterWavePeriod);
             
 //             LogStream << m_ulIteration << ": coast point = " << nPoint << " dThisDeepWaterWaveHeight = " << dThisDeepWaterWaveHeight << " dThisDeepWaterWaveOrientation = " << dThisDeepWaterWaveOrientation << endl;
          }
@@ -287,10 +295,13 @@ int CSimulation::nDoAllPropagateWaves(void)
       for (int nCoastPoint = 0; nCoastPoint < nCoastSize; nCoastPoint++)
       {
          // Equation 4 from Walkden & Hall, 2005
-         double dBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nCoastPoint);
+         double 
+	    dBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nCoastPoint),
+	    dCoastPointWavePeriod = m_VCoast[nCoast].dGetDeepWaterWavePeriod(nCoastPoint);
+	 
          if (dBreakingWaveHeight != DBL_NODATA)
          {
-            double dErosiveWaveForce = pow(dBreakingWaveHeight, WALKDEN_HALL_PARAM_1) * pow(m_dWavePeriod, WALKDEN_HALL_PARAM_2);
+            double dErosiveWaveForce = pow(dBreakingWaveHeight, WALKDEN_HALL_PARAM_1) * pow(dCoastPointWavePeriod, WALKDEN_HALL_PARAM_2);
 
             // Calculate total wave energy at each coast point during this timestep
             double dWaveEnergy = dErosiveWaveForce * m_dTimeStep * 3600;
@@ -337,8 +348,10 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
    
    // Calculate some wave properties based on the wave period following Airy wave theory
-   m_dC_0 = (m_dG * m_dWavePeriod) / (2 * PI);           // Deep water (offshore) wave celerity (m/s)
-   m_dL_0 = m_dC_0 * m_dWavePeriod;                      // Deep water (offshore) wave length (m)
+   double dDeepWaterWavePeriod = pProfile->dGetDeepWaterWavePeriod();
+   
+   m_dC_0 = (m_dG * dDeepWaterWavePeriod) / (2 * PI);           // Deep water (offshore) wave celerity (m/s)
+   m_dL_0 = m_dC_0 * dDeepWaterWavePeriod;                      // Deep water (offshore) wave length (m)
    
    // Only do this for profiles without problems. Still do start- and end-of-coast profiles however
    if (! pProfile->bOKIncStartAndEndOfCoast())
@@ -531,7 +544,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       dWaveToNormalAngle = tMin(dWaveToNormalAngle, 80.0);
       
       // Create the file which will be read by CShore
-      nRet = nCreateCShoreInfile(dCShoreTimeStep, m_dWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, dWaveFriction, &VdProfileDistXY, &VdProfileZ);
+      nRet = nCreateCShoreInfile(dCShoreTimeStep, dDeepWaterWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, dWaveFriction, &VdProfileDistXY, &VdProfileZ);
       if (nRet != RTN_OK)
          return nRet;
       

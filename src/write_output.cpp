@@ -342,11 +342,17 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << " Density of sea water                                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(0) << m_dSeaWaterDensity << " kg/m^3" << endl;
    OutStream << " Initial still water level                                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dOrigSWL << " m" << endl;
    OutStream << " Final still water level                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dFinalSWL << " m" << endl;
-   OutStream << " Wave period                                               \t: " << m_dWavePeriod << " s" << endl;
    if (m_bSingleDeepWaterWaveValues)
    {
       OutStream << " Deep water wave height                                    \t: " << m_dAllCellsDeepWaterWaveHeight << " m" << endl;
       OutStream << " Deep water wave orientation                               \t: " << m_dAllCellsDeepWaterWaveOrientation << " degrees" << endl;
+      OutStream << " Wave period                                               \t: " << m_dAllCellsDeepWaterWavePeriod << " s" << endl;
+   
+   }
+   else
+   {
+      OutStream << " Maximum User input Deep water wave height                 \t: " << m_dMaxUserInputWaveHeight << " m" << endl;
+      OutStream << " Maximum User input Deep waterWave period                  \t: " << m_dMaxUserInputWavePeriod << " s" << endl;
    }
    OutStream << " Start depth for wave calcs (*deep water wave height)      \t: " << m_dWaveDepthRatioForWaveCalcs << endl;
    OutStream << "*Depth of closure                                          \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dDepthOfClosure << " m" << endl;

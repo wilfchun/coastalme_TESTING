@@ -542,7 +542,8 @@ bool CSimulation::bReadRunData(void)
                m_bInterventionHeightSave           =
                m_bShadowZoneCodesSave              = 
                m_bDeepWaterWaveOrientationSave     = 
-               m_bDeepWaterWaveHeightSave          = 
+               m_bDeepWaterWaveHeightSave          =
+               m_bDeepWaterWavePeriodSave          = 
                m_bPolygonUnconsSedUpOrDownDrift    = 
                m_bPolygonUnconssedGainOrLoss       = true;
             }
@@ -721,6 +722,12 @@ bool CSimulation::bReadRunData(void)
                {
                   m_bDeepWaterWaveHeightSave = true;
                   strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_HEIGHT_NAME);
+               }
+               
+               if (strRH.find(RASTER_DEEP_WATER_WAVE_PERIOD_NAME) != string::npos)
+               {
+                  m_bDeepWaterWavePeriodSave = true;
+                  strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_PERIOD_NAME);
                }
                
                if (strRH.find(RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME) != string::npos)
@@ -1456,13 +1463,6 @@ bool CSimulation::bReadRunData(void)
             break;
 
          case 32:
-            // Wave period (sec)
-            m_dWavePeriod = atof(strRH.c_str());
-            if (m_dWavePeriod <= 0)
-               strErr = "wave period must be greater than zero";
-            break;
-
-         case 33:
             // Deep water wave height (m) or a file of point vectors giving deep water wave height (m) and orientation (for units, see below)
             // TODO need option for multiple files
             if (isdigit(strRH.at(0)))    // if start with a number is a single value, if a file, filename must NOT start with number
@@ -1508,7 +1508,7 @@ bool CSimulation::bReadRunData(void)
             }
             break;
 
-         case 34:
+         case 33:
             // Deep water wave orientation in input CRS: this is the oceanographic convention i.e. direction TOWARDS which the waves move (in degrees clockwise from north)
             if (m_bSingleDeepWaterWaveValues)
             {
@@ -1521,6 +1521,18 @@ bool CSimulation::bReadRunData(void)
             }
             break;
 
+	 case 34:
+            // Wave period (sec)
+	    if (m_bSingleDeepWaterWaveValues)
+            {
+	       // Only read this if we also have just a single value of wave height for all deep water cells
+	       m_dAllCellsDeepWaterWavePeriod = atof(strRH.c_str());
+	       if (m_dAllCellsDeepWaterWavePeriod <= 0)
+		  strErr = "wave period must be greater than zero";
+	    }
+            break;
+	    
+	    
           case 35:
              // Tide data file (can be blank)
              if (! strRH.empty())

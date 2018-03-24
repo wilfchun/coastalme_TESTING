@@ -759,11 +759,13 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    
    double
       dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetDeepWaterWaveHeight(),
-      dDeepWaterWaveOrientation = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetDeepWaterWaveOrientation();
+      dDeepWaterWaveOrientation = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetDeepWaterWaveOrientation(),
+      dDeepWaterWavePeriod = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetDeepWaterWavePeriod();
    
    // And store them for this profile
    pProfile->SetDeepWaterWaveHeight(dDeepWaterWaveHeight);
-   pProfile->SetDeepWaterWaveOrientation(dDeepWaterWaveOrientation);   
+   pProfile->SetDeepWaterWaveOrientation(dDeepWaterWaveOrientation);
+   pProfile->SetDeepWaterWavePeriod(dDeepWaterWavePeriod);      
 
    // Create the profile's CGeomMultiLine then set nProfile as the only co-incident profile of the only line segment
    pProfile->AppendLineSegment();
@@ -1335,11 +1337,13 @@ int CSimulation::nPutAllProfilesOntoGrid(void)
          // Get the deep water wave height and orientation values at the end of the profile
          double
             dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetDeepWaterWaveHeight(),
-            dDeepWaterWaveOrientation = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetDeepWaterWaveOrientation();
+            dDeepWaterWaveOrientation = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetDeepWaterWaveOrientation(),
+            dDeepWaterWavePeriod = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetDeepWaterWavePeriod();
             
          // And store them for this profile
          pProfile->SetDeepWaterWaveHeight(dDeepWaterWaveHeight);
          pProfile->SetDeepWaterWaveOrientation(dDeepWaterWaveOrientation);
+	 pProfile->SetDeepWaterWavePeriod(dDeepWaterWavePeriod);
       }
    }
 

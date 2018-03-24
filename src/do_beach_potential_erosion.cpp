@@ -94,6 +94,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
          double
             dAvgBreakingWaveHeight = 0,
             dAvgBreakingWaveOrientation = 0,
+	    dAvgDeepWaterWavePeriod = 0,
             dAvgFluxOrientation = 0,
             dAvgBreakingDepth = 0,
             dAvgBreakingDist = 0;
@@ -104,6 +105,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
             nCoastPoints++;
             dAvgFluxOrientation += m_VCoast[nCoast].dGetFluxOrientation(nCoastPoint);
 
+	    
             double dThisBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nCoastPoint);
             if (dThisBreakingWaveHeight != DBL_NODATA)
             {
@@ -112,8 +114,11 @@ void CSimulation::DoAllPotentialBeachErosion(void)
                dAvgBreakingWaveHeight += dThisBreakingWaveHeight;
 
                double dThisBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nCoastPoint);
+	       double dThisDeepWaterWavePeriod = m_VCoast[nCoast].dGetDeepWaterWavePeriod(nCoastPoint);
+	       
                dAvgBreakingWaveOrientation += dThisBreakingWaveOrientation;
-
+	       dAvgDeepWaterWavePeriod     += dThisDeepWaterWavePeriod; 
+	       
                dAvgBreakingDepth += m_VCoast[nCoast].dGetDepthOfBreaking(nCoastPoint);
 
                dAvgBreakingDist += (m_VCoast[nCoast].nGetBreakingDistance(nCoastPoint) * m_dCellSide);
@@ -128,6 +133,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
             // Only calculate sediment movement if the polygon has at least one coast point in its coastline segment which is in the active zone
             dAvgBreakingWaveHeight /= nActiveZonePoints;
             dAvgBreakingWaveOrientation /= nActiveZonePoints;
+	    dAvgDeepWaterWavePeriod /= nActiveZonePoints;
             dAvgBreakingDepth /= nActiveZonePoints;
             dAvgBreakingDist /= nActiveZonePoints;
 
@@ -189,7 +195,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
                   double dD50 = pPolygon->dGetAvgUnconsD50();
                   if (dD50 > 0)
                      // Note that we use a calibration constant here (m_dKamphuis)
-                     dImmersedWeightTransport = m_dKamphuis * 2.33 * pow(m_dWavePeriod, 1.5) * pow(dBeachSlope, 0.75) * pow(dD50, -0.25) * pow(dAvgBreakingWaveHeight, 2) * pow(sin((PI / 180) * 2 * dThetaBr), 0.6);
+                     dImmersedWeightTransport = m_dKamphuis * 2.33 * pow(dAvgDeepWaterWavePeriod, 1.5) * pow(dBeachSlope, 0.75) * pow(dD50, -0.25) * pow(dAvgBreakingWaveHeight, 2) * pow(sin((PI / 180) * 2 * dThetaBr), 0.6);
                }
             }
 

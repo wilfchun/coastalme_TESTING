@@ -1124,6 +1124,12 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
          return false;
    }
    
+   if (m_bDeepWaterWavePeriodSave)
+   {
+      if (! bWriteRasterGISFloat(RASTER_PLOT_DEEP_WATER_WAVE_PERIOD, &RASTER_PLOT_DEEP_WATER_WAVE_PERIOD_TITLE))
+         return false;
+   }
+   
    if (m_bPolygonUnconsSedUpOrDownDrift)
    {
       if (! bWriteRasterGISInt(RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT, &RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT_TITLE))

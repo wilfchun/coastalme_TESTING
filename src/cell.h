@@ -60,9 +60,11 @@ private:
       m_dWaveHeight,                         // Wave height
       m_dTotWaveHeight,                      // Total wave height (m) (used to calc average)
       m_dWaveOrientation,                    // Wave orientation
+      m_dWavePeriod,                         // Wave period (s)
       m_dTotWaveOrientation,                 // Total wave orientation  (used to calc average)
       m_dDeepWaterWaveHeight,                // Wave height if this is a deep water cell
       m_dDeepWaterWaveOrientation,           // Wave orientation if this is a deep water cell
+      m_dDeepWaterWavePeriod,		     // Wave period if this is a deep water cell
       m_dBeachProtectionFactor,              // Only meaningful if in zone of platform erosion. 0 is fully protected, 1 = no protection
       m_dSuspendedSediment,                  // Suspended sediment as depth equivalent (m)
       m_dTotSuspendedSediment,               // Total depth of suspended sediment (m) since simulation start (used to calc average)
@@ -153,11 +155,16 @@ public:
    void SetWaveOrientation(double const);
    double dGetWaveOrientation(void) const;
    double dGetTotWaveOrientation(void) const;
+   void SetWavePeriod(double const);
+   double dGetWavePeriod(void) const;
+   
    
    void SetDeepWaterWaveHeight(double const);
    double dGetDeepWaterWaveHeight(void) const;
    void SetDeepWaterWaveOrientation(double const);
-   double dGetDeepWaterWaveOrientation(void) const;   
+   double dGetDeepWaterWaveOrientation(void) const;
+   void SetDeepWaterWavePeriod(double const);
+   double dGetDeepWaterWavePeriod(void) const;
    
    void SetWaveValuesToDeepWaterWaveValues(void);
 

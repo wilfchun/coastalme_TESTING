@@ -56,7 +56,8 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
          // Update accumulated wave energy for the coastal landform object
          double 
             dWaveHeightAtCoast = m_VCoast[i].dGetCoastWaveHeight(j),
-            dWaveErosiveForce = pow(dWaveHeightAtCoast, WALKDEN_HALL_PARAM_1) * pow(m_dWavePeriod, WALKDEN_HALL_PARAM_2),
+            dDeepWaterWavePeriod = m_VCoast[i].dGetDeepWaterWavePeriod(j),
+            dWaveErosiveForce = pow(dWaveHeightAtCoast, WALKDEN_HALL_PARAM_1) * pow(dDeepWaterWavePeriod, WALKDEN_HALL_PARAM_2),
             dWaveEnergy = dWaveErosiveForce * m_dTimeStep * 3600;
     
 //          assert(bIsFinite(dWaveEnergy));

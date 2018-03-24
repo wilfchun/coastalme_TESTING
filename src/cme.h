@@ -290,6 +290,7 @@ int const      RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT                  = 30;
 int const      RASTER_PLOT_COAST                                           = 32;
 int const      RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT                          = 48;
 int const      RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION                     = 47;
+int const      RASTER_PLOT_DEEP_WATER_WAVE_PERIOD                          = 51;
 int const      RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT                      = 25;
 int const      RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT                    = 28;
 int const      RASTER_PLOT_INTERVENTION_CLASS                              = 21;
@@ -555,6 +556,7 @@ string const   CSVEXT                                                      = ".c
 
 string const   DEEP_WATER_WAVE_VALUES_HEIGHT                               = "HEIGHT";
 string const   DEEP_WATER_WAVE_VALUES_ANGLE                                = "ANGLE";
+string const   DEEP_WATER_WAVE_VALUES_PERIOD                               = "PERIOD";
 
 // GIS raster output user codes
 string const   RASTER_ALL_OUTPUT_CODE                                      = "all";
@@ -568,6 +570,7 @@ string const   RASTER_INUNDATION_MASK_NAME                                 = "in
 string const   RASTER_WAVE_HEIGHT_NAME                                     = "wave_height";
 string const   RASTER_AVG_WAVE_HEIGHT_NAME                                 = "avg_wave_height";
 string const   RASTER_WAVE_ORIENTATION_NAME                                = "wave_orientation";
+string const   RASTER_WAVE_PERIOD_NAME                                     = "wave_period";
 string const   RASTER_AVG_WAVE_ORIENTATION_NAME                            = "avg_wave_orientation";
 string const   RASTER_BEACH_MASK_NAME                                      = "beach_mask";
 string const   RASTER_BEACH_PROTECTION_NAME                                = "beach_protection";
@@ -606,6 +609,7 @@ string const   RASTER_SHADOW_ZONE_NAME                                     = "sh
 string const   RASTER_SHADOW_DOWNDRIFT_ZONE_NAME                           = "shadow_downdrift_zones";
 string const   RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME                     = "deep_water_wave_orientation";
 string const   RASTER_DEEP_WATER_WAVE_HEIGHT_NAME                          = "deep_water_wave_height";
+string const   RASTER_DEEP_WATER_WAVE_PERIOD_NAME                          = "deep_water_wave_period";
 string const   RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME                    = "polygon_updrift_or_downdrift";
 string const   RASTER_POLYGON_GAIN_OR_LOSS_NAME                            = "polygon_gain_or_loss";
 
@@ -628,6 +632,7 @@ string const   RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT_TITLE            = "Un
 string const   RASTER_PLOT_COAST_TITLE                                     = "Rasterized coastline";
 string const   RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE                    = "Deep water wave height";
 string const   RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE               = "Deep water wave orientation";
+string const   RASTER_PLOT_DEEP_WATER_WAVE_PERIOD_TITLE                    = "Deep water wave period";
 string const   RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT_TITLE                = "Consolidated fine sediment depth";
 string const   RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT_TITLE              = "Unconsolidated fine sediment depth";
 string const   RASTER_PLOT_INTERVENTION_CLASS_TITLE                        = "Intervention class";

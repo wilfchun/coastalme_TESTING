@@ -111,6 +111,7 @@ private:
       m_bShadowZoneCodesSave,
       m_bDeepWaterWaveOrientationSave,
       m_bDeepWaterWaveHeightSave,
+      m_bDeepWaterWavePeriodSave,
       m_bPolygonUnconsSedUpOrDownDrift,
       m_bPolygonUnconssedGainOrLoss,
       m_bSaveRegular,
@@ -237,14 +238,15 @@ private:
       m_dMinSWL,
       m_dMaxSWL,
       m_dBreakingWaveHeight,
-      m_dWavePeriod,
       m_dC_0,                          // Deep water wave speed (m/s)
       m_dL_0,                          // Deep water wave length (m)
       m_dWaveDepthRatioForWaveCalcs,
       m_dBreakingWaveHeightDeptRatio,
       m_dAllCellsDeepWaterWaveHeight,
       m_dAllCellsDeepWaterWaveOrientation,
+      m_dAllCellsDeepWaterWavePeriod,
       m_dMaxUserInputWaveHeight,
+      m_dMaxUserInputWavePeriod,     // Used to constrain Depth of closure 
       m_dR,
       m_dD50Fine,
       m_dD50Sand,
@@ -436,6 +438,7 @@ private:
       m_VdDeepWaterWavePointY,         // Y co-ordinate (grid CRS) for deep water wave point
       m_VdDeepWaterWavePointHeight,    // Wave height at deep water wave point
       m_VdDeepWaterWavePointAngle,     // Wave orientation at deep water wave point
+      m_VdDeepWaterWavePointPeriod,     // Wave period at deep water wave point
       m_VdTideData;                    // Tide data: one record per timestep, is the change (m) from still water level for that timestep
 
    vector<string>
