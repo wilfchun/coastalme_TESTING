@@ -170,8 +170,8 @@ void CSimulation::WriteStartRunDetails(void)
       }
    }
    OutStream << endl;
+   
    OutStream << " Grid edge(s) to omit when searching for coastline         \t: " << (m_bOmitSearchNorthEdge ? "N" : "") << (m_bOmitSearchSouthEdge ? "S" : "") << (m_bOmitSearchWestEdge ? "W" : "") << (m_bOmitSearchEastEdge ? "E" : "") << endl;
-   OutStream << endl;
 
    if (m_nCoastSmooth != SMOOTH_NONE)
    {
@@ -207,7 +207,6 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << "*Grid area                                                 \t: " << m_dExtCRSGridArea << " m^2" << endl;
    OutStream << setiosflags(ios::fixed) << setprecision(2);
    OutStream << "*Grid area                                                 \t: " << m_dExtCRSGridArea * 1e-6 << " km^2" << endl;
-   OutStream << endl;
 
    if (! m_strInitialLandformFile.empty())
    {
@@ -251,7 +250,10 @@ void CSimulation::WriteStartRunDetails(void)
 
    for (int i = 0; i < m_nLayers; i++)
    {
-      OutStream << " Layer " << i << (i == 0 ? "(Top)" : "") << (i == m_nLayers-1 ? "(Bottom)" : "") << endl;
+      if (m_nLayers == 1)
+         OutStream << " Only one layer" << endl;
+      else
+         OutStream << " Layer " << i << (i == 0 ? "(Top)" : "") << (i == m_nLayers-1 ? "(Bottom)" : "") << endl;
 
       if (! m_VstrInitialFineUnconsSedimentFile[i].empty())
       {
@@ -322,11 +324,15 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << " None" << endl;
    else
    {
-      OutStream << " Deep water wave height and orientation file               \t: " << m_strDeepWaterWaveValuesFile << endl;
-      OutStream << " GDAL/OGR Deep water wave values file driver code          \t: " << m_strOGRDWWVDriverCode << endl;
-      OutStream << " GDAL/OGR Deep water wave values file data type            \t: " << m_strOGRDWWVDataType << endl;
-      OutStream << " GDAL/OGR Deep water wave values file geometry             \t: " << m_strOGRDWWVGeometry << endl;
-      OutStream << endl;
+      
+      OutStream << " Deep water wave stations shapefile                        \t: " << m_strDeepWaterWaveStationsFile << endl;
+      OutStream << " GDAL/OGR deep water wave stations shapefile driver code   \t: " << m_strOGRDWWVDriverCode << endl;
+      OutStream << " GDAL/OGR deep water wave stations shapefile data type     \t: " << m_strOGRDWWVDataType << endl;
+      OutStream << " GDAL/OGR deep water wave stations shapefile geometry      \t: " << m_strOGRDWWVGeometry << endl;
+      OutStream << " Deep water wave values file                               \t: " << m_strDeepWaterWaveValuesFile << endl;
+      
+      if (m_dWaveDataWrapHours > 0)
+         OutStream << " Deep water wave values will wrap every " << m_dWaveDataWrapHours << " hours" << endl;
    }
    OutStream << endl;
 
@@ -1033,6 +1039,37 @@ int CSimulation::nWriteEndRunDetails(void)
    OutStream << "Run ended at " << put_time(localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;
    OutStream << "Time simulated: " << strDispSimTime(m_dSimDuration) << endl << endl;
 
+   // Write to log file
+   LogStream << "END OF RUN ================================================================================================" << endl << endl;
+   
+   LogStream << "ERRORS" << endl;
+   LogStream << "Erosion error = " << m_ldGTotMassBalanceErosionError << " m^3" << endl;
+   LogStream << "Deposition error = " << m_ldGTotMassBalanceDepositionError << " m^3" << endl;
+   LogStream << endl;
+   
+   LogStream << "ALL-PROCESS TOTALS" << endl;
+   LogStream << "Total sediment eroded (all processes) = " << dActualTotalEroded * m_dCellArea << " m^3" << endl;
+   
+   LogStream << "Total sediment deposited and in suspension (all processes) = " << dTotalDepositedAndSuspension * m_dCellArea << " m^3" << endl;
+   
+   LogStream << "Total sediment lost from grid (all processes) = " << dTotalLost * m_dCellArea << " m^3" << endl;
+   LogStream << "                                              = " << dTotalLost * m_dCellArea / m_dSimDuration << " m^3/hour" << endl;
+   LogStream << setiosflags(ios::fixed) << setprecision(4);   
+   LogStream << "                                              = " << dTotalLost * m_dCellArea / (m_dSimDuration * 3600) << " m^3/sec" << endl << endl;
+   LogStream << setiosflags(ios::fixed) << setprecision(2);   
+   
+   LogStream << "NOTE: grid edge option is ";
+   if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
+      LogStream << "CLOSED, therefore values above are for fine sediment only";
+   else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_OPEN)
+      LogStream << "OPEN, therefore values above are for all sediment size classes";
+   else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_RECIRCULATE)
+      LogStream << "RE-CIRCULATING, therefore values above are for all sediment size classes";
+   LogStream << endl;
+   
+   LogStream << "Eroded + lost = " << dLHS * m_dCellArea << " m^3" << endl;
+   LogStream << "Deposited + suspension = " << dRHS * m_dCellArea << " m^3" << endl << endl;
+   
    // Output averages for on-profile and between-profile potential shore platform erosion, ideally these are roughly equal
    LogStream << setiosflags(ios::fixed);
    LogStream << endl;

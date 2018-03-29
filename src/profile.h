@@ -50,7 +50,7 @@ private:
    double
       m_dDeepWaterWaveHeight,       // The wave height at the end of the profile
       m_dDeepWaterWaveOrientation,  // The wave orientation at the end of the profile
-      m_dDeepWaterWavePeriod;       // The wave orientation at the end of the profile
+      m_dDeepWaterWavePeriod;       // The wave period at the end of the profile
 
    vector<CGeom2DIPoint>
       m_VCellInProfile;             // In grid CRS, the integer coords of the cells 'under' this profile. NOTE Point zero is the same as 'cell marked as coastline' in coast object

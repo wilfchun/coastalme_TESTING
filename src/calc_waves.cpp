@@ -61,7 +61,7 @@ using std::stack;
 
 /*===============================================================================================================================
 
- Give every coast point a value for deep water wave height and direction TODO this may not be realistic, may need to use end-of-profile value instead (how?)
+ Give every coast point a value for deep water wave height and direction TODO This may not be realistic, maybe better to use end-of-profile value instead (how?)
 
 ===============================================================================================================================*/
 int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
@@ -99,13 +99,13 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
                
             m_VCoast[nCoast].SetDeepWaterWaveHeight(nPoint, dThisDeepWaterWaveHeight);
             m_VCoast[nCoast].SetDeepWaterWaveOrientation(nPoint, dThisDeepWaterWaveOrientation);
-	    m_VCoast[nCoast].SetDeepWaterWavePeriod(nPoint, dThisDeepWaterWavePeriod);
+            m_VCoast[nCoast].SetDeepWaterWavePeriod(nPoint, dThisDeepWaterWavePeriod);
             
             // Reset for next time
             nDistFromPrevProfile = 0;
             dPrevProfileDeepWaterWaveHeight = dThisDeepWaterWaveHeight;
             dPrevProfileDeepWaterWaveOrientation = dThisDeepWaterWaveOrientation;
-	    dPrevProfileDeepWaterWaveHeight = dThisDeepWaterWavePeriod;
+            dPrevProfileDeepWaterWavePeriod = dThisDeepWaterWavePeriod;
             
             // Find the next profile
             nNextProfile = m_VCoast[nCoast].nGetDownCoastProfileNumber(nProfile);
@@ -124,7 +124,7 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
             // And the next profile's deep water wave values
             dNextProfileDeepWaterWaveHeight = pNextProfile->dGetDeepWaterWaveHeight();
             dNextProfileDeepWaterWaveOrientation = pNextProfile->dGetDeepWaterWaveOrientation();
-	    dNextProfileDeepWaterWavePeriod = pNextProfile->dGetDeepWaterWavePeriod();
+            dNextProfileDeepWaterWavePeriod = pNextProfile->dGetDeepWaterWavePeriod();
                         
 //             LogStream << m_ulIteration << ": coast point = " << nPoint << " IS PROFILE START, dThisDeepWaterWaveHeight = " << dThisDeepWaterWaveHeight << ", dThisDeepWaterWaveOrientation = " << dThisDeepWaterWaveOrientation << endl;
          }
@@ -144,7 +144,7 @@ int CSimulation::nSetAllCoastpointDeepWaterWaveValues(void)
                
             m_VCoast[nCoast].SetDeepWaterWaveHeight(nPoint, dThisDeepWaterWaveHeight);
             m_VCoast[nCoast].SetDeepWaterWaveOrientation(nPoint, dThisDeepWaterWaveOrientation);
-	    m_VCoast[nCoast].SetDeepWaterWavePeriod(nPoint, dThisDeepWaterWavePeriod);
+            m_VCoast[nCoast].SetDeepWaterWavePeriod(nPoint, dThisDeepWaterWavePeriod);
             
 //             LogStream << m_ulIteration << ": coast point = " << nPoint << " dThisDeepWaterWaveHeight = " << dThisDeepWaterWaveHeight << " dThisDeepWaterWaveOrientation = " << dThisDeepWaterWaveOrientation << endl;
          }
@@ -288,16 +288,16 @@ int CSimulation::nDoAllPropagateWaves(void)
       for (int n = 0; n < nNumProfiles-1; n++)
       InterpolateWavePropertiesToCoastline(nCoast, n, nNumProfiles);
       
-      InterpolateWavePropertiesToCoastlineCells(nCoast);
-      
+      // And do the same for the coastline cells
+      InterpolateWavePropertiesToCoastlineCells(nCoast);      
 
       // Calculate wave energy at breaking for every point on the coastline
       for (int nCoastPoint = 0; nCoastPoint < nCoastSize; nCoastPoint++)
       {
          // Equation 4 from Walkden & Hall, 2005
          double 
-	    dBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nCoastPoint),
-	    dCoastPointWavePeriod = m_VCoast[nCoast].dGetDeepWaterWavePeriod(nCoastPoint);
+            dBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nCoastPoint),
+            dCoastPointWavePeriod = m_VCoast[nCoast].dGetDeepWaterWavePeriod(nCoastPoint);
 	 
          if (dBreakingWaveHeight != DBL_NODATA)
          {
@@ -569,15 +569,15 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          strOYVELO = "OYVELO",
          strOPARAM = "OPARAM";
       
-      nRet = nReadCShoreOutput(&strOSETUP, 4, 4, &VdProfileDistXY, &VdFreeSurfaceStd);
+      nRet = nReadCShoreOutput(nProfile, &strOSETUP, 4, 4, &VdProfileDistXY, &VdFreeSurfaceStd);
       if (nRet != RTN_OK)
          return nRet;
       
-      nRet = nReadCShoreOutput(&strOYVELO, 4, 2, &VdProfileDistXY, &VdSinWaveAngleRadians);
+      nRet = nReadCShoreOutput(nProfile, &strOYVELO, 4, 2, &VdProfileDistXY, &VdSinWaveAngleRadians);
       if (nRet != RTN_OK)
          return nRet;
       
-      nRet = nReadCShoreOutput(&strOPARAM, 4, 3, &VdProfileDistXY, &VdFractionBreakingWaves);
+      nRet = nReadCShoreOutput(nProfile, &strOPARAM, 4, 3, &VdProfileDistXY, &VdFractionBreakingWaves);
       if (nRet != RTN_OK)
          return nRet;
       
@@ -871,7 +871,7 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
  The CShore lookup reads a CShore output file and creates a vector holding interpolated values. The interpolation may be simple linear or a more advanced hermite cubic method
  
 ==============================================================================================================================*/
-int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>* pVdMyInterpolatedValues)
+int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>* pVdMyInterpolatedValues)
 {
    // Select the interpolation method to be used: CSHORE_INTERPOLATION_HERMITE_CUBIC seems to work better for spit growth
 //    int nInterpolationMethod = CSHORE_INTERPOLATION_LINEAR;
@@ -885,7 +885,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
    if (! InStream.is_open())
    {
       // Error: cannot open CShore file for input
-      LogStream << m_ulIteration << ": " << ERR << "cannot open " << *strCShoreFilename << " for input" << endl;
+      LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", cannot open " << *strCShoreFilename << " for input" << endl;
       
       return RTN_ERR_CSHORE_OUTPUT_FILE;
    }
@@ -906,23 +906,32 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
       
       if (n == 0)
       {
-         // The header line
+         // Read in the header line
          vector<string> VstrItems = strSplit(&strLineIn, SPACE);
          nExpectedRows = stoi(VstrItems[1].c_str());
+         
+         if (nExpectedRows < 2)
+         {
+            // Error: cannot interpolate values if we have only one value
+            LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", only " << nExpectedRows << " CShore output rows in file " << *strCShoreFilename << endl;
+            
+            return RTN_ERR_CSHORE_OUTPUT_FILE;
+         }   
       }
       else
       {
-         // The data
+         // Read in the data
          vector<string> VstrItems = strSplit(&strLineIn, SPACE);
          
          int nCols = VstrItems.size();         
          if (nCols != nExpectedColumns)
          {
             // Error: did not get nExpectedColumns CShore output columns
-            LogStream << m_ulIteration << ": " << ERR << "expected " << nExpectedColumns << " CShore output columns but read " << nCols << " columns from header section of file " << *strCShoreFilename << endl;
+            LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", expected " << nExpectedColumns << " CShore output columns but read " << nCols << " columns from header section of file " << *strCShoreFilename << endl;
             
             return RTN_ERR_CSHORE_OUTPUT_FILE;        
          }
+         
          // Number of columns is OK
          VdXYDistCShore.push_back(atof(VstrItems[0].c_str()));         
          VdValuesCShore.push_back(atof(VstrItems[nCShorecolumn-1].c_str()));
@@ -934,7 +943,7 @@ int CSimulation::nReadCShoreOutput(string const* strCShoreFilename, int const nE
    if (nReadRows != nExpectedRows)
    {
       // Error: did not get nExpectedRows CShore output rows
-      LogStream << m_ulIteration << ": " << ERR << "expected " << nExpectedRows << " CShore output rows, but read " << nReadRows << " rows from file " << *strCShoreFilename << endl;
+      LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", expected " << nExpectedRows << " CShore output rows, but read " << nReadRows << " rows from file " << *strCShoreFilename << endl;
       
       return RTN_ERR_CSHORE_OUTPUT_FILE;
    }

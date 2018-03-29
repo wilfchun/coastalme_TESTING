@@ -2170,8 +2170,11 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_NO_CELL_UNDER_COASTLINE:
       strErr = "Could not find cell under coastline";
       break;
-   case RTN_ERR_ESTIMATED_EROSION_IS_ZERO:
-      strErr = "Estimated erosion on polygon is zero";
+   case RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA:
+      strErr = "opening deep sea wave values file";
+      break;
+   case RTN_ERR_READ_DEEP_WATER_WAVE_DATA:
+      strErr = "reading deep sea wave values file";
       break;
    default:
       // should never get here

@@ -106,6 +106,7 @@ CSimulation::CSimulation(void)
    m_bShadowDowndriftBoundarySave                  =
    m_bDeepWaterWaveOrientationSave                 =
    m_bDeepWaterWaveHeightSave                      =
+   m_bDeepWaterWavePeriodSave                      =
    m_bPolygonUnconsSedUpOrDownDrift                =
    m_bPolygonUnconssedGainOrLoss                   =
    m_bSeaAreaTS                                    =
@@ -228,6 +229,7 @@ CSimulation::CSimulation(void)
    m_dAllCellsDeepWaterWaveOrientation          =
    m_dAllCellsDeepWaterWavePeriod               =
    m_dMaxUserInputWaveHeight                    =   
+   m_dMaxUserInputWavePeriod                    =
    m_dR                                         =
    m_dD50Fine                                   =
    m_dD50Sand                                   =
@@ -292,7 +294,8 @@ CSimulation::CSimulation(void)
    m_dCoastNormalRandSpaceFact                      =
    m_dDeanProfileStartAboveSWL                      = 
    m_dAccumulatedSeaLevelChange                     = 
-   m_dBreakingWaveHeightDeptRatio                   = 0;
+   m_dBreakingWaveHeightDeptRatio                   = 
+   m_dWaveDataWrapHours                             = 0;
 
    m_dMinSWL                                    = DBL_MAX;
    m_dMaxSWL                                    = DBL_MIN;

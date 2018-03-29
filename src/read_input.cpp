@@ -32,6 +32,9 @@ using std::cerr;
 using std::endl;
 using std::ios;
 
+#include <string>
+using std::to_string;
+
 #include "cme.h"
 #include "simulation.h"
 #include <cmath>
@@ -1464,22 +1467,20 @@ bool CSimulation::bReadRunData(void)
 
          case 32:
             // Deep water wave height (m) or a file of point vectors giving deep water wave height (m) and orientation (for units, see below)
-            // TODO need option for multiple files
-            if (isdigit(strRH.at(0)))    // if start with a number is a single value, if a file, filename must NOT start with number
+            if (isdigit(strRH.at(0)))        // If this starts with a number then is a single value, otherwise is a filename. Note that filename must not start with number
             {
                // Just one value of wave height for all deep water cells
                m_bSingleDeepWaterWaveValues = true;
 
                m_dAllCellsDeepWaterWaveHeight = atof(strRH.c_str());
+               
                if (m_dAllCellsDeepWaterWaveHeight <= 0)
                   strErr = "deep water wave height must be greater than zero";
             }
             else
             {
-               // We are reading deep water wave height and deep water wave orientation from two files
-	       // This first file is a point shape file with the location of the buoys and integer ID for each one
-               m_bSingleDeepWaterWaveValues = false;
-               
+               // We are reading deep water wave height and deep water wave orientation from two files. This first file is a point shape file with the location of the buoys and integer ID for each one
+               m_bSingleDeepWaterWaveValues = false;               
                
                if (strRH.empty())
                {
@@ -1507,15 +1508,14 @@ bool CSimulation::bReadRunData(void)
             }
             break;
 
-	 case 33:
-	    // Deep water wave height Time series file:
-	    if (!m_bSingleDeepWaterWaveValues)
+         case 33:
+            // Deep water wave height time series file
+            if (! m_bSingleDeepWaterWaveValues)
             {
-	       // Only read this if we have a file for wave height points
-	       // For each point at m_strDeepWaterWaveValuesFile a triad of wave height, orientation and period for each time step
-	       if (strRH.empty())
+               // Only read this if we have a file for wave height points. Each point in m_strDeepWaterWaveValuesFile is a triad of wave height, orientation and period for each time step
+               if (strRH.empty())
                {
-                  strErr = "deep water wave height time series filename missing";
+                  strErr = "filename missing for deep water wave height time series";
                   break;
                }
 
@@ -1536,19 +1536,17 @@ bool CSimulation::bReadRunData(void)
                   m_strDeepWaterWaveValuesFile = m_strCMEDir;
                   m_strDeepWaterWaveValuesFile.append(strRH);
                }
-               
-               // TODO for the moment, calculate these values in only at the first timestep
-               //m_VulDeepWaterWaveValuesAtTimestep.push_back(1);
-
-	    }
-	    break;
-	    
+                  
+            }
+            break;
+            
          case 34:
             // Deep water wave orientation in input CRS: this is the oceanographic convention i.e. direction TOWARDS which the waves move (in degrees clockwise from north)
             if (m_bSingleDeepWaterWaveValues)
             {
                // Only read this if we also have just a single value of wave height for all deep water cells
                m_dAllCellsDeepWaterWaveOrientation = atof(strRH.c_str());
+               
                if (m_dAllCellsDeepWaterWaveOrientation < 0)
                   strErr = "deep water wave orientation must be zero degrees or more";
                else if (m_dAllCellsDeepWaterWaveOrientation >= 360)
@@ -1556,20 +1554,20 @@ bool CSimulation::bReadRunData(void)
             }
             break;
 
-	 case 35:
+         case 35:
             // Wave period (sec)
-	    if (m_bSingleDeepWaterWaveValues)
+            if (m_bSingleDeepWaterWaveValues)
             {
-	       // Only read this if we also have just a single value of wave height for all deep water cells
-	       m_dAllCellsDeepWaterWavePeriod = atof(strRH.c_str());
-	       if (m_dAllCellsDeepWaterWavePeriod <= 0)
-		  strErr = "wave period must be greater than zero";
-	    }
+               // Only read this if we also have just a single value of wave height for all deep water cells
+               m_dAllCellsDeepWaterWavePeriod = atof(strRH.c_str());
+
+               if (m_dAllCellsDeepWaterWavePeriod <= 0)
+                  strErr = "wave period must be greater than zero";
+            }
             break;
 	    
-	    
           case 36:
-             // Tide data file (can be blank)
+             // Tide data file (can be blank). This is the change (m) from still water level for each timestep 
              if (! strRH.empty())
              {
  #ifdef _WIN32
@@ -1592,6 +1590,7 @@ bool CSimulation::bReadRunData(void)
          case 37:
             // Breaking wave height-to-depth ratio 
             m_dBreakingWaveHeightDeptRatio = atof(strRH.c_str());
+            
             if (m_dBreakingWaveHeightDeptRatio <= 0)
                strErr = "breaking wave height to depth ratio must be greater than zero";
             break;
@@ -2104,6 +2103,7 @@ int CSimulation::nReadShapeFunction()
    return RTN_OK;
 }
 
+
 /*==============================================================================================================================
 
  Reads the deep water wave time series and initialize vector to store this time step deep water wave height, orientation, Period
@@ -2122,11 +2122,15 @@ int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
    {
       // Error: cannot open shape function file for input
       cerr << ERR << "cannot open " << m_strDeepWaterWaveValuesFile << " for input" << endl;
-      return  RTN_ERR_READ_WAVE_TIME_SERIES;
+      return RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA;
    }
 
    // Opened OK
-   unsigned int nExpectedStations = 0, nExpectedTimeSteps = 0, nRead = 0;
+   unsigned int 
+      nExpectedStations = 0, 
+      nExpectedTimeSteps = 0, 
+      nRead = 0,
+      nTimeStepsRead = 0;
    string strRec;
 
    // Read each line avoiding comments of first two lines
@@ -2135,123 +2139,159 @@ int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
       // Trim off leading and trailing whitespace
       strRec = strTrimLeft(&strRec);
       strRec = strTrimRight(&strRec);
-
          
-	 // If it is a blank line or a comment then ignore it
+      // If it is a blank line or a comment then ignore it
       if ((! strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
       {
          // It isn't so increment counter
          nRead++;
 
-         // The two first lines contains leading description separated by a colon from the data
-	 if (nRead ==1 || nRead ==2)
-	 {
-	    // Find the colon: note that lines MUST have a colon separating data from leading description portion
-	    size_t nPos = strRec.find(':');
-	    if (nPos == string::npos)
-	    {
-	       // Error: badly formatted line (no colon)
-	       cerr << ERR << "badly formatted line (no ':') in " << m_strDeepWaterWaveValuesFile << endl << "'" << strRec << "'" << endl;
-	       return false;
-	    }
+         // The header lines (the two first lines of the file) contains leading description separated by a colon from the data
+         if (nRead < 3)
+         {
+            // Find the colon: note that lines MUST have a colon separating data from leading description portion
+            size_t nPos = strRec.find(':');
+            if (nPos == string::npos)
+            {
+               // Error: badly formatted line (no colon)
+               cerr << ERR << "badly formatted line (no ':') in " << m_strDeepWaterWaveValuesFile << endl << "'" << strRec << "'" << endl;
+               return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+            }
 
-	    if (nPos == strRec.size()-1)
-	    {
-	       // Error: badly formatted line (colon with nothing following)
-	       cerr << ERR << "badly formatted line (nothing following ':') in " << m_strDeepWaterWaveValuesFile << endl << "'" << strRec << "'" << endl;
-	       return false;
-	    }
+            if (nPos == strRec.size()-1)
+            {
+               // Error: badly formatted line (colon with nothing following)
+               cerr << ERR << "badly formatted line (nothing following ':') in " << m_strDeepWaterWaveValuesFile << endl << "'" << strRec << "'" << endl;
+               return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+            }
 
-	    // Strip off leading portion (the bit up to and including the colon)
-	    string strRH = strRec.substr(nPos+1);
+            // Strip off leading portion (the bit up to and including the colon)
+            string strRH = strRec.substr(nPos+1);
 
-	    // Remove leading whitespace
-	    strRH = strTrimLeft(&strRH);
+            // Remove leading whitespace
+            strRH = strTrimLeft(&strRH);
 
-	    // Look for a trailing comment, if found then terminate string at that point and trim off any trailing whitespace
-	    nPos = strRH.rfind(QUOTE1);
-	    if (nPos != string::npos)
-	       strRH = strRH.substr(0, nPos+1);
+            // Look for a trailing comment, if found then terminate string at that point and trim off any trailing whitespace
+            nPos = strRH.rfind(QUOTE1);
+            if (nPos != string::npos)
+               strRH = strRH.substr(0, nPos+1);
 
-	    nPos = strRH.rfind(QUOTE2);
-	    if (nPos != string::npos)
-	       strRH = strRH.substr(0, nPos+1);
+            nPos = strRH.rfind(QUOTE2);
+            if (nPos != string::npos)
+               strRH = strRH.substr(0, nPos+1);
 
-	    // Remove trailing whitespace
-	    strRH = strTrimRight(&strRH);
-	 
-	    // Read the number of stations on the file
-	    if (nRead==1) nExpectedStations = atoi(strRH.c_str());
-	 
-	    // Check that the number of expected stations is equal to the number of stations on the point shape file
-	    if (nExpectedStations != nNumberStations)
-	    {
-	    // Error: number of points on shape file does not match the number of stations on the wave time series file
-	       cerr << ERR << "number of stations on " << m_strDeepWaterWaveStationsFile << " is " << nNumberStations << " and number of stations on "<<  m_strDeepWaterWaveValuesFile << " is" << nExpectedStations << endl;
-	       return  RTN_ERR_READ_WAVE_TIME_SERIES;
-	    }
-	 
-	    // Read the expected number of time steps on the file
-	    if (nRead==2) nExpectedTimeSteps = atoi(strRH.c_str());
-	 
-	    if ((nRead ==2 ) && (nExpectedTimeSteps < 1))
-	    {
-	       // Error: number of points on shape file does not match the number of stations on the wave time series file
-	       cerr << ERR << "number of time steps on " << m_strDeepWaterWaveValuesFile << " is " << nExpectedTimeSteps << " and must be greater that 1 "<< endl;
-	       return  RTN_ERR_READ_WAVE_TIME_SERIES;
-	    }
-	 } 
-	 // The number of expected stations and time steps are OK so read in each wave attribute for each time step and station
-	 if ((nRead >2 ) && (nExpectedStations == nNumberStations) && nExpectedTimeSteps >= 1)
-	 {
-	    // Split the string, and remove whitespace
-	    vector<string> strTmp = strSplit(&strRec, COMMA);
-	    for (unsigned int i = 0; i < strTmp.size(); i++) // strTmp.size() should be 3 x nExpectedStations
-	       strTmp[i] = strTrim(&strTmp[i]);
+            // Remove trailing whitespace
+            strRH = strTrimRight(&strRH);
+         
+            // Read the number of stations on the file
+            if (nRead == 1) 
+            {
+               nExpectedStations = atoi(strRH.c_str());
+         
+               // Check that the number of expected stations is equal to the number of stations on the point shape file
+               if (nExpectedStations != nNumberStations)
+               {
+                  // Error: number of points on shape file does not match the number of stations on the wave time series file
+                  cerr << ERR << "number of wave stations in " << m_strDeepWaterWaveStationsFile << " = " << nNumberStations << " but the number of wave stations in "<<  m_strDeepWaterWaveValuesFile << " = " << nExpectedStations << endl;
+                  
+                  return  RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+               }
+            }
+         
+            // Read the expected number of time steps in the file
+            if (nRead == 2) 
+            {
+               nExpectedTimeSteps = atoi(strRH.c_str());
+               
+               if (nExpectedTimeSteps < 1)
+               {
+                  // Error: must have value(s) for at least one timestep
+                  cerr << ERR << "must have values for at least one timestep in " << m_strDeepWaterWaveValuesFile << endl;
+                  
+                  return  RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+               }
+            }            
+         } 
+         
+         else
+         {
+            // This is not a header line
+            nTimeStepsRead++;
+            
+            // Read in each wave attribute for each time step and station: split the string, and remove whitespace
+            vector<string> strTmp = strSplit(&strRec, COMMA);
+            for (unsigned int i = 0; i < strTmp.size(); i++)      // strTmp.size() should be 3 x nExpectedStations
+               strTmp[i] = strTrim(&strTmp[i]);
 
-	    // Convert to doubles then append the values to the vectors TODO check for floating point validity
-	    for (unsigned int i = 0; i < nExpectedStations; i++)
-	    {
-	       m_VdDeepWaterWavePointHeightTS.push_back(strtod(strTmp[i*nExpectedStations].c_str(), NULL));
-	       m_VdDeepWaterWavePointAngleTS.push_back(strtod(strTmp[i*nExpectedStations+1].c_str(), NULL));
-	       m_VdDeepWaterWavePointPeriodTS.push_back(strtod(strTmp[i*nExpectedStations+2].c_str(), NULL));
-	       
-	       // Check some simple wave input stats
-	       if (m_VdDeepWaterWavePointHeightTS.back()>m_dMaxUserInputWaveHeight)
-		  m_dMaxUserInputWaveHeight = m_VdDeepWaterWavePointHeightTS.back();
-	       if (m_VdDeepWaterWavePointPeriodTS.back() > m_dMaxUserInputWavePeriod)
-		  m_dMaxUserInputWavePeriod = m_VdDeepWaterWavePointPeriodTS.back();
-	    }
-	 }
+            // Convert to doubles then append the values to the vectors TODO check for floating point validity
+            int n = 0;
+            for (unsigned int i = 0; i < nExpectedStations; i++)
+            {
+               m_VdDeepWaterWavePointHeightTS.push_back(strtod(strTmp[n++].c_str(), NULL));
+               m_VdDeepWaterWavePointAngleTS.push_back(strtod(strTmp[n++].c_str(), NULL));
+               m_VdDeepWaterWavePointPeriodTS.push_back(strtod(strTmp[n++].c_str(), NULL));
+               
+               // Check some simple wave input stats
+               if (m_VdDeepWaterWavePointHeightTS.back() > m_dMaxUserInputWaveHeight)
+                  m_dMaxUserInputWaveHeight = m_VdDeepWaterWavePointHeightTS.back();
+               
+               if (m_VdDeepWaterWavePointPeriodTS.back() > m_dMaxUserInputWavePeriod)
+                  m_dMaxUserInputWavePeriod = m_VdDeepWaterWavePointPeriodTS.back();
+            }
+         }
       }
    }
 
+   if (nTimeStepsRead != nExpectedTimeSteps)
+   {
+      // Error: number of timesteps read does not match the number given in the file's header
+      cerr << ERR << "in " << m_strDeepWaterWaveValuesFile << ", data for " << nTimeStepsRead << " timesteps was read, but " << nExpectedTimeSteps << " timesteps were specified in the file's header" << endl;
+      
+      return  RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+   }
+   
    // Close file
    InStream.close();
 
    // Did we read in what we expected?
-   if (m_VdDeepWaterWavePointHeightTS.size() != nExpectedStations*nExpectedTimeSteps)
+   unsigned int nTotExpected = nExpectedStations * nExpectedTimeSteps;
+   if (m_VdDeepWaterWavePointHeightTS.size() != nTotExpected)
    {
-      cout << ERR << "read in " << m_VdDeepWaterWavePointHeightTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nExpectedStations*nExpectedTimeSteps << " values expected" << endl;
-      return RTN_ERR_READ_WAVE_TIME_SERIES;
+      cout << ERR << "read in " << m_VdDeepWaterWavePointHeightTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nTotExpected << " values expected" << endl;
+      
+      return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
    }
-   if (m_VdDeepWaterWavePointAngleTS.size() != nExpectedStations*nExpectedTimeSteps)
+   
+   if (m_VdDeepWaterWavePointAngleTS.size() != nTotExpected)
    {
-      cout << ERR << "read in " << m_VdDeepWaterWavePointAngleTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nExpectedStations*nExpectedTimeSteps << " values expected" << endl;
-      return RTN_ERR_READ_WAVE_TIME_SERIES;
+      cout << ERR << "read in " << m_VdDeepWaterWavePointAngleTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nTotExpected << " values expected" << endl;
+      
+      return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
    }
-   if (m_VdDeepWaterWavePointPeriodTS.size() != nExpectedStations*nExpectedTimeSteps)
+   
+   if (m_VdDeepWaterWavePointPeriodTS.size() != nTotExpected)
    {
-      cout << ERR << "read in " << m_VdDeepWaterWavePointPeriodTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nExpectedStations*nExpectedTimeSteps << " values expected" << endl;
-      return RTN_ERR_READ_WAVE_TIME_SERIES;
+      cout << ERR << "read in " << m_VdDeepWaterWavePointPeriodTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nTotExpected << " values expected" << endl;
+      
+      return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
    }
 
-   // We can now initialize the vectors that will store this time step deep water wave values
+   // All is OK, so we can now initialize the vectors that will store this time step deep water wave values
    for (unsigned int j = 0; j < nExpectedStations; j++)
    {
       m_VdDeepWaterWavePointHeight.push_back(DBL_NODATA);
       m_VdDeepWaterWavePointAngle.push_back(DBL_NODATA);
       m_VdDeepWaterWavePointPeriod.push_back(DBL_NODATA);
+   }
+   
+   // Finally, check whether the wave data will 'wrap' i.e. whether the number of timesteps is less than the total number of timesteps in the simulation
+   unsigned int nSimulationTimeSteps = floor(m_dSimDuration / m_dTimeStep);
+   if (nExpectedTimeSteps < nSimulationTimeSteps)
+   {
+      m_dWaveDataWrapHours = nExpectedTimeSteps * m_dTimeStep;
+      string strTmp = "Deep water wave data will wrap every " + (nExpectedTimeSteps > 1 ? to_string(nExpectedTimeSteps) + " " : "") + "time step" + (nExpectedTimeSteps > 1 ? "s" : "") + " (every " + to_string(m_dWaveDataWrapHours) + " hours)\n";
+
+      cout << WARN << strTmp;
    }
    
    return RTN_OK;

@@ -41,65 +41,53 @@ int CSimulation::nCalcExternalForcing(void)
    // Increment SWL (note that increment may be zero)
    m_dAccumulatedSeaLevelChange += m_dDeltaSWLPerTimestep;
 
+   int nSize = m_VdTideData.size();
+   if (nSize != 0)
+   {
+      // We have tide data
+      static int nTideDataCount = 0;
 
-    int nSize = m_VdTideData.size();
+      // Wrap the tide data, i.e. start again with the first record if we do not have enough
+      if (nTideDataCount > nSize-1)
+         nTideDataCount = 0;
 
-    if (nSize != 0)
-    {
-       // We have tide data
-       static int nTideDataCount = 0;
-
-       // Wrap the tide data, i.e. start again with the first record if we do not have enough
-       if (nTideDataCount > nSize-1)
-       {
-          // TODO If tide file is not long enough, then make this error message more informative and also give a warning message at start of simulation
-          string const str1 = "reached end of tide data, starting again from first line";
-          cerr << WARN << str1 << endl;
-          LogStream << WARN << str1 << endl;
-
-          nTideDataCount = 0;
-       }
-
-       m_dThisTimestepSWL = m_dOrigSWL + m_VdTideData[nTideDataCount] + m_dAccumulatedSeaLevelChange;
+      m_dThisTimestepSWL = m_dOrigSWL + m_VdTideData[nTideDataCount] + m_dAccumulatedSeaLevelChange;
+   
       // cout << m_dThisTimestepSWL << endl;
-       nTideDataCount++;
-    }
+      nTideDataCount++;
+   }
 
    // Update min and max still water levels
    m_dMaxSWL = tMax(m_dThisTimestepSWL, m_dMaxSWL);
    m_dMinSWL = tMin(m_dThisTimestepSWL, m_dMinSWL);
    
    // Update the wave height, orientation and period for this time step and start again with the first record if we do not have enough
-   if (!m_bSingleDeepWaterWaveValues)
+   if (! m_bSingleDeepWaterWaveValues)
    {
       // We have wave time serie data
-      int nWaveTimeSteps =  m_VdDeepWaterWavePointHeightTS.size()/m_VnDeepWaterWavePointID.size(); // Number of time steps is total size divided by the number of points
+      int nWaveTimeSteps = m_VdDeepWaterWavePointHeightTS.size() / m_VnDeepWaterWavePointID.size();     // Number of time steps is total size divided by the number of points
       static int nWaveDataCount = 0;
 
-       // Wrap the tide data, i.e. start again with the first record if we do not have enough
        if (nWaveDataCount > nWaveTimeSteps-1)
        {
-          // TODO If tide file is not long enough, then make this error message more informative and also give a warning message at start of simulation
-          string const str1 = "reached end of wave time serie data, starting again from first value";
-          cerr << WARN << str1 << endl;
-          LogStream << WARN << str1 << endl;
-
+          // Wrap the tide data, i.e. start again with the first record if we do not have enough
           nWaveDataCount = 0;
        }
       
-      // Update this time step deep water wave values: the order on the vector is determined by the points ID i.e. to esnure that stations match with time series
-      unsigned int uNumberDeepWaterWaveStations = m_VnDeepWaterWavePointID.size();
-      for (unsigned int j = 0; j < uNumberDeepWaterWaveStations; j++)
+      // Update this time step deep water wave values: the order on the vector is determined by the points ID i.e. to ensure that stations match with time series
+      unsigned int 
+         nNumberDeepWaterWaveStations = m_VnDeepWaterWavePointID.size(),
+         nTot = nNumberDeepWaterWaveStations * nWaveDataCount;
+         
+      for (unsigned int j = 0; j < nNumberDeepWaterWaveStations; j++)
       {
-	 m_VdDeepWaterWavePointHeight[j] = m_VdDeepWaterWavePointHeightTS[(m_VnDeepWaterWavePointID[j]-1)+ nWaveDataCount*uNumberDeepWaterWaveStations];
-	 m_VdDeepWaterWavePointAngle[j]  = m_VdDeepWaterWavePointAngleTS[(m_VnDeepWaterWavePointID[j]-1)+ nWaveDataCount*uNumberDeepWaterWaveStations];
-	 m_VdDeepWaterWavePointPeriod[j] = m_VdDeepWaterWavePointPeriodTS[(m_VnDeepWaterWavePointID[j]-1)+ nWaveDataCount*uNumberDeepWaterWaveStations];
+         m_VdDeepWaterWavePointHeight[j] = m_VdDeepWaterWavePointHeightTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
+         m_VdDeepWaterWavePointAngle[j]  = m_VdDeepWaterWavePointAngleTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
+         m_VdDeepWaterWavePointPeriod[j] = m_VdDeepWaterWavePointPeriodTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
       }
       
-      
-       nWaveDataCount++;
+      nWaveDataCount++;
    }
    
-
    return RTN_OK;
 }

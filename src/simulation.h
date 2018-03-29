@@ -246,7 +246,7 @@ private:
       m_dAllCellsDeepWaterWaveOrientation,
       m_dAllCellsDeepWaterWavePeriod,
       m_dMaxUserInputWaveHeight,
-      m_dMaxUserInputWavePeriod,     // Used to constrain Depth of closure 
+      m_dMaxUserInputWavePeriod,       // Used to constrain depth of closure 
       m_dR,
       m_dD50Fine,
       m_dD50Sand,
@@ -310,7 +310,8 @@ private:
       m_dThisTimestepCliffDepositionCoarse,
       m_dCoastNormalRandSpaceFact,
       m_dDeanProfileStartAboveSWL,
-      m_dMissingValue;
+      m_dMissingValue,
+      m_dWaveDataWrapHours;
 
    // These grand totals are all long doubles, the aim is to minimize rounding errors when many very small numbers are added to a single much larger number, see e.g. http://www.ddj.com/cpp/184403224
    long double
@@ -583,7 +584,7 @@ private:
    int nCalcWavePropertiesOnProfile(int const, int const, int const, vector<int>*, vector<int>*, vector<double>*, vector<double>*, vector<bool>*);
    int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*);
    int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double> const*, vector<double> const*);
-   int nReadCShoreOutput(string const*, int const, int const, vector<double> const*, vector<double>*);
+   int nReadCShoreOutput(int const, string const*, int const, int const, vector<double> const*, vector<double>*);
    static double dCalcWaveAngleToCoastNormal(double const, double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);

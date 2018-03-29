@@ -53,7 +53,6 @@ double dRound(double const d)
 // }
 
 
-
 /*==============================================================================================================================
 
  Checks a double to see if it is NaN. From http://www.johndcook.com/blog/IEEE_exceptions_in_cpp/
@@ -75,9 +74,6 @@ bool bDoubleIsValid(double const dX)
 // {
 //    return (dX <= DBL_MAX && dX >= -DBL_MAX);
 // }
-
-
-
 
 
 /*==============================================================================================================================

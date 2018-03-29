@@ -44,7 +44,8 @@ CGeomProfile::CGeomProfile(int const nCoastPoint)
    m_bHitAnotherProfile(false),
    m_nNumCoastPoint(nCoastPoint),
    m_dDeepWaterWaveHeight(0),
-   m_dDeepWaterWaveOrientation(0)
+   m_dDeepWaterWaveOrientation(0),
+   m_dDeepWaterWavePeriod(0)
 {
 }
 

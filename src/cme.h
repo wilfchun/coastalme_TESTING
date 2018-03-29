@@ -404,8 +404,8 @@ int const      RTN_ERR_GRIDCREATE                     = 57;
 int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 58;
 int const      RTN_ERR_CSHORE_ERROR                   = 59;
 int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 60;
-int const      RTN_ERR_ESTIMATED_EROSION_IS_ZERO      = 61;
-int const      RTN_ERR_READ_WAVE_TIME_SERIES          = 62;
+int const      RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA      = 61;
+int const      RTN_ERR_READ_DEEP_WATER_WAVE_DATA      = 62;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                       = -1;
@@ -462,7 +462,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 20 March 2018";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 29 March 2018";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 

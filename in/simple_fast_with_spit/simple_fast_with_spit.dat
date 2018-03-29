@@ -56,7 +56,7 @@ GIS vector output format                                                        
 Time series files to output                                         [see codes.txt]: all
 
 Coastline smoothing                      [0=none, 1=running mean, 2=Savitsky-Golay]: 2
-Coastline smoothing window size                                       [must be odd]: 7                        ; was 9 11 13 15, 55 for S-G
+Coastline smoothing window size                                       [must be odd]: 7
 Polynomial order for Savitsky-Golay coastline smoothing                    [2 or 4]: 4
 Grid edge(s) to omit when searching for coastline                            [NSWE]:
 
@@ -93,11 +93,11 @@ Density of sea water (kg/m3)                                                    
 
 Initial still water level (m), or per-timestep SWL file                            : 86                     ; 83 with steepest, 86 with steeper
 Final still water level (m)                           [blank = same as initial SWL]:
-Wave period (sec)                                                                  : 10
-Deep water wave height (m), or file TODO need multiple file input option           : in/simple_fast_with_spit/deep_sea_waves_plus_river_1.shp
-#Deep water wave height (m), or file TODO need multiple file input option           : in/simple_fast_with_spit/deep_sea_waves.shp
-;Deep water wave height (m), or file                                               : 3
-Deep water wave orientation (degrees)                                              : 300 ; 225 270 355 200 265 310 190 340
+
+Deep water wave height (m)                                         [value or point shapefile]: in/simple_fast_with_spit/deep_sea_waves_plus_river_1.shp
+Deep water wave height time series         [omit if deep water wave height is a single value]: in/simple_fast_with_spit/deep_sea_waves_plus_river_1.csv
+Deep water wave orientation (degrees)         [omit if deep water wave height from shapefile]:
+Wave period (sec)                             [omit if deep water wave height from shapefile]:
 
 Tide data file                                                       [may be blank]:
 
@@ -145,7 +145,7 @@ Gravitational acceleration (m2/s)                                               
 ; TEMPORARY ONLY, CHANGE DYNAMICALLY LATER
 Spacing of coastline normals (m)                              [0 = default minimum]: 0
 Random factor for spacing of normals                    [0 to 1, 0 = deterministic]: 0.1
-Length of coastline normals (m)                                                    : 120
+Length of coastline normals (m)                                                    : 150
 Maximum number of 'cape' normals                                                   : 6
 
 Start depth for wave calcs (ratio to deep water wave height)                       : 30
