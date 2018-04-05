@@ -463,7 +463,7 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
                // Calculate the length of this segment of the normal profile. Note that it should not be zero, since we checked for duplicate points when creating profiles
                double dDistBetween = dGetDistanceBetween(&PtStart, &PtEnd);
                
-               // Find out what polygons are adjacent
+               // Find out which polygon is adjacent to each line segment of the polygon's up-coast profile boundary. The basic approach used is to count the number of coincident profiles in each line segment, and (because we are going up-coast) subtract this number from 'this' polygon's number. However, some of these coincident profiles may be invalid, so we must count only the valid co-incident profiles
                int 
                   nNumCoinc = pProfile->nGetNumCoincidentProfilesInLineSegment(nPoint),
                   nNumValidCoinc = 0;
@@ -477,16 +477,13 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
                      nNumValidCoinc++;
                }               
                
+               // First stab at calculating the number of the adjacent polygon
                int nAdj = nPoly - nNumValidCoinc;
                
-               // TODO FIX THIS
+               // However, if 'this' polygon is close to the start of the coastline, we get polygon numbers below zero. If this happens, set the adjacent polygon to 'off-edge'
                if (nAdj < 0)
-               {
-                  LogStream << "****** nAdj = " << nAdj << endl; 
                   nAdj = INT_NODATA;
-               }
                
-               // Store in polygon
                nVUpCoastAdjacentPolygon.push_back(nAdj);
                
                dUpCoastTotBoundaryLen += dDistBetween;
@@ -533,7 +530,7 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
                // Calculate the length of this segment of the normal profile. Note that it should not be zero, since we checked for duplicate points when creating profiles
                double dDistBetween = dGetDistanceBetween(&PtStart, &PtEnd);
                
-               // Find out what polygons are adjacent
+               // Find out which polygon is adjacent to each line segment of the polygon's down-coast profile boundary. The basic approach used is to count the number of coincident profiles in each line segment, and (because we are going down-coast) add this number to 'this' polygon's number. However, some of these coincident profiles may be invalid, so we must count only the valid co-incident profiles
                int 
                   nNumCoinc = pProfile->nGetNumCoincidentProfilesInLineSegment(nPoint),
                   nNumValidCoinc = 0;
@@ -547,19 +544,15 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
                      nNumValidCoinc++;
                }               
                
+               // First stab at calculating the number of the adjacent polygon
                int nAdj = nPoly + nNumValidCoinc;
                
-               // TODO FIX THIS
+               // However, if 'this' polygon is close to the end of the coastline, we get polygon numbers greater than the number of polygons. If this happens, set the adjacent polygon to 'off-edge'               
                if (nAdj >= nNumPolygons)
-               {
-                  LogStream << "****** nAdj = " << nAdj << " nNumPolygons = " << nNumPolygons << endl; 
                   nAdj = INT_NODATA;
-               }
                
-               // Store in polygon   
                nVDownCoastAdjacentPolygon.push_back(nAdj);
 
-               // Store the line segment data
                dDownCoastTotBoundaryLen += dDistBetween;
                dVDownCoastBoundaryShare.push_back(dDistBetween);
             }
