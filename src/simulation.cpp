@@ -775,10 +775,14 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //       LogStream << "Before marking polygon cells, N cells with NODATA polygon ID = " << nNODATA << endl;
 //       LogStream << "Before marking polygon cells, N cells with zero polygon ID = " << nPoly0 << endl;
 
-      // Mark cells of the raster grid that are within each polygon, then calc the length of the shared normal between each polygon and the adjacent polygon(s)
+      // Mark cells of the raster grid that are within each polygon 
       MarkPolygonCells();
-      DoPolygonSharedBoundaries();
-
+      
+      // Calculate the length of the shared normal between each polygon and the adjacent polygon(s)
+      nRet = nDoPolygonSharedBoundaries();
+      if (nRet != RTN_OK)
+         return nRet;
+      
 //       // TEST
 //       nNODATA = 0;
 //       nPoly0 = 0;

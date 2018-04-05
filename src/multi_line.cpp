@@ -148,14 +148,22 @@ void CGeomMultiLine::AddCoincidentProfileToExistingLineSegment(int const nSegmen
    m_prVVLineSegment[nSegment].push_back(make_pair(nProfile, nLineSeg));
 }
 
-//! Returns a specified line segment
-vector<pair<int, int> >* CGeomMultiLine::pprVGetCoincidentProfilesForLineSegment(int const nSegment)
+//! Returns a vector of pairs (a line segment)
+vector<pair<int, int> >* CGeomMultiLine::pprVGetPairedCoincidentProfilesForLineSegment(int const nSegment)
 {
    // NOTE No check to see if nSegment < size()
    return &m_prVVLineSegment[nSegment];
 }
 
-//! Returns the number of concident profiles in a specified line segment
+//! Returns the numbers of a coincident profiles
+int CGeomMultiLine::nGetCoincidentProfileForLineSegment(int const nSegment, int const nCoinc) const
+{
+   // NOTE No check to see if nSegment < size()
+   // NOTE No check to see in nCoinc < [nSegment].size()
+   return m_prVVLineSegment[nSegment][nCoinc].first;
+}
+
+//! Returns the number of coincident profiles in a specified line segment
 int CGeomMultiLine::nGetNumCoincidentProfilesInLineSegment(int const nSegment)
 {
    return m_prVVLineSegment[nSegment].size();

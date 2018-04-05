@@ -37,7 +37,7 @@ using std::make_pair;
 class CGeomMultiLine : public CGeomLine
 {
 private:
-   vector<vector<pair<int, int> > > m_prVVLineSegment;         // A vector of line segments, each of which is a vector of pairs. The first of the pair is a co-incident profile number, the second is that profile's 'own' line segment number
+   vector<vector<pair<int, int> > > m_prVVLineSegment;         // A vector of line segments, each element is a vector of pairs. The first of the pair is a co-incident profile number, the second is that profile's 'own' line segment number
 
 public:
    CGeomMultiLine(void);
@@ -54,7 +54,8 @@ public:
 
    void AppendCoincidentProfileToLineSegments(pair<int, int> const);
    void AddCoincidentProfileToExistingLineSegment(int const, int const, int const);
-   vector<pair<int, int> >* pprVGetCoincidentProfilesForLineSegment(int const);
+   vector<pair<int, int> >* pprVGetPairedCoincidentProfilesForLineSegment(int const);
+   int nGetCoincidentProfileForLineSegment(int const, int const) const;
    int nGetNumCoincidentProfilesInLineSegment(int const);
    bool bFindProfileInCoincidentProfilesOfLastLineSegment(int const);
 //    bool bFindProfileInCoincidentProfilesOfLineSegment(int const, int const);

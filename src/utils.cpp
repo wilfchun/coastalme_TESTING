@@ -2104,11 +2104,11 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_PROFILESPACING:
       strErr = "coastline-normal profiles are too closely spaced";
       break;
-   case RTN_ERR_BADPROFILE:
-      strErr = "could not create coastline-normal profile";
+   case RTN_ERR_NO_PROFILES_1:
+      strErr = "no coastline-normal profiles created, check the SWL";
       break;
-   case RTN_ERR_NOPROFILES:
-      strErr = "no coastline-normal profiles created";
+   case RTN_ERR_NO_PROFILES_2:
+      strErr = "no coastline-normal profiles created during rasterization";
       break;
    case RTN_ERR_EDGEOFGRID:
       strErr = "hit grid edge when eroding beach";

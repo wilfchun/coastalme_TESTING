@@ -606,7 +606,7 @@ private:
    static bool bIsWithinPolygon(CGeom2DPoint const*, vector<CGeom2DPoint> const*);
    static CGeom2DPoint PtFindPointInPolygon(vector<CGeom2DPoint> const*, int const);
    void MarkPolygonCells(void);
-   void DoPolygonSharedBoundaries(void);
+   int nDoPolygonSharedBoundaries(void);
    void DoAllPotentialBeachErosion(void);
    int nDoAllActualBeachErosionAndDeposition(void);
 //    int nEstimateBeachErosionOnPolygon(int const, int const, double const);

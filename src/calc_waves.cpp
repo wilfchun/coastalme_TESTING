@@ -909,24 +909,16 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
          // Read in the header line
          vector<string> VstrItems = strSplit(&strLineIn, SPACE);
          nExpectedRows = stoi(VstrItems[1].c_str());
-         
-         if (nExpectedRows < 2)
-         {
-            // Error: cannot interpolate values if we have only one value
-            LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", only " << nExpectedRows << " CShore output rows in file " << *strCShoreFilename << endl;
-            
-            return RTN_ERR_CSHORE_OUTPUT_FILE;
-         }   
       }
       else
       {
-         // Read in the data
+         // Read in a data line
          vector<string> VstrItems = strSplit(&strLineIn, SPACE);
          
          int nCols = VstrItems.size();         
          if (nCols != nExpectedColumns)
          {
-            // Error: did not get nExpectedColumns CShore output columns
+            // Error: did not read the expected number of CShore output columns
             LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", expected " << nExpectedColumns << " CShore output columns but read " << nCols << " columns from header section of file " << *strCShoreFilename << endl;
             
             return RTN_ERR_CSHORE_OUTPUT_FILE;        
@@ -950,10 +942,15 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
    
    if (nReadRows < 2)
    {
-      // Error: cannot interpolate values if we have only one value
-      LogStream << m_ulIteration << ": " << ERR << "only " << nReadRows << " CShore output rows in file " << *strCShoreFilename << endl;
+      // CShore sometimes returns only one row, which contains data for the seaward point of the profile. This happens when all other (more coastward) points give an invalid result during CShore's calculations. This is a problem. We don't want to abandon the simulation just because of this, so instead we just duplicate the row, so that the profile will later get marked as invalid
+      LogStream << m_ulIteration << ": " << WARN << "for profile " << nProfile << ", only " << nReadRows << " CShore output rows in file " << *strCShoreFilename << endl;
       
-      return RTN_ERR_CSHORE_OUTPUT_FILE;
+      // Duplicate the data
+      VdXYDistCShore.push_back(VdXYDistCShore[0]);         
+      VdValuesCShore.push_back(VdValuesCShore[0]);
+      
+      // And increase the expected number of rows
+      nReadRows++;
    }   
    
    // The output is OK, so change the origin of the across-shore distance from the CShore convention to the one used here (i.e. with the origin at the shoreline)

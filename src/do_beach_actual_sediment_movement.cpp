@@ -253,27 +253,31 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
          nVVPolyAndAdjacent.push_back(nVPolyAndAdj);
       }
 
-//       LogStream << "UNSORTED SEQUENCE OF POLYGON PROCESSING" << endl;
-//       for (unsigned int n = 0; n < nVVPolyAndAdjacent.size(); n++)
-//       {
-//          for (unsigned int m = 0; m < nVVPolyAndAdjacent[n].size(); m++)
-//             LogStream << nVVPolyAndAdjacent[n][m] << " ";
-//          LogStream << endl;
-//       }
-//       LogStream << endl;
-
+      // DEBUG CODE ======================================================
+      LogStream << "UNSORTED SEQUENCE OF POLYGON PROCESSING" << endl;
+      for (unsigned int n = 0; n < nVVPolyAndAdjacent.size(); n++)
+      {
+         for (unsigned int m = 0; m < nVVPolyAndAdjacent[n].size(); m++)
+            LogStream << nVVPolyAndAdjacent[n][m] << " ";
+         LogStream << endl;
+      }
+      LogStream << endl;
+      // DEBUG CODE ======================================================
+      
       // Sort the array using bPolygonAndAdjCompare(), so that 'target' polygons are processed after 'source' polygons
       stable_sort(nVVPolyAndAdjacent.begin(), nVVPolyAndAdjacent.end(), bPolygonAndAdjCompare);
 
-//       LogStream << "SORTED SEQUENCE OF POLYGON PROCESSING" << endl;
-//       for (unsigned int n = 0; n < nVVPolyAndAdjacent.size(); n++)
-//       {
-//          for (unsigned int m = 0; m < nVVPolyAndAdjacent[n].size(); m++)
-//             LogStream << nVVPolyAndAdjacent[n][m] << " ";
-//          LogStream << endl;
-//       }
-//       LogStream << endl;
-
+      // DEBUG CODE ======================================================
+      LogStream << "SORTED SEQUENCE OF POLYGON PROCESSING" << endl;
+      for (unsigned int n = 0; n < nVVPolyAndAdjacent.size(); n++)
+      {
+         for (unsigned int m = 0; m < nVVPolyAndAdjacent[n].size(); m++)
+            LogStream << nVVPolyAndAdjacent[n][m] << " ";
+         LogStream << endl;
+      }
+      LogStream << endl;
+      // DEBUG CODE ======================================================
+      
       // Now go through the polygons in the sorted sequence
       LogStream << endl << m_ulIteration << ": unconsolidated sediment transport. Polygon-to-polygon routing (m^3)" << endl;
       for (int n = 0; n < m_VCoast[nCoast].nGetNumPolygons(); n++)
