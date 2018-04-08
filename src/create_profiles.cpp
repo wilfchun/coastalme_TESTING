@@ -512,6 +512,10 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                }
 
                // OK, try to create a profile here
+               if ((nCoast == 1) && (nProfile == 8))
+                  cout << endl;
+               
+               
                int nRet = nCreateProfile(nCoast, nThisPoint, nProfile);
                if (nRet == RTN_OK)
                {
@@ -897,7 +901,7 @@ CGeom2DPoint CSimulation::PtChooseEndPoint(int const nHand, CGeom2DPoint const* 
       else if (PtAfter->dGetY() < PtBefore->dGetY())
       {
          // We are going N to S and the sea is to the right: the normal endpoint is to the W. We want the smaller of the two x values
-         if (dXEnd1 > dXEnd2)
+         if (dXEnd1 < dXEnd2)
          {
             PtChosen.SetX(dXEnd1);
             PtChosen.SetY(dYEnd1);

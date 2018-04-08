@@ -23,9 +23,9 @@
 ; Run information -----------------------------------------------------------------------------------------------------
 Main output/log file names                              [omit path and extension]: simple
 
-#Duration of simulation                               [hours, days, months, years]: 30 days
-#Timestep (hours or days)                                                         : 6 hours
-#Save times                                           [hours, days, months, years]: 6 12 24 42 100 200 300 462 500 600  hours
+Duration of simulation                               [hours, days, months, years]: 30 days
+Timestep (hours or days)                                                         : 6 hours
+Save times                                           [hours, days, months, years]: 6 12 24 42 100 200 300 462 500 600  hours
 
 #Duration of simulation                               [hours, days, months, years]: 60 days
 #Timestep (hours or days)                                                         : 6 hours
@@ -35,9 +35,9 @@ Main output/log file names                              [omit path and extension
 #Timestep (hours or days)                                                           : 6 hours
 #Save times                                             [hours, days, months, years]: 1 2 3 5 10 20 30 50 60 80 days
 
-Duration of simulation                                [hours, days, months, years]: 365 days
-Timestep (hours or days)                                                          : 6 hours
-Save times                                            [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
+#Duration of simulation                                [hours, days, months, years]: 365 days
+#Timestep (hours or days)                                                          : 6 hours
+#Save times                                            [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
 
 
 Random number seed(s)                                                             : 280764

@@ -560,7 +560,7 @@ int CSimulation::nDoAllShadowZones(void)
             LBoundary.AppendIfNotAlready(dGridCentroidXToExtCRSX(nTmpX), dGridCentroidYToExtCRSY(nTmpY));
             LIBoundary.AppendIfNotAlready(nTmpX, nTmpY);            
             
-            LogStream << m_ulIteration << ": coast " << nCoast << " shadow zone " << nZone << ", which starts at [" << nTmpX << "][" << nTmpY << "] = {" << dGridCentroidXToExtCRSX(nTmpX) << ", " << dGridCentroidYToExtCRSY(nTmpY) << "} has cell [" << nTmpX << "][" << nTmpY << "] marked as shadow zone boundary" << endl;
+//             LogStream << m_ulIteration << ": coast " << nCoast << " shadow zone " << nZone << ", which starts at [" << nTmpX << "][" << nTmpY << "] = {" << dGridCentroidXToExtCRSX(nTmpX) << ", " << dGridCentroidYToExtCRSY(nTmpY) << "} has cell [" << nTmpX << "][" << nTmpY << "] marked as shadow zone boundary" << endl;
          }
          
          // Put the ext CRS vector shadow boundary into reverse sequence (i.e. start point is last)
@@ -592,7 +592,7 @@ int CSimulation::nDoAllShadowZones(void)
             {
                // Append the coastal portion of the shadow zone boundary to the grid CRS vector
                LIBoundary.Append(m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn));
-               LogStream << "Coast point A " << nn << " [" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetX() << "][" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetY() << "]" << endl;
+//                LogStream << "Coast point A " << nn << " [" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetX() << "][" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetY() << "]" << endl;
             }
          }
          else
@@ -606,18 +606,19 @@ int CSimulation::nDoAllShadowZones(void)
             {
                // Append the coastal portion of the shadow zone boundary to the grid CRS vector
                LIBoundary.Append(m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn));
-               LogStream << "Coast point B " << nn << " [" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetX() << "][" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetY() << "]" << endl;
+//                LogStream << "Coast point B " << nn << " [" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetX() << "][" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetY() << "]" << endl;
             }
          }
          
-         // DFM TEST
-         LogStream << "FIRST" << endl;
-         for (int k = 0; k < LIBoundary.nGetSize(); k++)
-         {
-            CGeom2DIPoint PtiTmp = *LIBoundary.pPtiGetAt(k);
-            LogStream << k << " [" << PtiTmp.nGetX() << "][" << PtiTmp.nGetY() << "]" << endl;
-         }
-         LogStream << endl;
+//          // DEBUG CODE =======================================================
+//          LogStream << "FIRST" << endl;
+//          for (int k = 0; k < LIBoundary.nGetSize(); k++)
+//          {
+//             CGeom2DIPoint PtiTmp = *LIBoundary.pPtiGetAt(k);
+//             LogStream << k << " [" << PtiTmp.nGetX() << "][" << PtiTmp.nGetY() << "]" << endl;
+//          }
+//          LogStream << endl;
+//          // DEBUG CODE =======================================================
          
          // Calculate the centroid
          CGeom2DIPoint PtiCentroid = PtiAverage(LIBoundary.pPtiVGetPoints());
