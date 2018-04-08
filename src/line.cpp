@@ -66,7 +66,7 @@ double CGeomLine::dGetYAt(int const n)
    return m_VPoints[n].dGetY();
 }
 
-CGeom2DPoint* CGeomLine::pGetPtAt(int const n)
+CGeom2DPoint* CGeomLine::pPtGetAt(int const n)
 {
    return &m_VPoints[n];
 }

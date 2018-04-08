@@ -47,7 +47,9 @@ public:
    
    void AddXAddY(int const, int const);
    void operator= (CGeom2DIPoint*);
-//    bool operator== (CGeom2DIPoint*) const;
+   bool operator== (CGeom2DIPoint*) const;
    bool operator== (CGeom2DIPoint) const;
+   bool operator!= (CGeom2DIPoint*) const;
+   bool operator!= (CGeom2DIPoint) const;
 };
 #endif // C2DIPOINT_H

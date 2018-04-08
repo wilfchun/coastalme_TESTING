@@ -202,7 +202,7 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
 {
    for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
    {
-      if (m_ILCellsMarkedAsCoastline[nCoastPoint] == *pPtiCell)
+      if (m_ILCellsMarkedAsCoastline[nCoastPoint] == pPtiCell)
       {
          return nCoastPoint;
       }
@@ -257,7 +257,7 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
       CGeom2DIPoint PtiTmp(nXAdj, nYAdj);
       for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
       {
-         if (m_ILCellsMarkedAsCoastline[nCoastPoint] == PtiTmp)
+         if (m_ILCellsMarkedAsCoastline[nCoastPoint] == &PtiTmp)
          {
             *pPtiCell = PtiTmp;
             return nCoastPoint;

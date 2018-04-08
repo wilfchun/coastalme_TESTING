@@ -40,10 +40,11 @@ CGeomILine::~CGeomILine(void)
 {
 }
 
-// CGeom2DIPoint* CGeomILine::pPtiGetAt(int const n)
-// {
-//    return &m_VPoints[n];
-// }
+
+CGeom2DIPoint* CGeomILine::pPtiGetAt(int const n)
+{
+   return &m_VPoints[n];
+}
 
 
 // int CGeomILine::nGetXAt(int const n)
@@ -81,6 +82,7 @@ bool CGeomILine::bIsPresent(int const nX, int const nY)
    
    return false;
 }
+
 
 void CGeomILine::Display(void)
 {

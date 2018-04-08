@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-// #include <assert.h>
+#include <assert.h>
 #include <cmath>
 
 #include <iostream>
@@ -37,6 +37,7 @@ using std::deque;
 
 #include <numeric>
 using std::accumulate;
+
 
 #include "cme.h"
 #include "coast.h"
@@ -536,8 +537,11 @@ int CSimulation::nDoAllShadowZones(void)
          
          int nShadowLineLen = VILShadowBoundary[nZone].nGetSize();
          
-         // The pre-allocated vector shadow boundary (external CRS), will be in reverse sequence (i.e. start point is last)
-         CGeomLine LBoundary(nShadowLineLen-1);
+         // The vector shadow boundary (external CRS)
+         CGeomLine LBoundary;
+         
+         // And the same with grid CRS
+         CGeomILine LIBoundary;
          
          for (int nn = 0; nn < nShadowLineLen; nn++)
          {
@@ -548,17 +552,21 @@ int CSimulation::nDoAllShadowZones(void)
             // Mark the cells as shadow zone boundary   
             m_pRasterGrid->m_Cell[nTmpX][nTmpY].SetShadowZoneBoundary();
             
-            // Replace value in the vector shadow boundary
-            LBoundary[nShadowLineLen - nn - 1] = CGeom2DPoint(dGridCentroidXToExtCRSX(nTmpX), dGridCentroidYToExtCRSY(nTmpY));
-            
             // If this is a sea cell, mark the shadow zone boundary cell as being in the shadow zone, but not yet processed (a -ve number)
             if (m_pRasterGrid->m_Cell[nTmpX][nTmpY].bIsInContiguousSea())
                m_pRasterGrid->m_Cell[nTmpX][nTmpY].SetShadowZoneNumber(-(nZone+1));
-            
-//                LogStream << m_ulIteration << ": shadow zone " << nZone << ", which starts at [" << nTmpX << "][" << nTmpY << "] = {" << dGridCentroidXToExtCRSX(nTmpX) << ", " << dGridCentroidYToExtCRSY(nTmpY) << "} has cell [" << nTmpX << "][" << nTmpY << "] marked as shadow zone boundary" << endl;
-         }
 
-         // Store the shadow zone boundary (external CRS), with the end point first            
+            // If not already there, append this values to the two shadow boundary vectors
+            LBoundary.AppendIfNotAlready(dGridCentroidXToExtCRSX(nTmpX), dGridCentroidYToExtCRSY(nTmpY));
+            LIBoundary.AppendIfNotAlready(nTmpX, nTmpY);            
+            
+            LogStream << m_ulIteration << ": coast " << nCoast << " shadow zone " << nZone << ", which starts at [" << nTmpX << "][" << nTmpY << "] = {" << dGridCentroidXToExtCRSX(nTmpX) << ", " << dGridCentroidYToExtCRSY(nTmpY) << "} has cell [" << nTmpX << "][" << nTmpY << "] marked as shadow zone boundary" << endl;
+         }
+         
+         // Put the ext CRS vector shadow boundary into reverse sequence (i.e. start point is last)
+         LBoundary.Reverse();
+         
+         // Store the reversed ext CRS shadow zone boundary
          m_VCoast[nCoast].AppendShadowBoundary(LBoundary);
          
          int
@@ -576,43 +584,62 @@ int CSimulation::nDoAllShadowZones(void)
          if (VnShadowBoundaryEndCoastPoint[nZone] > VnShadowBoundaryStartCoastPoint[nZone])
          {
             // The shadow boundary endpoint is downcoast from the shadow boundary start point
-            for (int nn = VnShadowBoundaryStartCoastPoint[nZone]; nn < VnShadowBoundaryEndCoastPoint[nZone]; nn++)
-               // Append the coastal portion of the shadow zone boundary
-               LBoundary.Append(m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nn));
+            int
+               nStart = tMax(VnShadowBoundaryStartCoastPoint[nZone], 0),
+               nEnd = tMin(VnShadowBoundaryEndCoastPoint[nZone], m_VCoast[nCoast].nGetCoastlineSize());
+            
+            for (int nn = nStart; nn < nEnd; nn++)
+            {
+               // Append the coastal portion of the shadow zone boundary to the grid CRS vector
+               LIBoundary.Append(m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn));
+               LogStream << "Coast point A " << nn << " [" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetX() << "][" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetY() << "]" << endl;
+            }
          }
          else
          {
             // The shadow boundary endpoint is upcoast from the shadow boundary start point
-            for (int nn = VnShadowBoundaryStartCoastPoint[nZone]; nn > VnShadowBoundaryEndCoastPoint[nZone]; nn--)
-               // Append the coastal portion of the shadow zone boundary
-               LBoundary.Append(m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nn));
+            int
+               nStart = tMin(VnShadowBoundaryEndCoastPoint[nZone], m_VCoast[nCoast].nGetCoastlineSize()-1),
+               nEnd = tMax(VnShadowBoundaryStartCoastPoint[nZone], 0);
+            
+            for (int nn = nStart; nn >= nEnd; nn--)
+            {
+               // Append the coastal portion of the shadow zone boundary to the grid CRS vector
+               LIBoundary.Append(m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn));
+               LogStream << "Coast point B " << nn << " [" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetX() << "][" << m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nn)->nGetY() << "]" << endl;
+            }
          }
          
+         // DFM TEST
+         LogStream << "FIRST" << endl;
+         for (int k = 0; k < LIBoundary.nGetSize(); k++)
+         {
+            CGeom2DIPoint PtiTmp = *LIBoundary.pPtiGetAt(k);
+            LogStream << k << " [" << PtiTmp.nGetX() << "][" << PtiTmp.nGetY() << "]" << endl;
+         }
+         LogStream << endl;
+         
          // Calculate the centroid
-         CGeom2DPoint PtCentroid = PtAverage(LBoundary.pPtVGetPoints());
-         CGeom2DIPoint PtiCentroid = PtiExtCRSToGrid(&PtCentroid);
+         CGeom2DIPoint PtiCentroid = PtiAverage(LIBoundary.pPtiVGetPoints());
+         
+         int nRet = RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT;
+         if (bIsWithinValidGrid(&PtiCentroid))        // Safety check
+            nRet = nFloodFillShadowZone(nZone, &PtiCentroid, &PtiStart, &PtiEnd);
                
-         int nRet = nFloodFillShadowZone(nZone, &PtiCentroid, &PtiStart, &PtiEnd);
          if (nRet != RTN_OK)
          {
-            // Could not do a flood fill of the shadow zone
-            if (nRet == RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT)
+            // Could not find start point for flood fill. How serious this is depends on the length of the shadow zone line
+            if (nShadowLineLen < MAX_LEN_SHADOW_LINE_TO_IGNORE)
             {
-               // Could not find start point for flood fill. How serious this is depends on the length of the shadow zone line
-               if (nShadowLineLen < MAX_LEN_SHADOW_LINE_TO_IGNORE)
-               {
-                  LogStream << m_ulIteration << ": " << WARN << "could not find start point for flood fill of shadow zone " << nZone << " but continuing simulation because this is a small shadow zone (shadow line length = " << nShadowLineLen << " cells)" << endl;
-                  
-                  continue;
-               }
-               else
-               {
-                  LogStream << m_ulIteration << ": " << ERR << "could not find start point for flood fill of shadow zone " << nZone << " (shadow line length = " << nShadowLineLen << " cells)" << endl;
-                  return nRet;
-               }
+               LogStream << m_ulIteration << ": " << WARN << "could not find start point for flood fill of shadow zone " << nZone << " but continuing simulation because this is a small shadow zone (shadow line length = " << nShadowLineLen << " cells)" << endl;
+               
+               continue;
             }
             else
+            {
+               LogStream << m_ulIteration << ": " << ERR << "could not find start point for flood fill of shadow zone " << nZone << " (shadow line length = " << nShadowLineLen << " cells)" << endl;
                return nRet;
+            }
          }
          
          // Sweep the shadow zone, changing wave orientation and height

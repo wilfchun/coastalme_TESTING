@@ -480,7 +480,7 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
                // First stab at calculating the number of the adjacent polygon
                int nAdj = nPoly - nNumValidCoinc;
                
-               // However, if 'this' polygon is close to the start of the coastline, we get polygon numbers below zero. If this happens, set the adjacent polygon to 'off-edge'
+               // However, if 'this' polygon is close to the start of the coastline, we get polygon numbers below zero i.e. beyond the start of the coastline. If this happens, set the adjacent polygon to 'off-edge'
                if (nAdj < 0)
                   nAdj = INT_NODATA;
                
@@ -547,7 +547,7 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
                // First stab at calculating the number of the adjacent polygon
                int nAdj = nPoly + nNumValidCoinc;
                
-               // However, if 'this' polygon is close to the end of the coastline, we get polygon numbers greater than the number of polygons. If this happens, set the adjacent polygon to 'off-edge'               
+               // However, if 'this' polygon is close to the end of the coastline, we get polygon numbers greater than the number of polygons i.e. beyond the end of the coastline. If this happens, set the adjacent polygon to 'off-edge'               
                if (nAdj >= nNumPolygons)
                   nAdj = INT_NODATA;
                

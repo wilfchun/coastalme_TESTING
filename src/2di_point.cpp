@@ -105,27 +105,45 @@ void CGeom2DIPoint::AddXAddY(int const nXToAdd, int const nYToAdd)
 }
 
 
-//! Sets one CGeom2DIPoint object to be the same as another CGeom2DIPoint object
-void CGeom2DIPoint::operator= (CGeom2DIPoint* Pti)
+//! Sets one CGeom2DIPoint object to be the same as another
+void CGeom2DIPoint::operator= (CGeom2DIPoint* pPti)
 {
-   nX = Pti->nGetX();
-   nY = Pti->nGetY();
+   nX = pPti->nGetX();
+   nY = pPti->nGetY();
 }
 
-// //! Returns true if a pointed-to CGeom2DIPoint object is the same as this CGeom2DIPoint object, returns false otherwise
-// bool CGeom2DIPoint::operator== (CGeom2DIPoint* Pti) const
-// {
-//    if ((Pti->nGetX() == nX) && (Pti->nGetY() == nY))
-//       return true;
-//
-//    return false;
-// }
+//! Compares two CGeom2DIPoint objects for equality
+bool CGeom2DIPoint::operator== (CGeom2DIPoint* pPti) const
+{
+   if ((pPti->nGetX() == nX) && (pPti->nGetY() == nY))
+      return true;
 
-//! Returns true if a CGeom2DIPoint object is the same as this CGeom2DIPoint object, returns false otherwise
+   return false;
+}
+
+//! Compares two CGeom2DIPoint objects for equality
 bool CGeom2DIPoint::operator== (CGeom2DIPoint Pti) const
 {
    if ((Pti.nGetX() == nX) && (Pti.nGetY() == nY))
       return true;
 
    return false;
+}
+
+//! Compares two CGeom2DIPoint objects for inequality
+bool CGeom2DIPoint::operator!= (CGeom2DIPoint* pPti) const
+{
+   if ((pPti->nGetX() == nX) && (pPti->nGetY() == nY))
+      return false;
+   
+   return true;
+}
+
+//! Compares two CGeom2DIPoint objects for inequality
+bool CGeom2DIPoint::operator!= (CGeom2DIPoint Pti) const
+{
+   if ((Pti.nGetX() == nX) && (Pti.nGetY() == nY))
+      return false;
+   
+   return true;
 }

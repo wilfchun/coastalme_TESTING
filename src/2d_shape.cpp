@@ -33,11 +33,13 @@ CA2DShape::~CA2DShape(void)
 {
 }
 
+
 CGeom2DPoint& CA2DShape::operator[] (int const n)
 {
    // NOTE No safety check
    return m_VPoints[n];
 }
+
 
 void CA2DShape::Clear(void)
 {
@@ -48,6 +50,12 @@ void CA2DShape::Resize(int const nSize)
 {
    m_VPoints.resize(nSize);
 }
+
+int CA2DShape::nGetSize(void) const
+{
+   return m_VPoints.size();
+}
+
 
 // void CA2DShape::InsertAtFront(double const dX, double const dY)
 // {
@@ -64,10 +72,17 @@ void CA2DShape::Append(double const dX, double const dY)
    m_VPoints.push_back(CGeom2DPoint(dX, dY));
 }
 
-int CA2DShape::nGetSize(void) const
+void CA2DShape::AppendIfNotAlready(double const dX, double const dY)
 {
-   return m_VPoints.size();
+   CGeom2DPoint PtIn(dX, dY);
+   
+   if (m_VPoints.empty())
+      m_VPoints.push_back(PtIn);
+   
+   else if (m_VPoints.back() != &PtIn)
+      m_VPoints.push_back(PtIn);
 }
+
 
 CGeom2DPoint* CA2DShape::pPtBack(void)
 {
@@ -114,8 +129,7 @@ vector<CGeom2DPoint>* CA2DShape::pPtVGetPoints(void)
 }
 
 
-//! Computes the centroid of this 2D polygon (which may be outside, if this is a concave the polygon)
-//! From http://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon
+//! Computes the centroid of this 2D polygon (which may be outside, if this is a concave the polygon). From http://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon
 CGeom2DPoint CA2DShape::PtGetCentroid(void)
 {
    int nVertexCount = m_VPoints.size();
@@ -145,4 +159,11 @@ CGeom2DPoint CA2DShape::PtGetCentroid(void)
    dCentroidY /= (6 * dSignedArea);
 
    return (CGeom2DPoint(dCentroidX, dCentroidY));
+}
+
+
+//! Reverses the sequence of pointsw in this 2D polygon
+void CA2DShape::Reverse(void)
+{
+   reverse(m_VPoints.begin(), m_VPoints.end());   
 }

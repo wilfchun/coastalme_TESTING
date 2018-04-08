@@ -29,6 +29,9 @@
 #include <vector>
 using std::vector;
 
+#include <algorithm>
+using std::reverse;
+
 #include "2d_point.h"
 
 
@@ -42,12 +45,17 @@ public:
    virtual ~CA2DShape(void);
    
    CGeom2DPoint& operator[] (int const);
+   
    void Clear(void);
    void Resize(int const);
-//    void InsertAtFront(double const, double const);
+   int nGetSize(void) const;
+   
+   //    void InsertAtFront(double const, double const);
    void Append(CGeom2DPoint const*);
    void Append(double const, double const);
-   int nGetSize(void) const;
+   void AppendIfNotAlready(double const, double const);
+
+
    CGeom2DPoint* pPtBack(void);
 //    void SetPoints(const vector<CGeom2DPoint>*);
 //    int nLookUp(CGeom2DPoint*);
@@ -55,6 +63,8 @@ public:
    vector<CGeom2DPoint>* pPtVGetPoints(void);
 
    CGeom2DPoint PtGetCentroid(void);
+   
+   void Reverse(void);
 
    virtual void Display() = 0;
 };

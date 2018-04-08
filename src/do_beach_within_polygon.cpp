@@ -789,7 +789,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
    int nIndex =  pUpCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
    if (nIndex == INT_NODATA)
    {
-      LogStream << m_ulIteration << ": " << ERR << "while depositing beach in polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
+      LogStream << m_ulIteration << ": " << ERR << "while depositing beach for coast " << nCoast << " polygon " << nPoly << ", could not find the seaward end point of the up-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
 
       return RTN_ERR_NO_SEAWARD_END_OF_PROFILE_3;
    }
@@ -1260,7 +1260,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
       int nIndex = pDownCoastProfile->nGetCellGivenDepth(m_pRasterGrid, m_dDepthOfClosure);
       if (nIndex == INT_NODATA)
       {
-         LogStream << m_ulIteration << ": " << ERR << "while depositing beach in polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
+         LogStream << m_ulIteration << ": " << ERR << "while depositing beach for coast " << nCoast << " polygon " << nPoly << ", could not find the seaward end point of the down-coast profile (" << nUpCoastProfile << ") for depth of closure = " << m_dDepthOfClosure << endl;
          return RTN_ERR_NO_SEAWARD_END_OF_PROFILE_4;
       }
 

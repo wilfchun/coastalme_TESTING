@@ -653,6 +653,7 @@ private:
    static CGeom2DPoint PtAverage(CGeom2DPoint const*, CGeom2DPoint const*);
    static CGeom2DPoint PtAverage(vector<CGeom2DPoint>*);
    static CGeom2DIPoint PtiAverage(CGeom2DIPoint const*, CGeom2DIPoint const*);
+   static CGeom2DIPoint PtiAverage(vector<CGeom2DIPoint>*);
    static CGeom2DIPoint PtiWeightedAverage(CGeom2DIPoint const*, CGeom2DIPoint const*, double const);
    static double dAngleSubtended(CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
    static int nGetOppositeDirection(int const);

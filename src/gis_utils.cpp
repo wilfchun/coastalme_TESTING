@@ -522,6 +522,34 @@ CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
 
 
 /*==============================================================================================================================
+ 
+ Returns a point (grid CRS) which is the average of a vector of grid CRS points
+ 
+===============================================================================================================================*/
+CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
+{
+   int nSize = pVIn->size();
+   if (nSize == 0)
+      return CGeom2DIPoint(INT_NODATA, INT_NODATA);
+   
+   double
+      dAvgX = 0,
+      dAvgY = 0;
+   
+   for (int n = 0; n < nSize; n++)
+   {
+      dAvgX += pVIn->at(n).nGetX();
+      dAvgY += pVIn->at(n).nGetY();
+   }
+   
+   dAvgX /= nSize;
+   dAvgY /= nSize;
+   
+   return CGeom2DIPoint(dRound(dAvgX), dRound(dAvgY));
+}
+
+
+/*==============================================================================================================================
 
  Returns a vector which is perpendicular to an existing vector
 

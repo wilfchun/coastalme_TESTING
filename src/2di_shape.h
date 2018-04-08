@@ -43,13 +43,19 @@ public:
    virtual ~CA2DIShape(void);
    
    CGeom2DIPoint& operator[] (int const);
+   
    CGeom2DIPoint& Back(void);
+   vector<CGeom2DIPoint>* pPtiVGetPoints(void);   
+
    void Clear(void);
    void Resize(const int);
+   int nGetSize(void) const;
+   
 //    void InsertAtFront(int const, int const);
    void Append(CGeom2DIPoint const*);
    void Append(int const, int const);
-   int nGetSize(void) const;
+   void AppendIfNotAlready(int const, int const);
+   
 //    void SetPoints(const vector<CGeom2DIPoint>*);
 //    int nLookUp(CGeom2DIPoint*);
    virtual void Display() = 0;

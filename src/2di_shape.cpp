@@ -36,16 +36,24 @@ CA2DIShape::~CA2DIShape(void)
 {
 }
 
+
 CGeom2DIPoint& CA2DIShape::operator[] (int const n)
 {
    // NOTE No safety check
    return m_VPoints[n];
 }
 
+
 CGeom2DIPoint& CA2DIShape::Back(void)
 {
    return m_VPoints.back();
 }
+
+vector<CGeom2DIPoint>* CA2DIShape::pPtiVGetPoints(void)
+{
+   return &m_VPoints;
+}
+
 
 void CA2DIShape::Clear(void)
 {
@@ -56,6 +64,12 @@ void CA2DIShape::Resize(const int nSize)
 {
    m_VPoints.resize(nSize);
 }
+
+int CA2DIShape::nGetSize(void) const
+{
+   return m_VPoints.size();
+}
+
 
 // void CA2DIShape::InsertAtFront(int const nX, int const nY)
 // {
@@ -72,10 +86,17 @@ void CA2DIShape::Append(int const nX, int const nY)
    m_VPoints.push_back(CGeom2DIPoint(nX, nY));
 }
 
-int CA2DIShape::nGetSize(void) const
+void CA2DIShape::AppendIfNotAlready(int const nX, int const nY)
 {
-   return m_VPoints.size();
+   CGeom2DIPoint PtiIn(nX, nY);
+   
+   if (m_VPoints.empty())
+      m_VPoints.push_back(PtiIn);
+   
+   else if (m_VPoints.back() != &PtiIn)
+      m_VPoints.push_back(PtiIn);
 }
+
 
 // void CA2DIShape::SetPoints(const vector<CGeom2DIPoint>* VNewPoints)
 // {
