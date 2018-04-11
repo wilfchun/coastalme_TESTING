@@ -197,7 +197,7 @@ CGeom2DIPoint* CRWCoast::pPtiGetCellMarkedAsCoastline(int const n)
 //    return dLen;
 // }
 
-//! Returns the coastline number given a cell, or INT_NODATA if neither this cell nor any of its neighbouring cells are 'under' a coastline. If it is a neighbouring cell that is under the coastline, then it also changes the cell that is supplied as an input parameter
+//! Returns the coastline number given a cell, or INT_NODATA if neither this cell or any of its neighbouring cells are 'under' a coastline. If it is a neighbouring cell that is under the coastline, then it also changes the cell that is supplied as an input parameter
 int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
 {
    for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)

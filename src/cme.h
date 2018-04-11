@@ -164,13 +164,11 @@ int const      COAST_LENGTH_MAX                                            = 10;
 int const      COAST_LENGTH_MIN_X_PROF_SPACE                               = 2;           // Ignore very short coasts less than this x profile spacing
 int const      MAX_NUM_SHADOW_ZONES                                        = 10;          // Consider at most this number of shadow zones
 int const      GRID_MARGIN                                                 = 10;          // Ignore this many along-coast grid-edge points re. shadow zone calcs
-
 int const      MIN_PROFILE_SPACING                                         = 20;          // In cells: profile creation does not work well if profiles are too closely spaced
 int const      CAPE_POINT_MIN_SPACING                                      = 10;          // In cells: for shadow zone stuff, cape points must not be closer than this
 int const      FLOOD_FILL_START_OFFSET                                     = 2;           // In cells: flood fill starts this distance inside polygon
 int const      SHADOW_LINE_MIN_SINCE_HIT_SEA                               = 5;
 int const      MAX_LEN_SHADOW_LINE_TO_IGNORE                               = 200;         // In cells: if can't find flood fill start point, continue if short shadow line
-int const      MAX_EDGE_SEARCH_DIST                                        = 30;          // In cells: search for edge cells this far in from grid edge
 int const      MIN_PAR_PROFILE_SIZE                                        = 3;           // In cells: min size for uncons sed parallel profile
 int const      MAX_NUM_PREV_ORIENTATION_VALUES                             = 10;          // Max length of deque used in tracing shadow boundary
 int const      MIN_INLAND_OFFSET_FOR_BEACH_EROSION_ESTIMATION              = 5;           // Used in estimation of beach erosion
@@ -462,7 +460,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 8 April 2018";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 11 April 2018";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 

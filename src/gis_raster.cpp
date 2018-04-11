@@ -221,10 +221,13 @@ void CSimulation::MarkEdgeCells(void)
    // Go round in a clockwise direction: top (north) edge first
    int
       nLastX = 0,
-      nLastY = 0;
+      nLastY = 0,
+      nMaxSearchDistX = (m_nXGridMax / 2) - 1,
+      nMaxSearchDistY = (m_nYGridMax / 2) - 1;
+      
    for (int nX = 0; nX < m_nXGridMax; nX++)
    {
-      for (int nY = 0; nY < MAX_EDGE_SEARCH_DIST; nY++)
+      for (int nY = 0; nY < nMaxSearchDistY; nY++)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -244,9 +247,9 @@ void CSimulation::MarkEdgeCells(void)
    }
 
    // Right (east) edge
-   for (int nY = nLastY+1; nY < m_nYGridMax; nY++)
+   for (int nY = nLastY+1; nY < nMaxSearchDistX; nY++)
    {
-      for (int nX = m_nXGridMax-1; nX >= (m_nXGridMax - MAX_EDGE_SEARCH_DIST); nX--)
+      for (int nX = m_nXGridMax-1; nX >= (m_nXGridMax - nMaxSearchDistX); nX--)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -268,7 +271,7 @@ void CSimulation::MarkEdgeCells(void)
    // Bottom (south) edge
    for (int nX = nLastX-1; nX >= 0; nX--)
    {
-      for (int nY = m_nYGridMax-1; nY >= (m_nYGridMax - MAX_EDGE_SEARCH_DIST); nY--)
+      for (int nY = m_nYGridMax-1; nY >= (m_nYGridMax - nMaxSearchDistX); nY--)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -290,7 +293,7 @@ void CSimulation::MarkEdgeCells(void)
    // Left (west) edge
    for (int nY = nLastY-1; nY >= 0; nY--)
    {
-      for (int nX = 0; nX < MAX_EDGE_SEARCH_DIST; nX++)
+      for (int nX = 0; nX < nMaxSearchDistX; nX++)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {

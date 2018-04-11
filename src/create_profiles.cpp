@@ -512,10 +512,6 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                }
 
                // OK, try to create a profile here
-               if ((nCoast == 1) && (nProfile == 8))
-                  cout << endl;
-               
-               
                int nRet = nCreateProfile(nCoast, nThisPoint, nProfile);
                if (nRet == RTN_OK)
                {

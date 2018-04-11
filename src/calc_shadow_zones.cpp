@@ -475,14 +475,16 @@ int CSimulation::nDoAllShadowZones(void)
                continue;
             }
                 
-            // We've found a valid shadow zone. Check the last point in the shadow boundary. Note that occasionally this last cell is not 'above' a cell but one of its neighbouring cells is: in which case, replace the last point in the shadow boundary with the co-ords of this neighbouring cell
+            // We've found a valid shadow zone. Check the last point in the shadow boundary. Note that occasionally this last cell is not 'above' a cell but is above one of its neighbouring cells is: in which case, replace the last point in the shadow boundary with the co-ords of this neighbouring cell
             int nShadowBoundaryCoastPoint = m_VCoast[nCoast].nGetCoastPointGivenCell(&ILShadowBoundary.Back()); 
             if (nShadowBoundaryCoastPoint == INT_NODATA)
             {
                // Could not find a neighbouring cell which is 'under' the coastline
                LogStream << m_ulIteration << ": coast " << nCoast << ", no coast point under {" << dGridCentroidXToExtCRSX(ILShadowBoundary.Back().nGetX()) << ", " << dGridCentroidYToExtCRSY(ILShadowBoundary.Back().nGetY()) << "}" << endl;
                
-               return RTN_ERR_NO_CELL_UNDER_COASTLINE;               
+               // TODO Need to fix this, for the moment just abandon this shadow zone and carry on
+               continue;
+//                return RTN_ERR_NO_CELL_UNDER_COASTLINE;               
             }
             
             // Now store the shadow zone boundary information
