@@ -2674,7 +2674,11 @@ void CSimulation::CalcDepthOfClosure(void)
    // from Hallermeier, R.J. (1978). Uses for a calculated limit depth to beach erosion. Proc. 16th Coastal Engineering Conf., ASCE, New York. Pp 1493 - 1512
    //
    // For the time being, and since we assume wave height and period constant just use the actual wave height and period to calculate the depth of closure
-   m_dDepthOfClosure = (2.28 * dDeepWaterWaveHeight) - (68.5 * dDeepWaterWaveHeight * dDeepWaterWaveHeight / (m_dG * dDeepWaterPeriod * dDeepWaterPeriod));
+   //m_dDepthOfClosure = (2.28 * dDeepWaterWaveHeight) - (68.5 * dDeepWaterWaveHeight * dDeepWaterWaveHeight / (m_dG * dDeepWaterPeriod * dDeepWaterPeriod));
+
+   // An alternative (which produces smaller depth of closure estimates) is Birkemeier (1985)
+   // dL = 1.75 * Hsx - (57.9 * Hsx^2/ (g * Tsx^2))
+   m_dDepthOfClosure = (1.75 * dDeepWaterWaveHeight) - (57.9 * dDeepWaterWaveHeight * dDeepWaterWaveHeight / (m_dG * dDeepWaterPeriod * dDeepWaterPeriod));
 }
 
 
