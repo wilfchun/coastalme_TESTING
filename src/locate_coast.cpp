@@ -303,11 +303,13 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    // Start at this grid-edge point and trace the rest of the coastline using the 'wall follower' rule for maze traversal, trying to keep next to cells flagged as sea
    do
    {
+      // DEBUG CODE ==============================================
 //       LogStream << "Now at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 //       LogStream << "ILTempGridCRS is now:" << endl;
 //       for (int n = 0; n < ILTempGridCRS.nGetSize(); n++)
 //          LogStream << "[" << ILTempGridCRS[n].nGetX() << "][" << ILTempGridCRS[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[n].nGetY()) << "}" << endl;
 //       LogStream <<  "=================" << endl;
+      // DEBUG CODE ==============================================
       
       // Safety check
       if (++nRoundLoop > m_nCoastMax)
@@ -339,7 +341,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
       // Leave the loop if the vector coastline has left the start edge, then we find a coast cell which is at an edge (note that this edge could be the same edge from which this coastline started)
       if (bHasLeftStartEdge && bAtCoast)
       {
-         if (m_pRasterGrid->m_Cell[nX][nY].bIsEdgeCell())
+         if (m_pRasterGrid->m_Cell[nX][nY].bIsBoundingBoxEdge())
          {
 //             LogStream << "XXXXX" << endl;
             break;
@@ -750,7 +752,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    if ((nCoastEndX != nEndX) || (nCoastEndY != nEndY))
    {
       // The grid-edge cell at nEndX, nEndY is not already at end of ILTempGridCRS. But is the final cell in ILTempGridCRS already at the edge of the grid?
-      if (! m_pRasterGrid->m_Cell[nCoastEndX][nCoastEndY].bIsEdgeCell())
+      if (! m_pRasterGrid->m_Cell[nCoastEndX][nCoastEndY].bIsBoundingBoxEdge())
       {
          // The final cell in ILTempGridCRS is not a grid-edge cell, so add the grid-edge cell and mark the cell as coastline
          ILTempGridCRS.Append(nEndX, nEndY);
@@ -762,13 +764,15 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
 
    // Need to specify start edge and end edge for smoothing routines
    int
-      nStartEdge = m_pRasterGrid->m_Cell[nStartX][nStartY].nGetEdgeCell(),
-      nEndEdge = m_pRasterGrid->m_Cell[nEndX][nEndY].nGetEdgeCell();
+      nStartEdge = m_pRasterGrid->m_Cell[nStartX][nStartY].nGetBoundingBoxEdge(),
+      nEndEdge = m_pRasterGrid->m_Cell[nEndX][nEndY].nGetBoundingBoxEdge();
 
    // Next, convert the grid coordinates in ILTempGridCRS (integer values stored as doubles) to external CRS coordinates (which will probably be non-integer, again stored as doubles). This is done now, so that smoothing is more effective
    CGeomLine LTempExtCRS;
    for (int j = 0; j < nCoastSize; j++)
+   {
       LTempExtCRS.Append(dGridCentroidXToExtCRSX(ILTempGridCRS[j].nGetX()), dGridCentroidYToExtCRSY(ILTempGridCRS[j].nGetY()));
+   }
 
    // Now do some smoothing of the vector output, if desired
    if (m_nCoastSmooth == SMOOTH_RUNNING_MEAN)
@@ -776,6 +780,15 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    else if (m_nCoastSmooth == SMOOTH_SAVITZKY_GOLAY)
       LTempExtCRS = LSmoothCoastSavitzkyGolay(&LTempExtCRS, nStartEdge, nEndEdge);
 
+   // DEBUG CODE ==================================
+//    LogStream << "==================================" << endl;
+//    for (int j = 0; j < nCoastSize; j++)
+//    {
+//       LogStream << "{" << dGridCentroidXToExtCRSX(ILTempGridCRS[j].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[j].nGetY()) << "}" << "\t{" << LTempExtCRS.dGetXAt(j) << ", " << LTempExtCRS.dGetYAt(j) << "}" << endl;      
+//    }
+//    LogStream << "==================================" << endl;
+   // DEBUG CODE ==================================   
+   
    // Create a new coastline object and append to it the vector of coastline objects
    CRWCoast CoastTmp;
    m_VCoast.push_back(CoastTmp);

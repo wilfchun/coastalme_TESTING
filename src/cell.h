@@ -46,7 +46,7 @@ private:
       m_bPossibleCoastStartCell;
 
    int
-      m_nEdgeCell,
+      m_nBoundingBoxEdge,
       m_nPolygonID,
       m_nCoastlineNormal,
       m_nShadowZoneNumber,
@@ -118,9 +118,9 @@ public:
    void SetShadowZoneBoundary(void);
    bool bIsShadowZoneBoundary(void) const;
    
-   void SetEdgeCell(int const);
-   int nGetEdgeCell(void) const;
-   bool bIsEdgeCell(void) const;
+   void SetBoundingBoxEdge(int const);
+   int nGetBoundingBoxEdge(void) const;
+   bool bIsBoundingBoxEdge(void) const;
    
    void SetPossibleCoastStartCell(void);
    bool bIsPossibleCoastStartCell(void) const;

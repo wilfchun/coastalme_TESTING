@@ -35,7 +35,7 @@ CGeomCell::CGeomCell()
    m_bEstimated(false),
    m_bShadowBoundary(false),
    m_bPossibleCoastStartCell(false),
-   m_nEdgeCell(NO_DIRECTION),
+   m_nBoundingBoxEdge(NO_DIRECTION),
    m_nPolygonID(INT_NODATA),
    m_nCoastlineNormal(INT_NODATA),
    m_nShadowZoneNumber(0),
@@ -78,19 +78,19 @@ CGeomCell::~CGeomCell(void)
 }
 
 
-void CGeomCell::SetEdgeCell(int const nDirection)
+void CGeomCell::SetBoundingBoxEdge(int const nDirection)
 {
-   m_nEdgeCell = nDirection;   
+   m_nBoundingBoxEdge = nDirection;   
 }
 
-int CGeomCell::nGetEdgeCell(void) const
+int CGeomCell::nGetBoundingBoxEdge(void) const
 {
-   return m_nEdgeCell;
+   return m_nBoundingBoxEdge;
 }
 
-bool CGeomCell::bIsEdgeCell(void) const
+bool CGeomCell::bIsBoundingBoxEdge(void) const
 {
-   return (m_nEdgeCell != NO_DIRECTION);
+   return (m_nBoundingBoxEdge != NO_DIRECTION);
 }
 
 

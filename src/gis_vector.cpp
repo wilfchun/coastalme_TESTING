@@ -611,10 +611,16 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
    }
 
    // Create the output layer
-   OGRSpatialReference* pOGRSpatialRef = NULL;     // TODO add spatial reference
+   OGRSpatialReference OGRSpatialRef;
+   
+   // And tell it about the co-ordinate system used by the basement raster layer
+   char* pszWkt = const_cast<char*>(m_strGDALBasementDEMProjection.c_str());
+   OGRSpatialRef.importFromWkt(&pszWkt);
+
    OGRwkbGeometryType eGType = wkbUnknown;
    string strType = "unknown"; 
-   OGRLayer* pOGRLayer = pGDALDataSet->CreateLayer(strFilePathNameNoExt.c_str(), pOGRSpatialRef, eGType, m_papszGDALVectorOptions);
+   
+   OGRLayer* pOGRLayer = pGDALDataSet->CreateLayer(strFilePathNameNoExt.c_str(), &OGRSpatialRef, eGType, m_papszGDALVectorOptions);
    if (pOGRLayer == NULL)
    {
       cerr << ERR << "cannot create '" << strType << "' layer in " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
@@ -838,16 +844,24 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                else if (nDataItem == VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE)
                {
                   // Set the feature's attribute
-                  pOGRFeature->SetField(strFieldValue1.c_str(), m_VCoast[i].pGetCoastLandform(j)->dGetTotAccumWaveEnergy());
+                  if (m_VCoast[i].pGetCoastLandform(j) == NULL)
+                     pOGRFeature->SetField(strFieldValue1.c_str(), DBL_NODATA);
+                  else
+                     pOGRFeature->SetField(strFieldValue1.c_str(), m_VCoast[i].pGetCoastLandform(j)->dGetTotAccumWaveEnergy());
                }
                else if (nDataItem == VECTOR_PLOT_MEAN_WAVE_ENERGY)
                {
                   // Set the feature's attribute
-                  double dEnergy = m_VCoast[i].pGetCoastLandform(j)->dGetTotAccumWaveEnergy();
-                  dEnergy *= 24;
-                  dEnergy /= m_dSimElapsed;     // Is in energy units per day
+                  if (m_VCoast[i].pGetCoastLandform(j) == NULL)
+                     pOGRFeature->SetField(strFieldValue1.c_str(), DBL_NODATA);
+                  else
+                  {
+                     double dEnergy = m_VCoast[i].pGetCoastLandform(j)->dGetTotAccumWaveEnergy();
+                     dEnergy *= 24;
+                     dEnergy /= m_dSimElapsed;     // Is in energy units per day
 
-                  pOGRFeature->SetField(strFieldValue1.c_str(), dEnergy);
+                     pOGRFeature->SetField(strFieldValue1.c_str(), dEnergy);
+                  }
                }
                else if (nDataItem == VECTOR_PLOT_BREAKING_WAVE_HEIGHT)
                {
@@ -867,19 +881,24 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                else if (nDataItem == VECTOR_PLOT_CLIFF_NOTCH_SIZE)
                {
                   CACoastLandform* pCoastLandform = m_VCoast[i].pGetCoastLandform(j);
-                  int nCategory = pCoastLandform->nGetLandFormCategory();
-                  double dNotchOverhang = 0.0; // WAS DBL_NODATA
-
-                  if (nCategory == LF_CAT_CLIFF)
+                  if (pCoastLandform == NULL)
+                     pOGRFeature->SetField(strFieldValue1.c_str(), DBL_NODATA);
+                  else
                   {
-                     CRWCliff* pCliff = reinterpret_cast<CRWCliff*>(pCoastLandform);
+                     int nCategory = pCoastLandform->nGetLandFormCategory();
+                     double dNotchOverhang = 0.0;
 
-                     // Get attribute values from the cliff object
-                     dNotchOverhang = pCliff->dGetNotchOverhang();
+                     if (nCategory == LF_CAT_CLIFF)
+                     {
+                        CRWCliff* pCliff = reinterpret_cast<CRWCliff*>(pCoastLandform);
+
+                        // Get attribute values from the cliff object
+                        dNotchOverhang = pCliff->dGetNotchOverhang();
+                     }
+
+                     // Set the feature's attribute
+                     pOGRFeature->SetField(strFieldValue1.c_str(), dNotchOverhang);
                   }
-
-                  // Set the feature's attribute
-                  pOGRFeature->SetField(strFieldValue1.c_str(), dNotchOverhang);
                }
 
                // Create the feature in the output layer

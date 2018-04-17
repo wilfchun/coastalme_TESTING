@@ -78,4 +78,3 @@ double CACoastLandform::dGetTotAccumWaveEnergy(void) const
 {
    return m_dTotAccumWaveEnergy;
 }
-

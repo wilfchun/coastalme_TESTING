@@ -356,31 +356,58 @@ CSimulation::~CSimulation(void)
 {
    // Close output files if open
    if (LogStream && LogStream.is_open())
+   {
+      LogStream.flush();
       LogStream.close();
+   }
 
    if (OutStream && OutStream.is_open())
+   {
+      OutStream.flush();
       OutStream.close();
+   }
 
    if (SeaAreaTSStream && SeaAreaTSStream.is_open())
+   {
+      SeaAreaTSStream.flush();
       SeaAreaTSStream.close();
+   }
 
    if (StillWaterLevelTSStream && StillWaterLevelTSStream.is_open())
+   {
+      StillWaterLevelTSStream.flush();
       StillWaterLevelTSStream.close();
+   }
 
    if (ErosionTSStream && ErosionTSStream.is_open())
+   {
+      ErosionTSStream.flush();
       ErosionTSStream.close();
+   }
 
    if (CliffCollapseErosionTSStream && CliffCollapseErosionTSStream.is_open())
+   {
+      CliffCollapseErosionTSStream.flush();
       CliffCollapseErosionTSStream.close();
+   }
 
    if (CliffCollapseDepositionTSStream && CliffCollapseDepositionTSStream.is_open())
+   {
+      CliffCollapseDepositionTSStream.flush();
       CliffCollapseDepositionTSStream.close();
+   }
 
    if (CliffCollapseNetTSStream && CliffCollapseNetTSStream.is_open())
+   {
+      CliffCollapseNetTSStream.flush();
       CliffCollapseNetTSStream.close();
+   }
    
    if (SedLoadTSStream && SedLoadTSStream.is_open())
+   {
+      SedLoadTSStream.flush();
       SedLoadTSStream.close();
+   }
 
    if (m_pRasterGrid)
       delete m_pRasterGrid;
@@ -501,7 +528,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    // Create the raster grid object
    m_pRasterGrid = new CGeomRasterGrid(this);
 
-   // Read in the basement DEM (NOTE MUST HAVE THIS FILE) and create the raster grid, then read in the basement DEM data to the array
+   // Read in the basement layer (NOTE MUST HAVE THIS FILE), create the raster grid, then read in the basement DEM data to the array
    AnnounceReadBasementDEM();
    nRet = nReadBasementDEMData();
    if (nRet != RTN_OK)
@@ -509,9 +536,11 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 
    m_ulNumCells = m_nXGridMax * m_nYGridMax;
    
-   // Mark edge cells
-   MarkEdgeCells();
-
+   // Mark edge cells, as defined by the basement layer 
+   nRet = nMarkBoundingBoxEdgeCells();
+   if (nRet != RTN_OK)
+      return nRet;
+   
 //    // DEBUG CODE =================================================
 //    for (unsigned int n = 0; n < m_VEdgeCell.size(); n++)
 //    {
@@ -659,9 +688,6 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       cerr << ERR << "cannot open " << m_strOutFile << " for output" << endl;
       return (RTN_ERR_OUTFILE);
    }
-
-   // Calculate the initial depth of closure
-//    CalcDepthOfClosure();
 
    // Write beginning-of-run information to Out and Log files
    WriteStartRunDetails();

@@ -907,13 +907,13 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
       if (n == 0)
       {
          // Read in the header line
-         vector<string> VstrItems = strSplit(&strLineIn, SPACE);
+         vector<string> VstrItems = VstrSplit(&strLineIn, SPACE);
          nExpectedRows = stoi(VstrItems[1].c_str());
       }
       else
       {
          // Read in a data line
-         vector<string> VstrItems = strSplit(&strLineIn, SPACE);
+         vector<string> VstrItems = VstrSplit(&strLineIn, SPACE);
          
          int nCols = VstrItems.size();         
          if (nCols != nExpectedColumns)

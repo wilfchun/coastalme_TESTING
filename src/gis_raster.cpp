@@ -47,6 +47,7 @@ using std::to_string;
 #include "raster_grid.h"
 #include "coast.h"
 
+
 /*==============================================================================================================================
 
  Reads a raster DEM of basement elevation data to the Cell array
@@ -213,21 +214,91 @@ int CSimulation::nReadBasementDEMData(void)
 
 /*========================================================================================================================================
 
- Marks edge cells
+Mark cells which are at the edge of a bounding box which represents the valid part of the grid, as defined by the basement layer. The valid part of the grid may be the whole grid, or only part of the whole grid. The bounding box may be an irregular shape (but may not have re-entrant edges): simple shapes are more likely to work correctly
 
 ========================================================================================================================================*/
-void CSimulation::MarkEdgeCells(void)
+int CSimulation::nMarkBoundingBoxEdgeCells(void)
 {
-   // Go round in a clockwise direction: top (north) edge first
-   int
-      nLastX = 0,
-      nLastY = 0,
-      nMaxSearchDistX = (m_nXGridMax / 2) - 1,
-      nMaxSearchDistY = (m_nYGridMax / 2) - 1;
-      
+   // The bounding box must touch the edge of the grid at least once on each side of the grid, so store these points. Search in a clockwise direction around the edge of the grid
+   vector<int> VnBoundingBoxCorner;
+   
+   // Start with the top (north) edge
+   bool bFound = false;
    for (int nX = 0; nX < m_nXGridMax; nX++)
    {
-      for (int nY = 0; nY < nMaxSearchDistY; nY++)
+      if (! m_pRasterGrid->m_Cell[nX][0].bBasementElevIsMissingValue())
+      {
+         VnBoundingBoxCorner.push_back(nX);
+         bFound = true;
+         break;
+      }      
+   }
+      
+   if (! bFound)
+   {
+      LogStream << m_ulIteration << ": the bounding box does not touch the north (top) edge of the grid" << endl;
+      return RTN_ERR_BOUNDING_BOX;      
+   }
+   
+   // Do the same for the right (east) edge
+   bFound = false;
+   for (int nY = 0; nY < m_nYGridMax; nY++)
+   {
+      if (! m_pRasterGrid->m_Cell[m_nXGridMax-1][nY].bBasementElevIsMissingValue())
+      {
+         VnBoundingBoxCorner.push_back(nY);
+         bFound = true;
+         break;
+      }      
+   }
+   
+   if (! bFound)
+   {
+      LogStream << m_ulIteration << ": the bounding box does not touch the east (right) edge of the grid" << endl;
+      return RTN_ERR_BOUNDING_BOX;      
+   }
+   
+   // Do the same for the south (bottom) edge
+   bFound = false;
+   for (int nX = m_nXGridMax-1; nX >= 0; nX--)
+   {
+      if (! m_pRasterGrid->m_Cell[nX][m_nYGridMax-1].bBasementElevIsMissingValue())
+      {
+         VnBoundingBoxCorner.push_back(nX);
+         bFound = true;
+         break;
+      }      
+   }
+   
+   if (! bFound)
+   {
+      LogStream << m_ulIteration << ": the bounding box does not touch the south (bottom) edge of the grid" << endl;
+      return RTN_ERR_BOUNDING_BOX;      
+   }
+   
+   // Amnd finally repeat for the west (left) edge
+   bFound = false;
+   for (int nY = m_nYGridMax-1; nY >= 0; nY--)
+   {
+      if (! m_pRasterGrid->m_Cell[m_nXGridMax-1][nY].bBasementElevIsMissingValue())
+      {
+         VnBoundingBoxCorner.push_back(nY);
+         bFound = true;
+         break;
+      }      
+   }
+   
+   if (! bFound)
+   {
+      LogStream << m_ulIteration << ": the bounding box does not touch the west (left) edge of the grid" << endl;
+      return RTN_ERR_BOUNDING_BOX;      
+   }
+   
+   // OK, so we have a point on each side of the grid, so start at this point and find the edges of the bounding box. Go round in a clockwise direction: top (north) edge first
+   for (int nX = VnBoundingBoxCorner[0]; nX < m_nXGridMax; nX++)
+   {
+      bFound = false;
+      for (int nY = 0; nY < m_nYGridMax; nY++)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -235,21 +306,28 @@ void CSimulation::MarkEdgeCells(void)
             continue;
          }
 
-         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(NORTH);
+         // Found a bounding box edge cell
+         m_pRasterGrid->m_Cell[nX][nY].SetBoundingBoxEdge(NORTH);
 
          m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
          m_VEdgeCellEdge.push_back(NORTH);
 
-         nLastY = nY;
-
+         bFound = true;
          break;
+      }
+      
+      if (! bFound)
+      {
+         LogStream << m_ulIteration << ": could not find a bounding box edge cell for grid column " << nX << endl;
+         return RTN_ERR_BOUNDING_BOX;      
       }
    }
 
    // Right (east) edge
-   for (int nY = nLastY+1; nY < nMaxSearchDistX; nY++)
+   for (int nY = VnBoundingBoxCorner[1]; nY < m_nYGridMax; nY++)
    {
-      for (int nX = m_nXGridMax-1; nX >= (m_nXGridMax - nMaxSearchDistX); nX--)
+      bFound = false;
+      for (int nX = m_nXGridMax-1; nX >= 0; nX--)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -257,21 +335,28 @@ void CSimulation::MarkEdgeCells(void)
             continue;
          }
 
-         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(EAST);
+         // Found a bounding box edge cell
+         m_pRasterGrid->m_Cell[nX][nY].SetBoundingBoxEdge(EAST);
 
          m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
          m_VEdgeCellEdge.push_back(EAST);
 
-         nLastX = nX;
-
+         bFound = true;
          break;
+      }
+      
+      if (! bFound)
+      {
+         LogStream << m_ulIteration << ": could not find a bounding box edge cell for grid row " << nY << endl;
+         return RTN_ERR_BOUNDING_BOX;      
       }
    }
 
    // Bottom (south) edge
-   for (int nX = nLastX-1; nX >= 0; nX--)
+   for (int nX = VnBoundingBoxCorner[2]; nX >= 0; nX--)
    {
-      for (int nY = m_nYGridMax-1; nY >= (m_nYGridMax - nMaxSearchDistX); nY--)
+      bFound = false;
+      for (int nY = m_nYGridMax-1; nY >= 0; nY--)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -279,21 +364,27 @@ void CSimulation::MarkEdgeCells(void)
             continue;
          }
 
-         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(SOUTH);
+         // Found a bounding box edge cell
+         m_pRasterGrid->m_Cell[nX][nY].SetBoundingBoxEdge(SOUTH);
 
          m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
          m_VEdgeCellEdge.push_back(SOUTH);
 
-         nLastY = nY;
-
+         bFound = true;
          break;
+      }
+      
+      if (! bFound)
+      {
+         LogStream << m_ulIteration << ": could not find a bounding box edge cell for grid column " << nX << endl;
+         return RTN_ERR_BOUNDING_BOX;      
       }
    }
 
    // Left (west) edge
-   for (int nY = nLastY-1; nY >= 0; nY--)
+   for (int nY = VnBoundingBoxCorner[2]; nY >= 0; nY--)
    {
-      for (int nX = 0; nX < nMaxSearchDistX; nX++)
+      for (int nX = 0; nX < m_nXGridMax-1; nX++)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -301,14 +392,24 @@ void CSimulation::MarkEdgeCells(void)
             continue;
          }
 
-         m_pRasterGrid->m_Cell[nX][nY].SetEdgeCell(WEST);
+         // Found a bounding box edge cell
+         m_pRasterGrid->m_Cell[nX][nY].SetBoundingBoxEdge(WEST);
 
          m_VEdgeCell.push_back(CGeom2DIPoint(nX, nY));
          m_VEdgeCellEdge.push_back(WEST);
 
+         bFound = true;
          break;
       }
+      
+      if (! bFound)
+      {
+         LogStream << m_ulIteration << ": could not find a bounding box edge cell for grid row " << nY << endl;
+         return RTN_ERR_BOUNDING_BOX;      
+      }
    }
+   
+   return RTN_OK;
 }
 
 
@@ -1131,7 +1232,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
       }
    }
 
-   // Set projection info for output dataset (will be same as was read in from DEM)
+   // Set projection info for output dataset (will be same as was read in from basement DEM)
    CPLPushErrorHandler(CPLQuietErrorHandler);                              // Needed to get next line to fail silently, if it fails
    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());        // Will fail for some formats
    CPLPopErrorHandler();

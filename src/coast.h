@@ -180,7 +180,7 @@ public:
    double dGetWaveEnergyatBreaking(int const) const;
    
    void AppendCoastLandform(CACoastLandform*);
-   CACoastLandform* pGetCoastLandform(int const);
+   CACoastLandform* pGetCoastLandform(unsigned int const);
 
    void SetPolygonNode(int const, int const);
    int nGetPolygonNode(int const) const;

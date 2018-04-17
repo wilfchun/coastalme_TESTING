@@ -555,10 +555,12 @@ void CRWCoast::AppendCoastLandform(CACoastLandform* pCoastLandform)
    m_pVLandforms.push_back(pCoastLandform);
 }
 
-CACoastLandform* CRWCoast::pGetCoastLandform(int const nCoastPoint)
+CACoastLandform* CRWCoast::pGetCoastLandform(unsigned int const nCoastPoint)
 {
-   // NOTE no check to see if nCoastPoint < m_ILCellsMarkedAsCoastline.size()
-   return m_pVLandforms[nCoastPoint];
+   if (nCoastPoint < m_pVLandforms.size())
+      return m_pVLandforms[nCoastPoint];
+   
+   return NULL;
 }
 
 

@@ -2176,6 +2176,9 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_READ_DEEP_WATER_WAVE_DATA:
       strErr = "reading deep sea wave values file";
       break;
+   case RTN_ERR_BOUNDING_BOX:
+      strErr = "the bounding box must touch the grid edge on all four sides";
+      break;
    default:
       // should never get here
       strErr = "unknown cause";
@@ -2448,7 +2451,7 @@ string CSimulation::strRemoveSubstr(string* strIn, string const* strSub)
  These two functions are from http://stackoverflow.com/questions/236129/split-a-string-in-c They implement (approximately) Python's split() function. This first version puts the results into a pre-constructed string vector. It ignores empty items
 
 ==============================================================================================================================*/
-vector<string>* CSimulation::strSplit(string const* s, char const delim, vector<string>* elems)
+vector<string>* CSimulation::VstrSplit(string const* s, char const delim, vector<string>* elems)
 {
    stringstream ss(*s);
    string item;
@@ -2466,10 +2469,10 @@ vector<string>* CSimulation::strSplit(string const* s, char const delim, vector<
  This second version returns a new string vector (it calls the first version)
 
 ==============================================================================================================================*/
-vector<string> CSimulation::strSplit(string const* s, char const delim)
+vector<string> CSimulation::VstrSplit(string const* s, char const delim)
 {
    vector<string> elems;
-   strSplit(s, delim, &elems);
+   VstrSplit(s, delim, &elems);
    return elems;
 }
 

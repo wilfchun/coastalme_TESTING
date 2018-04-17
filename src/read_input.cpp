@@ -1859,7 +1859,7 @@ bool CSimulation::bReadRunData(void)
             // Numbers of profiles to be saved
             if (m_bOutputProfileData)
             {
-               vector<string> strTmp = strSplit(&strRH, SPACE);
+               vector<string> strTmp = VstrSplit(&strRH, SPACE);
                for (unsigned int j = 0; j < strTmp.size(); j++)
                {
                   strTmp[j] = strTrim(&strTmp[j]);
@@ -1879,7 +1879,7 @@ bool CSimulation::bReadRunData(void)
            // Timesteps to save profile for output
             if (m_bOutputProfileData)
             {
-               vector<string> strTmp = strSplit(&strRH, SPACE);
+               vector<string> strTmp = VstrSplit(&strRH, SPACE);
                for (unsigned int j = 0; j < strTmp.size(); j++)
                {
                   strTmp[j] = strTrim(&strTmp[j]);
@@ -2058,7 +2058,7 @@ int CSimulation::nReadShapeFunction()
       nRead++;
 
       // Split the string, and remove whitespace
-      vector<string> strTmp = strSplit(&strRec, SPACE);
+      vector<string> strTmp = VstrSplit(&strRec, SPACE);
       for (unsigned int i = 0; i < strTmp.size(); i++)
          strTmp[i] = strTrim(&strTmp[i]);
 
@@ -2219,7 +2219,7 @@ int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
             nTimeStepsRead++;
             
             // Read in each wave attribute for each time step and station: split the string, and remove whitespace
-            vector<string> strTmp = strSplit(&strRec, COMMA);
+            vector<string> strTmp = VstrSplit(&strRec, COMMA);
             for (unsigned int i = 0; i < strTmp.size(); i++)      // strTmp.size() should be 3 x nExpectedStations
                strTmp[i] = strTrim(&strTmp[i]);
 

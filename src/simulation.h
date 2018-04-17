@@ -623,7 +623,7 @@ private:
    int nSetAllCoastpointDeepWaterWaveValues(void);
 
    // GIS utility routines
-   void MarkEdgeCells(void);
+   int nMarkBoundingBoxEdgeCells(void);
    bool bCheckRasterGISOutputFormat(void);
    bool bCheckVectorGISOutputFormat(void);
    bool bSaveAllRasterGISFiles(void);
@@ -719,8 +719,8 @@ private:
    static string strToLower(string const*);
 //  static string strToUpper(string const*);
    static string strRemoveSubstr(string*, string const*);
-   static vector<string>* strSplit(string const*, char const, vector<string>*);
-   static vector<string> strSplit(string const*, char const);
+   static vector<string>* VstrSplit(string const*, char const, vector<string>*);
+   static vector<string> VstrSplit(string const*, char const);
    static double dCrossProduct(double const, double const, double const, double const, double const, double const);
    static double dGetMean(vector<double> const*);
    static double dGetStdDev(vector<double> const*);
