@@ -610,7 +610,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
       return false;
    }
 
-   // Create the output layer
+   // Create a spatial reference object
    OGRSpatialReference OGRSpatialRef;
    
    // And tell it about the co-ordinate system used by the basement raster layer
@@ -620,6 +620,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
    OGRwkbGeometryType eGType = wkbUnknown;
    string strType = "unknown"; 
    
+   // Now create the output layer
    OGRLayer* pOGRLayer = pGDALDataSet->CreateLayer(strFilePathNameNoExt.c_str(), &OGRSpatialRef, eGType, m_papszGDALVectorOptions);
    if (pOGRLayer == NULL)
    {

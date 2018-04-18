@@ -2177,7 +2177,7 @@ string CSimulation::strGetErrorText(int const nErr)
       strErr = "reading deep sea wave values file";
       break;
    case RTN_ERR_BOUNDING_BOX:
-      strErr = "the bounding box must touch the grid edge on all four sides";
+      strErr = "finding edges of the bounding box";
       break;
    default:
       // should never get here

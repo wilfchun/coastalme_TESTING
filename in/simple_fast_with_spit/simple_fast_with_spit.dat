@@ -31,17 +31,17 @@ Main output/log file names                                [omit path and extensi
 #Timestep (hours or days)                                                           : 6 hours
 #Save times                                             [hours, days, months, years]: 1 2 3 5 10 20 30 50 60 80 days
 
-#Duration of simulation                                [hours, days, months, years]: 365 days
-#Timestep (hours or days)                                                          : 6 hours
-#Save times                                            [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
+Duration of simulation                                [hours, days, months, years]: 365 days
+Timestep (hours or days)                                                          : 6 hours
+Save times                                            [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
 
 #Duration of simulation                                [hours, days, months, years]: 3 years
 #Timestep (hours or days)                                                          : 6 hours
 #Save times                                            [hours, days, months, years]: 0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.25 2.5  years
 
-Duration of simulation                                [hours, days, months, years]: 5 years
-Timestep (hours or days)                                                          : 6 hours
-Save times                                            [hours, days, months, years]: 0.25 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 years
+#Duration of simulation                                [hours, days, months, years]: 5 years
+#Timestep (hours or days)                                                          : 6 hours
+#Save times                                            [hours, days, months, years]: 0.25 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 years
 
 
 Random number seed(s)                                                              : 280764
@@ -124,7 +124,7 @@ Sand erosivity                                                                  
 Coarse erosivity                                                                   : 0.3
 
 Transport parameter KLS                                         [only for CERC eqn]: 0.5       ; Should vary between 0.4 to 0.79
-Transport parameter                                         [only for Kamphuis eqn]: 0.1
+Transport parameter                                         [only for Kamphuis eqn]: 0.2       ; *** was 0.1
 
 Berm height i.e. height above SWL of start of depositional Dean profile (m)        : 0.25
 
@@ -145,7 +145,7 @@ Gravitational acceleration (m2/s)                                               
 ; TEMPORARY ONLY, CHANGE DYNAMICALLY LATER
 Spacing of coastline normals (m)                              [0 = default minimum]: 0
 Random factor for spacing of normals                    [0 to 1, 0 = deterministic]: 0.1
-Length of coastline normals (m)                                                    : 150
+Length of coastline normals (m)                                                    : 160
 Maximum number of 'cape' normals                                                   : 6
 
 Start depth for wave calcs (ratio to deep water wave height)                       : 30

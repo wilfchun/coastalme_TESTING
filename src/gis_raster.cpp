@@ -220,85 +220,113 @@ Mark cells which are at the edge of a bounding box which represents the valid pa
 int CSimulation::nMarkBoundingBoxEdgeCells(void)
 {
    // The bounding box must touch the edge of the grid at least once on each side of the grid, so store these points. Search in a clockwise direction around the edge of the grid
-   vector<int> VnBoundingBoxCorner;
+   vector<CGeom2DIPoint> VPtiBoundingBoxCorner;
    
    // Start with the top (north) edge
    bool bFound = false;
    for (int nX = 0; nX < m_nXGridMax; nX++)
-   {
-      if (! m_pRasterGrid->m_Cell[nX][0].bBasementElevIsMissingValue())
-      {
-         VnBoundingBoxCorner.push_back(nX);
-         bFound = true;
+   {      
+      if (bFound)
          break;
-      }      
+      
+      for (int nY = 0; nY < m_nYGridMax; nY++)
+      {
+         if (! m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
+         {
+            CGeom2DIPoint PtiTmp(nX, nY);
+            VPtiBoundingBoxCorner.push_back(PtiTmp);
+            bFound = true;
+            break;
+         } 
+      }
    }
       
    if (! bFound)
    {
-      LogStream << m_ulIteration << ": the bounding box does not touch the north (top) edge of the grid" << endl;
+      LogStream << m_ulIteration << ": north (top) " << endl;
       return RTN_ERR_BOUNDING_BOX;      
    }
    
    // Do the same for the right (east) edge
    bFound = false;
    for (int nY = 0; nY < m_nYGridMax; nY++)
-   {
-      if (! m_pRasterGrid->m_Cell[m_nXGridMax-1][nY].bBasementElevIsMissingValue())
-      {
-         VnBoundingBoxCorner.push_back(nY);
-         bFound = true;
+   {      
+      if (bFound)
          break;
-      }      
+      
+      for (int nX = m_nXGridMax-1; nX >= 0; nX--)
+      {
+         if (! m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
+         {
+            CGeom2DIPoint PtiTmp(nX, nY);
+            VPtiBoundingBoxCorner.push_back(PtiTmp);
+            bFound = true;
+            break;
+         }      
+      }
    }
    
    if (! bFound)
    {
-      LogStream << m_ulIteration << ": the bounding box does not touch the east (right) edge of the grid" << endl;
+      LogStream << m_ulIteration << ": east (right) edge of bounding box not found" << endl;
       return RTN_ERR_BOUNDING_BOX;      
    }
    
    // Do the same for the south (bottom) edge
    bFound = false;
    for (int nX = m_nXGridMax-1; nX >= 0; nX--)
-   {
-      if (! m_pRasterGrid->m_Cell[nX][m_nYGridMax-1].bBasementElevIsMissingValue())
-      {
-         VnBoundingBoxCorner.push_back(nX);
-         bFound = true;
+   {      
+      if (bFound)
          break;
-      }      
+
+      for (int nY = m_nYGridMax-1; nY >= 0; nY--)
+      {
+         if (! m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
+         {
+            CGeom2DIPoint PtiTmp(nX, nY);
+            VPtiBoundingBoxCorner.push_back(PtiTmp);
+            bFound = true;
+            break;
+         }      
+      }
    }
    
    if (! bFound)
    {
-      LogStream << m_ulIteration << ": the bounding box does not touch the south (bottom) edge of the grid" << endl;
+      LogStream << m_ulIteration << ": south (bottom) edge of bounding box not found" << endl;
       return RTN_ERR_BOUNDING_BOX;      
    }
    
-   // Amnd finally repeat for the west (left) edge
+   // And finally repeat for the west (left) edge
    bFound = false;
    for (int nY = m_nYGridMax-1; nY >= 0; nY--)
-   {
-      if (! m_pRasterGrid->m_Cell[m_nXGridMax-1][nY].bBasementElevIsMissingValue())
-      {
-         VnBoundingBoxCorner.push_back(nY);
-         bFound = true;
+   {      
+      if (bFound)
          break;
-      }      
+
+      for (int nX = 0; nX < m_nXGridMax; nX++)
+      {
+         if (! m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
+         {
+            CGeom2DIPoint PtiTmp(nX, nY);
+            VPtiBoundingBoxCorner.push_back(PtiTmp);
+            bFound = true;
+            break;
+         }     
+      }
    }
    
    if (! bFound)
    {
-      LogStream << m_ulIteration << ": the bounding box does not touch the west (left) edge of the grid" << endl;
+      LogStream << m_ulIteration << ": west (left) edge of bounding box not found" << endl;
       return RTN_ERR_BOUNDING_BOX;      
    }
    
    // OK, so we have a point on each side of the grid, so start at this point and find the edges of the bounding box. Go round in a clockwise direction: top (north) edge first
-   for (int nX = VnBoundingBoxCorner[0]; nX < m_nXGridMax; nX++)
+   for (int nX = VPtiBoundingBoxCorner[0].nGetX(); nX <= VPtiBoundingBoxCorner[2].nGetX(); nX++)
    {
       bFound = false;
-      for (int nY = 0; nY < m_nYGridMax; nY++)
+      for (int nY = VPtiBoundingBoxCorner[0].nGetY(); nY < m_nYGridMax; nY++)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -324,10 +352,10 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
    }
 
    // Right (east) edge
-   for (int nY = VnBoundingBoxCorner[1]; nY < m_nYGridMax; nY++)
+   for (int nY = VPtiBoundingBoxCorner[1].nGetY(); nY <= VPtiBoundingBoxCorner[3].nGetY(); nY++)
    {
       bFound = false;
-      for (int nX = m_nXGridMax-1; nX >= 0; nX--)
+      for (int nX = VPtiBoundingBoxCorner[1].nGetX(); nX >= 0; nX--)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -353,10 +381,10 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
    }
 
    // Bottom (south) edge
-   for (int nX = VnBoundingBoxCorner[2]; nX >= 0; nX--)
+   for (int nX = VPtiBoundingBoxCorner[2].nGetX(); nX >= VPtiBoundingBoxCorner[0].nGetX(); nX--)
    {
       bFound = false;
-      for (int nY = m_nYGridMax-1; nY >= 0; nY--)
+      for (int nY = VPtiBoundingBoxCorner[2].nGetY(); nY >= 0; nY--)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
@@ -382,9 +410,9 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
    }
 
    // Left (west) edge
-   for (int nY = VnBoundingBoxCorner[2]; nY >= 0; nY--)
+   for (int nY = VPtiBoundingBoxCorner[3].nGetY(); nY >= VPtiBoundingBoxCorner[1].nGetY(); nY--)
    {
-      for (int nX = 0; nX < m_nXGridMax-1; nX++)
+      for (int nX = VPtiBoundingBoxCorner[3].nGetX(); nX < m_nXGridMax-1; nX++)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
