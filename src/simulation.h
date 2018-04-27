@@ -582,8 +582,8 @@ private:
    int nGetCoastNormalEndPoint(int const, int const, int const, CGeom2DPoint const*, double const, CGeom2DPoint*, CGeom2DIPoint*);
    int nLandformToGrid(int const, int const);
    int nCalcWavePropertiesOnProfile(int const, int const, int const, vector<int>*, vector<int>*, vector<double>*, vector<double>*, vector<bool>*);
-   int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*);
-   int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double> const*, vector<double> const*);
+   int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*, vector<double>*);
+   int nCreateCShoreInfile(double const, double const, double const, double const , double const, vector<double> const*, vector<double> const*, vector<double> const*);
    int nReadCShoreOutput(int const, string const*, int const, int const, vector<double> const*, vector<double>*);
    static double dCalcWaveAngleToCoastNormal(double const, double const, int const);
    void CalcCoastTangents(int const);

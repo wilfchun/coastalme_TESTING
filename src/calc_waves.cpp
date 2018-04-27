@@ -510,16 +510,16 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // We are using CShore to propagate the waves, so create an input file for this profile
       double
          dCShoreTimeStep = 3600,     // In seconds, not important because we are not using CShore to erode the profile, just to get the hydrodynamics
-         dSurgeLevel = CSHORE_SURGE_LEVEL,
-         dWaveFriction = CSHORE_FRICTION_FACTOR;
+         dSurgeLevel = CSHORE_SURGE_LEVEL;
+         //dWaveFriction = CSHORE_FRICTION_FACTOR;
       
       // Set up vectors for the coastline-normal profile elevations. The length of this vector line is given by the number of cells 'under' the profile. Thus each point on the vector relates to a single cell in the grid. This assumes that all points on the profile vector are equally spaced (not quite true, depends on the orientation of the line segments which comprise the profile)
       vector<double>
          VdProfileZ,                  // Initial (pre-erosion) elevation of both consolidated and unconsolidated sediment for cells 'under' the profile, in CShore units
-         VdProfileDistXY;             // Along-profile distance measured from the seaward limit, in CShore units
-      
+         VdProfileDistXY,             // Along-profile distance measured from the seaward limit, in CShore units
+	 VdProfileFrictionFactor;     // Along-profile friction factor from seaward limit		
       // The elevation of each of these profile points is the elevation of the centroid of the cell that is 'under' the point. However we cannot always be confident that this is the 'true' elevation of the point on the vector since (unless the profile runs planview N-S or W-E) the vector does not always run exactly through the centroid of the cell
-      int nRet = nGetThisProfileElevationVectorsForCShore(nCoast, nProfile, nProfileSize, &VdProfileDistXY, &VdProfileZ);
+      int nRet = nGetThisProfileElevationVectorsForCShore(nCoast, nProfile, nProfileSize, &VdProfileDistXY, &VdProfileZ, &VdProfileFrictionFactor);
       if (nRet != RTN_OK)
          return nRet;
       
@@ -544,7 +544,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       dWaveToNormalAngle = tMin(dWaveToNormalAngle, 80.0);
       
       // Create the file which will be read by CShore
-      nRet = nCreateCShoreInfile(dCShoreTimeStep, dDeepWaterWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, dWaveFriction, &VdProfileDistXY, &VdProfileZ);
+      nRet = nCreateCShoreInfile(dCShoreTimeStep, dDeepWaterWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, &VdProfileFrictionFactor, &VdProfileDistXY, &VdProfileZ);
       if (nRet != RTN_OK)
          return nRet;
       
@@ -610,7 +610,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          else
             VdWaveDirection[nProfilePoint] = dKeepWithin360(dAlpha + 270 + dFluxOrientationThis);
          
-         if ((VdFractionBreakingWaves[nProfilePoint] >= 0.70) & (! bBreaking))
+         if ((VdFractionBreakingWaves[nProfilePoint] >= 0.10) & (! bBreaking))
          {
             bBreaking = true;
             dProfileBreakingWaveHeight = VdWaveHeight[nProfilePoint];
@@ -761,7 +761,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
  Create the CShore input file
  
 ===============================================================================================================================*/
-int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, double dWaveFriction, vector<double> const* pVdXdist, vector<double> const* pVdBottomElevation)
+int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, vector<double> const* pVdWaveFriction, vector<double> const* pVdXdist, vector<double> const* pVdBottomElevation)
 {
    // Initialize inifile from infileTemplate
    int nRet = system("cp infileTemplate infile");       // The infileTemplate must be in the working directory
@@ -799,7 +799,7 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
    OutStream << setw(8) << pVdXdist->size() << "                        -> NBINP" << endl;
    OutStream << setiosflags(ios::fixed) << setprecision(4);
    for (unsigned int i = 0; i < pVdXdist->size(); i++)
-      OutStream << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << dWaveFriction << endl;
+      OutStream << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << pVdWaveFriction->at(i) << endl;
    
    return RTN_OK;
 }
@@ -810,7 +810,7 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
  Get profile horizontal distance and bottom elevation vectors in CShore units
  
 ===============================================================================================================================*/
-int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int const nProfile, int const nProfSize, vector<double>* VdDistXY, vector<double>* VdVZ)
+int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int const nProfile, int const nProfSize, vector<double>* VdDistXY, vector<double>* VdVZ, vector<double>* VdFricF)
 {
    int
       nX1 = 0,
@@ -819,7 +819,11 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
    double
       dXDist,
       dYDist,
-      dProfileDistXY = 0;
+      dProfileDistXY,
+      dProfileFricFact,
+      dInterventionHeight = 0;
+   bool
+      isBehindIntervention = false;
    
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
    
@@ -855,11 +859,27 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
          return RTN_OK;
       
       // Get the elevation for both consolidated and unconsolidated sediment on this cell
-      double VdProfileZ = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentPlusInterventionTopElev() - m_dThisTimestepSWL;
+      double VdProfileZ = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() - m_dThisTimestepSWL;
       VdVZ->push_back(VdProfileZ);
       
       // And store the X-Y plane distance from the start of the profile
       VdDistXY->push_back(dProfileDistXY);
+      
+      // Get the landform type at each point along the profile
+      dInterventionHeight = m_pRasterGrid->m_Cell[nX][nY].dGetInterventionHeight();
+      
+      // Modify default friction factor if an structural intervention is found, otherwise use the default
+      if (dInterventionHeight > 0 || isBehindIntervention)
+      {
+	 dProfileFricFact = 100*CSHORE_FRICTION_FACTOR; // APayo April 2018, arbitrarily high value if struture present
+	 isBehindIntervention = true;
+      }
+      else
+	 dProfileFricFact = CSHORE_FRICTION_FACTOR;
+      
+      // And store the Friction factor from the start of the profile
+      VdFricF->push_back(dProfileFricFact);
+	 
    }
    
    return RTN_OK;

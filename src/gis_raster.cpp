@@ -1326,7 +1326,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (RASTER_PLOT_OVERALL_TOP_ELEVATION):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetOverallTopElev();
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentPlusInterventionTopElev(); // APayo April 2018 this is now sed top elev + intervention
                break;
             }
 
