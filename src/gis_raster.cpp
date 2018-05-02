@@ -323,7 +323,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
    }
    
    // OK, so we have a point on each side of the grid, so start at this point and find the edges of the bounding box. Go round in a clockwise direction: top (north) edge first
-   for (int nX = VPtiBoundingBoxCorner[0].nGetX(); nX <= VPtiBoundingBoxCorner[2].nGetX(); nX++)
+   for (int nX = VPtiBoundingBoxCorner[0].nGetX(); nX <= VPtiBoundingBoxCorner[1].nGetX(); nX++)
    {
       bFound = false;
       for (int nY = VPtiBoundingBoxCorner[0].nGetY(); nY < m_nYGridMax; nY++)
@@ -352,7 +352,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
    }
 
    // Right (east) edge
-   for (int nY = VPtiBoundingBoxCorner[1].nGetY(); nY <= VPtiBoundingBoxCorner[3].nGetY(); nY++)
+   for (int nY = VPtiBoundingBoxCorner[1].nGetY(); nY <= VPtiBoundingBoxCorner[2].nGetY(); nY++)
    {
       bFound = false;
       for (int nX = VPtiBoundingBoxCorner[1].nGetX(); nX >= 0; nX--)
@@ -381,7 +381,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
    }
 
    // Bottom (south) edge
-   for (int nX = VPtiBoundingBoxCorner[2].nGetX(); nX >= VPtiBoundingBoxCorner[0].nGetX(); nX--)
+   for (int nX = VPtiBoundingBoxCorner[2].nGetX(); nX >= VPtiBoundingBoxCorner[3].nGetX(); nX--)
    {
       bFound = false;
       for (int nY = VPtiBoundingBoxCorner[2].nGetY(); nY >= 0; nY--)
@@ -410,9 +410,10 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
    }
 
    // Left (west) edge
-   for (int nY = VPtiBoundingBoxCorner[3].nGetY(); nY >= VPtiBoundingBoxCorner[1].nGetY(); nY--)
+   for (int nY = VPtiBoundingBoxCorner[3].nGetY(); nY >= VPtiBoundingBoxCorner[0].nGetY(); nY--)
    {
       for (int nX = VPtiBoundingBoxCorner[3].nGetX(); nX < m_nXGridMax-1; nX++)
+      //for (int nX = VPtiBoundingBoxCorner[3].nGetX(); nX < VPtiBoundingBoxCorner[3].nGetX(); nX++) //APayo April 2018
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bBasementElevIsMissingValue())
          {
