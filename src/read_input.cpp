@@ -1589,9 +1589,9 @@ bool CSimulation::bReadRunData(void)
 
          case 37:
             // Breaking wave height-to-depth ratio 
-            m_dBreakingWaveHeightDeptRatio = atof(strRH.c_str());
+            m_dBreakingWaveHeightDepthRatio = atof(strRH.c_str());
             
-            if (m_dBreakingWaveHeightDeptRatio <= 0)
+            if (m_dBreakingWaveHeightDepthRatio <= 0)
                strErr = "breaking wave height to depth ratio must be greater than zero";
             break;
             

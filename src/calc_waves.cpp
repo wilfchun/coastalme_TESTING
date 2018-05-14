@@ -414,7 +414,9 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       dWaveToNormalAnglePrev = dCalcWaveAngleToCoastNormal(dFluxOrientationPrev, dPrevDeepWaterWaveOrientation, nSeaHand);
    }
    else
+   {
       dWaveToNormalAnglePrev = dWaveToNormalAngle;
+   }
    
 //    if (dWaveToNormalAnglePrev == DBL_NODATA)
 //       LogStream << "\tPrevious profile, dWaveToNormalAnglePrev = " << dWaveToNormalAnglePrev << " which is off-shore" << endl;
@@ -431,7 +433,9 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       dWaveToNormalAngleNext = dCalcWaveAngleToCoastNormal(dFluxOrientationNext, dNextDeepWaterWaveOrientation, nSeaHand);
    }
    else
+   {
       dWaveToNormalAngleNext = dWaveToNormalAngle;
+   }
    
 //    if (dWaveToNormalAngleNext == DBL_NODATA)
 //       LogStream << "\tNext profile, dWaveToNormalAngleNext = " << dWaveToNormalAngleNext << " which is off-shore" << endl;
@@ -507,7 +511,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    
    if (m_nWavePropagationModel == WAVE_MODEL_CSHORE)
    {
-      // We are using CShore to propagate the waves, so create an input file for this profile
+      // We are using CShore to propagate the waves
       double
          dCShoreTimeStep = 3600,     // In seconds, not important because we are not using CShore to erode the profile, just to get the hydrodynamics
          dSurgeLevel = CSHORE_SURGE_LEVEL,
@@ -521,29 +525,44 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // The elevation of each of these profile points is the elevation of the centroid of the cell that is 'under' the point. However we cannot always be confident that this is the 'true' elevation of the point on the vector since (unless the profile runs planview N-S or W-E) the vector does not always run exactly through the centroid of the cell
       int nRet = nGetThisProfileElevationVectorsForCShore(nCoast, nProfile, nProfileSize, &VdProfileDistXY, &VdProfileZ);
       if (nRet != RTN_OK)
+      {
+         // Could not create the profile elevation vectors
+         LogStream << m_ulIteration << ": could not create CShore profile elevation vectors for profile " << nProfile << endl;
+         
          return nRet;
+      }
       
       if (VdProfileDistXY.empty())
       {
-         // VdProfileDistXY has not been populated
-         LogStream << m_ulIteration << ": VdProfileDistXY is empty for profile " << nProfile << endl;
+         // The profile elevation vector was created, but was not populated
+         LogStream << m_ulIteration << ": could not populate CShore profile elevation vector for profile " << nProfile << endl;
          
          return RTN_ERR_CSHORE_EMPTY_PROFILE;
       }
-      
-      // Move to the CShore folder
-      nRet = chdir(CSHOREDIR.c_str());
-      if (nRet != RTN_OK)
-         return nRet;
-      
-      char szBuf[BUF_SIZE] = "";
-      string strCWD = getcwd(szBuf, BUF_SIZE);
-      
+            
       // Constrain the wave to normal angle to be between -80 and 80 degrees, this is a requirement of CShore
       dWaveToNormalAngle = tMax(dWaveToNormalAngle, -80.0);
       dWaveToNormalAngle = tMin(dWaveToNormalAngle, 80.0);
       
-      // Create the file which will be read by CShore
+      int nProfileDistXYSize = VdProfileDistXY.size();
+      vector<double>
+         VdFreeSurfaceStd(nProfileDistXYSize, 0),          // This is converted to Hrms by Hrms = sqr(8)*FreeSurfaceStd
+         VdSinWaveAngleRadians(nProfileDistXYSize, 0),     // This is converted to deg by asin(VdSinWaveAngleRadians)*(180/pi)
+         VdFractionBreakingWaves(nProfileDistXYSize, 0);   // Is 0 if no wave breaking, and 1 if all waves breaking
+      
+#if defined CSHORE_FILE_INOUT || CSHORE_BOTH
+      // Move to the CShore folder
+      nRet = chdir(CSHOREDIR.c_str());
+      if (nRet != RTN_OK)
+         return nRet;
+#endif
+
+#if defined CSHORE_FILE_INOUT 
+      // We are communicating with CShore using ASCII files
+      char szBuf[BUF_SIZE] = "";
+      string strCWD = getcwd(szBuf, BUF_SIZE);
+      
+      // Now create an input file for this profileM which will be read by CShore
       nRet = nCreateCShoreInfile(dCShoreTimeStep, dDeepWaterWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, dWaveFriction, &VdProfileDistXY, &VdProfileZ);
       if (nRet != RTN_OK)
          return nRet;
@@ -559,11 +578,6 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          return RTN_ERR_CSHORE_ERROR;
       
       // Fetch the CShore results by reading files written by CShore
-      vector<double>
-         VdFreeSurfaceStd(VdProfileDistXY.size(), 0),          // This is converted to Hrms by Hrms = sqr(8)*FreeSurfaceStd
-         VdSinWaveAngleRadians(VdProfileDistXY.size(), 0),     // This is converted to deg by asin(VdSinWaveAngleRadians)*(180/pi)
-         VdFractionBreakingWaves(VdProfileDistXY.size(), 0);   // Is 0 if no wave breaking, and 1 if all waves breaking
-      
       string
          strOSETUP = "OSETUP",
          strOYVELO = "OYVELO",
@@ -594,8 +608,76 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       nRet = chdir(m_strCMEDir.c_str());
       if (nRet != RTN_OK)
          return nRet;
+#endif
       
-      // Convert CShore outputs to wave height and wave direction and update wave profile attributes
+#if defined CSHORE_ARG_INOUT || CSHORE_BOTH
+      // We are communicating with CShore by passing arguments, so set up some switches for CShore
+      int
+         nILine = 1,       // This is the number of cross-shore lines i.e. the number of CoastalME profiles. Only one at a time, at present
+         nIProfl = 0,      // 0 for fixed bottom profile, 1 for profile evolution computation 
+         nIPerm = 0,       // 0 for impermeable bottom, 1 for permeable bottom of stone structure
+         nIOver = 0,       // 0 for no wave overtopping and overflow on crest, 1 for wave overtopping and overflow
+         nIWCInt = 0,      // 0 for no wave/current interaction, 1 for wave/current interaction in frequency dispersion, momentum and wave action equations
+         nIRoll = 0,       // 0 for no roller effects, 1 for roller effects in governing equations
+         nIWind = 0,       // 0 for no wind effects, 1 for wind shear stresses on momentum equations
+         nITide = 0,       // 0 for no tidal effect on currents, 1 for longshore and cross-shore tidal currents
+         nILab = 0,        // 0 for field data set, 1 for laboratory data set
+         nNWave = 1,       // Number of waves at x = 0 starting from time = 0
+         nNSurge = 1,      // Number of water levels at x = 0 from time = 0
+         nOutSize = 0;     // CShore will return the size of the output vectors
+      
+      // Set the error flag: this will be changed to 0 within CShore if CShore returns correctly
+      nRet = -1;
+      
+      int const MAXOUTSIZE = 1000;      
+      double dDX = 1;      // Nodal spacing for input bottom geometry         
+      
+      vector<double> 
+         VdTWave = {0, dCShoreTimeStep},                                        // Size is nNwave+1. Here, value 1 is for the start of the CShore run, value 2 for end of CShore run
+         VdTPIn = {dDeepWaterWavePeriod, dDeepWaterWavePeriod},                 // Ditto
+         VdHrmsIn = {dProfileDeepWaterWaveHeight, dProfileDeepWaterWaveHeight}, // Ditto
+         VdWangIn = {dWaveToNormalAngle, dWaveToNormalAngle},                   // Ditto
+         VdTSurg = {0, dCShoreTimeStep},                                         // Ditto
+         VdSWLin = {dSurgeLevel, dSurgeLevel},                                  // Ditto
+         VdFPInp(nProfileDistXYSize, dWaveFriction),           // Set the value for wave friction at every point of the normal profile
+         VdXYDistFromCShoreOut(MAXOUTSIZE, 0),                 // Output from CShore
+         VdFreeSurfaceStdOut(MAXOUTSIZE, 0),                   // Ditto
+         VdSinWaveAngleRadiansOut(MAXOUTSIZE, 0),
+         VdFractionBreakingWavesOut(MAXOUTSIZE, 0);      
+      
+      // Call CShore using the argument-passing wrapper
+      CShoreWrapper(&nILine, &nIProfl, &nIPerm, &nIOver, &nIWCInt, &nIRoll, &nIWind, &nITide, &nILab, &nNWave, &nNSurge, &dDX, &m_dBreakingWaveHeightDepthRatio, &VdTWave[0], &VdTPIn[0], &VdHrmsIn[0], &VdWangIn[0], &VdTSurg[0], &VdSWLin[0], &nProfileDistXYSize, &VdProfileDistXY[0], &VdProfileZ[0], &VdFPInp[0], &nRet, &nOutSize, &VdXYDistFromCShoreOut[0], &VdFreeSurfaceStdOut[0], &VdSinWaveAngleRadiansOut[0], &VdFractionBreakingWavesOut[0]);
+      
+      if (nRet != RTN_OK)
+         return nRet;
+      
+      if (nOutSize < 2)
+      {
+         // CShore sometimes returns only one row of results, which contains data for the seaward point of the profile. This happens when all other (more coastward) points give an invalid result during CShore's calculations. This is a problem. We don't want to abandon the simulation just because of this, so instead we just duplicate the row, so that the profile will later get marked as invalid
+         LogStream << m_ulIteration << ": " << WARN << "for coast " << nCoast << " profile " << nProfile << ", only " << nOutSize << " CShore output row" << endl;
+         
+         // Duplicate the data
+         VdXYDistFromCShoreOut.push_back(VdXYDistFromCShoreOut[0]);         
+         VdFreeSurfaceStdOut.push_back(VdFreeSurfaceStdOut[0]);
+         VdSinWaveAngleRadiansOut.push_back(VdSinWaveAngleRadiansOut[0]);
+         VdFractionBreakingWavesOut.push_back(VdFractionBreakingWavesOut[0]);
+         
+         // And increase the expected number of rows
+         nOutSize++;
+      }   
+      
+      InterpolateCShoreOutput(&VdProfileDistXY, nOutSize, &VdXYDistFromCShoreOut, &VdFreeSurfaceStdOut, &VdSinWaveAngleRadiansOut, &VdFractionBreakingWavesOut, &VdFreeSurfaceStd, &VdSinWaveAngleRadians, &VdFractionBreakingWaves);
+      
+#endif
+      
+#if defined CSHORE_BOTH
+      // Return to the CoastalME folder
+      nRet = chdir(m_strCMEDir.c_str());
+      if (nRet != RTN_OK)
+         return nRet;
+#endif      
+      
+      // OK we have the CShore output, so now we must convert this to wave height and wave direction and update wave profile attributes
       for (int nProfilePoint = (nProfileSize-1); nProfilePoint >= 0; nProfilePoint--)
       {
          int
@@ -668,7 +750,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
                   dProfileWaveOrientation = dKeepWithin360(dAlpha + 270 + dFluxOrientationThis);
                
                // Test to see if the wave breaks at this depth
-               if (dProfileWaveHeight > (dSeaDepth * m_dBreakingWaveHeightDeptRatio))
+               if (dProfileWaveHeight > (dSeaDepth * m_dBreakingWaveHeightDepthRatio))
                {
                   // It does
                   bBreaking = true;
@@ -684,7 +766,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
                dProfileWaveOrientation = dProfileBreakingWaveOrientation;                          // Wave orientation remains equal to wave orientation at breaking
                
                //dProfileWaveHeight = dProfileBreakingWaveHeight * (nProfilePoint / nProfileBreakingDist);    // Wave height decreases linearly to zero at shoreline
-               dProfileWaveHeight = dSeaDepth * m_dBreakingWaveHeightDeptRatio;                    // Wave height is limited by depth
+               dProfileWaveHeight = dSeaDepth * m_dBreakingWaveHeightDepthRatio;                    // Wave height is limited by depth
             }
          }
          
@@ -725,8 +807,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       pVbBreaking->push_back(bBreaking);
    }
    
-   // Update wave attributes along the coastline object
-   // Wave height at the coast is calculated irrespectively if waves are breaking or not
+   // Update wave attributes along the coastline object. Wave height at the coast is calculated irrespectively if waves are breaking or not
    
    //cout << "Wave Height at the coast is " << VdWaveHeight[0] << endl;
       m_VCoast[nCoast].SetCoastWaveHeight(nCoastPoint, VdWaveHeight[0]);
@@ -756,6 +837,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 }
 
 
+#if defined CSHORE_FILE_INOUT
 /*===============================================================================================================================
  
  Create the CShore input file
@@ -763,12 +845,18 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 ===============================================================================================================================*/
 int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, double dWaveFriction, vector<double> const* pVdXdist, vector<double> const* pVdBottomElevation)
 {
-   // Initialize inifile from infileTemplate
-   int nRet = system("cp infileTemplate infile");       // The infileTemplate must be in the working directory
-   if (nRet == -1)
-      return RTN_ERR_CSHORE_OUTPUT_FILE;
-   
    string strFName = "infile";
+
+   // Initialize inifile from infileTemplate
+   string strCommand = "cp infileTemplate ";
+   strCommand += strFName;
+   int nRet = system(strCommand.c_str());       // The infileTemplate must be in the working directory
+   if (nRet == -1)
+   {
+      // Error, cannot copy infileTemplate
+      LogStream << m_ulIteration << ": " << ERR << "cannot copy " << strFName << " to create CShote input file " << strFName << endl;
+      return RTN_ERR_CSHORE_FILE_INPUT;
+   }
    
    // We have all the inputs in the CShore format, so we can create the input file
    ofstream OutStream;
@@ -776,12 +864,12 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
    if (OutStream.fail())
    {
       // Error, cannot open file for writing
-      LogStream << m_ulIteration << ": " << ERR << "cannot open " << strFName << " for output" << endl;
-      return RTN_ERR_CSHORE_OUTPUT_FILE;
+      LogStream << m_ulIteration << ": " << ERR << "cannot write to CShore input file " << strFName << endl;
+      return RTN_ERR_CSHORE_FILE_INPUT;
    }
    
    // OK, write to the file
-   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << m_dBreakingWaveHeightDeptRatio << "                        -> GAMMA" << endl;
+   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << m_dBreakingWaveHeightDepthRatio << "                        -> GAMMA" << endl;
    OutStream << setiosflags(ios::fixed) << setprecision(0); OutStream << setw(11) << 0 << "                        -> ILAB" << endl;
    OutStream << setiosflags(ios::fixed) << setprecision(0); OutStream << setw(11) << 1 << "                        -> NWAVE" << endl;
    OutStream << setiosflags(ios::fixed) << setprecision(0); OutStream << setw(11) << 1 << "                        -> NSURGE" << endl;
@@ -803,6 +891,7 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
    
    return RTN_OK;
 }
+#endif
 
 
 /*===============================================================================================================================
@@ -866,12 +955,13 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
 }
 
 
+#if defined CSHORE_FILE_INOUT
 /*==============================================================================================================================
  
- The CShore lookup reads a CShore output file and creates a vector holding interpolated values. The interpolation may be simple linear or a more advanced hermite cubic method
+ Reads a CShore output file and creates a vector holding interpolated values. The interpolation may be simple linear or a more advanced hermite cubic method
  
 ==============================================================================================================================*/
-int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdDistXY, vector<double>* pVdMyInterpolatedValues)
+int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdProfileDistXYCME, vector<double>* pVdInterpolatedValues)
 {
    // Select the interpolation method to be used: CSHORE_INTERPOLATION_HERMITE_CUBIC seems to work better for spit growth
 //    int nInterpolationMethod = CSHORE_INTERPOLATION_LINEAR;
@@ -887,7 +977,7 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
       // Error: cannot open CShore file for input
       LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", cannot open " << *strCShoreFilename << " for input" << endl;
       
-      return RTN_ERR_CSHORE_OUTPUT_FILE;
+      return RTN_ERR_CSHORE_FILE_OUTPUT;
    }
    
    // Opened OK, so set up the vectors to hold the CShore output data
@@ -921,7 +1011,7 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
             // Error: did not read the expected number of CShore output columns
             LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", expected " << nExpectedColumns << " CShore output columns but read " << nCols << " columns from header section of file " << *strCShoreFilename << endl;
             
-            return RTN_ERR_CSHORE_OUTPUT_FILE;        
+            return RTN_ERR_CSHORE_FILE_OUTPUT;        
          }
          
          // Number of columns is OK
@@ -937,7 +1027,7 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
       // Error: did not get nExpectedRows CShore output rows
       LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", expected " << nExpectedRows << " CShore output rows, but read " << nReadRows << " rows from file " << *strCShoreFilename << endl;
       
-      return RTN_ERR_CSHORE_OUTPUT_FILE;
+      return RTN_ERR_CSHORE_FILE_OUTPUT;
    }
    
    if (nReadRows < 2)
@@ -954,49 +1044,116 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
    }   
    
    // The output is OK, so change the origin of the across-shore distance from the CShore convention to the one used here (i.e. with the origin at the shoreline)
-   vector<double>  VdXYDistCME(nReadRows, 0);
+   vector<double> VdXYDistCShoreTmp(nReadRows, 0);
    for (int i = 0; i < nReadRows; i++)
-      VdXYDistCME[i] = VdXYDistCShore[nReadRows-1] - VdXYDistCShore[i];
+      VdXYDistCShoreTmp[i] = VdXYDistCShore[nReadRows-1] - VdXYDistCShore[i];
    
-   // Reverse the CShore XYdistance and value vectors (i.e. first point is at the shoreline and must be in strictly ascending order)
-   reverse(VdXYDistCME.begin(), VdXYDistCME.end());
+   // Reverse the XY-distance and value vectors (i.e. first point is at the shoreline and must be in strictly ascending order)
+   reverse(VdXYDistCShoreTmp.begin(), VdXYDistCShoreTmp.end());
+   
+   // Similarly, reverse the CShore output
    reverse(VdValuesCShore.begin(), VdValuesCShore.end());
    
    // Now we have everything ready to do the interpolation
    if (nInterpolationMethod == CSHORE_INTERPOLATION_HERMITE_CUBIC)
    {
-      // Using the hermite cubic approach: calculate the first derivative of CShore values (needed for the hermite interpolant)
-      vector<double> VdValuesCShoreDeriv(nReadRows, 0);
-      for (int i = 1; i < nReadRows-1; i++)
-      {
-         // Calculate the horizontal distance increment between two adjacent points (not always the same distance because it depend on profile-cells centroid location)
-         double dX = VdXYDistCME[i+1] - VdXYDistCME[i-1];    // This is always positive
-         VdValuesCShoreDeriv[i] = (VdValuesCShore[i+1] - VdValuesCShore[i-1]) / (2 * dX);
-      }
-      
-      VdValuesCShoreDeriv[0] = VdValuesCShoreDeriv[1];
-      VdValuesCShoreDeriv[nReadRows-1] = VdValuesCShoreDeriv[nReadRows-2];
-      
-      // Interpolate the CShore values
-      int nSize = pVdDistXY->size();
-      vector<double>
-         VdDistXYCopy(pVdDistXY->begin(), pVdDistXY->end()),
-         //dVInter(nSize, 0.),
-         VdDeriv(nSize, 0),         // First derivative at the sample points: calculated by the spline function but not subsequently used
-         VdDeriv2(nSize, 0),        // Second derivative at the sample points, ditto
-         VdDeriv3(nSize, 0);        // Third derivative at the sample points, ditto
-      
-      // Calculate the value of erosion potential (is a -ve value) for each of the sample values of DepthOverDB, and store it for use in the look-up function
-      hermite_cubic_spline_value(nReadRows, &(VdXYDistCME.at(0)), &(VdValuesCShore.at(0)), &(VdValuesCShoreDeriv.at(0)), nSize, &(VdDistXYCopy[0]), &(pVdMyInterpolatedValues->at(0)), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
+      CShoreHermiteSmoothing(nReadRows, &VdXYDistCShoreTmp, pVdProfileDistXYCME, &VdValuesCShore, pVdInterpolatedValues);
    }
    else
    {
       // Using the simple linear approach
-      vector<double> VdDistXYCopy(pVdDistXY->begin(), pVdDistXY->end());
-      *pVdMyInterpolatedValues = VdInterp1(&VdXYDistCME, &VdValuesCShore, &VdDistXYCopy);
+      vector<double> VdDistXYCopy(pVdProfileDistXYCME->begin(), pVdProfileDistXYCME->end());
+      
+      *pVdInterpolatedValues = VdInterp1(&VdXYDistCShoreTmp, &VdValuesCShore, &VdDistXYCopy);
    }
    
-   return RTN_OK;   
+   return RTN_OK;
+}
+#endif
+
+
+#if defined CSHORE_ARG_INOUT || CSHORE_BOTH
+/*==============================================================================================================================
+ 
+ Interpolates CShore output. The interpolation may be simple linear or a more advanced hermite cubic method
+ 
+==============================================================================================================================*/
+void CSimulation::InterpolateCShoreOutput(vector<double> const* pVdProfileDistXYCME, int const nOutSize, vector<double> const* pVdXYDistFromCShoreOut, vector<double> const* pVdFreeSurfaceStdCShore, vector<double> const* pVdSinWaveAngleRadiansCShore, vector<double> const* pVdFractionBreakingWavesCShore, vector<double>* pVdFreeSurfaceStdCME, vector<double>* pVdSinWaveAngleRadiansCME, vector<double>* pVdFractionBreakingWavesCME)
+{
+   // Select the interpolation method to be used: CSHORE_INTERPOLATION_HERMITE_CUBIC seems to work better for spit growth
+   //    int nInterpolationMethod = CSHORE_INTERPOLATION_LINEAR;
+   int nInterpolationMethod = CSHORE_INTERPOLATION_HERMITE_CUBIC;
+   
+   // The CShore scross-shore distance has its origin at the seaward end, so create a copy of the valid part of this which is in the CME convention (i.e. with the origin at the shoreline)
+   vector<double> VdXYDistCShoreTmp(nOutSize, 0);
+   for (int i = 0; i < nOutSize; i++)
+      VdXYDistCShoreTmp[i] = pVdXYDistFromCShoreOut->at(nOutSize-1) - pVdXYDistFromCShoreOut->at(i);
+
+   // And then reverse this, so that the first point is at the shoreline
+   reverse(VdXYDistCShoreTmp.begin(), VdXYDistCShoreTmp.end());
+
+   // Now create reversed copies of the valid part of the other CShore outputs
+   vector<double> 
+      VdFreeSurfaceStdCShoreTmp(pVdFreeSurfaceStdCShore->begin(), pVdFreeSurfaceStdCShore->begin() + nOutSize),
+      VdSinWaveAngleRadiansCShoreTmp(pVdSinWaveAngleRadiansCShore->begin(), pVdSinWaveAngleRadiansCShore->begin() + nOutSize),
+      VdFractionBreakingWavesCShoreTmp(pVdFractionBreakingWavesCShore->begin(), pVdFractionBreakingWavesCShore->end() + nOutSize);
+      
+   reverse(VdFreeSurfaceStdCShoreTmp.begin(), VdFreeSurfaceStdCShoreTmp.end());
+   reverse(VdSinWaveAngleRadiansCShoreTmp.begin(), VdSinWaveAngleRadiansCShoreTmp.end());
+   reverse(VdFractionBreakingWavesCShoreTmp.begin(), VdFractionBreakingWavesCShoreTmp.end());
+   
+   // Now we have everything ready to do the interpolation
+   if (nInterpolationMethod == CSHORE_INTERPOLATION_HERMITE_CUBIC)
+   {
+      CShoreHermiteSmoothing(nOutSize, &VdXYDistCShoreTmp, pVdProfileDistXYCME, &VdFreeSurfaceStdCShoreTmp, pVdFreeSurfaceStdCME);
+      CShoreHermiteSmoothing(nOutSize, &VdXYDistCShoreTmp, pVdProfileDistXYCME, &VdSinWaveAngleRadiansCShoreTmp, pVdSinWaveAngleRadiansCME);
+      CShoreHermiteSmoothing(nOutSize, &VdXYDistCShoreTmp, pVdProfileDistXYCME, &VdFractionBreakingWavesCShoreTmp, pVdFractionBreakingWavesCME);
+   }
+   else
+   {
+      // Using the simple linear approach
+      vector<double> VdDistXYCopy(pVdProfileDistXYCME->begin(), pVdProfileDistXYCME->end());
+      
+      *pVdFreeSurfaceStdCME = VdInterp1(&VdXYDistCShoreTmp, pVdFreeSurfaceStdCShore, &VdDistXYCopy);
+      *pVdSinWaveAngleRadiansCME = VdInterp1(&VdXYDistCShoreTmp, pVdSinWaveAngleRadiansCShore, &VdDistXYCopy);
+      *pVdFractionBreakingWavesCME = VdInterp1(&VdXYDistCShoreTmp, pVdFractionBreakingWavesCShore, &VdDistXYCopy);
+   }
+}
+#endif
+
+
+
+/*==============================================================================================================================
+ 
+ Does the hermite cubic smoothing of a CShore output vector
+ 
+==============================================================================================================================*/
+void CSimulation::CShoreHermiteSmoothing(int const nOutSize, vector<double> const* pVdXYDistFromCShoreOut, vector<double> const* pVdProfileDistXYCME, vector<double> const* pVdValuesCShore, vector<double>* pVdInterpolatedValues)
+{
+   // Calculate the first derivative of CShore values (needed for the hermite interpolant)
+   vector<double> VdValuesCShoreDeriv(nOutSize, 0);
+   for (int i = 1; i < nOutSize-1; i++)
+   {
+      // Calculate the horizontal distance increment between two adjacent points (not always the same distance because it depend on profile-cells centroid location)
+      double dX = pVdXYDistFromCShoreOut->at(i+1) - pVdXYDistFromCShoreOut->at(i-1);    // This is always positive
+      VdValuesCShoreDeriv[i] = (pVdValuesCShore->at(i+1) - pVdValuesCShore->at(i-1)) / (2 * dX);
+   }
+
+   // Sort out the values at the beginning and end of the array
+   VdValuesCShoreDeriv[0] = VdValuesCShoreDeriv[1];
+   VdValuesCShoreDeriv[nOutSize-1] = VdValuesCShoreDeriv[nOutSize-2];
+
+   // Interpolate the CShore values OK
+   int nSize = pVdProfileDistXYCME->size();
+   vector<double>
+   VdDistXYCopy(pVdProfileDistXYCME->begin(), pVdProfileDistXYCME->end()),
+      //dVInter(nSize, 0.),
+      VdDeriv(nSize, 0),         // First derivative at the sample points: calculated by the spline function but not subsequently used
+      VdDeriv2(nSize, 0),        // Second derivative at the sample points, ditto
+      VdDeriv3(nSize, 0);        // Third derivative at the sample points, ditto
+                           
+   // Do the smoothing
+      hermite_cubic_spline_value(nOutSize, &(const_cast<double&>(pVdXYDistFromCShoreOut->at(0))), &(const_cast<double&>(pVdValuesCShore->at(0))), &(VdValuesCShoreDeriv.at(0)), nSize, &(VdDistXYCopy[0]), &(pVdInterpolatedValues->at(0)), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
 }
 
 
@@ -1045,7 +1202,7 @@ void CSimulation::ModifyBreakingWavePropertiesWithinShadowZoneToCoastline(int co
             dWaveHeight = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight(),
             dWaveOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
          
-         if (dWaveHeight > (dSeaDepth * m_dBreakingWaveHeightDeptRatio) && (! bModfiedWaveHeightisBreaking))
+         if (dWaveHeight > (dSeaDepth * m_dBreakingWaveHeightDepthRatio) && (! bModfiedWaveHeightisBreaking))
          {
             // It is breaking
             bModfiedWaveHeightisBreaking = true;

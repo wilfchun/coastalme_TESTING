@@ -294,7 +294,7 @@ CSimulation::CSimulation(void)
    m_dCoastNormalRandSpaceFact                      =
    m_dDeanProfileStartAboveSWL                      = 
    m_dAccumulatedSeaLevelChange                     = 
-   m_dBreakingWaveHeightDeptRatio                   = 
+   m_dBreakingWaveHeightDepthRatio                   = 
    m_dWaveDataWrapHours                             = 0;
 
    m_dMinSWL                                    = DBL_MAX;

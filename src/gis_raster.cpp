@@ -2410,7 +2410,7 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(void)
          if (m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea())
          {
 //                LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] active zone  = " << (VbOut[n] ? "true" : "false") << endl;
-            m_pRasterGrid->m_Cell[nActualX][nActualY].SetInActiveZone((dWaveHeight / dSeaDepth) >= m_dBreakingWaveHeightDeptRatio);
+            m_pRasterGrid->m_Cell[nActualX][nActualY].SetInActiveZone((dWaveHeight / dSeaDepth) >= m_dBreakingWaveHeightDepthRatio);
          }
 //          n++;
       }

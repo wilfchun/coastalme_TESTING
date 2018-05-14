@@ -241,7 +241,7 @@ private:
       m_dC_0,                          // Deep water wave speed (m/s)
       m_dL_0,                          // Deep water wave length (m)
       m_dWaveDepthRatioForWaveCalcs,
-      m_dBreakingWaveHeightDeptRatio,
+      m_dBreakingWaveHeightDepthRatio,
       m_dAllCellsDeepWaterWaveHeight,
       m_dAllCellsDeepWaterWaveOrientation,
       m_dAllCellsDeepWaterWavePeriod,
@@ -585,6 +585,8 @@ private:
    int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*);
    int nCreateCShoreInfile(double const, double const, double const, double const , double const, double const, vector<double> const*, vector<double> const*);
    int nReadCShoreOutput(int const, string const*, int const, int const, vector<double> const*, vector<double>*);
+   void InterpolateCShoreOutput(vector<double> const*, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double>*, vector<double>*, vector<double>*);
+   void CShoreHermiteSmoothing(int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double>*);
    static double dCalcWaveAngleToCoastNormal(double const, double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);

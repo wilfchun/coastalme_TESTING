@@ -2152,7 +2152,10 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_CSHORE_EMPTY_PROFILE:
       strErr = "empty profile during during CShore wave propagation";
       break;
-   case RTN_ERR_CSHORE_OUTPUT_FILE:
+   case RTN_ERR_CSHORE_FILE_INPUT:
+      strErr = "creating file for CShore input";
+      break;
+   case RTN_ERR_CSHORE_FILE_OUTPUT:
       strErr = "reading CShore output file";
       break;
    case RTN_ERR_WAVE_INTERPOLATION_LOOKUP:
