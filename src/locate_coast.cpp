@@ -571,13 +571,13 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
             if (! m_pRasterGrid->m_Cell[nX][nY].bIsCoastline())
             {
                // Not already marked, is this an intervention cell with the top above SWL?
-               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() > m_dThisTimestepSWL))
+               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() >= m_dThisTimestepSWL))
                {
                   // It is, so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
                   ILTempGridCRS.Append(&Pti);
                }
-               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL)
+               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() >= m_dThisTimestepSWL)
                {
                   // The sediment top is above SWL so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
@@ -610,13 +610,13 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
             if (! m_pRasterGrid->m_Cell[nX][nY].bIsCoastline())
             {
                // Not already marked, is this an intervention cell with the top above SWL?
-               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() > m_dThisTimestepSWL))
+               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() >= m_dThisTimestepSWL))
                {
                   // It is, so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
                   ILTempGridCRS.Append(&Pti);
                }
-               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL)
+               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() >= m_dThisTimestepSWL)
                {
                   // The sediment top is above SWL so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
@@ -648,13 +648,13 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
             if (! m_pRasterGrid->m_Cell[nX][nY].bIsCoastline())
             {
                // Not already marked, is this an intervention cell with the top above SWL?
-               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() > m_dThisTimestepSWL))
+               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() >= m_dThisTimestepSWL))
                {
                   // It is, so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
                   ILTempGridCRS.Append(&Pti);
                }
-               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL)
+               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() >= m_dThisTimestepSWL)
                {
                   // The sediment top is above SWL so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);

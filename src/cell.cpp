@@ -503,7 +503,7 @@ int CGeomCell::nGetLayerAtElev(double const dElev) const
    
    for (unsigned int nLayer = 1; nLayer < m_VdAllHorizonTopElev.size(); nLayer++)
    {
-      if ((m_VLayerAboveBasement[nLayer-1].dGetTotalThickness() > 0) && (dElev >= m_VdAllHorizonTopElev[nLayer-1]) && (dElev < m_VdAllHorizonTopElev[nLayer]))
+      if ((m_VLayerAboveBasement[nLayer-1].dGetTotalThickness() > 0) && (dElev >= m_VdAllHorizonTopElev[nLayer-1]) && (dElev <= m_VdAllHorizonTopElev[nLayer]))
          return (nLayer-1);
    }
    
