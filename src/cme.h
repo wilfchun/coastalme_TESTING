@@ -148,10 +148,10 @@ char const     QUOTE1                                                      = ';'
 char const     QUOTE2                                                      = '#';
 char const     COMMA                                                       = ',';
 
-
-bool const     USE_DEEP_WATER_FOR_SHADOW_LINE                              = true;        // Use deep water wave orintation in determining shadow line orientation?
+// TESTING options
+bool const     USE_DEEP_WATER_FOR_SHADOW_LINE                              = true;        // Use deep water wave orientation in determining shadow line orientation?
 bool const     CREATE_SHADOW_ZONE_IF_HITS_GRID_EDGE                        = true;        // If shadow line tracing hits grid edge, create shadow zone?
-
+bool const     SAVE_CSHORE_OUTPUT                                          = true;        // #ifdef CSHORE_FILE_INOUT || CSHORE_BOTH, append all CShore output files to a whole-run master
 // TODO Make this a user input
 bool const     ACCEPT_SHORT_PROFILES                                       = true;
 
@@ -462,7 +462,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 15 May 2018";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 16 May 2018";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 

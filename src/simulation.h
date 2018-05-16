@@ -586,7 +586,7 @@ private:
    int nCreateCShoreInfile(double const, double const, double const, double const , double const, vector<double> const*, vector<double> const*, vector<double> const*);
    int nReadCShoreOutput(int const, string const*, int const, int const, vector<double> const*, vector<double>*);
    void InterpolateCShoreOutput(vector<double> const*, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double>*, vector<double>*, vector<double>*);
-   void CShoreHermiteSmoothing(int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double>*);
+   static void CShoreHermiteSmoothing(int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double>*);
    static double dCalcWaveAngleToCoastNormal(double const, double const, int const);
    void CalcCoastTangents(int const);
    void InterpolateWavePropertiesToCoastline(int const, int const, int const);

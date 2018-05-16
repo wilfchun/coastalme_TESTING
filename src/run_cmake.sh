@@ -10,8 +10,8 @@ buildtype=Debug
 
 # Change this to select CShore input/output method
 #cshoreinout=FILE
-cshoreinout=ARG
-#cshoreinout=BOTH
+#cshoreinout=ARG
+cshoreinout=BOTH
 
 echo "CoastalME: starting CMake for Linux (using gcc, $buildtype build, CShore input/output method=$cshoreinout)"
 

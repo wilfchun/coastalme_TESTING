@@ -28,6 +28,7 @@
 
 #include <string>
 using std::stoi;
+using std::to_string;
 
 #include <iostream>
 using std::ifstream;
@@ -558,11 +559,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 #endif
 
 #if defined CSHORE_FILE_INOUT 
-      // We are communicating with CShore using ASCII files
-      char szBuf[BUF_SIZE] = "";
-      string strCWD = getcwd(szBuf, BUF_SIZE);
-      
-      // Now create an input file for this profileM which will be read by CShore
+      // We are communicating with CShore using ASCII files, so create an input file for this profile which will be read by CShore
       nRet = nCreateCShoreInfile(dCShoreTimeStep, dDeepWaterWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, &VdProfileDistXY, &VdProfileZ, &VdProfileFrictionFactor);
       if (nRet != RTN_OK)
          return nRet;
@@ -597,8 +594,20 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       
       // Clean up the CShore outputs
 #ifdef _WIN32
-      nRet = system("./clean.bat")
+      nRet = system("./clean.bat");
 #else
+      if (SAVE_CSHORE_OUTPUT)
+      {
+         string strCommand = "./save_CShore_output.sh ";
+         strCommand += to_string(m_ulIteration);
+         strCommand += " ";
+         strCommand += to_string(nCoast);
+         strCommand += " ";
+         strCommand += to_string(nProfile);
+         
+         system(strCommand.c_str());
+      }
+         
       nRet = system("./clean.sh");
 #endif
       if (nRet != RTN_OK)
@@ -671,6 +680,20 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 #endif
       
 #if defined CSHORE_BOTH
+   #if ! defined _WIN32      
+      if (SAVE_CSHORE_OUTPUT)
+      {
+         string strCommand = "./save_CShore_output.sh ";
+         strCommand += to_string(m_ulIteration);
+         strCommand += " ";
+         strCommand += to_string(nCoast);
+         strCommand += " ";
+         strCommand += to_string(nProfile);
+         
+         system(strCommand.c_str());
+      }
+   #endif
+         
       // Return to the CoastalME folder
       nRet = chdir(m_strCMEDir.c_str());
       if (nRet != RTN_OK)
