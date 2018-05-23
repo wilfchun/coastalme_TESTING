@@ -1064,7 +1064,7 @@ bool CSimulation::bReadRunData(void)
             }
 
             // OK we know the number of layers, so add elements to these vectors
-            for (int i = 0; i < m_nLayers; i++)
+            for (int j = 0; j < m_nLayers; j++)
             {
                m_VstrInitialFineUnconsSedimentFile.push_back("");
                m_VstrInitialSandUnconsSedimentFile.push_back("");
@@ -1859,11 +1859,11 @@ bool CSimulation::bReadRunData(void)
             // Numbers of profiles to be saved
             if (m_bOutputProfileData)
             {
-               vector<string> strTmp = VstrSplit(&strRH, SPACE);
-               for (unsigned int j = 0; j < strTmp.size(); j++)
+               vector<string> VstrTmp = VstrSplit(&strRH, SPACE);
+               for (unsigned int j = 0; j < VstrTmp.size(); j++)
                {
-                  strTmp[j] = strTrim(&strTmp[j]);
-                  int nTmp = atoi(strTmp[j].c_str());
+                  VstrTmp[j] = strTrim(&VstrTmp[j]);
+                  int nTmp = atoi(VstrTmp[j].c_str());
                   if (nTmp < 0)
                   {
                      strErr = "Profile number for saving must be zero or greater";
@@ -1879,11 +1879,11 @@ bool CSimulation::bReadRunData(void)
            // Timesteps to save profile for output
             if (m_bOutputProfileData)
             {
-               vector<string> strTmp = VstrSplit(&strRH, SPACE);
-               for (unsigned int j = 0; j < strTmp.size(); j++)
+               vector<string> VstrTmp = VstrSplit(&strRH, SPACE);
+               for (unsigned int j = 0; j < VstrTmp.size(); j++)
                {
-                  strTmp[j] = strTrim(&strTmp[j]);
-                  unsigned long ulTmp = atol(strTmp[j].c_str());
+                  VstrTmp[j] = strTrim(&VstrTmp[j]);
+                  unsigned long ulTmp = atol(VstrTmp[j].c_str());
                   if (ulTmp < 1)
                   {
                      strErr = "Timestep for profile saves must be one or greater";
@@ -1942,9 +1942,9 @@ bool CSimulation::bReadRunData(void)
    if ((! m_strInitialBasementDEMFile.empty()) || (! m_strInitialSuspSedimentFile.empty()) || (! m_strInitialLandformFile.empty()) || (! m_strInterventionHeightFile.empty()))
       bNoRasterFiles = false;
 
-   for (int i = 0; i < m_nLayers; i++)
+   for (int j = 0; j < m_nLayers; j++)
    {
-      if ((! m_VstrInitialFineUnconsSedimentFile[i].empty()) || (! m_VstrInitialSandUnconsSedimentFile[i].empty()) || (! m_VstrInitialCoarseUnconsSedimentFile[i].empty()) || (! m_VstrInitialFineConsSedimentFile[i].empty()) || (! m_VstrInitialSandConsSedimentFile[i].empty()) || (! m_VstrInitialCoarseConsSedimentFile[i].empty()))
+      if ((! m_VstrInitialFineUnconsSedimentFile[j].empty()) || (! m_VstrInitialSandUnconsSedimentFile[j].empty()) || (! m_VstrInitialCoarseUnconsSedimentFile[j].empty()) || (! m_VstrInitialFineConsSedimentFile[j].empty()) || (! m_VstrInitialSandConsSedimentFile[j].empty()) || (! m_VstrInitialCoarseConsSedimentFile[j].empty()))
          bNoRasterFiles = false;
    }
 

@@ -170,10 +170,10 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
 
       // Get the x-y coords of a profile starting from this coast point and parallel to the up-coast polygon boundary profile (these are in reverse sequence, like the boundary part-profile)
       vector<CGeom2DIPoint> VPtiParProfile;
-      for (int n = 0; n < nUpCoastPartProfileLen; n++)
+      for (int m = 0; m < nUpCoastPartProfileLen; m++)
       {
          // TODO check that each point is within valid grid, do same for other similar places in rest of model
-         CGeom2DIPoint PtiTmp(PtiVUpCoastPartProfileCell[n].nGetX() + nXOffset, PtiVUpCoastPartProfileCell[n].nGetY() + nYOffset);
+         CGeom2DIPoint PtiTmp(PtiVUpCoastPartProfileCell[m].nGetX() + nXOffset, PtiVUpCoastPartProfileCell[m].nGetY() + nYOffset);
          VPtiParProfile.push_back(PtiTmp);
       }
 
@@ -327,26 +327,26 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
 
          vector<double> dVParProfileNow(nParProfLen, 0);
          vector<bool> bVProfileValid(nParProfLen, true);
-         for (int n = 0; n < nParProfLen; n++)
+         for (int m = 0; m < nParProfLen; m++)
          {
             int
-               nX = VPtiParProfile[nParProfLen - n - 1].nGetX(),
-               nY = VPtiParProfile[nParProfLen - n - 1].nGetY();
+               nX = VPtiParProfile[nParProfLen - m - 1].nGetX(),
+               nY = VPtiParProfile[nParProfLen - m - 1].nGetY();
 
             // Safety check
             if (! bIsWithinValidGrid(nX, nY))
             {
 //                LogStream << WARN << "03 @@@@ while constructing parallel profile to estimate DOWN-COAST actual beach erosion on coast " << nCoast << " polygon " << nPoly << ", hit edge of grid at [" << nX << "][" << nY << "] for parallel profile from coast point " << nCoastPoint << " at [" << nCoastX << "][" << nCoastY << "]. Constraining this parallel profile at its seaward end" << endl;
 
-               bVProfileValid[n] = false;
+               bVProfileValid[m] = false;
                continue;
             }
 
             // Don't erode intervention cells
             if (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION)
-               bVProfileValid[n] = false;
+               bVProfileValid[m] = false;
 
-            dVParProfileNow[n] = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev();
+            dVParProfileNow[m] = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev();
          }
 
          // Get the total difference in elevation (present profile - Dean profile)

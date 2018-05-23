@@ -605,7 +605,9 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          strCommand += " ";
          strCommand += to_string(nProfile);
          
-         system(strCommand.c_str());
+         nRet = system(strCommand.c_str());
+         if (nRet != RTN_OK)
+            return nRet;
       }
          
       nRet = system("./clean.sh");
@@ -690,7 +692,9 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          strCommand += " ";
          strCommand += to_string(nProfile);
          
-         system(strCommand.c_str());
+         nRet = system(strCommand.c_str());
+         if (nRet != RTN_OK)
+            return nRet;
       }
    #endif
          
@@ -1126,7 +1130,7 @@ void CSimulation::InterpolateCShoreOutput(vector<double> const* pVdProfileDistXY
    //    int nInterpolationMethod = CSHORE_INTERPOLATION_LINEAR;
    int nInterpolationMethod = CSHORE_INTERPOLATION_HERMITE_CUBIC;
    
-   // The CShore scross-shore distance has its origin at the seaward end, so create a copy of the valid part of this which is in the CME convention (i.e. with the origin at the shoreline)
+   // The CShore cross-shore distance has its origin at the seaward end, so create a copy of the valid part of this which is in the CME convention (i.e. with the origin at the shoreline)
    vector<double> VdXYDistCShoreTmp(nOutSize, 0);
    for (int i = 0; i < nOutSize; i++)
       VdXYDistCShoreTmp[i] = pVdXYDistFromCShoreOut->at(nOutSize-1) - pVdXYDistFromCShoreOut->at(i);
@@ -1138,7 +1142,7 @@ void CSimulation::InterpolateCShoreOutput(vector<double> const* pVdProfileDistXY
    vector<double> 
       VdFreeSurfaceStdCShoreTmp(pVdFreeSurfaceStdCShore->begin(), pVdFreeSurfaceStdCShore->begin() + nOutSize),
       VdSinWaveAngleRadiansCShoreTmp(pVdSinWaveAngleRadiansCShore->begin(), pVdSinWaveAngleRadiansCShore->begin() + nOutSize),
-      VdFractionBreakingWavesCShoreTmp(pVdFractionBreakingWavesCShore->begin(), pVdFractionBreakingWavesCShore->end() + nOutSize);
+      VdFractionBreakingWavesCShoreTmp(pVdFractionBreakingWavesCShore->begin(), pVdFractionBreakingWavesCShore->begin() + nOutSize);
       
    reverse(VdFreeSurfaceStdCShoreTmp.begin(), VdFreeSurfaceStdCShoreTmp.end());
    reverse(VdSinWaveAngleRadiansCShoreTmp.begin(), VdSinWaveAngleRadiansCShoreTmp.end());

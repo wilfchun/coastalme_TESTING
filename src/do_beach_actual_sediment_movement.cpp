@@ -144,7 +144,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
             
             // Estimate how much we can erode on this polygon: traverse the polygon's shoreline in a down-coast direction (i.e. in the direction of increasing coastpoint indices), with profiles which are parallel to the polygon's up-coast boundary
             // NOTE: also tried doing a second traverse, going up-coast, with profiles parallel to the down-coast boundary, if the down-coast routine was unable to reach its erosion target. But this second traverse almost always produced zero erosion, so seems not worth doing
-            int nRet = nTraversePolygonAndEstimateBeachErosion(nCoast, nPoly, -dSedChange, dTotFineEroded, dTotSandEroded, dTotCoarseEroded);
+            nRet = nTraversePolygonAndEstimateBeachErosion(nCoast, nPoly, -dSedChange, dTotFineEroded, dTotSandEroded, dTotCoarseEroded);
             if (nRet != RTN_OK)
                return nRet;
             
@@ -364,7 +364,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
                dSandError = 0,
                dCoarseError = 0;
                
-            int nRet = nDoBeachErosionOnPolygon(nCoast, nPoly, -dSedChange, dFineError, dSandError, dCoarseError);
+            nRet = nDoBeachErosionOnPolygon(nCoast, nPoly, -dSedChange, dFineError, dSandError, dCoarseError);
             if (nRet != RTN_OK)
                return nRet;
             
@@ -695,7 +695,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
             dSedChange = m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaActualUnconsSand() + m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaActualUnconsCoarse();
             
             // Calculate a net increase in depth of unconsolidated sediment on the cells within the polygon by depositing fine and sand. Note that some cells may decrease in elevation (i.e. have some unconsolidated sediment erosion) however
-            int nRet = nDoBeachDepositionOnPolygon(nCoast, nPoly, dSedChange);
+            nRet = nDoBeachDepositionOnPolygon(nCoast, nPoly, dSedChange);
             if (nRet != RTN_OK)
                return nRet;
          }

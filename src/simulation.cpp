@@ -858,7 +858,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       DoAllPotentialBeachErosion();
 
       // Do within-sediment redistribution of unconsolidated sediment, constraining potential sediment movement to give actual (i.e. supply-limited) sediment movement to/from each polygon in three size clases
-      int nRet = nDoAllActualBeachErosionAndDeposition();
+      nRet = nDoAllActualBeachErosionAndDeposition();
       if (nRet != RTN_OK)
          return nRet;
 

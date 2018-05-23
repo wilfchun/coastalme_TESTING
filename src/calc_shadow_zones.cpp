@@ -186,7 +186,7 @@ int CSimulation::nDoAllShadowZones(void)
                      dWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nShadowZoneBoundaryEndPoint);
                   
                   // Are waves on- or off-shore, and up- or down-coast?
-                  bool bDownCoast = false;   
+                  bDownCoast = false;   
                   bool bOnShore = bOnOrOffShoreAndUpOrDownCoast(dFluxOrientation, dWaveOrientation, nSeaHand, bDownCoast);
                   
 //                   CGeom2DPoint PtTmp1 = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nShadowZoneBoundaryEndPoint);
@@ -244,7 +244,7 @@ int CSimulation::nDoAllShadowZones(void)
                      dWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nShadowZoneBoundaryEndPoint);
                   
                   // Are waves on- or off-shore, and up- or down-coast?
-                  bool bDownCoast = false;   
+                  bDownCoast = false;   
                   bool bOnShore = bOnOrOffShoreAndUpOrDownCoast(dFluxOrientation, dWaveOrientation, nSeaHand, bDownCoast);
                   
 //                   CGeom2DPoint PtTmp1 = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nShadowZoneBoundaryEndPoint);
@@ -510,7 +510,7 @@ int CSimulation::nDoAllShadowZones(void)
                }
                   
                // We've found a valid grid-edge shadow zone, but we need a distance (in cells) between the shadow boundary start and the 'virtual' shadow boundary end: this is the off-grid point where the shadow boundary would have intersected the coastline, if the grid were big enough. This is of course unknowable. So as a best guess, we choose the shorter of the two distances between the point where the shadow boundary hits the valid edge of the grid, and the start or end of the coast
-               int nCoastSize = m_VCoast[nCoast].nGetCoastlineSize();
+               // int nCoastSize = m_VCoast[nCoast].nGetCoastlineSize();
                CGeom2DIPoint PtiCoastStart = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(0);
                CGeom2DIPoint PtiCoastEnd = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nCoastSize-1);
                
@@ -674,7 +674,7 @@ int CSimulation::nFloodFillShadowZone(int const nZone, CGeom2DIPoint const* pPti
       while ((! bStartPointOK) && (dWeight < 1))
       {
          // Find a start point for the flood fill. Because shadow zones are generally triangular, start by choosing a low weighting so that the start point is close to the centroid, but a bit towards the coast. If this doesn't work, go further coastwards
-         CGeom2DIPoint PtiFloodFillStart = PtiWeightedAverage(pPtiShadowBoundaryEnd, pPtiCentroid, dWeight);
+         PtiFloodFillStart = PtiWeightedAverage(pPtiShadowBoundaryEnd, pPtiCentroid, dWeight);
          
          // Safety check
          if (PtiFloodFillStart == *pPtiCentroid)
@@ -1025,17 +1025,15 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
       }
       
       // Traverse the linking line, interpolating between cells by a simple DDA line algorithm, see http://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm)
-      double
-         dXInc = nDownDriftX - nCoastX,
-         dYInc = nDownDriftY - nCoastY,
-         dLinkingLineLength = tMax(tAbs(dXInc), tAbs(dYInc));
+      dXInc = nDownDriftX - nCoastX;
+      dYInc = nDownDriftY - nCoastY;
+      double dLinkingLineLength = tMax(tAbs(dXInc), tAbs(dYInc));
       
       dXInc /= dLinkingLineLength;
       dYInc /= dLinkingLineLength;
       
-      double
-         dX = nCoastX,
-         dY = nCoastY;
+      dX = nCoastX,
+      dY = nCoastY;
          
       // Process each interpolated point along the linking line
       int 

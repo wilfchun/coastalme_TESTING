@@ -46,6 +46,8 @@ using std::pair;
 #include "line.h"
 #include "i_line.h"
 
+#include "inc/cshore.h"
+
 
 int const
    NRNG    = 2,
@@ -585,7 +587,7 @@ private:
    int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*, vector<double>*);
    int nCreateCShoreInfile(double const, double const, double const, double const , double const, vector<double> const*, vector<double> const*, vector<double> const*);
    int nReadCShoreOutput(int const, string const*, int const, int const, vector<double> const*, vector<double>*);
-   void InterpolateCShoreOutput(vector<double> const*, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double>*, vector<double>*, vector<double>*);
+   static void InterpolateCShoreOutput(vector<double> const*, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double>*, vector<double>*, vector<double>*);
    static void CShoreHermiteSmoothing(int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double>*);
    static double dCalcWaveAngleToCoastNormal(double const, double const, int const);
    void CalcCoastTangents(int const);

@@ -29,7 +29,7 @@ if (WIN32)
 endif ()
 
 if (MINGW)
-   message (FATAL_ERROR "CoastyalME cannot be built on Windows, using the MinGW compiler... yet")
+   message (FATAL_ERROR "CoastalME cannot be built on Windows, using the MinGW compiler... yet")
 endif ()
 
 message ("")
@@ -39,14 +39,16 @@ message ("")
 # Set up project-specific defaults
 project (CME)
 
-set (CMAKE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")      # Assume that we are in the src folder
-set (CMAKE_INSTALL_DIR "${CMAKE_SOURCE_DIR}/..")
-#set (CMAKE_INSTALL_DIR "$ENV{HOME}/coast/CoastalME")      # May be changed by the user
+#set (CMAKE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")       # Assume that we are in the src folder
+#set (CMAKE_INSTALL_DIR "${CMAKE_SOURCE_DIR}/..")
+
+set (CMAKE_SOURCE_DIR "$ENV{HOME}/coast/CoastalME/src")     # May be changed by the user
+set (CMAKE_INSTALL_DIR "$ENV{HOME}/coast/CoastalME")        # May be changed by the user
 
 file (GLOB CME_SOURCE_FILES *.cpp)
 set (CME_EXECUTABLE cme)
 
-# Set the path for our own cmake modules
+# Set the path for CoastalME's own cmake modules
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 
@@ -72,10 +74,12 @@ string (TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LC)
 if (CMAKE_COMPILER_IS_GNUCC)
    message ("C++ compiler is ${CMAKE_CXX_COMPILER_ID} g++ ${CMAKE_CXX_COMPILER_VERSION}")
 
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -W -Wall -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls -Wno-strict-overflow")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
 
    # For Debug builds under gcc
    if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
+      set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wpointer-arith -Wconversion -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls -Wno-strict-overflow -Wshadow -Wuninitialized -Wnull-dereference -Wchkp -mmpx -fcheck-pointer-bounds -Wformat -Wformat-overflow -Wformat-signedness -Wuseless-cast -Wempty-body")
+    
       if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.8")
          # Undefined behaviour sanitizer introduced with gcc 4.9, see http://developerblog.redhat.com/2014/10/16/gcc-undefined-behavior-sanitizer-ubsan/
 #         set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -fsanitize=shift -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=null -fsanitize=return -fsanitize=address")
@@ -93,7 +97,7 @@ if (CMAKE_COMPILER_IS_GNUCC)
    endif ()
    
    # Finally set some gcc-specific linker flags
-   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed -Wl,--no-undefined")
+   set (CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined")
 endif()
 
 if (MSVC)
@@ -130,7 +134,7 @@ if (CMAKE_BUILD_TYPE_LC STREQUAL "gcov")
    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CME_BINARY_DIR}/gcov CACHE PATH "Directory for gcov builds" FORCE)
 endif ()
 
-if (CMAKE_BUILD_TYPE_LC STREQUAL "callgrind")
+if (CMAKE_BUILD_TYPE_LC STREQUAL "valgrind")
 #   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS}")
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS}")
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
@@ -140,10 +144,11 @@ if (CMAKE_BUILD_TYPE_LC STREQUAL "callgrind")
 endif ()
 
 #########################################################################################
-# Find libraries
+# Next, find libraries
 message ("Finding libraries")
 
-# The model cannot be built without GDAL
+#########################################################################################
+# CoastalME cannot be built without GDAL, which is linked dynamically
 find_package (GDAL REQUIRED)
 #message (STATUS "GDAL_LIBRARIES=${GDAL_LIBRARIES}")
 #message (STATUS "GDAL_INCLUDE_DIRS=${GDAL_INCLUDE_DIRS}")
@@ -152,7 +157,7 @@ set (CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${GDAL_INCLUDE_DIRS})
 #message (STATUS "LIBS=${LIBS}")
 #message (STATUS "CMAKE_INCLUDE_PATH=${CMAKE_INCLUDE_PATH}")
 
-# Added by DFM, stolen from https://github.com/qgis/QGIS/blob/master/cmake/FindGDAL.cmake
+# OK, we found GDAL, but what versuion is it? This is stolen from https://github.com/qgis/QGIS/blob/master/cmake/FindGDAL.cmake
 set (GDAL_CONFIG_PREFER_PATH "$ENV{GDAL_HOME}/bin" CACHE STRING "preferred path to GDAL (gdal_config)")
 set (GDAL_CONFIG_PREFER_FWTOOLS_PATH "$ENV{FWTOOLS_HOME}/bin_safe" CACHE STRING "preferred path to GDAL (gdal_config) from FWTools")
 find_program (GDAL_CONFIG gdal-config
@@ -193,10 +198,179 @@ endif ()
 
 
 #########################################################################################
+# CoastalME also requires the CShore library. This can be linked statically or dynamically (i.e. shared). If not specified, assume a shared library
+if (NOT CSHORE_LIBRARY)
+   set (CSHORE_LIBRARY_LC "shared")
+else ()
+   # The library link type was specified, so create a lower-case version
+   string (TOLOWER "${CSHORE_LIBRARY}" CSHORE_LIBRARY_LC )
+endif ()
+
+# If not specified, assume that the CShore library communicates with CoastalME via argument passing
+if (NOT CSHORE_INOUT)
+   set (CSHORE_INOUT_LC "arg")
+else ()
+   # The communication method was specified, so make a lower-case version
+   string (TOLOWER "${CSHORE_INOUT}" CSHORE_INOUT_LC )
+endif ()
+
+if (CSHORE_INOUT_LC STREQUAL "file")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_FILE_INOUT")   
+elseif (CSHORE_INOUT_LC STREQUAL "arg")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_ARG_INOUT")   
+elseif (CSHORE_INOUT_LC STREQUAL "both")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_BOTH")
+else ()
+   message (FATAL_ERROR "Invalid value specified for communication with the CShore library: ${CSHORE_INOUT}")
+endif ()
+
+if (UNIX)
+   # Put the correct version of the CShore library into ${CMAKE_SOURCE_DIR}/lib/libcshore.a"
+   if (UNIX AND NOT APPLE AND NOT CYGWIN)
+      if (CSHORE_INOUT_LC STREQUAL "file")
+         if ((CMAKE_BUILD_TYPE_LC STREQUAL "debug") OR (CMAKE_BUILD_TYPE_LC STREQUAL "valgrind"))
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.DEBUG.LINUX.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.LINUX.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         else ()
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.RELEASE.LINUX.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.LINUX.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         endif ()
+         
+      elseif (CSHORE_INOUT_LC STREQUAL "arg")
+         if ((CMAKE_BUILD_TYPE_LC STREQUAL "debug") OR (CMAKE_BUILD_TYPE_LC STREQUAL "valgrind"))
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.DEBUG.LINUX.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.LINUX.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         else ()
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.RELEASE.LINUX.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.LINUX.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         endif ()
+         
+      elseif (CSHORE_INOUT_LC STREQUAL "both")
+         if ((CMAKE_BUILD_TYPE_LC STREQUAL "debug") OR (CMAKE_BUILD_TYPE_LC STREQUAL "valgrind"))
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.DEBUG.LINUX.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.LINUX.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         else ()
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.RELEASE.LINUX.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.LINUX.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         endif ()
+      endif ()
+   endif ()
+
+   if (CYGWIN)
+      if (CSHORE_INOUT_LC STREQUAL "file")
+         if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.DEBUG.CYGWIN.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.CYGWIN.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         else ()
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.RELEASE.CYGWIN.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.CYGWIN.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         endif ()
+         
+      elseif (CSHORE_INOUT_LC STREQUAL "arg")
+         if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.DEBUG.CYGWIN.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.CYGWIN.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         else ()
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.RELEASE.CYGWIN.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.CYGWIN.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         endif ()
+         
+      elseif (CSHORE_INOUT_LC STREQUAL "both")
+         if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.DEBUG.CYGWIN.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.CYGWIN.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         else ()
+            if (CSHORE_LIBRARY_LC STREQUAL "shared")
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.so.RELEASE.CYGWIN.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.so")
+            else ()
+               execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.CYGWIN.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
+            endif ()
+         endif ()
+      endif ()
+   endif ()
+
+   if (APPLE)
+      # TODO
+   endif ()
+endif ()
+
+if (WIN32)
+   # TODO
+endif ()
+
+# OK, now find the CShore library (and GFortran, if the CShore linkage is static)
+find_package (CShoreLib REQUIRED)
+
+#message (STATUS "CSHORELIB_DIR=${CSHORELIB_DIR}")
+set (LIBS ${LIBS} ${CSHORELIB_DIR})
+#message (STATUS "CSHORELIB_INCLUDE_DIR=${CSHORELIB_INCLUDE_DIR}")
+set (CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${CSHORELIB_INCLUDE_DIR})
+
+if (CSHORE_LIBRARY_LC STREQUAL "static")
+   set (LIBS ${LIBS} ${LIBGFORTRAN_LIBRARIES} ${LIBQUADMATH_LIBRARIES})
+   set (CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${GFORTRAN_INCLUDE_DIR})
+   #    include_directories (${GFORTRAN_INCLUDE_DIR})
+   #    target_link_libraries (${CME_EXECUTABLE} ${LIBS} ${LIBGFORTRAN_LIBRARIES})
+   #    target_link_libraries (${CME_EXECUTABLE} ${LIBS} ${LIBQUADMATH_LIBRARIES})
+   
+else ()
+   # Assume that libcshore.a is either in one of the system library dirs, or is in a location specified by export LD_LIBRARY_PATH
+   set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+   
+   # We have the absolute path to the CShore library, now get the relative path from the install dir
+   file (RELATIVE_PATH CSHORELIB_REL_FILEPATH ${CMAKE_INSTALL_DIR} ${CSHORELIB_DIR})
+   
+   # Remove the file name
+   get_filename_component(CSHORELIB_REL_PATH ${CSHORELIB_REL_FILEPATH} DIRECTORY)
+   
+   # And get the absolute path (without the file name)
+   get_filename_component(CSHORELIB_ABS_PATH ${CSHORELIB_DIR} DIRECTORY)
+   
+   # And set the installed executable's RPATH/RUNPATH to point to the CShore library: first as a relative path (two versions of this, $ORIGIN and $$ORIGIN, dunno why), next as as absolute path, and finally a fallback to a system library folder
+   #set (CMAKE_INSTALL_RPATH "${CSHORELIB_DIR}:$ORIGIN/src/lib/:$$ORIGIN/src/lib/")
+   set (CMAKE_INSTALL_RPATH "$ORIGIN/${CSHORELIB_REL_PATH}:$$ORIGIN/${CSHORELIB_REL_PATH}:${CSHORELIB_ABS_PATH}:/usr/local/lib")
+endif ()
+
+
+#########################################################################################
 # The important bits
 include_directories (SYSTEM ${CMAKE_INCLUDE_PATH})
 include_directories (${CME_SOURCE_DIR})
 add_executable (${CME_EXECUTABLE} ${CME_SOURCE_FILES})
+target_link_libraries (${CME_EXECUTABLE} ${LIBS})
 
 install (TARGETS ${CME_EXECUTABLE} RUNTIME DESTINATION ${CMAKE_INSTALL_DIR})
 
@@ -206,98 +380,6 @@ set_property (TARGET ${CME_EXECUTABLE} PROPERTY CXX_STANDARD_REQUIRED ON)
 
 
 #########################################################################################
-# Sort out CShore
-
-# If not specified, assume file input/output
-if (NOT CSHORE_INOUT)
-   set (CSHORE_INOUT_LC "file")
-else ()
-
-   # The input/output method was specified, so make a lower-case version
-   string (TOLOWER "${CSHORE_INOUT}" CSHORE_INOUT_LC )
-endif ()
-   
-if (CSHORE_INOUT_LC STREQUAL "file")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_FILE_INOUT")
-   
-elseif (CSHORE_INOUT_LC STREQUAL "arg")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_ARG_INOUT")
-   
-elseif (CSHORE_INOUT_LC STREQUAL "both")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_BOTH")
-
-else ()
-   message (FATAL_ERROR "Invalid value specified for cshoreinout: ${CSHORE_INOUT}")
-endif ()
-
-# The cshore library needs gfortran on Linux TODO What about Windows?
-if (UNIX)
-   find_package (GFortranLibs REQUIRED)
-   include_directories (${GFORTRAN_INCLUDE_DIR})
-   target_link_libraries (${CME_EXECUTABLE} ${LIBS} ${LIBGFORTRAN_LIBRARIES})
-   target_link_libraries (${CME_EXECUTABLE} ${LIBS} ${LIBQUADMATH_LIBRARIES})
-
-   if (UNIX AND NOT APPLE AND NOT CYGWIN)
-      if (CSHORE_INOUT_LC STREQUAL "file")
-         if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.LINUX.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         else ()
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.LINUX.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         endif ()
-         
-      elseif (CSHORE_INOUT_LC STREQUAL "arg")
-         if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.LINUX.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         else ()
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.LINUX.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         endif ()
-         
-      elseif (CSHORE_INOUT_LC STREQUAL "both")
-         if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.LINUX.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         else ()
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.LINUX.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         endif ()
-      endif ()
-   endif ()
-
-   if (CYGWIN)
-      if (CSHORE_INOUT_LC STREQUAL "file")
-         if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.CYGWIN.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         else ()
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.CYGWIN.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         endif ()
-         
-      elseif (CSHORE_INOUT_LC STREQUAL "arg")
-         if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.CYGWIN.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         else ()
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.CYGWIN.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         endif ()
-         
-      elseif (CSHORE_INOUT_LC STREQUAL "both")
-         if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.DEBUG.CYGWIN.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         else ()
-            execute_process (COMMAND cp -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.CYGWIN.ARGINBOTHOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
-         endif ()
-      endif ()
-   endif ()
-
-   if (APPLE)
-      # TODO
-   endif ()
-
-   # Link with the cshore library
-   target_link_libraries (${CME_EXECUTABLE} ${LIBS} ${CME_SOURCE_DIR}/lib/libcshore.a)
-endif ()
-
-if (WIN32)
-   # TODO
-endif ()
-
-
 
 
 #########################################################################################
@@ -311,24 +393,27 @@ message (STATUS "CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
 message (STATUS "CMAKE_INSTALL_DIR = ${CMAKE_INSTALL_DIR}")
 # message (STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 # message (STATUS "CMAKE_INCLUDE_PATH=${CMAKE_INCLUDE_PATH}")
-# message (STATUS "LIBS=${LIBS}")
+message (STATUS "LIBS=${LIBS}")
 # message (STATUS "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 # message (STATUS "CMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}")
+message (STATUS "CMAKE_INSTALL_RPATH=${CMAKE_INSTALL_RPATH}")
 
 
 #########################################################################################
 # Some extra messages
-if (CMAKE_BUILD_TYPE_LC STREQUAL "callgrind")
+if (CMAKE_BUILD_TYPE_LC STREQUAL "valgrind")
    message ("")
-   message ("When the build has finished, use valgrind/callgrind as follows:")
+   message ("When the build has finished, use valgrind/callgrind as follows.")
    message ("")
+   message ("To check for memory leaks:")
+   message ("valgrind --leak-check=yes --suppressions=system-libs.supp --track-origins=yes ./cme &> valgrind.txt")
+   message ("Then look at valgrind.txt")
+   message ("")
+   message ("Or to check coverage:")
    message ("valgrind --tool=callgrind ./cme")
-   message ("")
    message ("Then run:")
    message ("callgrind_annotate --auto=yes callgrind.out.XXXXX > ./profile/callgrind/callgrind.txt")
-   message ("where XXXXX is the number of the callgrind.out.XXXXX that was produced by valgrind")
-   message ("")
-   message ("Then look at ./profile/callgrind.txt")
+   message ("where XXXXX is the number of the callgrind.out.XXXXX that was produced by valgrind. Then look at ./profile/callgrind.txt")
    message ("")
 endif ()
 

@@ -462,7 +462,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 16 May 2018";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 23 May 2018";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -820,19 +820,6 @@ struct FillToWidth
 ostream& operator<< (ostream&, const FillToWidth&);
 
 #endif
-
-
-//============================================= Globally-available Fortran function =============================================
-extern "C"
-{
-#if defined CSHORE_FILE_INOUT 
-   void cshore(int*);
-#endif
-   
-#if defined CSHORE_ARG_INOUT || CSHORE_BOTH  
-   void CShoreWrapper(int const*, int const*, int const*, int const*, int const*, int const*, int const*, int const*, int const*, int const*, int const*, double const*, double const*, double[], double[], double[], double[], double[], double[], int const*, double[], double[], double[], int*, int*, double[], double[], double[], double[]);
-#endif  
-}
 
 //================================================= debugging stuff =============================================================
 //#define CLOCKCHECK          // Uncomment to check CPU clock rollover settings

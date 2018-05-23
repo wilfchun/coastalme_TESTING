@@ -101,9 +101,9 @@ int CSimulation::nHandleCommandLineParams(int nArg, char* pcArgv[])
          // User wants to know what GDAL raster drivers are available
          cout << GDALDRIVERS << endl << endl;
 
-         for (int i = 0; i < GDALGetDriverCount(); i++ )
+         for (int j = 0; j < GDALGetDriverCount(); j++ )
          {
-            GDALDriverH hDriver = GDALGetDriver(i);
+            GDALDriverH hDriver = GDALGetDriver(j);
 
             string strTmp(GDALGetDriverShortName(hDriver));
             strTmp.append("          ");

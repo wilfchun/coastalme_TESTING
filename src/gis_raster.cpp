@@ -818,7 +818,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (INTERVENTION_HEIGHT_RASTER):
                {
                   // Intervention height
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
+                  dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bDoubleIsValid(dTmp))
                      dTmp = m_dMissingValue;
 
@@ -835,7 +835,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (SUSP_SED_RASTER):
                {
                   // Initial Suspended Sediment GIS data
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
+                  dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bDoubleIsValid(dTmp))
                      dTmp = m_dMissingValue;
 
@@ -852,7 +852,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (FINE_UNCONS_RASTER):
                {
                   // Initial Unconsolidated Fine Sediment GIS data
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
+                  dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bDoubleIsValid(dTmp))
                      dTmp = m_dMissingValue;
 
@@ -869,7 +869,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (SAND_UNCONS_RASTER):
                {
                   // Initial Unconsolidated Sand Sediment GIS data
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
+                  dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bDoubleIsValid(dTmp))
                      dTmp = m_dMissingValue;
 
@@ -886,7 +886,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (COARSE_UNCONS_RASTER):
                {
                   // Initial Unconsolidated Coarse Sediment GIS data
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
+                  dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bDoubleIsValid(dTmp))
                      dTmp = m_dMissingValue;
 
@@ -903,7 +903,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (FINE_CONS_RASTER):
                {
                   // Initial Consolidated Fine Sediment GIS data
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
+                  dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bDoubleIsValid(dTmp))
                      dTmp = m_dMissingValue;
 
@@ -920,7 +920,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (SAND_CONS_RASTER):
                {
                   // Initial Consolidated Sand Sediment GIS data
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
+                  dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bDoubleIsValid(dTmp))
                      dTmp = m_dMissingValue;
 
@@ -937,7 +937,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (COARSE_CONS_RASTER):
                {
                   // Initial Consolidated Coarse Sediment GIS data
-                  double dTmp = pfScanline[nX];       // Deal with any NaN values
+                  dTmp = pfScanline[nX];       // Deal with any NaN values
                   if (! bDoubleIsValid(dTmp))
                      dTmp = m_dMissingValue;
 
