@@ -46,6 +46,17 @@ double dRound(double const d)
 }
 
 
+/*==============================================================================================================================
+ 
+ Version of the above that returns an int
+ 
+ ==============================================================================================================================*/
+int nRound(double const d)
+{
+   // Rounds positive or negative doubles correctly
+   return static_cast<int>((d < 0.0) ? ceil(d - 0.5) : floor(d + 0.5));
+}
+
 // bool bIsWhole(double d)
 // {
 //    // From http://answers.yahoo.com/question/index?qid=20110320132617AAMdb7u

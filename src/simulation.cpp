@@ -46,6 +46,9 @@ using std::ios;
 CSimulation::CSimulation(void)
 {
    // Initialization
+   m_bHaveFineSediment                             =
+   m_bHaveSandSediment                             =
+   m_bHaveCoarseSediment                           =
    m_bBasementElevSave                             =
    m_bSedimentTopSurfSave                          =
    m_bTopSurfSave                                  =
@@ -698,7 +701,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    // Misc initialization calcs
    m_nCoastMax = COAST_LENGTH_MAX * tMax(m_nXGridMax, m_nYGridMax);                                        // Arbitrary but probably OK
    m_nCoastMin = COAST_LENGTH_MIN_X_PROF_SPACE * m_dCoastNormalAvgSpacing / m_dCellSide;                   // Ditto
-   m_nCoastCurvatureInterval = tMax(dRound(m_dCoastNormalAvgSpacing / (m_dCellSide * 2)), 2.0);            // Ditto
+   m_nCoastCurvatureInterval = tMax(nRound(m_dCoastNormalAvgSpacing / (m_dCellSide * 2)), 2);              // Ditto
 
    // For beach erosion/deposition, conversion from immersed weight to bulk volumetric (sand and voids) transport rate (Leo Van Rijn)
    m_dInmersedToBulkVolumetric = 1 / ((m_dBeachSedimentDensity - m_dSeaWaterDensity) * (1 - m_dBeachSedimentPorosity) * m_dG);
@@ -758,6 +761,8 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nLocateSeaAndCoasts();
       if (nRet != RTN_OK)
          return nRet;
+      
+      LogStream << endl;
 
       // Locate estuaries
       nRet = nLocateAllEstuaries();
@@ -779,6 +784,8 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
+      LogStream << endl;
+      
       // Create the coast polygons
       nRet = nCreateAllPolygons();
       if (nRet != RTN_OK)
@@ -809,6 +816,8 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
       
+      LogStream << endl;
+      
 //       // TEST
 //       nNODATA = 0;
 //       nPoly0 = 0;
@@ -837,6 +846,8 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nDoAllPropagateWaves();
       if (nRet != RTN_OK)
          return nRet;
+      
+      LogStream << endl;
       
       if (m_bDoCoastPlatformErosion)
       {

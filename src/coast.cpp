@@ -142,7 +142,7 @@ CGeom2DPoint* CRWCoast::pPtGetCoastlinePointExtCRS(int const n)
    return &m_LCoastlineExtCRS[n];
 }
 
-int CRWCoast::nGetCoastlineSize(void) const
+unsigned int CRWCoast::nGetCoastlineSize(void) const
 {
    return m_LCoastlineExtCRS.nGetSize();
 }
@@ -200,7 +200,7 @@ CGeom2DIPoint* CRWCoast::pPtiGetCellMarkedAsCoastline(int const n)
 //! Returns the coastline number given a cell, or INT_NODATA if neither this cell or any of its neighbouring cells are 'under' a coastline. If it is a neighbouring cell that is under the coastline, then it also changes the cell that is supplied as an input parameter
 int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
 {
-   for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
+   for (unsigned int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
    {
       if (m_ILCellsMarkedAsCoastline[nCoastPoint] == pPtiCell)
       {
@@ -255,7 +255,7 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
       }
       
       CGeom2DIPoint PtiTmp(nXAdj, nYAdj);
-      for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
+      for (unsigned int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
       {
          if (m_ILCellsMarkedAsCoastline[nCoastPoint] == &PtiTmp)
          {
@@ -365,9 +365,9 @@ void CRWCoast::AppendProfile(int const nCoastPoint, int const nProfile)
 //    m_VProfile[nProfile].SetAllPointsInProfile(pPtVProfileNew);
 // }
 
-int CRWCoast::nGetNumProfiles(void) const
+unsigned int CRWCoast::nGetNumProfiles(void) const
 {
-   return m_VProfile.size();
+   return static_cast<unsigned int>(m_VProfile.size());
 }
 
 bool CRWCoast::bIsProfileStartPoint(int const nCoastPoint) const
@@ -389,7 +389,7 @@ int CRWCoast::nGetProfileNumber(int const nCoastPoint) const
 void CRWCoast::CreateAlongCoastProfileIndex(void)
 {
    // Creates an index containing the numbers of the coastline-normal profiles in along-coast sequence
-   for (int nCoastPoint = 0; nCoastPoint < m_LCoastlineExtCRS.nGetSize(); nCoastPoint++)
+   for (unsigned int nCoastPoint = 0; nCoastPoint < m_LCoastlineExtCRS.nGetSize(); nCoastPoint++)
    {
       if (m_VnProfileNumber[nCoastPoint] != INT_NODATA)
          m_VnProfileCoastIndex.push_back(m_VnProfileNumber[nCoastPoint]);
@@ -583,9 +583,9 @@ void CRWCoast::CreatePolygon(int const nGlobalID, int const nCoastID, int const 
    m_pVPolygon.push_back(pPolygon);
 }
 
-int CRWCoast::nGetNumPolygons(void) const
+unsigned int CRWCoast::nGetNumPolygons(void) const
 {
-   return m_pVPolygon.size();
+   return static_cast<unsigned int>(m_pVPolygon.size());
 }
 
 CGeomCoastPolygon* CRWCoast::pGetPolygon(int const nPoly) const
@@ -607,9 +607,9 @@ double CRWCoast::dGetPolygonLength(int const nIndex) const
 }
 
 
-int CRWCoast::nGetNumShadowBoundaries(void)
+unsigned int CRWCoast::nGetNumShadowBoundaries(void)
 {
-   return m_LShadowBoundary.size();
+   return static_cast<unsigned int>(m_LShadowBoundary.size());
 }
 
 void CRWCoast::AppendShadowBoundary(const CGeomLine LBoundary)
@@ -624,9 +624,9 @@ CGeomLine* CRWCoast::pGetShadowBoundary(int const n)
 }
 
 
-int CRWCoast::nGetNumShadowDowndriftBoundaries(void)
+unsigned int CRWCoast::nGetNumShadowDowndriftBoundaries(void)
 {
-   return m_LShadowDowndriftBoundary.size();
+   return static_cast<unsigned int>(m_LShadowDowndriftBoundary.size());
 }
 
 void CRWCoast::AppendShadowDowndriftBoundary(const CGeomLine LBoundary)

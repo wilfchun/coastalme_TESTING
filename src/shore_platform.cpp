@@ -409,7 +409,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       if ((nParCoastX == nParCoastXLast) && (nParCoastY == nParCoastYLast))
       {
          // Should not happen, but could do due to rounding errors
-         LogStream << WARN << m_ulIteration << ": coast rounding problem on coast " << nCoast << " profile " << nProfile << " at [" << nParCoastX << "][" << nParCoastY << "]" << endl;
+         LogStream << WARN << m_ulIteration << ": rounding problem on coast " << nCoast << " profile " << nProfile << " at [" << nParCoastX << "][" << nParCoastY << "]" << endl;
 
          // So move on to the next point along the coastline in this direction
          continue;

@@ -156,9 +156,9 @@ CGeom2DPoint* CGeomCoastPolygon::pPtGetBoundaryPoint(int const nPoint)
    return &m_VPoints[nPoint];
 }
 
-int CGeomCoastPolygon::nGetBoundarySize(void) const
+unsigned int CGeomCoastPolygon::nGetBoundarySize(void) const
 {
-   return m_VPoints.size();
+   return static_cast<unsigned int>(m_VPoints.size());
 }
 
 
@@ -300,9 +300,9 @@ int CGeomCoastPolygon::nGetUpCoastAdjacentPolygon(int const nIndex) const
    return m_VnUpCoastAdjacentPolygon[nIndex];
 }
 
-int CGeomCoastPolygon::nGetNumUpCoastAdjacentPolygons(void) const
+unsigned int CGeomCoastPolygon::nGetNumUpCoastAdjacentPolygons(void) const
 {
-   return m_VnUpCoastAdjacentPolygon.size();
+   return static_cast<unsigned int>(m_VnUpCoastAdjacentPolygon.size());
 }
 
 
@@ -317,9 +317,9 @@ int CGeomCoastPolygon::nGetDownCoastAdjacentPolygon(int const nIndex) const
    return m_VnDownCoastAdjacentPolygon[nIndex];
 }
 
-int CGeomCoastPolygon::nGetNumDownCoastAdjacentPolygons(void) const
+unsigned int CGeomCoastPolygon::nGetNumDownCoastAdjacentPolygons(void) const
 {
-   return m_VnDownCoastAdjacentPolygon.size();
+   return static_cast<unsigned int>(m_VnDownCoastAdjacentPolygon.size());
 }
 
 

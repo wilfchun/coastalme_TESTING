@@ -98,7 +98,7 @@ public:
 //    void SetBoundary(vector<CGeom2DPoint> const*);
 //    vector<CGeom2DPoint>* pPtVGetBoundary(void);
    CGeom2DPoint* pPtGetBoundaryPoint(int const);
-   int nGetBoundarySize(void) const;
+   unsigned int nGetBoundarySize(void) const;
 
    int nGetUpCoastProfileNumPointsUsed(void) const;
    int nGetDownCoastProfileNumPointsUsed(void) const;
@@ -129,11 +129,11 @@ public:
 
    void SetUpCoastAdjacentPolygons(vector<int> const*);
    int nGetUpCoastAdjacentPolygon(int const) const;
-   int nGetNumUpCoastAdjacentPolygons(void) const;
+   unsigned int nGetNumUpCoastAdjacentPolygons(void) const;
 
    void SetDownCoastAdjacentPolygons(vector<int> const*);
    int nGetDownCoastAdjacentPolygon(int const) const;
-   int nGetNumDownCoastAdjacentPolygons(void) const;
+   unsigned int nGetNumDownCoastAdjacentPolygons(void) const;
 
    void SetUpCoastAdjacentPolygonBoundaryShares(vector<double> const*);
    double dGetUpCoastAdjacentPolygonBoundaryShare(int const) const;

@@ -225,7 +225,7 @@ int CSimulation::nDoAllPropagateWaves(void)
       }
    }
    
-   // OK, do we have some profiles other than start of coast or end of coast profiles in the all-profile vectors? We need to check this, because GDALGridCreate() in nInterpolateWavePropertiesToWithinPolygonCells() does not work if we give it only a start of coast or an end of cell profile to work with
+   // OK, do we have some profiles other than start of coast or end of coast profiles in the all-profile vectors? We need to check this, because GDALGridCreate() in nInterpolateWavePropertiesToWithinPolygonCells() does not work if we give it only a start-of-coast or an end-of-coast profile to work with
    if (! bSomeNonStartOrEndOfCoastProfiles)
    {
       LogStream << m_ulIteration << ": waves are on-shore only for start and/or end of coast profiles" << endl;
@@ -357,7 +357,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    // Only do this for profiles without problems. Still do start- and end-of-coast profiles however
    if (! pProfile->bOKIncStartAndEndOfCoast())
    {
-      LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " is invalid, will not calc wave properties on this profile" << endl;
+      LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " has been marked invalid, will not calc wave properties on this profile" << endl;
       
       return RTN_OK;
    }
@@ -545,7 +545,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       dWaveToNormalAngle = tMax(dWaveToNormalAngle, -80.0);
       dWaveToNormalAngle = tMin(dWaveToNormalAngle, 80.0);
       
-      int nProfileDistXYSize = VdProfileDistXY.size();
+      int nProfileDistXYSize = static_cast<int>(VdProfileDistXY.size());
       vector<double>
          VdFreeSurfaceStd(nProfileDistXYSize, 0),          // This is converted to Hrms by Hrms = sqr(8)*FreeSurfaceStd
          VdSinWaveAngleRadians(nProfileDistXYSize, 0),     // This is converted to deg by asin(VdSinWaveAngleRadians)*(180/pi)
@@ -644,7 +644,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       double dDX = 1;      // Nodal spacing for input bottom geometry         
       
       vector<double> 
-         VdTWave = {0, dCShoreTimeStep},                                         // Size is nNwave+1. Here, value 1 is for the start of the CShore run, value 2 for end of CShore run
+         VdTWave = {0, dCShoreTimeStep},                                         // Size is nNwave+1, value 1 is for the start of the CShore run, value 2 for end of CShore run
          VdTPIn = {dDeepWaterWavePeriod, dDeepWaterWavePeriod},                  // Ditto
          VdHrmsIn = {dProfileDeepWaterWaveHeight, dProfileDeepWaterWaveHeight},  // Ditto
          VdWangIn = {dWaveToNormalAngle, dWaveToNormalAngle},                    // Ditto
@@ -1190,9 +1190,9 @@ void CSimulation::CShoreHermiteSmoothing(int const nOutSize, vector<double> cons
    VdValuesCShoreDeriv[nOutSize-1] = VdValuesCShoreDeriv[nOutSize-2];
 
    // Interpolate the CShore values OK
-   int nSize = pVdProfileDistXYCME->size();
+   unsigned int nSize = static_cast<unsigned int>(pVdProfileDistXYCME->size());
    vector<double>
-   VdDistXYCopy(pVdProfileDistXYCME->begin(), pVdProfileDistXYCME->end()),
+      VdDistXYCopy(pVdProfileDistXYCME->begin(), pVdProfileDistXYCME->end()),
       //dVInter(nSize, 0.),
       VdDeriv(nSize, 0),         // First derivative at the sample points: calculated by the spline function but not subsequently used
       VdDeriv2(nSize, 0),        // Second derivative at the sample points, ditto
@@ -1417,7 +1417,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
       m_VCoast[nCoast].SetBreakingWaveHeight(n, dBreakingWaveHeight);
       m_VCoast[nCoast].SetBreakingWaveOrientation(n, dBreakingWaveOrientation);
       m_VCoast[nCoast].SetDepthOfBreaking(n, dBreakingDepth);
-      m_VCoast[nCoast].SetBreakingDistance(n, static_cast<int>(dRound(dBreakingDist)));
+      m_VCoast[nCoast].SetBreakingDistance(n, nRound(dBreakingDist));
    }
 }
 
@@ -1793,7 +1793,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
    // Calculate the average d50 for every polygon
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
-      for (int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
+      for (unsigned int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
       {
          CGeomCoastPolygon* pPolygon = m_VCoast[nCoast].pGetPolygon(nPoly);
          int nID = pPolygon->nGetGlobalID();

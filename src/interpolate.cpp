@@ -28,10 +28,9 @@ using namespace std;
 //======================================================================
 //   Both x and y are double
 //======================================================================
-
 double interpolate( vector<double> xData, vector<double> yData, double x, bool extrapolate )
 {
-   int size = xData.size();
+   unsigned int size = static_cast<unsigned int>(xData.size());
 
    int i = 0;                                                                  // find left end of interval for interpolation
    if ( x >= xData[size - 2] )                                                 // special case: beyond right end

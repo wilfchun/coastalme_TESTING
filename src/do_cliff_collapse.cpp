@@ -75,6 +75,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
 
             // Constrain this-timestep notch extension if it is more than the length of one cell side (in external CRS units), since the most we can remove in a single timestep is one coastal cell
             dNotchExtension = tMin(m_dCellSide, dNotchExtension);
+            LogStream << dNotchExtension << endl;
 
             // Extend the cliff object's erosional notch as a result of wave energy during this timestep. Note that extension may be constrained, since this-timestep extension cannot exceed the depth of sediment remaining on the cell
             dNotchExtension = pCliff->dErodeNotch(dNotchExtension);        // Constrain
@@ -360,7 +361,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
    for (int n = 0; n < m_nCliffDepositionPlanviewWidth; n++)
    {
       nVWidthDistSigned[n] = nSigned++;
-      nVProfileLength[n] = static_cast<int>(dRound(m_dCliffDepositionPlanviewLength));
+      nVProfileLength[n] = nRound(m_dCliffDepositionPlanviewLength);
       dVToDepositPerProfile[n] = (dTotSandToDeposit + dTotCoarseToDeposit) / m_nCliffDepositionPlanviewWidth;
    }
 
@@ -838,7 +839,7 @@ int CSimulation::nRasterizeCliffCollapseProfile(vector<CGeom2DPoint> const* pVPo
       dY = dYStart;
 
    // Process each interpolated point
-   int nLength = static_cast<int>(dRound(dLength));
+   int nLength = nRound(dLength);
    for (int m = 0; m <= nLength; m++)
    {
       int

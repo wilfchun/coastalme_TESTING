@@ -1,7 +1,7 @@
 /*!
  *
  * \file gis_utils.cpp
- * \brief Various GIS-related functions. This version will build with GDAL version 2
+ * \brief Various GIS-related functions, requires GDAL version 2
  * \details TODO A more detailed description of these routines.
  * \author David Favis-Mortlock
  * \author Andres Payo
@@ -155,8 +155,8 @@ CGeom2DIPoint CSimulation::PtiExtCRSToGrid(CGeom2DPoint const* pPtIn) const
       dY = pPtIn->dGetY();
 
    int
-      nX = dRound((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
-      nY = dRound((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
+      nX = nRound((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
+      nY = nRound((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
 
    return CGeom2DIPoint(nX, nY);
 }
@@ -350,7 +350,7 @@ void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, in
             {
                nX1++;
 
-               nY1 = nY0 + dRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
+               nY1 = nY0 + nRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
             }
             while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
@@ -366,7 +366,7 @@ void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, in
             {
                nX1--;
 
-               nY1 = nY0 + dRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
+               nY1 = nY0 + nRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
             }
             while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
@@ -385,7 +385,7 @@ void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, in
             {
                nY1++;
 
-               nX1 = nX0 + dRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
+               nX1 = nX0 + nRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
             }
             while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
@@ -401,7 +401,7 @@ void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, in
             {
                nY1--;
 
-               nX1 = nX0 + dRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
+               nX1 = nX0 + nRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
             }
             while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
@@ -464,8 +464,8 @@ CGeom2DIPoint CSimulation::PtiAverage(CGeom2DIPoint const* pPti1, CGeom2DIPoint 
       nPti1Y = pPti1->nGetY(),
       nPti2X = pPti2->nGetX(),
       nPti2Y = pPti2->nGetY(),
-      nPtiAvgX = dRound((nPti1X + nPti2X) / 2.0),
-      nPtiAvgY = dRound((nPti1Y + nPti2Y) / 2.0);
+      nPtiAvgX = nRound((nPti1X + nPti2X) / 2.0),
+      nPtiAvgY = nRound((nPti1Y + nPti2Y) / 2.0);
 
    return CGeom2DIPoint(nPtiAvgX, nPtiAvgY);
 }
@@ -486,8 +486,8 @@ CGeom2DIPoint CSimulation::PtiWeightedAverage(CGeom2DIPoint const* pPti1, CGeom2
    double dOtherWeight = 1.0 - dWeight;
 
    int
-      nPtiWeightAvgX = dRound(dWeight * nPti2X) + (dOtherWeight * nPti1X),
-      nPtiWeightAvgY = dRound((dWeight * nPti2Y) + (dOtherWeight * nPti1Y));
+      nPtiWeightAvgX = nRound((dWeight * nPti2X) + (dOtherWeight * nPti1X)),
+      nPtiWeightAvgY = nRound((dWeight * nPti2Y) + (dOtherWeight * nPti1Y));
 
    return CGeom2DIPoint(nPtiWeightAvgX, nPtiWeightAvgY);
 }
@@ -500,7 +500,7 @@ CGeom2DIPoint CSimulation::PtiWeightedAverage(CGeom2DIPoint const* pPti1, CGeom2
 ===============================================================================================================================*/
 CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
 {
-   int nSize = pVIn->size();
+   unsigned int nSize = static_cast<unsigned int>(pVIn->size());
    if (nSize == 0)
       return CGeom2DPoint(DBL_NODATA, DBL_NODATA);
 
@@ -508,7 +508,7 @@ CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
       dAvgX = 0,
       dAvgY = 0;
 
-   for (int n = 0; n < nSize; n++)
+   for (unsigned int n = 0; n < nSize; n++)
    {
       dAvgX += pVIn->at(n).dGetX();
       dAvgY += pVIn->at(n).dGetY();
@@ -528,7 +528,7 @@ CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
 ===============================================================================================================================*/
 CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
 {
-   int nSize = pVIn->size();
+   unsigned int nSize = static_cast<unsigned int>(pVIn->size());
    if (nSize == 0)
       return CGeom2DIPoint(INT_NODATA, INT_NODATA);
    
@@ -536,7 +536,7 @@ CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
       dAvgX = 0,
       dAvgY = 0;
    
-   for (int n = 0; n < nSize; n++)
+   for (unsigned int n = 0; n < nSize; n++)
    {
       dAvgX += pVIn->at(n).nGetX();
       dAvgY += pVIn->at(n).nGetY();
@@ -545,7 +545,7 @@ CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
    dAvgX /= nSize;
    dAvgY /= nSize;
    
-   return CGeom2DIPoint(dRound(dAvgX), dRound(dAvgY));
+   return CGeom2DIPoint(nRound(dAvgX), nRound(dAvgY));
 }
 
 
@@ -647,13 +647,13 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(CGeom2DIPoint const* PtiStart, CG
    CGeom2DIPoint EndPti;
    if (nHandedness == RIGHT_HANDED)
    {
-      EndPti.SetX(PtiStart->nGetX() + (dScaleFactor * dYLen));
-      EndPti.SetY(PtiStart->nGetY() - (dScaleFactor * dXLen));
+      EndPti.SetX(PtiStart->nGetX() + nRound(dScaleFactor * dYLen));
+      EndPti.SetY(PtiStart->nGetY() - nRound(dScaleFactor * dXLen));
    }
    else
    {
-      EndPti.SetX(PtiStart->nGetX() - (dScaleFactor * dYLen));
-      EndPti.SetY(PtiStart->nGetY() + (dScaleFactor * dXLen));
+      EndPti.SetX(PtiStart->nGetX() - nRound(dScaleFactor * dYLen));
+      EndPti.SetY(PtiStart->nGetY() + nRound(dScaleFactor * dXLen));
    }
 
    return EndPti;
@@ -685,13 +685,13 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(int const nStartX, int const nSta
    CGeom2DIPoint EndPti;
    if (nHandedness == RIGHT_HANDED)
    {
-      EndPti.SetX(nStartX + (dScaleFactor * dYLen));
-      EndPti.SetY(nStartY - (dScaleFactor * dXLen));
+      EndPti.SetX(nStartX + nRound(dScaleFactor * dYLen));
+      EndPti.SetY(nStartY - nRound(dScaleFactor * dXLen));
    }
    else
    {
-      EndPti.SetX(nStartX - (dScaleFactor * dYLen));
-      EndPti.SetY(nStartY + (dScaleFactor * dXLen));
+      EndPti.SetX(nStartX - nRound(dScaleFactor * dYLen));
+      EndPti.SetY(nStartY + nRound(dScaleFactor * dXLen));
    }
    
    return EndPti;
@@ -993,13 +993,17 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
       if (! bWriteRasterGISFloat(RASTER_PLOT_AVG_SEA_DEPTH, &RASTER_PLOT_AVG_SEA_DEPTH_TITLE))
       return false;
 
-   if (m_bSuspSedSave)
-      if (! bWriteRasterGISFloat(RASTER_PLOT_SUSPENDED_SEDIMENT, &RASTER_PLOT_SUSPENDED_SEDIMENT_TITLE))
-         return false;
+   // Don't write suspended sediment files if there is no fine sediment
+   if (m_bHaveFineSediment)
+   {
+      if (m_bSuspSedSave)
+         if (! bWriteRasterGISFloat(RASTER_PLOT_SUSPENDED_SEDIMENT, &RASTER_PLOT_SUSPENDED_SEDIMENT_TITLE))
+            return false;
 
-   if (m_bAvgSuspSedSave)
-       if (! bWriteRasterGISFloat(RASTER_PLOT_AVG_SUSPENDED_SEDIMENT, &RASTER_PLOT_AVG_SUSPENDED_SEDIMENT_TITLE))
-         return false;
+      if (m_bAvgSuspSedSave)
+         if (! bWriteRasterGISFloat(RASTER_PLOT_AVG_SUSPENDED_SEDIMENT, &RASTER_PLOT_AVG_SUSPENDED_SEDIMENT_TITLE))
+            return false;
+   }
 
    if (m_bBasementElevSave)
       if (! bWriteRasterGISFloat(RASTER_PLOT_BASEMENT_ELEVATION, &RASTER_PLOT_BASEMENT_ELEVATION_TITLE))
@@ -1007,37 +1011,37 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
 
    for (int nLayer = 0; nLayer < m_nLayers; nLayer++)
    {
-      if (m_bFineUnconsSedSave)
+      if (m_bHaveFineSediment && m_bFineUnconsSedSave)
       {
          if (! bWriteRasterGISFloat(RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
-      if (m_bSandUnconsSedSave)
+      if (m_bHaveSandSediment && m_bSandUnconsSedSave)
       {
          if (! bWriteRasterGISFloat(RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
-      if (m_bCoarseUnconsSedSave)
+      if (m_bHaveCoarseSediment && m_bCoarseUnconsSedSave)
       {
          if (! bWriteRasterGISFloat(RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
-      if (m_bFineConsSedSave)
+      if (m_bHaveFineSediment && m_bFineConsSedSave)
       {
          if (! bWriteRasterGISFloat(RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
-      if (m_bSandConsSedSave)
+      if (m_bHaveSandSediment && m_bSandConsSedSave)
       {
          if (! bWriteRasterGISFloat(RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
-      if (m_bCoarseConsSedSave)
+      if (m_bHaveCoarseSediment && m_bCoarseConsSedSave)
       {
          if (! bWriteRasterGISFloat(RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
@@ -1368,7 +1372,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
 
             case (RASTER_PLOT_AVG_SEA_DEPTH):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / m_ulIteration;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / static_cast<double>(m_ulIteration);
                break;
             }
 
@@ -1383,7 +1387,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
 
             case (RASTER_PLOT_AVG_WAVE_HEIGHT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / m_ulIteration;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_ulIteration);
                break;
             }
 
@@ -1398,7 +1402,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             
             case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulIteration;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIteration);
                break;
             }
             
@@ -1478,7 +1482,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
 
             case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / m_ulIteration;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / static_cast<double>(m_ulIteration);
                break;
             }
 

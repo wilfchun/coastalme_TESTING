@@ -288,7 +288,7 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
          if (nParProfLen < MIN_PAR_PROFILE_SIZE)
          {
             // Can't have a meaningful parallel profile with very few points
-            LogStream << m_ulIteration << ": only " << nParProfLen << " points in parallel profile, min is " << MIN_PAR_PROFILE_SIZE << ", abandoning" << endl;
+            // LogStream << m_ulIteration << ": only " << nParProfLen << " points in parallel profile, min is " << MIN_PAR_PROFILE_SIZE << ", abandoning" << endl;
             
             continue;
          }
@@ -311,7 +311,7 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
          {
             // Can't have a meaningful Dean profile with a near-zero elevation difference
             // TODO Need to improve this: at present we just abandon erosion on this coast point and move to another coast point
-            LogStream << m_ulIteration << ": zero gradient on parallel profile, abandoning" << endl;
+            // LogStream << m_ulIteration << ": zero gradient on parallel profile, abandoning" << endl;
 
             bZeroGradient = true;
             break;

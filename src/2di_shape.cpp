@@ -65,9 +65,9 @@ void CA2DIShape::Resize(const int nSize)
    m_VPoints.resize(nSize);
 }
 
-int CA2DIShape::nGetSize(void) const
+unsigned int CA2DIShape::nGetSize(void) const
 {
-   return m_VPoints.size();
+   return static_cast<unsigned int>(m_VPoints.size());
 }
 
 

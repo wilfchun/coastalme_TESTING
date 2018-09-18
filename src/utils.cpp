@@ -211,7 +211,7 @@ bool CSimulation::bFindExeDir(char* pcArg)
       return false;
 
    // It's OK, so trim off the executable's name
-   int nPos = strTmp.find_last_of(PATH_SEPARATOR);
+   unsigned int nPos = static_cast<unsigned int>(strTmp.find_last_of(PATH_SEPARATOR));
    m_strCMEDir = strTmp.substr(0, nPos+1);            // Note that this must be terminated with a backslash
 
    return true;
@@ -796,49 +796,49 @@ string CSimulation::strListRasterFiles(void) const
       strTmp.append(", ");
    }
 
-   if (m_bSuspSedSave)
+   if (m_bHaveFineSediment && m_bSuspSedSave)
    {
       strTmp.append(RASTER_SUSP_SED_NAME);
       strTmp.append(", ");
    }
 
-   if (m_bAvgSuspSedSave)
+   if (m_bHaveFineSediment && m_bAvgSuspSedSave)
    {
       strTmp.append(RASTER_AVG_SUSP_SED_NAME);
       strTmp.append(", ");
    }
 
-   if (m_bFineUnconsSedSave)
+   if (m_bHaveFineSediment && m_bFineUnconsSedSave)
    {
       strTmp.append(RASTER_FINE_UNCONS_NAME);
       strTmp.append(", ");
    }
 
-   if (m_bSandUnconsSedSave)
+   if (m_bHaveSandSediment && m_bSandUnconsSedSave)
    {
       strTmp.append(RASTER_SAND_UNCONS_NAME);
       strTmp.append(", ");
    }
 
-   if (m_bCoarseUnconsSedSave)
+   if (m_bHaveCoarseSediment && m_bCoarseUnconsSedSave)
    {
       strTmp.append(RASTER_COARSE_UNCONS_NAME);
       strTmp.append(", ");
    }
 
-   if (m_bFineConsSedSave)
+   if (m_bHaveFineSediment && m_bFineConsSedSave)
    {
       strTmp.append(RASTER_FINE_CONS_NAME);
       strTmp.append(", ");
    }
 
-   if (m_bSandConsSedSave)
+   if (m_bHaveSandSediment && m_bSandConsSedSave)
    {
       strTmp.append(RASTER_SAND_CONS_NAME);
       strTmp.append(", ");
    }
 
-   if (m_bCoarseConsSedSave)
+   if (m_bHaveCoarseSediment && m_bCoarseConsSedSave)
    {
       strTmp.append(RASTER_COARSE_CONS_NAME);
       strTmp.append(", ");
@@ -1523,11 +1523,11 @@ void CSimulation::CalcTime(double const dRunLength)
       LogStream << "CPU time elapsed: " << strDispTime(dDuration, false, true);
 
       // Calculate CPU time per timestep
-      double fPerTimestep = dDuration / m_ulTotTimestep;
+      double dPerTimestep = dDuration / static_cast<double>(m_ulTotTimestep);
 
       // And write CPU time per timestep to OutStream and LogStream
-      OutStream << setiosflags(ios::fixed) << setprecision(4) << " (" << fPerTimestep << " per timestep)" << endl;
-      LogStream << setiosflags(ios::fixed) << setprecision(4) << " (" << fPerTimestep << " per timestep)" << endl;
+      OutStream << setiosflags(ios::fixed) << setprecision(4) << " (" << dPerTimestep << " per timestep)" << endl;
+      LogStream << setiosflags(ios::fixed) << setprecision(4) << " (" << dPerTimestep << " per timestep)" << endl;
 
       // Calculate ratio of CPU time to time simulated
       OutStream << resetiosflags(ios::floatfield);
@@ -1554,13 +1554,13 @@ void CSimulation::CalcTime(double const dRunLength)
    LogStream << "Run time elapsed: " << strDispTime(dDuration, false, false);
 
    // Calculate run time per timestep
-   double fPerTimestep = dDuration / m_ulTotTimestep;
+   double dPerTimestep = dDuration / static_cast<double>(m_ulTotTimestep);
 
    // And write run time per timestep to OutStream and LogStream
    OutStream << resetiosflags(ios::floatfield);
-   OutStream << " (" << setiosflags(ios::fixed) << setprecision(4) << fPerTimestep << " per timestep)" << endl;
+   OutStream << " (" << setiosflags(ios::fixed) << setprecision(4) << dPerTimestep << " per timestep)" << endl;
    LogStream << resetiosflags(ios::floatfield);
-   LogStream << " (" << setiosflags(ios::fixed) << setprecision(4) << fPerTimestep << " per timestep)" << endl;
+   LogStream << " (" << setiosflags(ios::fixed) << setprecision(4) << dPerTimestep << " per timestep)" << endl;
 
    // Calculate ratio of run time to time simulated
    OutStream << "In terms of run time, this is ";
@@ -1646,7 +1646,7 @@ string CSimulation::strDispTime(const double dTimeIn, const bool bRound, const b
       dTime = dRound(dTime);
 
    unsigned long ulTimeIn = static_cast<unsigned long>(floor(dTime));
-   dTime -= ulTimeIn;
+   dTime -= static_cast<double>(ulTimeIn);
 
    // Hours
    if (ulTimeIn >= 3600)
@@ -1764,7 +1764,7 @@ unsigned long CSimulation::ulGetTausworthe(unsigned long const ulS, unsigned lon
 ==============================================================================================================================*/
 double CSimulation::dGetRand0d1(void)
 {
-   return (ulGetRand0() / 4294967296.0);
+   return (static_cast<double>(ulGetRand0()) / 4294967296.0);
 }
 
 // int CSimulation::nGetRand0To(int const nBound)
@@ -1783,7 +1783,7 @@ double CSimulation::dGetRand0d1(void)
 
 /*==============================================================================================================================
  
- Uses ulGetRand1() to return a double precision floating point number uniformly distributed in the range [0, 1) i.e. includes 0.0 but excludes 1.0. Based on a routine in taus.c from gsl-1.2
+ Returns an integer to return a double precision floating point number uniformly distributed in the range [0, nBound) i.e. includes 0 but excludes nBound. Based on a routine in taus.c from gsl-1.2
  
 ==============================================================================================================================*/
 int CSimulation::nGetRand1To(int const nBound)
@@ -1792,9 +1792,10 @@ int CSimulation::nGetRand1To(int const nBound)
    unsigned long ulScale = 4294967295ul / nBound;                 // nBound must be > 1
    do
    {
-      nRtn = ulGetRand1() / ulScale;
+      nRtn = static_cast<int>(ulGetRand1() / ulScale);
    }
    while (nRtn >= nBound);
+   
    return (nRtn);
 }
 
@@ -1955,9 +1956,9 @@ void CSimulation::CalcProcessStats(void)
    rusage ru;
    if (getrusage(RUSAGE_SELF, &ru) >= 0)
    {
-      OutStream << "Time spent executing user code               \t: "  << strDispTime(ru.ru_utime.tv_sec, false, true) << endl;
+      OutStream << "Time spent executing user code               \t: "  << strDispTime(static_cast<double>(ru.ru_utime.tv_sec), false, true) << endl;
 //      OutStream << "ru_utime.tv_usec                             \t: " << ru.ru_utime.tv_usec << endl;
-      OutStream << "Time spent executing kernel code             \t: " << strDispTime(ru.ru_stime.tv_sec, false, true) << endl;
+      OutStream << "Time spent executing kernel code             \t: " << strDispTime(static_cast<double>(ru.ru_stime.tv_sec), false, true) << endl;
 //      OutStream << "ru_stime.tv_usec                             \t: " << ru.ru_stime.tv_usec << endl;
 //      OutStream << "Maximum resident set size                    \t: " << ru.ru_maxrss/1024.0 << " Mb" << endl;
 //      OutStream << "ixrss (???)                                  \t: " << ru.ru_ixrss << endl;
@@ -2500,7 +2501,7 @@ double CSimulation::dCrossProduct(double const dX1, double const dY1, double con
 double CSimulation::dGetMean(vector<double> const* pV)
 {
    double dSum = accumulate(pV->begin(), pV->end(), 0.0);
-   double dMean = dSum / pV->size();
+   double dMean = dSum / static_cast<double>(pV->size());
    return dMean;
 }
 
@@ -2513,10 +2514,10 @@ double CSimulation::dGetMean(vector<double> const* pV)
 double CSimulation::dGetStdDev(vector<double> const* pV)
 {
    double dSum = accumulate(pV->begin(), pV->end(), 0.0);
-   double dMean = dSum / pV->size();
+   double dMean = dSum / static_cast<double>(pV->size());
 
    double dSqSum = inner_product(pV->begin(), pV->end(), pV->begin(), 0.0);
-   double dStdDev = sqrt(dSqSum / pV->size() - dMean * dMean);
+   double dStdDev = sqrt(dSqSum / static_cast<double>(pV->size()) - dMean * dMean);
 
    return dStdDev;
 }
@@ -2555,7 +2556,7 @@ void CSimulation::AppendEnsureNoGap(vector<CGeom2DIPoint>* pVPtiPoints, CGeom2DI
 
       for (int n = 1; n < nDiff; n++)
       {
-         CGeom2DIPoint Pti(nXLast + (n * dXInc), nYLast + (n * dYInc));
+         CGeom2DIPoint Pti(nXLast + nRound(n * dXInc), nYLast + nRound(n * dYInc));
          pVPtiPoints->push_back(Pti);
       }
    }
@@ -2698,3 +2699,21 @@ bool CSimulation::bIsNumeric(string const* strIn)
    return all_of(strIn->begin(), strIn->end(), isdigit);
 }
 
+
+/*==============================================================================================================================
+  
+  Real (floating point) fields in ESRI shapefiles are treated as width 24 with 15 decimal places of precision (unless an explicit width is given). If fields exced this, then a "not successfully written. Possibly due to too larger number with respect to field width" error message is shown. This routine tests the input to see if it exceeds this limit, if so it rounds up. Modified from https://stackoverflow.com/questions/13094224/a-c-routine-to-round-a-float-to-n-significant-digits
+  
+==============================================================================================================================*/
+double CSimulation::dConstrainFieldWidthForShapefile(double const dInField)
+{
+   int const SHAPEFILE_MAX_WIDTH = 24;
+   // int const SHAPEFILE_MAX_PRECISION = 15
+   
+   // Avoid returning 'nan' due to the log10() of zero
+   if (dInField == 0.0) 
+      return 0.0;
+   
+   double dFactor = pow(10.0, SHAPEFILE_MAX_WIDTH - ceil(log10(fabs(dInField))));
+   return round(dInField * dFactor) / dFactor;   
+}

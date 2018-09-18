@@ -151,7 +151,7 @@ CGeom2DIPoint CSimulation::PtiFollowWaveOrientation(CGeom2DIPoint const* pPtiLas
 int CSimulation::nDoAllShadowZones(void)
 {
    // Do this once for each coastline
-   for (unsigned int nCoast = 0; nCoast < m_VCoast.size(); nCoast++)
+   for (unsigned int nCoast = 0; nCoast < static_cast<unsigned int>(m_VCoast.size()); nCoast++)
    {
       // =========================================================================================================================
       // The first stage: find coastline start points for possible shadow zone boundaries by sweeping the coastline: first down-coast then up-coast
@@ -292,7 +292,7 @@ int CSimulation::nDoAllShadowZones(void)
          VnShadowBoundaryStartCoastPoint, 
          VnShadowBoundaryEndCoastPoint;
       
-      for (unsigned int nStartPoint = 0; nStartPoint < VnPossibleShadowBoundaryCoastPoint.size(); nStartPoint++)
+      for (unsigned int nStartPoint = 0; nStartPoint < static_cast<unsigned int>(VnPossibleShadowBoundaryCoastPoint.size()); nStartPoint++)
       {
          LogStream << m_ulIteration << ": coast " << nCoast << ", processing possible shadow boundary start point " << nStartPoint << " of " << VnPossibleShadowBoundaryCoastPoint.size() << endl;
 
@@ -347,7 +347,7 @@ int CSimulation::nDoAllShadowZones(void)
                   if (bHitSea)
                   {
                      // If this shadow boundary has already hit sea, then we must be getting near a coast: use the average-so-far wave orientation
-                     double dAvgOrientationSoFar = accumulate(DQdPrevOrientations.begin(), DQdPrevOrientations.end(), 0.0) / DQdPrevOrientations.size();
+                     double dAvgOrientationSoFar = accumulate(DQdPrevOrientations.begin(), DQdPrevOrientations.end(), 0.0) / static_cast<double>(DQdPrevOrientations.size());
                      
                      dPrevWaveOrientation = dAvgOrientationSoFar;                     
                   }
@@ -371,7 +371,7 @@ int CSimulation::nDoAllShadowZones(void)
                   }
                   else
                   {
-                     double dAvgOrientationSoFar = accumulate(DQdPrevOrientations.begin(), DQdPrevOrientations.end(), 0.0) / DQdPrevOrientations.size();
+                     double dAvgOrientationSoFar = accumulate(DQdPrevOrientations.begin(), DQdPrevOrientations.end(), 0.0) / static_cast<double>(DQdPrevOrientations.size());
                      
                      dPrevWaveOrientation = dAvgOrientationSoFar;
                   }                  
@@ -514,7 +514,7 @@ int CSimulation::nDoAllShadowZones(void)
                CGeom2DIPoint PtiCoastStart = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(0);
                CGeom2DIPoint PtiCoastEnd = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nCoastSize-1);
                
-               int nDistance = tMin(dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastStart), dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastEnd));
+               int nDistance = nRound(tMin(dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastStart), dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastEnd)));
                
                // Now store the shadow zone boundary information
                VILShadowBoundary.push_back(ILShadowBoundary);         
@@ -537,7 +537,7 @@ int CSimulation::nDoAllShadowZones(void)
       {
          LogStream << m_ulIteration << ": coast " << nCoast << ", processing shadow zone " << nZone << " (" << VILShadowBoundary.size() << " total)" << endl;
          
-         int nShadowLineLen = VILShadowBoundary[nZone].nGetSize();
+         unsigned int nShadowLineLen = VILShadowBoundary[nZone].nGetSize();
          
          // The vector shadow boundary (external CRS)
          CGeomLine LBoundary;
@@ -545,7 +545,7 @@ int CSimulation::nDoAllShadowZones(void)
          // And the same with grid CRS
          CGeomILine LIBoundary;
          
-         for (int nn = 0; nn < nShadowLineLen; nn++)
+         for (unsigned int nn = 0; nn < nShadowLineLen; nn++)
          {
             int
                nTmpX = VILShadowBoundary[nZone][nn].nGetX(),
@@ -571,7 +571,7 @@ int CSimulation::nDoAllShadowZones(void)
          // Store the reversed ext CRS shadow zone boundary
          m_VCoast[nCoast].AppendShadowBoundary(LBoundary);
          
-         int
+         unsigned int
             nStartX = VILShadowBoundary[nZone][0].nGetX(),
             nStartY = VILShadowBoundary[nZone][0].nGetY(),
             nEndX = VILShadowBoundary[nZone][nShadowLineLen-1].nGetX(),
@@ -588,7 +588,7 @@ int CSimulation::nDoAllShadowZones(void)
             // The shadow boundary endpoint is downcoast from the shadow boundary start point
             int
                nStart = tMax(VnShadowBoundaryStartCoastPoint[nZone], 0),
-               nEnd = tMin(VnShadowBoundaryEndCoastPoint[nZone], m_VCoast[nCoast].nGetCoastlineSize());
+               nEnd = tMin(VnShadowBoundaryEndCoastPoint[nZone], static_cast<int>(m_VCoast[nCoast].nGetCoastlineSize()));
             
             for (int nn = nStart; nn < nEnd; nn++)
             {
@@ -601,7 +601,7 @@ int CSimulation::nDoAllShadowZones(void)
          {
             // The shadow boundary endpoint is upcoast from the shadow boundary start point
             int
-               nStart = tMin(VnShadowBoundaryEndCoastPoint[nZone], m_VCoast[nCoast].nGetCoastlineSize()-1),
+               nStart = tMin(VnShadowBoundaryEndCoastPoint[nZone], static_cast<int>(m_VCoast[nCoast].nGetCoastlineSize())-1),
                nEnd = tMax(VnShadowBoundaryStartCoastPoint[nZone], 0);
             
             for (int nn = nStart; nn >= nEnd; nn--)
@@ -898,7 +898,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
    CGeomLine LDownDriftBoundary;
       
    // Process each interpolated point
-   for (int m = 0; m <= static_cast<int>(dRound(dLength)); m++)
+   for (int m = 0; m <= nRound(dLength); m++)
    {
       int
          nX = static_cast<int>(dX),
@@ -981,7 +981,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
       int nAlongCoast;      
       if (bSweepDownCoast)
       {
-         nAlongCoast = dRound(nShadowBoundaryStartPoint + dCoastDistSoFar);
+         nAlongCoast = nRound(nShadowBoundaryStartPoint + dCoastDistSoFar);
          
          if (nAlongCoast >= m_VCoast[nCoast].nGetCoastlineSize())
             break;
@@ -991,7 +991,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
       }            
       else
       {
-         nAlongCoast = dRound(nShadowBoundaryStartPoint - dCoastDistSoFar);
+         nAlongCoast = nRound(nShadowBoundaryStartPoint - dCoastDistSoFar);
          
          if (nAlongCoast < 0)
             break;
@@ -1000,7 +1000,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
             bPastShadowEnd = true;
       }
          
-      int nAlongDownDriftBoundary = dRound(dDownDriftBoundaryDistSoFar);
+      int nAlongDownDriftBoundary = nRound(dDownDriftBoundaryDistSoFar);
          
 //       LogStream << endl << m_ulIteration << ": dCoastDistSoFar = " << dCoastDistSoFar << " (nTotAlongCoastDistanceToDownDriftEndpoint = " << nTotAlongCoastDistanceToDownDriftEndpoint << ") dDownDriftBoundaryDistSoFar = " << dDownDriftBoundaryDistSoFar << " (nTotDownDriftBoundaryDistance = " << nTotDownDriftBoundaryDistance << ")" << endl;
       
@@ -1013,8 +1013,8 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
          nCoastY = pPtiCoast->nGetY();
       
       int
-         nDownDriftX = dExtCRSXToGridX(LDownDriftBoundary[nAlongDownDriftBoundary].dGetX()),
-         nDownDriftY = dExtCRSYToGridY(LDownDriftBoundary[nAlongDownDriftBoundary].dGetY());
+         nDownDriftX = nRound(dExtCRSXToGridX(LDownDriftBoundary[nAlongDownDriftBoundary].dGetX())),
+         nDownDriftY = nRound(dExtCRSYToGridY(LDownDriftBoundary[nAlongDownDriftBoundary].dGetY()));
       
       // Safety check, in case the two points are identical (can happen due to rounding)
       if ((nCoastX == nDownDriftX) && (nCoastY == nDownDriftY))
@@ -1044,8 +1044,8 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
       for (int m = 0; m < dLinkingLineLength; m++)
       {
          int
-            nX = dRound(dX),
-            nY = dRound(dY);
+            nX = nRound(dX),
+            nY = nRound(dY);
          
          // Check to see if we just processed this point, can happen due to rounding
          if ((nX == nXLast) && (nY == nYLast))

@@ -89,21 +89,25 @@ void CSimulation::DoCoastCurvature(int const nCoast, int const nHandedness)
    
    // Now calculate the mean and standard deviation of each set of curvature values
    vector<double>* pVDetailed = m_VCoast[nCoast].pVGetDetailedCurvature();
+   
    double 
       dSum = accumulate(pVDetailed->begin(), pVDetailed->end(), 0.0),
-      dMean = dSum / pVDetailed->size();
+      dMean = dSum / static_cast<double>(pVDetailed->size());
+      
    m_VCoast[nCoast].SetDetailedCurvatureMean(dMean);
+   
    double 
       dSquareSum = inner_product(pVDetailed->begin(), pVDetailed->end(), pVDetailed->begin(), 0.0),
-      dSTD = sqrt(dSquareSum / pVDetailed->size() - dMean * dMean);
+      dSTD = sqrt(dSquareSum / static_cast<double>(pVDetailed->size()) - dMean * dMean);
+      
    m_VCoast[nCoast].SetDetailedCurvatureSTD(dSTD);
 
    vector<double>* pVSmooth = m_VCoast[nCoast].pVGetSmoothCurvature();
    dSum = accumulate(pVSmooth->begin(), pVSmooth->end(), 0.0),
-   dMean = dSum / pVSmooth->size();
+   dMean = dSum / static_cast<double>(pVSmooth->size());
    m_VCoast[nCoast].SetSmoothCurvatureMean(dMean);
    dSquareSum = inner_product(pVSmooth->begin(), pVSmooth->end(), pVSmooth->begin(), 0.0),
-   dSTD = sqrt(dSquareSum / pVSmooth->size() - dMean * dMean);
+   dSTD = sqrt(dSquareSum / static_cast<double>(pVSmooth->size()) - dMean * dMean);
    m_VCoast[nCoast].SetSmoothCurvatureSTD(dSTD);
    
    int 
@@ -137,7 +141,7 @@ void CSimulation::DoCoastCurvature(int const nCoast, int const nHandedness)
    {
       // We have a straight-line coast, so set the point of maximum detailed convexity at the coast mid-point
       nMaxConvexDetailedCoastPoint =
-      nMaxConvexSmoothedCoastPoint = dRound(nCoastSize / 2.0);
+      nMaxConvexSmoothedCoastPoint = nRound(nCoastSize / 2.0);
       
       m_VCoast[nCoast].SetDetailedCurvature(nMaxConvexDetailedCoastPoint, STRAIGHT_COAST_MAX_DETAILED_CURVATURE);
       

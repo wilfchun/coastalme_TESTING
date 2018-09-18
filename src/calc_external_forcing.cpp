@@ -41,11 +41,11 @@ int CSimulation::nCalcExternalForcing(void)
    // Increment SWL (note that increment may be zero)
    m_dAccumulatedSeaLevelChange += m_dDeltaSWLPerTimestep;
 
-   int nSize = m_VdTideData.size();
+   unsigned int nSize = static_cast<unsigned int>(m_VdTideData.size());
    if (nSize != 0)
    {
       // We have tide data
-      static int nTideDataCount = 0;
+      static unsigned int nTideDataCount = 0;
 
       // Wrap the tide data, i.e. start again with the first record if we do not have enough
       if (nTideDataCount > nSize-1)
@@ -64,9 +64,9 @@ int CSimulation::nCalcExternalForcing(void)
    // Update the wave height, orientation and period for this time step and start again with the first record if we do not have enough
    if (! m_bSingleDeepWaterWaveValues)
    {
-      // We have wave time serie data
-      int nWaveTimeSteps = m_VdDeepWaterWavePointHeightTS.size() / m_VnDeepWaterWavePointID.size();     // Number of time steps is total size divided by the number of points
-      static int nWaveDataCount = 0;
+      // We have wave time series data: the number of time steps is total size divided by the number of points
+      unsigned int nWaveTimeSteps = static_cast<unsigned int>(m_VdDeepWaterWavePointHeightTS.size()) / static_cast<unsigned int>(m_VnDeepWaterWavePointID.size());     
+      static unsigned int nWaveDataCount = 0;
 
        if (nWaveDataCount > nWaveTimeSteps-1)
        {
@@ -76,7 +76,7 @@ int CSimulation::nCalcExternalForcing(void)
       
       // Update this time step deep water wave values: the order on the vector is determined by the points ID i.e. to ensure that stations match with time series
       unsigned int 
-         nNumberDeepWaterWaveStations = m_VnDeepWaterWavePointID.size(),
+      nNumberDeepWaterWaveStations = static_cast<unsigned int>(m_VnDeepWaterWavePointID.size()),
          nTot = nNumberDeepWaterWaveStations * nWaveDataCount;
          
       for (unsigned int j = 0; j < nNumberDeepWaterWaveStations; j++)

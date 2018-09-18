@@ -848,7 +848,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                   if (m_VCoast[i].pGetCoastLandform(j) == NULL)
                      pOGRFeature->SetField(strFieldValue1.c_str(), DBL_NODATA);
                   else
-                     pOGRFeature->SetField(strFieldValue1.c_str(), m_VCoast[i].pGetCoastLandform(j)->dGetTotAccumWaveEnergy());
+                     pOGRFeature->SetField(strFieldValue1.c_str(), dConstrainFieldWidthForShapefile(m_VCoast[i].pGetCoastLandform(j)->dGetTotAccumWaveEnergy()));
                }
                else if (nDataItem == VECTOR_PLOT_MEAN_WAVE_ENERGY)
                {
@@ -861,7 +861,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                      dEnergy *= 24;
                      dEnergy /= m_dSimElapsed;     // Is in energy units per day
 
-                     pOGRFeature->SetField(strFieldValue1.c_str(), dEnergy);
+                     pOGRFeature->SetField(strFieldValue1.c_str(), dConstrainFieldWidthForShapefile(dEnergy));
                   }
                }
                else if (nDataItem == VECTOR_PLOT_BREAKING_WAVE_HEIGHT)
@@ -1235,7 +1235,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                
                // Now attach a geometry to the feature object
                CGeomLine LDowndrift = *m_VCoast[i].pGetShadowDowndriftBoundary(j);
-               for (int nn = 0; nn < LDowndrift.nGetSize(); nn++)
+               for (unsigned int nn = 0; nn < LDowndrift.nGetSize(); nn++)
                   OGRls.addPoint(LDowndrift.dGetXAt(nn), LDowndrift.dGetYAt(nn));
                
                pOGRFeature->SetGeometry(&OGRls);

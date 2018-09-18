@@ -51,9 +51,9 @@ void CA2DShape::Resize(int const nSize)
    m_VPoints.resize(nSize);
 }
 
-int CA2DShape::nGetSize(void) const
+unsigned int CA2DShape::nGetSize(void) const
 {
-   return m_VPoints.size();
+   return static_cast<unsigned int>(m_VPoints.size());
 }
 
 
@@ -132,14 +132,14 @@ vector<CGeom2DPoint>* CA2DShape::pPtVGetPoints(void)
 //! Computes the centroid of this 2D polygon (which may be outside, if this is a concave the polygon). From http://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon
 CGeom2DPoint CA2DShape::PtGetCentroid(void)
 {
-   int nVertexCount = m_VPoints.size();
+   unsigned int nVertexCount = static_cast<unsigned int>(m_VPoints.size());
    double
       dSignedArea = 0,
       dCentroidX = 0,
       dCentroidY = 0;
 
    // For all vertices
-   for (int i = 0; i < nVertexCount; ++i)
+   for (unsigned int i = 0; i < nVertexCount; ++i)
    {
       double
          dXThis = m_VPoints[i].dGetX(),

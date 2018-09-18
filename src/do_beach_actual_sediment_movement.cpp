@@ -104,12 +104,12 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    for (unsigned int n = 0; n < m_pVCoastPolygon.size(); n++)
    {
       LogStream << n << "\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << m_pVCoastPolygon[n]->dGetAvgUnconsD50() << "\t\t\t";
-      for (int m = 0; m < m_pVCoastPolygon[n]->nGetNumUpCoastAdjacentPolygons(); m++)
+      for (unsigned int m = 0; m < m_pVCoastPolygon[n]->nGetNumUpCoastAdjacentPolygons(); m++)
       {
          if (! m_pVCoastPolygon[n]->bDownCoastThisTimestep())
             LogStream << "(UP  \t" << m_pVCoastPolygon[n]->nGetUpCoastAdjacentPolygon(m) << "\t" << m_pVCoastPolygon[n]->dGetUpCoastAdjacentPolygonBoundaryShare(m) << ")\t";
       }
-      for (int m = 0; m < m_pVCoastPolygon[n]->nGetNumDownCoastAdjacentPolygons(); m++)
+      for (unsigned int m = 0; m < m_pVCoastPolygon[n]->nGetNumDownCoastAdjacentPolygons(); m++)
       {
          if (m_pVCoastPolygon[n]->bDownCoastThisTimestep())
             LogStream << "(DOWN\t" << m_pVCoastPolygon[n]->nGetDownCoastAdjacentPolygon(m) << "\t" << m_pVCoastPolygon[n]->dGetDownCoastAdjacentPolygonBoundaryShare(m) << ")\t";
@@ -128,7 +128,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    // OK, we know the potential (unconstrained) depth of erosion on each polygon, but we do not yet know the actual, supply-limited, depth. Nor do we know how much of the sediment which is to be removed is fine, sand or coarse. So next we estimate supply-limited sediment removal from each polygon, however we don't actually erode the polygon
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
-      for (int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
+      for (unsigned int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
       {
          // Get the potential erosion on this polygon (is a depth in m)
          double dSedChange = m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaPotentialErosion();
@@ -231,7 +231,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
             nVPolyAndAdj.push_back(true);
 
             // Set subsequent array items to be the IDs of adjacent polygons
-            for (int nAdj = 0; nAdj < pPoly->nGetNumDownCoastAdjacentPolygons(); nAdj++)
+            for (unsigned int nAdj = 0; nAdj < pPoly->nGetNumDownCoastAdjacentPolygons(); nAdj++)
             {
                int nAdjPolyID = pPoly->nGetDownCoastAdjacentPolygon(nAdj);
                nVPolyAndAdj.push_back(nAdjPolyID);
@@ -243,7 +243,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
             nVPolyAndAdj.push_back(false);
 
             // Set subsequent array items to be the IDs of adjacent polygons
-            for (int nAdj = 0; nAdj < pPoly->nGetNumUpCoastAdjacentPolygons(); nAdj++)
+            for (unsigned int nAdj = 0; nAdj < pPoly->nGetNumUpCoastAdjacentPolygons(); nAdj++)
             {
                int nAdjPolyID = pPoly->nGetUpCoastAdjacentPolygon(nAdj);
                nVPolyAndAdj.push_back(nAdjPolyID);
@@ -254,33 +254,33 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
       }
 
       // DEBUG CODE ======================================================
-      LogStream << "UNSORTED SEQUENCE OF POLYGON PROCESSING" << endl;
-      for (unsigned int n = 0; n < nVVPolyAndAdjacent.size(); n++)
-      {
-         for (unsigned int m = 0; m < nVVPolyAndAdjacent[n].size(); m++)
-            LogStream << nVVPolyAndAdjacent[n][m] << " ";
-         LogStream << endl;
-      }
-      LogStream << endl;
+//       LogStream << "UNSORTED SEQUENCE OF POLYGON PROCESSING" << endl;
+//       for (unsigned int n = 0; n < nVVPolyAndAdjacent.size(); n++)
+//       {
+//          for (unsigned int m = 0; m < nVVPolyAndAdjacent[n].size(); m++)
+//             LogStream << nVVPolyAndAdjacent[n][m] << " ";
+//          LogStream << endl;
+//       }
+//       LogStream << endl;
       // DEBUG CODE ======================================================
       
       // Sort the array using bPolygonAndAdjCompare(), so that 'target' polygons are processed after 'source' polygons
       stable_sort(nVVPolyAndAdjacent.begin(), nVVPolyAndAdjacent.end(), bPolygonAndAdjCompare);
 
       // DEBUG CODE ======================================================
-      LogStream << "SORTED SEQUENCE OF POLYGON PROCESSING" << endl;
-      for (unsigned int n = 0; n < nVVPolyAndAdjacent.size(); n++)
-      {
-         for (unsigned int m = 0; m < nVVPolyAndAdjacent[n].size(); m++)
-            LogStream << nVVPolyAndAdjacent[n][m] << " ";
-         LogStream << endl;
-      }
-      LogStream << endl;
+//       LogStream << "SORTED SEQUENCE OF POLYGON PROCESSING" << endl;
+//       for (unsigned int n = 0; n < nVVPolyAndAdjacent.size(); n++)
+//       {
+//          for (unsigned int m = 0; m < nVVPolyAndAdjacent[n].size(); m++)
+//             LogStream << nVVPolyAndAdjacent[n][m] << " ";
+//          LogStream << endl;
+//       }
+//       LogStream << endl;
       // DEBUG CODE ======================================================
       
       // Now go through the polygons in the sorted sequence
       LogStream << endl << m_ulIteration << ": unconsolidated sediment transport. Polygon-to-polygon routing (m^3)" << endl;
-      for (int n = 0; n < m_VCoast[nCoast].nGetNumPolygons(); n++)
+      for (unsigned int n = 0; n < m_VCoast[nCoast].nGetNumPolygons(); n++)
       {
          // And route this to adjacent polygons
          int nPoly = nVVPolyAndAdjacent[n][0];
@@ -341,9 +341,9 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    // We have an actual sediment budget, in sediment size categories, for all polygons: so process all polygons. First do polygons with net erosion
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
-      int nNumPolygons = m_VCoast[nCoast].nGetNumPolygons();
+      unsigned int nNumPolygons = m_VCoast[nCoast].nGetNumPolygons();
       
-      for (int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
+      for (unsigned int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
       {
          // Get the depth of sediment to be redistributed on this polygon. Is a depth in m: -ve for erosion, +ve for deposition
          double dSedChange = m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaActualTotalSediment();
@@ -524,9 +524,9 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
                else
                {
                   // Moving eroded sediment up-coast
-                  int nNumAdjPoly = pPolygon->nGetNumUpCoastAdjacentPolygons();
+                  unsigned int nNumAdjPoly = pPolygon->nGetNumUpCoastAdjacentPolygons();
                   double dCheckTotal = 0;
-                  for (int n = 0; n < nNumAdjPoly; n++)
+                  for (unsigned int n = 0; n < nNumAdjPoly; n++)
                   {
                      int nAdjPoly = pPolygon->nGetUpCoastAdjacentPolygon(n);
                      LogStream << m_ulIteration << ": polygon " << nPoly << " moves sediment up-coast to polygon " << nAdjPoly << endl;
@@ -674,9 +674,9 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    }
 
    // Now do polygons with net deposition
-   for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
+   for (unsigned int nCoast = 0; nCoast < static_cast<unsigned int>(m_VCoast.size()); nCoast++)
    {
-      for (int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
+      for (unsigned int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
       {
          // Get the depth of sediment to be redistributed on this polygon. Is a depth in m: -ve for erosion, +ve for deposition
          double dSedChange = m_VCoast[nCoast].pGetPolygon(nPoly)->dGetDeltaActualTotalSediment();

@@ -176,7 +176,7 @@ int CSimulation::nCreateAllProfiles(void)
 //       LogStream << endl;
 //       // DEBUG CODE =======================================================
    }
-
+   
    return RTN_OK;
 }
 
@@ -201,7 +201,7 @@ int CSimulation::nCreateAllProfilesAndCheckForIntersection(void)
    // Again check the normal profiles for insufficient length: is the water depth at the end point less than the depth of closure? We do this again because some profiles may have been shortened as a result of intersection. Do once for every coastline object
    for (unsigned int nCoast = 0; nCoast < m_VCoast.size(); nCoast++)
    {
-      for (int nProf = 0; nProf < m_VCoast[nCoast].nGetNumProfiles(); nProf++)
+      for (unsigned int nProf = 0; nProf < m_VCoast[nCoast].nGetNumProfiles(); nProf++)
       {
          CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProf);
          
@@ -221,7 +221,7 @@ int CSimulation::nCreateAllProfilesAndCheckForIntersection(void)
             
             if (m_pRasterGrid->m_Cell[nXEnd][nYEnd].dGetSeaDepth() < m_dDepthOfClosure)
             {
-               LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProf << " is too short for depth of closure " << m_dDepthOfClosure << " at end point [" << nXEnd << "][" << nYEnd << "] = {" << pPtEnd->dGetX() << ", " << pPtEnd->dGetY() << "}, flagging as too short" << endl;
+               LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProf << " is invalid, is too short for depth of closure " << m_dDepthOfClosure << " at end point [" << nXEnd << "][" << nYEnd << "] = {" << pPtEnd->dGetX() << ", " << pPtEnd->dGetY() << "}, flagging as too short" << endl;
                
                pProfile->SetTooShort(true);
             }            
@@ -298,7 +298,7 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile, in
 
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
-         LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " created at an intervention cape, is at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
+         LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " (intervention cape) created at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
 
          // Mark points on either side of it
          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -355,7 +355,7 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
 
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
-         LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " created at a natural cape, is at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
+         LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " (natural cape) created at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
 
          // Mark points on either side of it
          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -405,7 +405,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
          // Calculate the profile spacing, this will vary if we have a random factor but will be the same in both up-coast and down-coast directions
          if (nDirection == DIRECTION_DOWNCOAST)
 //             nProfileDist = tMax(m_nCoastNormalAvgSpacing, static_cast<int>(nProfileToNodeSpacing * (1 + (dGetRand0Gaussian() * m_dCoastNormalRandSpaceFact))));
-            nProfileDist = nProfileToNodeSpacing * (1 + (dGetRand0Gaussian() * m_dCoastNormalRandSpaceFact));
+            nProfileDist = nProfileToNodeSpacing * nRound(1 + (dGetRand0Gaussian() * m_dCoastNormalRandSpaceFact));
 
 // TODO Assume that the above is the profile spacing on straight bits of coast. Try gradually increasing the profile spacing with increasing concavity, and decreasing the profile spacing with increasing convexity. Could use a Michaelis-Menten S-curve relationship
 //          double fReN = pow(NowCell[nX][nY].dGetReynolds(m_dNu), m_dDepN);
@@ -516,7 +516,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                if (nRet == RTN_OK)
                {
                   // Profile created OK
-                  LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " created, is at coast point (" << nThisPoint << ") which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << "). Search started from potential node point at coastline point " << nPossibleNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nPossibleNodePoint) << endl;
+                  LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " created at coast point (" << nThisPoint << ") which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << "). Search started from potential node point at coastline point " << nPossibleNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nPossibleNodePoint) << endl;
                }
                else
                {
@@ -610,7 +610,7 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    int
       nCoastSize = m_VCoast[nCoast].nGetCoastlineSize(),
       nHandedness = m_VCoast[nCoast].nGetSeaHandedness(),
-      nProfileLen = dRound(m_dCoastNormalLength / m_dCellSide),         // Profile length in grid CRS
+      nProfileLen = nRound(m_dCoastNormalLength / m_dCellSide),         // Profile length in grid CRS
       nProfileStartEdge;
 
    CGeom2DIPoint PtiProfileStart;               // In grid CRS
@@ -643,7 +643,7 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    }
 
    // Found
-   int nPos = it - m_VEdgeCell.begin();
+   int nPos = static_cast<int>(it - m_VEdgeCell.begin());
 
    // Now construct the edge profile, searching for edge cells
    for (int n = 0; n < nProfileLen; n++)
@@ -849,11 +849,11 @@ int CSimulation::nGetCoastNormalEndPoint(int const nCoast, int const nStartCoast
    *pPtEnd = PtChooseEndPoint(nSeaHand, &PtBefore, &PtAfter, dXEnd1, dYEnd1, dXEnd2, dYEnd2);
 
    // Check that pPtiEnd is not off the grid. Note that pPtiEnd is NOT (necessarily) a cell centroid
-   pPtiEnd->SetXY(dExtCRSXToGridX(pPtEnd->dGetX()), dExtCRSYToGridY(pPtEnd->dGetY()));
+   pPtiEnd->SetXY(nRound(dExtCRSXToGridX(pPtEnd->dGetX())), nRound(dExtCRSYToGridY(pPtEnd->dGetY())));
    if (! bIsWithinValidGrid(pPtiEnd))
    {
       // The end point is off the grid, so constrain it to be within the valid grid
-      CGeom2DIPoint PtiStart(dExtCRSXToGridX(pPtStart->dGetX()), dExtCRSYToGridY(pPtStart->dGetY()));
+      CGeom2DIPoint PtiStart(nRound(dExtCRSXToGridX(pPtStart->dGetX())), nRound(dExtCRSYToGridY(pPtStart->dGetY())));
       KeepWithinValidGrid(&PtiStart, pPtiEnd);
 
       pPtEnd->SetX(dGridCentroidXToExtCRSX(pPtiEnd->nGetX()));
@@ -1018,8 +1018,8 @@ CGeom2DPoint CSimulation::PtChooseEndPoint(int const nHand, CGeom2DPoint const* 
 int CSimulation::nModifyAllIntersectingProfiles(void)
 {
    // Do once for every coastline object
-   int nCoastLines = m_VCoast.size();
-   for (int nCoast = 0; nCoast < nCoastLines; nCoast++)
+   unsigned int nCoastLines = static_cast<unsigned int>(m_VCoast.size());
+   for (unsigned int nCoast = 0; nCoast < nCoastLines; nCoast++)
    {
       int nNumProfiles = m_VCoast[nCoast].nGetNumProfiles();
 
@@ -1289,6 +1289,9 @@ int CSimulation::nPutAllProfilesOntoGrid(void)
          {
             // Need at least two points in the profile, so this profile is invalid: mark it
             pProfile->SetTooShort(true);
+            
+            LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " is invalid, has only " << nPoints << " points" << endl;
+            
             continue;
          }
 
@@ -1373,6 +1376,10 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
       nSegments = pProfile->nGetNumLineSegments(),
       nProfiles = m_VCoast[nCoast].nGetNumProfiles();    // TODO this is a bodge, needed if we hit a profile which belongs to a different coast object
 
+   // This contains a list of 'other' profiles which intersect this profile, but which are OK (i.e. they are coincident profiles of this profile). Added for efficiency
+   vector<int> VnOtherProfileOK;            
+   
+   // Do for every segment of this profile
    for (nSeg = 0; nSeg < nSegments; nSeg++)
    {
       // Do once for every line segment
@@ -1408,7 +1415,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
          dY = dYStart;
 
       // Process each interpolated point
-      for (int m = 0; m <= static_cast<int>(dRound(dLength)); m++)
+      for (int m = 0; m <= nRound(dLength); m++)
       {
          int
             nX = static_cast<int>(dX),
@@ -1426,28 +1433,41 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                if (! ACCEPT_SHORT_PROFILES)
                   pProfile->SetTruncated(true);
 
-               LogStream << m_ulIteration << ": profile " << nProfile << " truncated at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, HitLand?" << bHitLand << endl;
+               LogStream << m_ulIteration << ": profile " << nProfile << " is invalid, truncated at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 
                break;
             }
 
             // If this is the first line segment of the profile, then once we are clear of the coastline (say, when m > 1), check if this profile hits land at this interpolated point
             // NOTE Get problems here since if the coastline vector has been heavily smoothed, this can result is 'false positives' profiles marked as invalid which are not actually invalid, because the profile hits land when m = 0 or m = 1. This results in some cells being flagged as profile cells which are actually inland
-            if ((nSeg == 0) && (m > 1))
+            if (((nSeg == 0) && (m > 1)) || (nSeg > 0))
             {
-               // Two diagonal(ish) raster lines can cross each other without any intersection, so must also test an adjacent cell for intersection (does not matter which adjacent cell)
-               if (m_pRasterGrid->m_Cell[nX][nY].bIsCoastline() || (bIsWithinValidGrid(nX, nY+1) && m_pRasterGrid->m_Cell[nX][nY+1].bIsCoastline()))
+               if (m_pRasterGrid->m_Cell[nX][nY].bIsCoastline())
                {
-                  // We've hit a coastline so set a switch and mark the profile, however keep going
+                  // We've hit a coastline so set a switch and mark the profile, then quit
                   bHitCoast = true;
                   pProfile->SetHitCoast(true);
 
-//                   LogStream << m_ulIteration << ": profile " << nProfile << " HIT COAST at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+                  LogStream << m_ulIteration << ": profile " << nProfile << " is invalid, hit coast at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+                  
+                  return;
                }
 
-//                if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
+               // Two diagonal(ish) raster lines can cross each other without any intersection, so must also test an adjacent cell for intersection (does not matter which adjacent cell)
+               if (bIsWithinValidGrid(nX, nY+1) && m_pRasterGrid->m_Cell[nX][nY+1].bIsCoastline())
+               {
+                  // We've hit a coastline so set a switch and mark the profile, then quit
+                  bHitCoast = true;
+                  pProfile->SetHitCoast(true);
+                  
+                  LogStream << m_ulIteration << ": profile " << nProfile << " is invalid, hit coast at [" << nX << "][" << nY+1 << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY+1) << "}" << endl;
+                  
+                  return;
+               }
+               
+               //                if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
 //                {
-//                   // We've hit dry land so set a switch and mark the profile, however keep going
+//                   // We've hit dry land so set a switch and mark the profile
 //                   bHitLand = true;
 //                   pProfile->SetHitLand(true);
 //
@@ -1456,17 +1476,23 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
 //                   LogStream << "On [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, sea depth = " << m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth() << ", bIsInContiguousSea = " << (m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea() ? "true" : "false") << ", landform = " << (m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea() ? "sea" : "not sea") << endl;
 //
 //                   LogStream << "On [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, elevation of consolidated sediment = " << m_pRasterGrid->m_Cell[nX][nY].dGetConsSedTopForLayerAboveBasement(m_pRasterGrid->m_Cell[nX][nY].nGetTopNonZeroLayerAboveBasement()) << ", total cliff collapse = " << m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapse() << ", total beach deposition = " << m_pRasterGrid->m_Cell[nX][nY].dGetTotBeachDeposition() << endl;
+//                   return;
+
 //                }
             }
-
-            // Check to see if we hit another profile which is not a coincident normal to this normal
-            static int nLastProfileChecked = -1;
-            if (nProfile != nLastProfileChecked)
+            
+            // Now check to see if we hit another profile which is not a coincident normal to this normal
+            if (m_pRasterGrid->m_Cell[nX][nY].bIsProfile())
             {
-               if (m_pRasterGrid->m_Cell[nX][nY].bIsProfile())
-               {
-                  // For the first time for this profile, we've hit a raster cell which is already marked as 'under' a normal profile. Get the number of the profile which marked this cell
-                  int nHitProfile = m_pRasterGrid->m_Cell[nX][nY].nGetProfile();
+               // We've hit a raster cell which is already marked as 'under' a normal profile. Get the number of the profile which marked this cell
+               int nHitProfile = m_pRasterGrid->m_Cell[nX][nY].nGetProfile();
+               
+               // Search for the 'other' profile in the list of OK profiles
+               if (std::find(VnOtherProfileOK.begin(), VnOtherProfileOK.end(), nHitProfile) == VnOtherProfileOK.end())
+               {                  
+                  // Not found, so it must be the first time we've encountered this 'other' profile
+                  LogStream << "VVVV Profile " << nProfile << " touches profile " << nHitProfile << endl;                  
+                  VnOtherProfileOK.push_back(nHitProfile);
 
                   // TODO Bodge in case we hit a profile which belongs to a different coast
                   if (nHitProfile > nProfiles-1)
@@ -1474,57 +1500,95 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                      bHitAnotherProfile = true;
                      pProfile->SetHitAnotherProfile(true);
 
-                     LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " hit another profile A1 (" << nHitProfile << ") at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+                     LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile A1 (" << nHitProfile << ") at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+                     
+                     return;
                   }
-                  else
+
+                  // Only set the flag if this isn't a coincident normal to one or other of the profiles
+// DEBUG CODE ==============================
+//                   bool 
+//                      bOtherConcidentToThis = pProfile->bFindProfileInCoincidentProfiles(nHitProfile),
+//                      bThisCoincidentToOther = m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile);
+//                   
+//                   if (bOtherConcidentToThis)
+//                      LogStream << "Profile " << nHitProfile << " is coincident with " << nProfile << endl;
+//                   
+//                   if (bThisCoincidentToOther)
+//                      LogStream << "Profile " << nProfile << " is coincident with " << nHitProfile << endl;
+//                   
+//                   if ((! bOtherConcidentToThis) && (! bThisCoincidentToOther))    
+                  // DEBUG CODE ==============================
+                  
+                  // Note only need to test whether the 'other' profile is concident with his since the concidence relationship is mutual   
+                  // if ((! pProfile->bFindProfileInCoincidentProfiles(nHitProfile)) && (! m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile)))
+                  if (! pProfile->bFindProfileInCoincidentProfiles(nHitProfile))
                   {
-                     // Only set the flag if this isn't a coincident normal to one or other of the profiles
-                     if ((! pProfile->bFindProfileInCoincidentProfiles(nHitProfile)) && (! m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile)))
-                     {
-                        bHitAnotherProfile = true;
-                        pProfile->SetHitAnotherProfile(true);
+                     bHitAnotherProfile = true;
+                     pProfile->SetHitAnotherProfile(true);
 
-                        LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " hit another profile B1 (" << nHitProfile << ") at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
-                     }
-
-                     nLastProfileChecked = nProfile;
+                     LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile B1 (" << nHitProfile << ") at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+                     
+                     return;
                   }
                }
-               else
-               {               
-                  // DFM TEST try diagonal too
-                  int
-                     nXTmp = nX+1,
-                     nYTmp = nY;
-                     
-                  if (bIsWithinValidGrid(nXTmp, nYTmp) && m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsProfile())
+            }
+            
+            // Try diagonal too
+            int
+               nXTmp = nX+1,
+               nYTmp = nY;
+               
+            if (bIsWithinValidGrid(nXTmp, nYTmp) && m_pRasterGrid->m_Cell[nXTmp][nYTmp].bIsProfile())
+            {
+               // We've hit a raster cell which is already marked as 'under' a normal profile. Get the number of the profile which marked this cell
+               int nHitProfile = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetProfile();
+               
+               // Search for the 'other' profile in the list of OK profiles
+               if (std::find(VnOtherProfileOK.begin(), VnOtherProfileOK.end(), nHitProfile) == VnOtherProfileOK.end())
+               {                     
+                  // Not found, so it must be the first time we've encountered this 'other' profile
+                  LogStream << "VVVV Profile " << nProfile << " touches profile " << nHitProfile << " diagonally" << endl;                  
+                  VnOtherProfileOK.push_back(nHitProfile);
+                  
+                  // TODO Bodge in case we hit a profile which belongs to a different coast
+                  if (nHitProfile > nProfiles-1)
                   {
-                     // For the first time for this profile, we've hit a raster cell which is already marked as 'under' a normal profile. Get the number of the profile which marked this cell
-                     int nHitProfile = m_pRasterGrid->m_Cell[nXTmp][nYTmp].nGetProfile();
+                     bHitAnotherProfile = true;
+                     pProfile->SetHitAnotherProfile(true);
                      
-                     // TODO Bodge in case we hit a profile which belongs to a different coast
-                     if (nHitProfile > nProfiles-1)
-                     {
-                        bHitAnotherProfile = true;
-                        pProfile->SetHitAnotherProfile(true);
-                        
-                        LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " hit another profile DIAGONALLY A2 (" << nHitProfile << ") at [" << nXTmp << "][" << nYTmp << "] = {" << dGridCentroidXToExtCRSX(nXTmp) << ", " << dGridCentroidYToExtCRSY(nYTmp) << "}" << endl;
-                     }
-                     else
-                     {
-                        // Only set the flag if this isn't a coincident normal to one or other of the profiles
-                        if ((! pProfile->bFindProfileInCoincidentProfiles(nHitProfile)) && (! m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile)))
-                        {
-                           bHitAnotherProfile = true;
-                           pProfile->SetHitAnotherProfile(true);
-                           
-                           LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " hit another profile DIAGONALLYB2 (" << nHitProfile << ") at [" << nXTmp << "][" << nYTmp << "] = {" << dGridCentroidXToExtCRSX(nXTmp) << ", " << dGridCentroidYToExtCRSY(nYTmp) << "}" << endl;
-                        }
-                        
-                        nLastProfileChecked = nProfile;
-                     }
+                     LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile diagonally A2 (" << nHitProfile << ") at [" << nXTmp << "][" << nYTmp << "] = {" << dGridCentroidXToExtCRSX(nXTmp) << ", " << dGridCentroidYToExtCRSY(nYTmp) << "}" << endl;
+                     
+                     return;
                   }
-               }               
+                  
+                  // Only set the flag if this isn't a coincident normal to one or other of the profiles
+                  // DEBUG CODE ==============================
+//                   bool 
+//                      bOtherConcidentToThis = pProfile->bFindProfileInCoincidentProfiles(nHitProfile),
+//                      bThisCoincidentToOther = m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile);
+//                   
+//                   if (bOtherConcidentToThis)
+//                      LogStream << "Profile " << nHitProfile << " is coincident with " << nProfile << endl;
+//                   
+//                   if (bThisCoincidentToOther)
+//                      LogStream << "Profile " << nProfile << " is coincident with " << nHitProfile << endl;
+//                   
+//                   if ((! bOtherConcidentToThis) && (! bThisCoincidentToOther))    
+                  // DEBUG CODE ==============================
+                     
+                  // Note only need to test whether the 'other' profile is concident with his since the concidence relationship is mutual   
+                  // if ((! pProfile->bFindProfileInCoincidentProfiles(nHitProfile)) && (! m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile)))
+                  if (! pProfile->bFindProfileInCoincidentProfiles(nHitProfile))
+                  {
+                     bHitAnotherProfile = true;
+                     pProfile->SetHitAnotherProfile(true);
+                     
+                     LogStream << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile diagonally B2 (" << nHitProfile << ") at [" << nXTmp << "][" << nYTmp << "] = {" << dGridCentroidXToExtCRSX(nXTmp) << ", " << dGridCentroidYToExtCRSY(nYTmp) << "}" << endl;
+                     
+                     return;
+                  }
+               }    
             }
          }
 
@@ -1548,8 +1612,8 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
          pProfile->TruncateLineSegments(nSeg);
 
       // Shorten the vector input
-      int
-         nOutSize = pVIPointsOut->size(),
+      unsigned int
+         nOutSize = static_cast<unsigned int>(pVIPointsOut->size()),
          nLastX = pVIPointsOut->at(nOutSize-1).nGetX(),
          nLastY = pVIPointsOut->at(nOutSize-1).nGetY();
 
@@ -1563,7 +1627,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
       bTooShort = true;
       pProfile->SetTooShort(true);
 
-      LogStream << m_ulIteration << ": profile " << nProfile << " from [" << pVIPointsOut->at(0).nGetX() << "][" << pVIPointsOut->at(0).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(0).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(0).nGetY()) << "} to [" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetX() << "][" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(pVIPointsOut->size()-1).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(pVIPointsOut->size()-1).nGetY()) << "} is too short, only " << pVIPointsOut->size() << " points, HitLand?" << bHitLand << endl;
+      LogStream << m_ulIteration << ": profile " << nProfile << " is invalid, is too short, only " << pVIPointsOut->size() << " points, HitLand?" << bHitLand << ". From [" << pVIPointsOut->at(0).nGetX() << "][" << pVIPointsOut->at(0).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(0).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(0).nGetY()) << "} to [" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetX() << "][" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(pVIPointsOut->size()-1).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(pVIPointsOut->size()-1).nGetY()) << "}" << endl;
    }
 }
 
@@ -1635,14 +1699,14 @@ void CSimulation::MergeProfilesAtFinalLineSegments(int const nCoast, int const n
    vector<pair<int, int> >
       prVFirstProfileCoincidentProfilesLastSeg = *pFirstProfile->pprVGetPairedCoincidentProfilesForLineSegment(nFirstProfileLineSegments-1),
       prVSecondProfileCoincidentProfilesLastSeg = *pSecondProfile->pprVGetPairedCoincidentProfilesForLineSegment(nSecondProfileLineSegments-1);
-   int
-      nNumFirstProfileCoincidentProfilesLastSeg = prVFirstProfileCoincidentProfilesLastSeg.size(),
-      nNumSecondProfileCoincidentProfilesLastSeg = prVSecondProfileCoincidentProfilesLastSeg.size();
+   unsigned int
+      nNumFirstProfileCoincidentProfilesLastSeg = static_cast<unsigned int>(prVFirstProfileCoincidentProfilesLastSeg.size()),
+      nNumSecondProfileCoincidentProfilesLastSeg = static_cast<unsigned int>(prVSecondProfileCoincidentProfilesLastSeg.size());
 
 //   LogStream << m_ulIteration << ": END-SEGMENT INTERSECTION between profiles {" << nFirstProfile << "} and {" << nSecondProfile << "} at line segment " << nFirstProfileLineSegments-1 << "/" << nFirstProfileLineSegments-1 << ", and line segment " << nSecondProfileLineSegments-1 << "/" << nSecondProfileLineSegments-1 << ", respectively. Both truncated at [" << dIntersectX << ", " << dIntersectY << "] then profiles {" << nFirstProfile << "} and {" << nSecondProfile << "} extended to [" << dAvgEndX << ", " << dAvgEndY << "]" << endl;
 
    // Truncate the first profile, and all co-incident profiles, at the point of intersection
-   for (int n = 0; n < nNumFirstProfileCoincidentProfilesLastSeg; n++)
+   for (unsigned int n = 0; n < nNumFirstProfileCoincidentProfilesLastSeg; n++)
    {
       int nThisProfile = prVFirstProfileCoincidentProfilesLastSeg[n].first;
       CGeomProfile* pThisProfile = m_VCoast[nCoast].pGetProfile(nThisProfile);
@@ -1653,7 +1717,7 @@ void CSimulation::MergeProfilesAtFinalLineSegments(int const nCoast, int const n
    }
 
    // Truncate the second profile, and all co-incident profiles, at the point of intersection
-   for (int n = 0; n < nNumSecondProfileCoincidentProfilesLastSeg; n++)
+   for (unsigned int n = 0; n < nNumSecondProfileCoincidentProfilesLastSeg; n++)
    {
       int nThisProfile = prVSecondProfileCoincidentProfilesLastSeg[n].first;
       CGeomProfile* pThisProfile = m_VCoast[nCoast].pGetProfile(nThisProfile);
@@ -1664,7 +1728,7 @@ void CSimulation::MergeProfilesAtFinalLineSegments(int const nCoast, int const n
    }
 
    // Append a new straight line segment to the existing line segment(s) of the first profile, and to all co-incident profiles
-   for (int nThisLineSeg = 0; nThisLineSeg < nNumFirstProfileCoincidentProfilesLastSeg; nThisLineSeg++)
+   for (unsigned int nThisLineSeg = 0; nThisLineSeg < nNumFirstProfileCoincidentProfilesLastSeg; nThisLineSeg++)
    {
       int nThisProfile = prVFirstProfileCoincidentProfilesLastSeg[nThisLineSeg].first;
       CGeomProfile* pThisProfile = m_VCoast[nCoast].pGetProfile(nThisProfile);
@@ -1679,7 +1743,7 @@ void CSimulation::MergeProfilesAtFinalLineSegments(int const nCoast, int const n
    }
 
    // Append a new straight line segment to the existing line segment(s) of the second profile, and to all co-incident profiles
-   for (int nThisLineSeg = 0; nThisLineSeg < nNumSecondProfileCoincidentProfilesLastSeg; nThisLineSeg++)
+   for (unsigned int nThisLineSeg = 0; nThisLineSeg < nNumSecondProfileCoincidentProfilesLastSeg; nThisLineSeg++)
    {
       int nThisProfile = prVSecondProfileCoincidentProfilesLastSeg[nThisLineSeg].first;
       CGeomProfile* pThisProfile = m_VCoast[nCoast].pGetProfile(nThisProfile);
@@ -1834,11 +1898,11 @@ int CSimulation::nInsertPointIntoProfilesIfNeededThenUpdate(int const nCoast, in
 
    // Get the index numbers of all coincident profiles for the 'main' to-retain profile for the line segment in which intersection occurs
    vector<pair<int, int> > prVCoincidentProfiles = *m_VCoast[nCoast].pGetProfile(nMainProfile)->pprVGetPairedCoincidentProfilesForLineSegment(nMainProfileIntersectLineSeg);
-   int nNumCoincident = prVCoincidentProfiles.size();
+   unsigned int nNumCoincident = static_cast<unsigned int>(prVCoincidentProfiles.size());
    vector<int> nLineSegAfterIntersect(nNumCoincident, -1);           // The line segment after the point of intersection, for each co-incident profile
 
    // Do this for the main profile and all profiles which are co-incident for this line segment
-   for (int nn = 0; nn < nNumCoincident; nn++)
+   for (unsigned int nn = 0; nn < nNumCoincident; nn++)
    {
       int
          nThisProfile = prVCoincidentProfiles[nn].first,             // The number of this profile
@@ -1869,10 +1933,10 @@ int CSimulation::nInsertPointIntoProfilesIfNeededThenUpdate(int const nCoast, in
 
    // Get the coincident profiles for the to-truncate profile, at the line segment where intersection occurs
    vector<pair<int, int> > prVToTruncateCoincidentProfiles = *m_VCoast[nCoast].pGetProfile(nProfileToTruncate)->pprVGetPairedCoincidentProfilesForLineSegment(nProfileToTruncateIntersectLineSeg);
-   int nNumToTruncateCoincident = prVToTruncateCoincidentProfiles.size();
+   unsigned int nNumToTruncateCoincident = static_cast<unsigned int>(prVToTruncateCoincidentProfiles.size());
 
    // Now add the number of the to-truncate profile, and all its coincident profiles, to all line segments which are seaward of the point of intersection. Do this for the main profile and all profiles which are co-incident for this line segment
-   for (int nn = 0; nn < nNumCoincident; nn++)
+   for (unsigned int nn = 0; nn < nNumCoincident; nn++)
    {
       int nThisProfile = prVCoincidentProfiles[nn].first;             // The number of this profile
       CGeomProfile* pThisProfile = m_VCoast[nCoast].pGetProfile(nThisProfile);
@@ -1893,7 +1957,7 @@ int CSimulation::nInsertPointIntoProfilesIfNeededThenUpdate(int const nCoast, in
 //          }
 
          // Add the number of the to-truncate profile, and all its coincident profiles, to this line segment
-         for (int m = 0; m < nNumToTruncateCoincident; m++)
+         for (unsigned int m = 0; m < nNumToTruncateCoincident; m++)
          {
             int
                nProfileToAdd = prVToTruncateCoincidentProfiles[m].first,
@@ -2003,9 +2067,9 @@ void CSimulation::TruncateProfileAndAppendNew(int const nCoast, int const nMainP
 
    // Get the index numbers of all coincident profiles for the 'main' profile for the line segment in which intersection occurs
    vector<pair<int, int> > prVCoincidentProfiles = *m_VCoast[nCoast].pGetProfile(nMainProfile)->pprVGetPairedCoincidentProfilesForLineSegment(nMainProfileIntersectLineSeg);
-   int nNumCoincident = prVCoincidentProfiles.size();
+   unsigned int nNumCoincident = static_cast<unsigned int>(prVCoincidentProfiles.size());
 
-   for (int nn = 0; nn < nNumCoincident; nn++)
+   for (unsigned int nn = 0; nn < nNumCoincident; nn++)
    {
       // Do this for the main to-truncate profile, and do the same for all its co-incident profiles
       int
@@ -2060,7 +2124,7 @@ void CSimulation::TruncateProfileAndAppendNew(int const nCoast, int const nMainP
             else
             {
                // Found
-               int nPos = it - nVProf.begin();
+               int nPos = static_cast<int>(it - nVProf.begin());
                int nNewProfsLineSeg = nVProfsLineSeg[nPos];
                nNewProfsLineSeg++;
 

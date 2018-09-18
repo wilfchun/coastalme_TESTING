@@ -328,7 +328,7 @@ int CGeomCell::nGetTopNonZeroLayerAboveBasement(void) const
    if (m_VLayerAboveBasement.empty())
       return INT_NODATA;
 
-   int nTop = m_VLayerAboveBasement.size()-1;
+   int nTop = static_cast<int>(m_VLayerAboveBasement.size())-1;
    while (m_VLayerAboveBasement[nTop].dGetTotalThickness() <= 0)
    {
       if (--nTop < 0)
@@ -344,7 +344,7 @@ int CGeomCell::nGetTopLayerAboveBasement(void) const
    if (m_VLayerAboveBasement.empty())
       return INT_NODATA;
 
-   return m_VLayerAboveBasement.size()-1;
+   return static_cast<int>(m_VLayerAboveBasement.size())-1;
 }
 
 
@@ -474,7 +474,7 @@ void CGeomCell::CalcAllLayerElevsAndD50(void)
 
    // Now calculate the d50 of the topmost unconsolidated sediment layer with non-zero thickness
    m_dUnconsD50 = DBL_NODATA;
-   for (int n = m_VLayerAboveBasement.size()-1; n >= 0; n--)
+   for (int n = static_cast<int>(m_VLayerAboveBasement.size())-1; n >= 0; n--)
    {
       double dUnconsThick = m_VLayerAboveBasement[n].dGetUnconsolidatedThickness();
       if (dUnconsThick > 0)
@@ -582,7 +582,8 @@ void CGeomCell::InitCell(void)
    m_nCoastlineNormal            = INT_NODATA;
    
    m_nShadowZoneNumber           =
-   m_nDownDriftZoneNumber        =   
+   m_nDownDriftZoneNumber        = 0;
+   
    m_dLocalConsSlope             =
    m_dPotentialPlatformErosion   =
    m_dActualPlatformErosion      =
@@ -591,7 +592,7 @@ void CGeomCell::InitCell(void)
    m_dPotentialBeachErosion      =
    m_dActualBeachErosion         =
    m_dBeachDeposition            =
-   m_dSeaDepth                   = 0;
+   m_dSeaDepth                   = 0.0;
 
    m_dWaveHeight                 =
    m_dWaveOrientation            =

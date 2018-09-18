@@ -49,7 +49,7 @@ public:
 
    void Clear(void);
    void Resize(const int);
-   int nGetSize(void) const;
+   unsigned int nGetSize(void) const;
    
 //    void InsertAtFront(int const, int const);
    void Append(CGeom2DIPoint const*);

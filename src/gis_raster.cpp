@@ -1,7 +1,7 @@
 /*!
  *
  * \file gis_raster.cpp
- * \brief These functions use GDAL to read and write raster GIS files in several formats. This version will build with GDAL version 2
+ * \brief These functions use GDAL (version 2) to read and write raster GIS files in several formats
  * \details TODO A more detailed description of these routines.
  * \author David Favis-Mortlock
  * \author Andres Payo
@@ -2003,7 +2003,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
 
          // If necessary, scale this value
          if (bScaleOutput)
-            nTmp = dRound(m_lGDALMinCanWrite + (dRangeScale * (nTmp - dDataMin)));
+            nTmp = nRound(m_lGDALMinCanWrite + (dRangeScale * (nTmp - dDataMin)));
 
          // Write it to the array
          pnRaster[n++] = nTmp;

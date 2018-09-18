@@ -758,7 +758,7 @@ bool CSimulation::bReadRunData(void)
             break;
 
          case 8:
-            // If needed, also output GIS raster world file?
+            // If needed, scale GIS raster output values?
             strRH = strToLower(&strRH);
 
             m_bScaleRasterOutput = false;
@@ -767,7 +767,7 @@ bool CSimulation::bReadRunData(void)
             break;
 
          case 9:
-            // If needed, scale GIS raster output values?
+            // If needed, also output GIS raster world file?
             strRH = strToLower(&strRH);
 
             m_bWorldFile = false;
@@ -1184,6 +1184,8 @@ bool CSimulation::bReadRunData(void)
                      // Initial fine unconsolidated sediment depth GIS file (can be blank)
                      if (! strRH.empty())
                      {
+                        // Set switch
+                        m_bHaveFineSediment = true;
 #ifdef _WIN32
                         // For Windows, make sure has backslashes, not Unix-style slashes
                         strRH = pstrChangeToBackslash(&strRH);
@@ -1208,6 +1210,8 @@ bool CSimulation::bReadRunData(void)
                      // Initial sand unconsolidated sediment depth GIS file (can be blank)
                      if (! strRH.empty())
                      {
+                        // Set switch
+                        m_bHaveSandSediment = true;
 #ifdef _WIN32
                         // For Windows, make sure has backslashes, not Unix-style slashes
                         strRH = pstrChangeToBackslash(&strRH);
@@ -1231,6 +1235,8 @@ bool CSimulation::bReadRunData(void)
                      // Initial coarse unconsolidated sediment depth GIS file (can be blank)
                      if (! strRH.empty())
                      {
+                        // Set switch
+                        m_bHaveCoarseSediment = true;
 #ifdef _WIN32
                         // For Windows, make sure has backslashes, not Unix-style slashes
                         strRH = pstrChangeToBackslash(&strRH);
@@ -1254,6 +1260,8 @@ bool CSimulation::bReadRunData(void)
                      // Initial fine consolidated sediment depth GIS file (can be blank)
                      if (! strRH.empty())
                      {
+                        // Set switch
+                        m_bHaveFineSediment = true;
 #ifdef _WIN32
                         // For Windows, make sure has backslashes, not Unix-style slashes
                         strRH = pstrChangeToBackslash(&strRH);
@@ -1277,6 +1285,8 @@ bool CSimulation::bReadRunData(void)
                      // Initial sand consolidated sediment depth GIS file (can be blank)
                      if (! strRH.empty())
                      {
+                        // Set switch
+                        m_bHaveSandSediment = true;
 #ifdef _WIN32
                         // For Windows, make sure has backslashes, not Unix-style slashes
                         strRH = pstrChangeToBackslash(&strRH);
@@ -1300,6 +1310,8 @@ bool CSimulation::bReadRunData(void)
                      // Initial coarse consolidated sediment depth GIS file (can be blank)
                      if (! strRH.empty())
                      {
+                        // Set switch
+                        m_bHaveCoarseSediment = true;
 #ifdef _WIN32
                         // For Windows, make sure has backslashes, not Unix-style slashes
                         strRH = pstrChangeToBackslash(&strRH);
@@ -1336,6 +1348,8 @@ bool CSimulation::bReadRunData(void)
             // Initial suspended sediment depth GIS file (can be blank)
             if (! strRH.empty())
             {
+               // Set switch
+               m_bHaveFineSediment = true;
 #ifdef _WIN32
                // For Windows, make sure has backslashes, not Unix-style slashes
                strRH = pstrChangeToBackslash(&strRH);

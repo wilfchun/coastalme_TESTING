@@ -110,7 +110,7 @@ public:
    CGeomLine* pLGetCoastlineExtCRS(void);
    CGeom2DPoint* pPtGetCoastlinePointExtCRS(int const);
    
-   int nGetCoastlineSize(void) const;
+   unsigned int nGetCoastlineSize(void) const;
 //    double dGetCoastlineSegmentLength(int const, int const);
 //    double dGetCoastlineLengthSoFar(int const);
 //    void DisplayCoastline(void);
@@ -140,7 +140,7 @@ public:
    CGeomProfile* pGetProfile(int const);
    void AppendProfile(int const, int const);
 //    void ReplaceProfile(int const, vector<CGeom2DPoint> const*);
-   int nGetNumProfiles(void) const;
+   unsigned int nGetNumProfiles(void) const;
    bool bIsProfileStartPoint(int const) const;
    int nGetProfileNumber(int const) const;
 
@@ -185,17 +185,17 @@ public:
    void SetPolygonNode(int const, int const);
    int nGetPolygonNode(int const) const;
    void CreatePolygon(int const, int const, int const, CGeom2DIPoint const*, CGeom2DIPoint const*, int const, int const, vector<CGeom2DPoint> const*, int const, int const, int const);
-   int nGetNumPolygons(void) const;
+   unsigned int nGetNumPolygons(void) const;
    CGeomCoastPolygon* pGetPolygon(int const) const;
 
    void AppendPolygonLength(const double);
    double dGetPolygonLength(int const) const;
    
-   int nGetNumShadowBoundaries(void);
+   unsigned int nGetNumShadowBoundaries(void);
    void AppendShadowBoundary(const CGeomLine);
    CGeomLine* pGetShadowBoundary(int const);
    
-   int nGetNumShadowDowndriftBoundaries(void);
+   unsigned int nGetNumShadowDowndriftBoundaries(void);
    void AppendShadowDowndriftBoundary(const CGeomLine);
    CGeomLine* pGetShadowDowndriftBoundary(int const);
 };

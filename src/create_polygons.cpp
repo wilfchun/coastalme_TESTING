@@ -119,7 +119,7 @@ int CSimulation::nCreateAllPolygons(void)
                   PtVBoundary.push_back(*m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(i));
 
                // Use the penultimate coastline point as the start point for the point-in-polygon search later, during flood fill
-               int nPointInPolygonStartPoint = PtVBoundary.size() - 2;
+               unsigned int nPointInPolygonStartPoint = static_cast<unsigned int>(PtVBoundary.size()) - 2;
 
                // Append the points in the down-coast normal. Omit the last point of this normal if the the most seaward point of the this normal, and the most seaward point of the up-coast (previous) normal are the same
                int nFinishPoint = nThisProfileEnd;
@@ -248,7 +248,7 @@ void CSimulation::RasterizePolygonJoiningLine(CGeom2DPoint const* pPt1, CGeom2DP
       dY = dYStart;
 
    // Process each interpolated point
-   for (int m = 0; m <= static_cast<int>(dRound(dLength)); m++)
+   for (int m = 0; m <= nRound(dLength); m++)
    {
       int
          nX = static_cast<int>(dX),
@@ -256,7 +256,7 @@ void CSimulation::RasterizePolygonJoiningLine(CGeom2DPoint const* pPt1, CGeom2DP
 
       // Safety check
       if (! bIsWithinValidGrid(nX, nY))
-         KeepWithinValidGrid(dXStart, dYStart, nX, nY);
+         KeepWithinValidGrid(nRound(dXStart), nRound(dYStart), nX, nY);
 
       // Mark this point on the raster grid
       m_pRasterGrid->m_Cell[nX][nY].SetPolygonID(m_nGlobalPolygonID);
@@ -279,7 +279,7 @@ void CSimulation::MarkPolygonCells(void)
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
       // Do this for every coastal polygon
-      for (int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
+      for (unsigned int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
       {
 //          int nCellsInPolygon = 0;
 //       double dTotDepth = 0;
@@ -619,15 +619,15 @@ bool CSimulation::bIsWithinPolygon(CGeom2DPoint const* pPtStart, vector<CGeom2DP
 {
    bool bOddNodes = false;
 
-   int
-      nPolyCorners = pPtPoints->size(),
+   unsigned int
+      nPolyCorners = static_cast<unsigned int>(pPtPoints->size()),
       j = nPolyCorners-1;
 
    double
       dX = pPtStart->dGetX(),
       dY = pPtStart->dGetY();
 
-   for (int i = 0; i < nPolyCorners; i++)
+   for (unsigned int i = 0; i < nPolyCorners; i++)
    {
       double
          dCorneriX = pPtPoints->at(i).dGetX(),
@@ -659,8 +659,8 @@ bool CSimulation::bIsWithinPolygon(CGeom2DPoint const* pPtStart, vector<CGeom2DP
 ===============================================================================================================================*/
 CGeom2DPoint CSimulation::PtFindPointInPolygon(vector<CGeom2DPoint> const* pPtPoints, int const nStartPoint)
 {
-   int
-      nPolySize = pPtPoints->size(),
+   int 
+      nPolySize = static_cast<int>(pPtPoints->size()),
       nOffSet = 0;
    CGeom2DPoint PtStart;
 

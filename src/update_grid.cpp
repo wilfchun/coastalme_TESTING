@@ -60,7 +60,7 @@ int CSimulation::nUpdateGrid(void)
       return RTN_ERR_NOSEACELLS;
 
    // Now go through all cells again and sort out suspended sediment load
-   double dSuspPerSeaCell = m_ldGTotSuspendedSediment / m_ulThisTimestepNumSeaCells;
+   double dSuspPerSeaCell = static_cast<double>(m_ldGTotSuspendedSediment / m_ulThisTimestepNumSeaCells);
    for (int nX = 0; nX < m_nXGridMax; nX++)
    {
       for (int nY = 0; nY < m_nYGridMax; nY++)
@@ -71,13 +71,15 @@ int CSimulation::nUpdateGrid(void)
    }
 
    // Go along each coastline and update the grid with landform attributes, ready for next timestep
-   for (int i = 0; i < static_cast<int>(m_VCoast.size()); i++)
-      for (int j = 0; j < m_VCoast[i].nGetCoastlineSize(); j++)
+   for (unsigned int i = 0; i < static_cast<unsigned int>(m_VCoast.size()); i++)
+   {
+      for (unsigned int j = 0; j < m_VCoast[i].nGetCoastlineSize(); j++)
       {
          int nRet = nLandformToGrid(i, j);
          if (nRet != RTN_OK)
             return nRet;
       }
+   }
 
    return RTN_OK;
 }

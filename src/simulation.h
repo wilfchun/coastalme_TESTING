@@ -63,6 +63,9 @@ class CSimulation
 {
 private:
    bool
+      m_bHaveFineSediment,
+      m_bHaveSandSediment,
+      m_bHaveCoarseSediment,
       m_bBasementElevSave,
       m_bSedimentTopSurfSave,
       m_bTopSurfSave,
@@ -183,7 +186,8 @@ private:
       m_nXMinBoundingBox,
       m_nXMaxBoundingBox,
       m_nYMinBoundingBox,
-      m_nYMaxBoundingBox;
+      m_nYMaxBoundingBox,
+      m_nWavePropagationModel;
 
    GDALDataType
       m_GDALWriteIntDataType,
@@ -230,7 +234,6 @@ private:
       m_dClkLast,                      // Last value returned by clock()
       m_dCPUClock,                     // Total elapsed CPU time
       m_dGeoTransform[6],
-      m_nWavePropagationModel,
       m_dSeaWaterDensity,
       m_dOrigSWL,
       m_dFinalSWL,
@@ -730,6 +733,7 @@ private:
    static double dGetStdDev(vector<double> const*);
    static void AppendEnsureNoGap(vector<CGeom2DIPoint>*, CGeom2DIPoint const*);
    static bool bIsNumeric(string const*);
+   double dConstrainFieldWidthForShapefile(double const);
 
    // Random number stuff
    static unsigned long ulGetTausworthe(unsigned long const, unsigned long const, unsigned long const, unsigned long const, unsigned long const);

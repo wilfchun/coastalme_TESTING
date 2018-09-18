@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Change this to select build type
+
 #buildtype=DEBUG
 buildtype=RELEASE
 #buildtype=RELWITHDEBINFO     # Not yet implemented in CMakeLists.txt

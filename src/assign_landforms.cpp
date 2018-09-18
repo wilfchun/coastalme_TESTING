@@ -45,9 +45,9 @@ using std::endl;
 int CSimulation::nAssignAllCoastalLandforms(void)
 {
    // For each coastline, put a coastal landform at every point along the coastline
-   for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
+   for (unsigned int nCoast = 0; nCoast < static_cast<unsigned int>(m_VCoast.size()); nCoast++)
    {
-      for (int j = 0; j < m_VCoast[nCoast].nGetCoastlineSize(); j++)
+      for (unsigned int j = 0; j < m_VCoast[nCoast].nGetCoastlineSize(); j++)
       {
          // Get the coords of the grid cell marked as coastline for the coastal landform object
          int 

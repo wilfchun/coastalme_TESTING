@@ -231,11 +231,11 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
             // Safety check
             if (! bIsWithinValidGrid(nXParNew, nYParNew))
             {
-               LogStream << WARN << "while eroding beach erosion on coast " << nCoast << " polygon " << nPoly << " (nInlandOffset = " << nInlandOffset << "), outside valid grid at [" << nXParNew << "][" << nYParNew << "] for parallel profile from coast point " << nCoastPoint << " at [" << nCoastX << "][" << nCoastY << "]. Constraining this parallel profile at its landward end, is now [";
+//                LogStream << WARN << "while eroding beach on coast " << nCoast << " polygon " << nPoly << " (nInlandOffset = " << nInlandOffset << "), outside valid grid at [" << nXParNew << "][" << nYParNew << "] for parallel profile from coast point " << nCoastPoint << " at [" << nCoastX << "][" << nCoastY << "]. Constraining this parallel profile at its landward end, is now [";
                
                KeepWithinValidGrid(nCoastX, nCoastY, nXParNew, nYParNew);
                
-               LogStream << "[" << nXParNew << "][" << nYParNew << "] = {" << dGridCentroidXToExtCRSX(nXParNew) << ", " <<  dGridCentroidYToExtCRSY(nYParNew) << "}" << endl;
+//                LogStream << "[" << nXParNew << "][" << nYParNew << "] = {" << dGridCentroidXToExtCRSX(nXParNew) << ", " <<  dGridCentroidYToExtCRSY(nYParNew) << "}" << endl;
                
                // Is this cell already in the parallel profile?
                if ((VPtiParProfile.back().nGetX() != nXParNew) || (VPtiParProfile.back().nGetY() != nYParNew))
@@ -258,7 +258,7 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
          if (nParProfLen < MIN_PAR_PROFILE_SIZE)
          {
             // Can't have a meaningful parallel profile with very few points
-            LogStream << m_ulIteration << ": only " << nParProfLen << " points in parallel profile, min is " << MIN_PAR_PROFILE_SIZE << ", abandoning" << endl;
+            // LogStream << m_ulIteration << ": only " << nParProfLen << " points in parallel profile, min is " << MIN_PAR_PROFILE_SIZE << ", abandoning" << endl;
             
             continue;
          }
@@ -281,7 +281,7 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
          {
             // Can't have a meaningful Dean profile with a near-zero elevation difference
             // TODO Need to improve this: at present we just abandon erosion on this coast point and move to another coast point
-            LogStream << m_ulIteration << ": zero gradient on parallel profile, abandoning" << endl;
+            // LogStream << m_ulIteration << ": zero gradient on parallel profile, abandoning" << endl;
             
             bZeroGradient = true;
             break;

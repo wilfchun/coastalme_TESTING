@@ -296,7 +296,7 @@ Does running-mean smoothing of the slope of a coastline-normal profile
 vector<double> CSimulation::dVSmoothProfileSlope(vector<double>* pdVSlope)
 {
    // Make a copy of the unsmoothed profile slope vector
-   int const nSize = pdVSlope->size();
+   int const nSize = static_cast<int>(pdVSlope->size());
    vector<double> dVSmoothed = *pdVSlope;
    
    // Note that m_nProfileSmoothWindow must be odd (have already checked this)
