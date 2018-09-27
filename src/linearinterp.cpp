@@ -31,7 +31,7 @@ int nNearestNeighbourIndex(vector<double> const* pVdX, double const dValue)
       dNewDist = dDist;
    int nIdx = 0;
 
-   for (unsigned int i = 0; i < pVdX->size(); ++i) 
+   for (int i = 0; i < pVdX->size(); ++i) 
    {
       dNewDist = tAbs(dValue - pVdX->at(i));
       if (dNewDist <= dDist) 

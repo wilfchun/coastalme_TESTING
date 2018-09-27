@@ -394,7 +394,7 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
          // We have not been able to reach the target for erosion on this parallel profile. So find the offset that gives us the largest erosion amount
          int nOffsetForLargestPossible = -1;
          double dLargestPossibleErosion = 0;
-         for (unsigned int nn = 0; nn < VdAmountEachOffset.size(); nn++)
+         for (int nn = 0; nn < VdAmountEachOffset.size(); nn++)
          {
             if (VdAmountEachOffset[nn] > dLargestPossibleErosion)
             {
@@ -1034,7 +1034,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
          dCoarseRatio = 1 - dSandRatio;
 //       assert(dRatio >= 0);
 
-      for (unsigned int nSeawardFromCoast = 0; nSeawardFromCoast < PtiVParProfile.size(); nSeawardFromCoast++)
+      for (int nSeawardFromCoast = 0; nSeawardFromCoast < PtiVParProfile.size(); nSeawardFromCoast++)
       {
          // Don't bother with tiny amounts
          if (dSandToDepositOnPoly < SEDIMENT_ELEV_TOLERANCE)
@@ -1492,7 +1492,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
             dCoarseRatio = 1 - dSandRatio;
 
 
-         for (unsigned int nSeawardFromCoast = 0; nSeawardFromCoast < PtiVParProfile.size(); nSeawardFromCoast++)
+         for (int nSeawardFromCoast = 0; nSeawardFromCoast < PtiVParProfile.size(); nSeawardFromCoast++)
          {
             // Don't bother with tiny amounts
             if (dSandToDepositOnPoly < SEDIMENT_ELEV_TOLERANCE)

@@ -82,7 +82,7 @@ int CSimulation::nLocateSeaAndCoasts(void)
 void CSimulation::FindAllSeaCells(void)
 {
    // Go along the list of edge cells
-   for (unsigned int n = 0; n < m_VEdgeCell.size(); n++)
+   for (int n = 0; n < m_VEdgeCell.size(); n++)
    {
       if (m_bOmitSearchNorthEdge && m_VEdgeCellEdge[n] == NORTH)
          continue;
@@ -206,7 +206,7 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
 int CSimulation::nTraceAllCoasts(void)
 {
    // Go along the list of edge cells
-   for (unsigned int n = 0; n < m_VEdgeCell.size()-1; n++)
+   for (int n = 0; n < m_VEdgeCell.size()-1; n++)
    {
       if (m_bOmitSearchNorthEdge && (m_VEdgeCellEdge[n] == NORTH || m_VEdgeCellEdge[n+1] == NORTH))
          continue;

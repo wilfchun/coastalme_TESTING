@@ -211,7 +211,7 @@ bool CSimulation::bFindExeDir(char* pcArg)
       return false;
 
    // It's OK, so trim off the executable's name
-   unsigned int nPos = static_cast<unsigned int>(strTmp.find_last_of(PATH_SEPARATOR));
+   int nPos = static_cast<int>(strTmp.find_last_of(PATH_SEPARATOR));
    m_strCMEDir = strTmp.substr(0, nPos+1);            // Note that this must be terminated with a backslash
 
    return true;
@@ -2159,6 +2159,9 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_CSHORE_FILE_OUTPUT:
       strErr = "reading CShore output file";
       break;
+   case RTN_ERR_CSHORE_NEGATIVE_DEPTH:
+      strErr = "CShore internal error";
+      break;
    case RTN_ERR_WAVE_INTERPOLATION_LOOKUP:
       strErr = "during wave interpolation lookup";
       break;
@@ -2556,7 +2559,7 @@ void CSimulation::AppendEnsureNoGap(vector<CGeom2DIPoint>* pVPtiPoints, CGeom2DI
 
       for (int n = 1; n < nDiff; n++)
       {
-         CGeom2DIPoint Pti(nXLast + nRound(n * dXInc), nYLast + nRound(n * dYInc));
+         CGeom2DIPoint Pti(nXLast + (n * dXInc), nYLast + (n * dYInc));
          pVPtiPoints->push_back(Pti);
       }
    }

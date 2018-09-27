@@ -45,16 +45,16 @@ using std::endl;
 int CSimulation::nAssignAllCoastalLandforms(void)
 {
    // For each coastline, put a coastal landform at every point along the coastline
-   for (unsigned int nCoast = 0; nCoast < static_cast<unsigned int>(m_VCoast.size()); nCoast++)
+   for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
-      for (unsigned int j = 0; j < m_VCoast[nCoast].nGetCoastlineSize(); j++)
+      for (int j = 0; j < m_VCoast[nCoast].nGetCoastlineSize(); j++)
       {
          // Get the coords of the grid cell marked as coastline for the coastal landform object
          int 
             nX = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(j)->nGetX(),
             nY = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(j)->nGetY();
 
-         // Store the coastline number and the number of the coastline point in the cell so can get these quickly later
+         // Store the coastline number and the number of the coastline point in the cell so we can get these quickly later
          m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCoast(nCoast);
          m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetPointOnCoast(j);
 
@@ -64,6 +64,8 @@ int CSimulation::nAssignAllCoastalLandforms(void)
             // There is, so create an intervention object on the vector coastline with these attributes
             CACoastLandform* pIntervention = new CRWIntervention(&m_VCoast[nCoast], nCoast, j);
             m_VCoast[nCoast].AppendCoastLandform(pIntervention);
+            
+//             LogStream << j << " [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} " << m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() << " " << m_pRasterGrid->m_Cell[nX][nY].dGetInterventionHeight() << endl;
             
             continue;
          }

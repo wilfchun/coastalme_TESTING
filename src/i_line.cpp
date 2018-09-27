@@ -70,11 +70,11 @@ void CGeomILine::SetYAt(int const n, int const nY)
 
 bool CGeomILine::bIsPresent(int const nX, int const nY)
 {
-   unsigned int nSize = static_cast<unsigned int>(m_VPoints.size());
+   int nSize = static_cast<int>(m_VPoints.size());
    if (nSize == 0)
       return false;
    
-   for (unsigned int n = 0; n < nSize; n++)
+   for (int n = 0; n < nSize; n++)
    {
       if ((nX == m_VPoints[n].nGetX()) && (nY == m_VPoints[n].nGetY()))
          return true;

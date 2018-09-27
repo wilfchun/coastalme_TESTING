@@ -99,7 +99,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
    CalcDepthOfClosure();
 
    // And go through all cells in the RasterGrid array
-   unsigned int nZeroThickness = 0;
+   int nZeroThickness = 0;
    for (int nX = 0; nX < m_nXGridMax; nX++)
    {
       for (int nY = 0; nY < m_nYGridMax; nY++)
@@ -139,7 +139,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
       if (nRet != RTN_OK)
          return nRet;
         
-      /*for (unsigned int n = 0; n < m_VulDeepWaterWaveValuesAtTimestep.size(); n++)
+      /*for (int n = 0; n < m_VulDeepWaterWaveValuesAtTimestep.size(); n++)
       {
          if (m_ulIteration == m_VulDeepWaterWaveValuesAtTimestep[n])
          {

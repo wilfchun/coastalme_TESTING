@@ -30,7 +30,7 @@ using namespace std;
 //======================================================================
 double interpolate( vector<double> xData, vector<double> yData, double x, bool extrapolate )
 {
-   unsigned int size = static_cast<unsigned int>(xData.size());
+   int size = static_cast<int>(xData.size());
 
    int i = 0;                                                                  // find left end of interval for interpolation
    if ( x >= xData[size - 2] )                                                 // special case: beyond right end

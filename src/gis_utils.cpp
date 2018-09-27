@@ -155,8 +155,8 @@ CGeom2DIPoint CSimulation::PtiExtCRSToGrid(CGeom2DPoint const* pPtIn) const
       dY = pPtIn->dGetY();
 
    int
-      nX = nRound((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
-      nY = nRound((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
+      nX = (dX - m_dGeoTransform[0]) / m_dGeoTransform[1],
+      nY = (dY - m_dGeoTransform[3]) / m_dGeoTransform[5];
 
    return CGeom2DIPoint(nX, nY);
 }
@@ -350,7 +350,7 @@ void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, in
             {
                nX1++;
 
-               nY1 = nY0 + nRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
+               nY1 = nY0 + ((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX);
             }
             while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
@@ -366,7 +366,7 @@ void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, in
             {
                nX1--;
 
-               nY1 = nY0 + nRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
+               nY1 = nY0 + ((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX);
             }
             while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
@@ -385,7 +385,7 @@ void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, in
             {
                nY1++;
 
-               nX1 = nX0 + nRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
+               nX1 = nX0 + ((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY);
             }
             while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
@@ -401,7 +401,7 @@ void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, in
             {
                nY1--;
 
-               nX1 = nX0 + nRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
+               nX1 = nX0 + ((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY);
             }
             while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
@@ -464,8 +464,8 @@ CGeom2DIPoint CSimulation::PtiAverage(CGeom2DIPoint const* pPti1, CGeom2DIPoint 
       nPti1Y = pPti1->nGetY(),
       nPti2X = pPti2->nGetX(),
       nPti2Y = pPti2->nGetY(),
-      nPtiAvgX = nRound((nPti1X + nPti2X) / 2.0),
-      nPtiAvgY = nRound((nPti1Y + nPti2Y) / 2.0);
+      nPtiAvgX = (nPti1X + nPti2X) / 2,
+      nPtiAvgY = (nPti1Y + nPti2Y) / 2;
 
    return CGeom2DIPoint(nPtiAvgX, nPtiAvgY);
 }
@@ -486,8 +486,8 @@ CGeom2DIPoint CSimulation::PtiWeightedAverage(CGeom2DIPoint const* pPti1, CGeom2
    double dOtherWeight = 1.0 - dWeight;
 
    int
-      nPtiWeightAvgX = nRound((dWeight * nPti2X) + (dOtherWeight * nPti1X)),
-      nPtiWeightAvgY = nRound((dWeight * nPti2Y) + (dOtherWeight * nPti1Y));
+      nPtiWeightAvgX = (dWeight * nPti2X) + (dOtherWeight * nPti1X),
+      nPtiWeightAvgY = (dWeight * nPti2Y) + (dOtherWeight * nPti1Y);
 
    return CGeom2DIPoint(nPtiWeightAvgX, nPtiWeightAvgY);
 }
@@ -500,7 +500,7 @@ CGeom2DIPoint CSimulation::PtiWeightedAverage(CGeom2DIPoint const* pPti1, CGeom2
 ===============================================================================================================================*/
 CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
 {
-   unsigned int nSize = static_cast<unsigned int>(pVIn->size());
+   int nSize = static_cast<int>(pVIn->size());
    if (nSize == 0)
       return CGeom2DPoint(DBL_NODATA, DBL_NODATA);
 
@@ -508,7 +508,7 @@ CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
       dAvgX = 0,
       dAvgY = 0;
 
-   for (unsigned int n = 0; n < nSize; n++)
+   for (int n = 0; n < nSize; n++)
    {
       dAvgX += pVIn->at(n).dGetX();
       dAvgY += pVIn->at(n).dGetY();
@@ -528,7 +528,7 @@ CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
 ===============================================================================================================================*/
 CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
 {
-   unsigned int nSize = static_cast<unsigned int>(pVIn->size());
+   int nSize = static_cast<int>(pVIn->size());
    if (nSize == 0)
       return CGeom2DIPoint(INT_NODATA, INT_NODATA);
    
@@ -536,7 +536,7 @@ CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
       dAvgX = 0,
       dAvgY = 0;
    
-   for (unsigned int n = 0; n < nSize; n++)
+   for (int n = 0; n < nSize; n++)
    {
       dAvgX += pVIn->at(n).nGetX();
       dAvgY += pVIn->at(n).nGetY();
@@ -545,7 +545,7 @@ CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
    dAvgX /= nSize;
    dAvgY /= nSize;
    
-   return CGeom2DIPoint(nRound(dAvgX), nRound(dAvgY));
+   return CGeom2DIPoint(dAvgX, dAvgY);
 }
 
 
@@ -647,13 +647,13 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(CGeom2DIPoint const* PtiStart, CG
    CGeom2DIPoint EndPti;
    if (nHandedness == RIGHT_HANDED)
    {
-      EndPti.SetX(PtiStart->nGetX() + nRound(dScaleFactor * dYLen));
-      EndPti.SetY(PtiStart->nGetY() - nRound(dScaleFactor * dXLen));
+      EndPti.SetX(PtiStart->nGetX() + (dScaleFactor * dYLen));
+      EndPti.SetY(PtiStart->nGetY() - (dScaleFactor * dXLen));
    }
    else
    {
-      EndPti.SetX(PtiStart->nGetX() - nRound(dScaleFactor * dYLen));
-      EndPti.SetY(PtiStart->nGetY() + nRound(dScaleFactor * dXLen));
+      EndPti.SetX(PtiStart->nGetX() - (dScaleFactor * dYLen));
+      EndPti.SetY(PtiStart->nGetY() + (dScaleFactor * dXLen));
    }
 
    return EndPti;
@@ -685,13 +685,13 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(int const nStartX, int const nSta
    CGeom2DIPoint EndPti;
    if (nHandedness == RIGHT_HANDED)
    {
-      EndPti.SetX(nStartX + nRound(dScaleFactor * dYLen));
-      EndPti.SetY(nStartY - nRound(dScaleFactor * dXLen));
+      EndPti.SetX(nStartX + (dScaleFactor * dYLen));
+      EndPti.SetY(nStartY - (dScaleFactor * dXLen));
    }
    else
    {
-      EndPti.SetX(nStartX - nRound(dScaleFactor * dYLen));
-      EndPti.SetY(nStartY + nRound(dScaleFactor * dXLen));
+      EndPti.SetX(nStartX - (dScaleFactor * dYLen));
+      EndPti.SetY(nStartY + (dScaleFactor * dXLen));
    }
    
    return EndPti;

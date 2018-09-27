@@ -545,7 +545,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       return nRet;
    
 //    // DEBUG CODE =================================================
-//    for (unsigned int n = 0; n < m_VEdgeCell.size(); n++)
+//    for (int n = 0; n < m_VEdgeCell.size(); n++)
 //    {
 //       LogStream << "[" << m_VEdgeCell[n].nGetX() << "][" << m_VEdgeCell[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(m_VEdgeCell[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(m_VEdgeCell[n].nGetY()) << "} " << m_VEdgeCellEdge[n] << endl;
 //    }

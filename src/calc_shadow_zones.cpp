@@ -151,7 +151,7 @@ CGeom2DIPoint CSimulation::PtiFollowWaveOrientation(CGeom2DIPoint const* pPtiLas
 int CSimulation::nDoAllShadowZones(void)
 {
    // Do this once for each coastline
-   for (unsigned int nCoast = 0; nCoast < static_cast<unsigned int>(m_VCoast.size()); nCoast++)
+   for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
       // =========================================================================================================================
       // The first stage: find coastline start points for possible shadow zone boundaries by sweeping the coastline: first down-coast then up-coast
@@ -292,7 +292,7 @@ int CSimulation::nDoAllShadowZones(void)
          VnShadowBoundaryStartCoastPoint, 
          VnShadowBoundaryEndCoastPoint;
       
-      for (unsigned int nStartPoint = 0; nStartPoint < static_cast<unsigned int>(VnPossibleShadowBoundaryCoastPoint.size()); nStartPoint++)
+      for (int nStartPoint = 0; nStartPoint < static_cast<int>(VnPossibleShadowBoundaryCoastPoint.size()); nStartPoint++)
       {
          LogStream << m_ulIteration << ": coast " << nCoast << ", processing possible shadow boundary start point " << nStartPoint << " of " << VnPossibleShadowBoundaryCoastPoint.size() << endl;
 
@@ -514,7 +514,7 @@ int CSimulation::nDoAllShadowZones(void)
                CGeom2DIPoint PtiCoastStart = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(0);
                CGeom2DIPoint PtiCoastEnd = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nCoastSize-1);
                
-               int nDistance = nRound(tMin(dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastStart), dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastEnd)));
+               int nDistance = tMin(dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastStart), dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastEnd));
                
                // Now store the shadow zone boundary information
                VILShadowBoundary.push_back(ILShadowBoundary);         
@@ -537,7 +537,7 @@ int CSimulation::nDoAllShadowZones(void)
       {
          LogStream << m_ulIteration << ": coast " << nCoast << ", processing shadow zone " << nZone << " (" << VILShadowBoundary.size() << " total)" << endl;
          
-         unsigned int nShadowLineLen = VILShadowBoundary[nZone].nGetSize();
+         int nShadowLineLen = VILShadowBoundary[nZone].nGetSize();
          
          // The vector shadow boundary (external CRS)
          CGeomLine LBoundary;
@@ -545,7 +545,7 @@ int CSimulation::nDoAllShadowZones(void)
          // And the same with grid CRS
          CGeomILine LIBoundary;
          
-         for (unsigned int nn = 0; nn < nShadowLineLen; nn++)
+         for (int nn = 0; nn < nShadowLineLen; nn++)
          {
             int
                nTmpX = VILShadowBoundary[nZone][nn].nGetX(),
@@ -571,7 +571,7 @@ int CSimulation::nDoAllShadowZones(void)
          // Store the reversed ext CRS shadow zone boundary
          m_VCoast[nCoast].AppendShadowBoundary(LBoundary);
          
-         unsigned int
+         int
             nStartX = VILShadowBoundary[nZone][0].nGetX(),
             nStartY = VILShadowBoundary[nZone][0].nGetY(),
             nEndX = VILShadowBoundary[nZone][nShadowLineLen-1].nGetX(),
@@ -588,7 +588,7 @@ int CSimulation::nDoAllShadowZones(void)
             // The shadow boundary endpoint is downcoast from the shadow boundary start point
             int
                nStart = tMax(VnShadowBoundaryStartCoastPoint[nZone], 0),
-               nEnd = tMin(VnShadowBoundaryEndCoastPoint[nZone], static_cast<int>(m_VCoast[nCoast].nGetCoastlineSize()));
+               nEnd = tMin(VnShadowBoundaryEndCoastPoint[nZone], m_VCoast[nCoast].nGetCoastlineSize());
             
             for (int nn = nStart; nn < nEnd; nn++)
             {
@@ -601,7 +601,7 @@ int CSimulation::nDoAllShadowZones(void)
          {
             // The shadow boundary endpoint is upcoast from the shadow boundary start point
             int
-               nStart = tMin(VnShadowBoundaryEndCoastPoint[nZone], static_cast<int>(m_VCoast[nCoast].nGetCoastlineSize())-1),
+               nStart = tMin(VnShadowBoundaryEndCoastPoint[nZone], m_VCoast[nCoast].nGetCoastlineSize()-1),
                nEnd = tMax(VnShadowBoundaryStartCoastPoint[nZone], 0);
             
             for (int nn = nStart; nn >= nEnd; nn--)
@@ -981,7 +981,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
       int nAlongCoast;      
       if (bSweepDownCoast)
       {
-         nAlongCoast = nRound(nShadowBoundaryStartPoint + dCoastDistSoFar);
+         nAlongCoast = nShadowBoundaryStartPoint + dCoastDistSoFar;
          
          if (nAlongCoast >= m_VCoast[nCoast].nGetCoastlineSize())
             break;
@@ -991,7 +991,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
       }            
       else
       {
-         nAlongCoast = nRound(nShadowBoundaryStartPoint - dCoastDistSoFar);
+         nAlongCoast = nShadowBoundaryStartPoint - dCoastDistSoFar;
          
          if (nAlongCoast < 0)
             break;
@@ -1000,7 +1000,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
             bPastShadowEnd = true;
       }
          
-      int nAlongDownDriftBoundary = nRound(dDownDriftBoundaryDistSoFar);
+      int nAlongDownDriftBoundary = dDownDriftBoundaryDistSoFar;
          
 //       LogStream << endl << m_ulIteration << ": dCoastDistSoFar = " << dCoastDistSoFar << " (nTotAlongCoastDistanceToDownDriftEndpoint = " << nTotAlongCoastDistanceToDownDriftEndpoint << ") dDownDriftBoundaryDistSoFar = " << dDownDriftBoundaryDistSoFar << " (nTotDownDriftBoundaryDistance = " << nTotDownDriftBoundaryDistance << ")" << endl;
       
@@ -1013,8 +1013,8 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
          nCoastY = pPtiCoast->nGetY();
       
       int
-         nDownDriftX = nRound(dExtCRSXToGridX(LDownDriftBoundary[nAlongDownDriftBoundary].dGetX())),
-         nDownDriftY = nRound(dExtCRSYToGridY(LDownDriftBoundary[nAlongDownDriftBoundary].dGetY()));
+         nDownDriftX = dExtCRSXToGridX(LDownDriftBoundary[nAlongDownDriftBoundary].dGetX()),
+         nDownDriftY = dExtCRSYToGridY(LDownDriftBoundary[nAlongDownDriftBoundary].dGetY());
       
       // Safety check, in case the two points are identical (can happen due to rounding)
       if ((nCoastX == nDownDriftX) && (nCoastY == nDownDriftY))

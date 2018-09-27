@@ -512,7 +512,7 @@ private:
    bool bWriteTSFiles(void);
    int nWriteEndRunDetails(void);
    int nReadShapeFunction(void);
-   int nReadWaveTimeSeries(unsigned int const);
+   int nReadWaveTimeSeries(int const);
    int nReadTideData(void);
    int nSaveProfile(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
    bool bWriteProfileData(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*) const;

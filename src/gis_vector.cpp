@@ -1235,7 +1235,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                
                // Now attach a geometry to the feature object
                CGeomLine LDowndrift = *m_VCoast[i].pGetShadowDowndriftBoundary(j);
-               for (unsigned int nn = 0; nn < LDowndrift.nGetSize(); nn++)
+               for (int nn = 0; nn < LDowndrift.nGetSize(); nn++)
                   OGRls.addPoint(LDowndrift.dGetXAt(nn), LDowndrift.dGetYAt(nn));
                
                pOGRFeature->SetGeometry(&OGRls);

@@ -765,7 +765,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       }
 
       // Now read in the data
-      unsigned int nMissing = 0;
+      int nMissing = 0;
       for (int nY = 0; nY < m_nYGridMax; nY++)
       {
          // Read scanline
@@ -2003,7 +2003,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
 
          // If necessary, scale this value
          if (bScaleOutput)
-            nTmp = nRound(m_lGDALMinCanWrite + (dRangeScale * (nTmp - dDataMin)));
+            nTmp = m_lGDALMinCanWrite + (dRangeScale * (nTmp - dDataMin));
 
          // Write it to the array
          pnRaster[n++] = nTmp;
@@ -2221,7 +2221,7 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
       VdOutX,
       VdOutY;
 
-   unsigned int nPoints = pVnX->size();
+   int nPoints = pVnX->size();
 
    for (int nDirection = 0; nDirection < 2; nDirection++)
    {
@@ -2230,7 +2230,7 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
       double* dY = new double[nPoints];
       double* dZ = new double[nPoints];
 
-      for (unsigned int n = 0; n < nPoints; n++)
+      for (int n = 0; n < nPoints; n++)
       {
          dX[n] = pVnX->at(n);
          dY[n] = pVnY->at(n);
@@ -2428,14 +2428,14 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(void)
 ===============================================================================================================================*/
 int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<bool> const* pVbBreaking)
 {
-   unsigned int nPoints = pVnX->size();
+   int nPoints = pVnX->size();
 
    // It is necessary to transfer the data from the pVnX, pVnY and pVbBreaking vectors into c-style arrays of doubles, because this is what GDALGridCreate wants TODO try doing this earlier, for speed
    double* dX = new double[nPoints];
    double* dY = new double[nPoints];
    double* dZ = new double[nPoints];
 
-   for (unsigned int n = 0; n < nPoints; n++)
+   for (int n = 0; n < nPoints; n++)
    {
       dX[n] = pVnX->at(n);
       dY[n] = pVnY->at(n);
@@ -2569,7 +2569,7 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
 int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
 {
    // Interpolate deep water height and orientation from multiple user-supplied values
-   unsigned int nUserPoints = m_VdDeepWaterWavePointX.size();
+   int nUserPoints = m_VdDeepWaterWavePointX.size();
 
    // Call GDALGridCreate() with the GGA_InverseDistanceToAPower interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0).
    GDALGridInverseDistanceToAPowerOptions options;

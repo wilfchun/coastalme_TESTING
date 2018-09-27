@@ -48,7 +48,7 @@ public:
    
    void Clear(void);
    void Resize(int const);
-   unsigned int nGetSize(void) const;
+   int nGetSize(void) const;
    
    //    void InsertAtFront(double const, double const);
    void Append(CGeom2DPoint const*);

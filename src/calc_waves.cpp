@@ -637,8 +637,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          nNSurge = 1,      // Number of water levels at x = 0 from time = 0
          nOutSize = 0;     // CShore will return the size of the output vectors
       
-      // Set the error flag: this will be changed to 0 within CShore if CShore returns correctly
-      nRet = -1;
+      // Set the error flag: this will be changed within CShore if there is a problem
+      nRet = 0;
       
       int const CSHOREARRAYOUTSIZE = 1000;      
       double dDX = 1;      // Nodal spacing for input bottom geometry         
@@ -660,7 +660,43 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       CShoreWrapper(&nILine, &nIProfl, &nIPerm, &nIOver, &nIWCInt, &nIRoll, &nIWind, &nITide, &nILab, &nNWave, &nNSurge, &dDX, &m_dBreakingWaveHeightDepthRatio, &VdTWave[0], &VdTPIn[0], &VdHrmsIn[0], &VdWangIn[0], &VdTSurg[0], &VdSWLin[0], &nProfileDistXYSize, &VdProfileDistXY[0], &VdProfileZ[0], &VdFPInp[0], &nRet, &nOutSize, &VdXYDistFromCShoreOut[0], &VdFreeSurfaceStdOut[0], &VdSinWaveAngleRadiansOut[0], &VdFractionBreakingWavesOut[0]);
       
       if (nRet != RTN_OK)
-         return nRet;
+      {
+         if (nRet == 1)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore did not reach convergence (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
+         }
+         else if (nRet == 2)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore has DUM <= 0 (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
+         }
+         else if (nRet == 3)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore has large energy gradients at the first node (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
+         }
+         else if (nRet == 4)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore has zero energy at the first node (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
+         }
+         else if (nRet == 5)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore has insufficient water depth (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
+         }
+         else if (nRet == -1)
+         {
+            // Error
+            return RTN_ERR_CSHORE_NEGATIVE_DEPTH;
+         }
+         else
+         {
+            // Error
+            return nRet;
+         }
+      }
       
       if (nOutSize < 2)
       {
@@ -881,7 +917,7 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
    if (nRet == -1)
    {
       // Error, cannot copy infileTemplate
-      LogStream << m_ulIteration << ": " << ERR << "cannot copy " << strFName << " to create CShote input file " << strFName << endl;
+      LogStream << m_ulIteration << ": " << ERR << "cannot copy " << strFName << " to create CShore input file " << strFName << endl;
       return RTN_ERR_CSHORE_FILE_INPUT;
    }
    
@@ -913,7 +949,7 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
    
    OutStream << setw(8) << pVdXdist->size() << "                        -> NBINP" << endl;
    OutStream << setiosflags(ios::fixed) << setprecision(4);
-   for (unsigned int i = 0; i < pVdXdist->size(); i++)
+   for (int i = 0; i < pVdXdist->size(); i++)
       OutStream << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << pVdWaveFriction->at(i) << endl;
    
    return RTN_OK;
@@ -1190,7 +1226,7 @@ void CSimulation::CShoreHermiteSmoothing(int const nOutSize, vector<double> cons
    VdValuesCShoreDeriv[nOutSize-1] = VdValuesCShoreDeriv[nOutSize-2];
 
    // Interpolate the CShore values OK
-   unsigned int nSize = static_cast<unsigned int>(pVdProfileDistXYCME->size());
+   int nSize = static_cast<int>(pVdProfileDistXYCME->size());
    vector<double>
       VdDistXYCopy(pVdProfileDistXYCME->begin(), pVdProfileDistXYCME->end()),
       //dVInter(nSize, 0.),
@@ -1417,7 +1453,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
       m_VCoast[nCoast].SetBreakingWaveHeight(n, dBreakingWaveHeight);
       m_VCoast[nCoast].SetBreakingWaveOrientation(n, dBreakingWaveOrientation);
       m_VCoast[nCoast].SetDepthOfBreaking(n, dBreakingDepth);
-      m_VCoast[nCoast].SetBreakingDistance(n, nRound(dBreakingDist));
+      m_VCoast[nCoast].SetBreakingDistance(n, dBreakingDist);
    }
 }
 
@@ -1793,7 +1829,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
    // Calculate the average d50 for every polygon
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
-      for (unsigned int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
+      for (int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
       {
          CGeomCoastPolygon* pPolygon = m_VCoast[nCoast].pGetPolygon(nPoly);
          int nID = pPolygon->nGetGlobalID();

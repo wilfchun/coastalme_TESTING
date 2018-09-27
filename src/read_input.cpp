@@ -1874,7 +1874,7 @@ bool CSimulation::bReadRunData(void)
             if (m_bOutputProfileData)
             {
                vector<string> VstrTmp = VstrSplit(&strRH, SPACE);
-               for (unsigned int j = 0; j < VstrTmp.size(); j++)
+               for (int j = 0; j < VstrTmp.size(); j++)
                {
                   VstrTmp[j] = strTrim(&VstrTmp[j]);
                   int nTmp = atoi(VstrTmp[j].c_str());
@@ -1894,7 +1894,7 @@ bool CSimulation::bReadRunData(void)
             if (m_bOutputProfileData)
             {
                vector<string> VstrTmp = VstrSplit(&strRH, SPACE);
-               for (unsigned int j = 0; j < VstrTmp.size(); j++)
+               for (int j = 0; j < VstrTmp.size(); j++)
                {
                   VstrTmp[j] = strTrim(&VstrTmp[j]);
                   unsigned long ulTmp = atol(VstrTmp[j].c_str());
@@ -2073,7 +2073,7 @@ int CSimulation::nReadShapeFunction()
 
       // Split the string, and remove whitespace
       vector<string> strTmp = VstrSplit(&strRec, SPACE);
-      for (unsigned int i = 0; i < strTmp.size(); i++)
+      for (int i = 0; i < strTmp.size(); i++)
          strTmp[i] = strTrim(&strTmp[i]);
 
       // Convert to doubles then append the values to the vectors TODO check for floating point validity
@@ -2098,7 +2098,7 @@ int CSimulation::nReadShapeFunction()
    }
 
    // Is the shape funcion well defined? i.e. it must be -ve or 0.0 for all values 
-   for (unsigned int j = 0; j < m_VdErosionPotential.size(); j++ )
+   for (int j = 0; j < m_VdErosionPotential.size(); j++ )
    {
       if (m_VdErosionPotential[j]>0)
       {
@@ -2123,7 +2123,7 @@ int CSimulation::nReadShapeFunction()
  Reads the deep water wave time series and initialize vector to store this time step deep water wave height, orientation, Period
 
 ==============================================================================================================================*/
-int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
+int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
 {
    // Create an ifstream object
    ifstream InStream;
@@ -2140,7 +2140,7 @@ int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
    }
 
    // Opened OK
-   unsigned int 
+   int 
       nExpectedStations = 0, 
       nExpectedTimeSteps = 0, 
       nRead = 0,
@@ -2234,12 +2234,12 @@ int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
             
             // Read in each wave attribute for each time step and station: split the string, and remove whitespace
             vector<string> strTmp = VstrSplit(&strRec, COMMA);
-            for (unsigned int i = 0; i < strTmp.size(); i++)      // strTmp.size() should be 3 x nExpectedStations
+            for (int i = 0; i < strTmp.size(); i++)      // strTmp.size() should be 3 x nExpectedStations
                strTmp[i] = strTrim(&strTmp[i]);
 
             // Convert to doubles then append the values to the vectors TODO check for floating point validity
             int n = 0;
-            for (unsigned int i = 0; i < nExpectedStations; i++)
+            for (int i = 0; i < nExpectedStations; i++)
             {
                m_VdDeepWaterWavePointHeightTS.push_back(strtod(strTmp[n++].c_str(), NULL));
                m_VdDeepWaterWavePointAngleTS.push_back(strtod(strTmp[n++].c_str(), NULL));
@@ -2268,7 +2268,7 @@ int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
    InStream.close();
 
    // Did we read in what we expected?
-   unsigned int nTotExpected = nExpectedStations * nExpectedTimeSteps;
+   int nTotExpected = nExpectedStations * nExpectedTimeSteps;
    if (m_VdDeepWaterWavePointHeightTS.size() != nTotExpected)
    {
       cout << ERR << "read in " << m_VdDeepWaterWavePointHeightTS.size() << " lines from " << m_strDeepWaterWaveValuesFile << " but " << nTotExpected << " values expected" << endl;
@@ -2291,7 +2291,7 @@ int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
    }
 
    // All is OK, so we can now initialize the vectors that will store this time step deep water wave values
-   for (unsigned int j = 0; j < nExpectedStations; j++)
+   for (int j = 0; j < nExpectedStations; j++)
    {
       m_VdDeepWaterWavePointHeight.push_back(DBL_NODATA);
       m_VdDeepWaterWavePointAngle.push_back(DBL_NODATA);
@@ -2299,7 +2299,7 @@ int CSimulation::nReadWaveTimeSeries(unsigned int const nNumberStations)
    }
    
    // Finally, check whether the wave data will 'wrap' i.e. whether the number of timesteps is less than the total number of timesteps in the simulation
-   unsigned int nSimulationTimeSteps = floor(m_dSimDuration / m_dTimeStep);
+   int nSimulationTimeSteps = floor(m_dSimDuration / m_dTimeStep);
    if (nExpectedTimeSteps < nSimulationTimeSteps)
    {
       m_dWaveDataWrapHours = nExpectedTimeSteps * m_dTimeStep;

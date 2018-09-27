@@ -415,7 +415,7 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << setiosflags(ios::fixed) << setprecision(8);
    OutStream << " Erosion potential shape function:" << endl;
    OutStream << "\tDepth over DB\tErosion potential\tFirst derivative of erosion potential" << endl;
-   for (unsigned int i = 0; i < m_VdDepthOverDB.size(); i++)
+   for (int i = 0; i < m_VdDepthOverDB.size(); i++)
       OutStream << "\t" << m_VdDepthOverDB[i] << "\t\t" << m_VdErosionPotential[i] << "\t\t" << m_VdErosionPotentialFirstDeriv[i] << endl;
    OutStream << endl;
 */
@@ -424,11 +424,11 @@ void CSimulation::WriteStartRunDetails(void)
 
    OutStream << " Output profile data?                                      \t: " << (m_bOutputProfileData ? "Y": "N") << endl;
    OutStream << " Profile numbers to be saved                               \t: ";
-   for (unsigned int i = 0; i < m_VnProfileToSave.size(); i++)
+   for (int i = 0; i < m_VnProfileToSave.size(); i++)
       OutStream << m_VnProfileToSave[i] << SPACE;
    OutStream << endl;
    OutStream << " Timesteps when profiles are saved                         \t: ";
-   for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
+   for (int i = 0; i < m_VulProfileTimestep.size(); i++)
       OutStream << m_VulProfileTimestep[i] << SPACE;
    OutStream << endl;
    OutStream << " Output parallel profile data?                             \t: " << (m_bOutputParallelProfileData ? "Y": "N") << endl;
@@ -756,9 +756,9 @@ void CSimulation::WriteLookUpData(void)
 int CSimulation::nSaveProfile(int const nProfile, int const nCoast, int const nProfSize, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    // TODO make this more efficient, also give warnings if no profiles will be output
-   for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
+   for (int i = 0; i < m_VulProfileTimestep.size(); i++)
    {
-      for (unsigned int j = 0; j < m_VnProfileToSave.size(); j++)
+      for (int j = 0; j < m_VnProfileToSave.size(); j++)
       {
          if ((m_ulIteration == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {
@@ -826,9 +826,9 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
 int CSimulation::nSaveParProfile(int const nProfile, int const nCoast, int const nParProfSize, int const nDirection, int const nDistFromProfile, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    // TODO make this more efficient, also give warnings if no profiles will be output
-   for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
+   for (int i = 0; i < m_VulProfileTimestep.size(); i++)
    {
-      for (unsigned int j = 0; j < m_VnProfileToSave.size(); j++)
+      for (int j = 0; j < m_VnProfileToSave.size(); j++)
       {
          if ((m_ulIteration == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {

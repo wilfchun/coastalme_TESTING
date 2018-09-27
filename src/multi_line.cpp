@@ -61,7 +61,7 @@ void CGeomMultiLine::AppendLineSegment(vector<pair<int, int> >* pprVIn)
 //    int nSize = m_prVVLineSegment.size();
 //    if (nSize > 1)
 //    {
-//       for (unsigned int n = 0; n < m_prVVLineSegment[nSize-2].size(); n++)
+//       for (int n = 0; n < m_prVVLineSegment[nSize-2].size(); n++)
 //       {
 //          int
 //             nPrevProfile = m_prVVLineSegment[nSize-2][n].first,
@@ -94,7 +94,7 @@ void CGeomMultiLine::InsertLineSegment(int const nSegment)
 
    // Store the profile numbers that are in this existing vector of pairs, these are the profiles that will be affected by this insertion
    vector<int> nVProfsAffected;
-   for (unsigned int i = 0; i < prVPrev.size(); i++)
+   for (int i = 0; i < prVPrev.size(); i++)
       nVProfsAffected.push_back(prVPrev[i].first);
 
    vector<vector<pair<int, int> > >::iterator it;
@@ -103,11 +103,11 @@ void CGeomMultiLine::InsertLineSegment(int const nSegment)
    m_prVVLineSegment.insert(it+nSegment+1, prVPrev);
 
    // Must now increment the profile's own line seg numbers, but only for those profile numbers which were affected by the insertion. Do this for the new line seg and every line seg after that
-   for (unsigned int m = nSegment+1; m < m_prVVLineSegment.size(); m++)
+   for (int m = nSegment+1; m < m_prVVLineSegment.size(); m++)
    {
-      for (unsigned int n = 0; n < m_prVVLineSegment[m].size(); n++)
+      for (int n = 0; n < m_prVVLineSegment[m].size(); n++)
       {
-         for (unsigned int i = 0; i < nVProfsAffected.size(); i++)
+         for (int i = 0; i < nVProfsAffected.size(); i++)
          {
             if (m_prVVLineSegment[m][n].first == nVProfsAffected[i])
                m_prVVLineSegment[m][n].second++;
@@ -120,7 +120,7 @@ void CGeomMultiLine::InsertLineSegment(int const nSegment)
 vector<vector<pair<int, int> > > CGeomMultiLine::prVVGetAllLineSegAfter(int const nSegment)
 {
    vector<vector<pair<int, int> > > prVTmp;
-   for (unsigned int n = nSegment; n < m_prVVLineSegment.size(); n++)
+   for (int n = nSegment; n < m_prVVLineSegment.size(); n++)
       prVTmp.push_back(m_prVVLineSegment[n]);
 
    return prVTmp;
@@ -136,7 +136,7 @@ void CGeomMultiLine::RemoveLineSegment(int const nSegment)
 //! Appends a coincident profile pair to the CGeomMultiLine object's final line segment
 void CGeomMultiLine::AppendCoincidentProfileToLineSegments(pair<int, int> const prIn)
 {
-   unsigned int nSize = m_prVVLineSegment.size();
+   int nSize = m_prVVLineSegment.size();
    m_prVVLineSegment[nSize-1].push_back(prIn);
 //   m_prVVLineSegment.back().push_back(prIn);
 }
@@ -208,7 +208,7 @@ bool CGeomMultiLine::bFindProfileInCoincidentProfiles(int const nProfile)
 
    for (int i = nSegSize-1; i >= 0; i--)
    {
-      for (unsigned int j = 0; j < m_prVVLineSegment[i].size(); j++)
+      for (int j = 0; j < m_prVVLineSegment[i].size(); j++)
       {
          if (m_prVVLineSegment[i][j].first == nProfile)
          return true;
@@ -230,7 +230,7 @@ void CGeomMultiLine::GetMostCoastwardSharedLineSegment(int const nOtherProfile, 
 
    for (int i = 0; i < nSegSize; i++)
    {
-      for (unsigned int j = 0; j < m_prVVLineSegment[i].size(); j++)
+      for (int j = 0; j < m_prVVLineSegment[i].size(); j++)
       {
          if (m_prVVLineSegment[i][j].first == nOtherProfile)
          {
@@ -270,7 +270,7 @@ int CGeomMultiLine::nFindProfilesLastSeg(int const nProfile) const
    int nSeg = -1;
    for (int i = static_cast<int>(m_prVVLineSegment.size()-1); i >= 0; i--)
    {
-      for (unsigned int j = 0; j < m_prVVLineSegment[i].size(); j++)
+      for (int j = 0; j < m_prVVLineSegment[i].size(); j++)
       {
          if (m_prVVLineSegment[i][j].first == nProfile)
             nSeg = i;

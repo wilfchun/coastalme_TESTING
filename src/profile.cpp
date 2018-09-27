@@ -226,7 +226,7 @@ void CGeomProfile::TruncateProfile(int const nSize)
 
 // void CGeomProfile::ShowProfile(void) const
 // {
-//    for (unsigned int n = 0; n < m_VPoints.size(); n++)
+//    for (int n = 0; n < m_VPoints.size(); n++)
 //    {
 //       cout << n << " [" << m_VPoints[n].dGetX() << "][" << m_VPoints[n].dGetY() << "]" << endl;
 //    }
@@ -279,7 +279,7 @@ bool CGeomProfile::bIsPointInProfile(double const dX, double const dY, int& nPoi
 
 // int CGeomProfile::nFindInsertionLineSeg(double const dInsertX, double const dInsertY)
 // {
-//    for (unsigned int n = 0; n < m_VPoints.back(); n++)
+//    for (int n = 0; n < m_VPoints.back(); n++)
 //    {
 //       double
 //          dThisX = m_VPoints[n].dGetX(),
@@ -425,7 +425,7 @@ int CGeomProfile::nGetCellGivenDepth(CGeomRasterGrid const* pGrid, double const 
 {
    int nIndex = INT_NODATA;      // If not found, i.e. if every profile cell has sea depth less than dDepthIn
    
-   for (unsigned int n = 0; n < m_VCellInProfile.size(); n++)
+   for (int n = 0; n < m_VCellInProfile.size(); n++)
    {
       int
          nX = m_VCellInProfile[n].nGetX(),

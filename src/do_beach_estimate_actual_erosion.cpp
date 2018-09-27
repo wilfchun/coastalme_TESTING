@@ -421,7 +421,7 @@ int CSimulation::nTraversePolygonAndEstimateBeachErosion(int const nCoast, int c
          // We have not been able to reach the target for erosion on this parallel profile. So find the offset that gives us the largest erosion amount
          int nOffsetForLargestPossible = -1;
          double dLargestPossibleErosion = 0;
-         for (unsigned int nn = 0; nn < VdAmountEachOffset.size(); nn++)
+         for (int nn = 0; nn < VdAmountEachOffset.size(); nn++)
          {
             if (VdAmountEachOffset[nn] > dLargestPossibleErosion)
             {

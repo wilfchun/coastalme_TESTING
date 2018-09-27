@@ -119,7 +119,7 @@ int CSimulation::nCreateAllPolygons(void)
                   PtVBoundary.push_back(*m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(i));
 
                // Use the penultimate coastline point as the start point for the point-in-polygon search later, during flood fill
-               unsigned int nPointInPolygonStartPoint = static_cast<unsigned int>(PtVBoundary.size()) - 2;
+               int nPointInPolygonStartPoint = static_cast<int>(PtVBoundary.size()) - 2;
 
                // Append the points in the down-coast normal. Omit the last point of this normal if the the most seaward point of the this normal, and the most seaward point of the up-coast (previous) normal are the same
                int nFinishPoint = nThisProfileEnd;
@@ -256,7 +256,7 @@ void CSimulation::RasterizePolygonJoiningLine(CGeom2DPoint const* pPt1, CGeom2DP
 
       // Safety check
       if (! bIsWithinValidGrid(nX, nY))
-         KeepWithinValidGrid(nRound(dXStart), nRound(dYStart), nX, nY);
+         KeepWithinValidGrid(dXStart, dYStart, nX, nY);
 
       // Mark this point on the raster grid
       m_pRasterGrid->m_Cell[nX][nY].SetPolygonID(m_nGlobalPolygonID);
@@ -279,7 +279,7 @@ void CSimulation::MarkPolygonCells(void)
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
    {
       // Do this for every coastal polygon
-      for (unsigned int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
+      for (int nPoly = 0; nPoly < m_VCoast[nCoast].nGetNumPolygons(); nPoly++)
       {
 //          int nCellsInPolygon = 0;
 //       double dTotDepth = 0;
@@ -491,7 +491,7 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
             }
             
             // Calculate the up-coast boundary share
-            for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
+            for (int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
                dVUpCoastBoundaryShare[n] /= dUpCoastTotBoundaryLen;
             
             // Store in the polygon
@@ -558,7 +558,7 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
             }
             
             // Calculate the down-coast boundary share
-            for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
+            for (int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
                dVDownCoastBoundaryShare[n] /= dDownCoastTotBoundaryLen;
             
             // Store in the polygon
@@ -580,23 +580,23 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
          LogStream << m_ulIteration << ": coast " << nCoast << " polygon " << nPoly << endl;
          
          LogStream << "\tThere are " << nVUpCoastAdjacentPolygon.size() << " UP-COAST adjacent polygon(s) = ";
-         for (unsigned int n = 0; n < nVUpCoastAdjacentPolygon.size(); n++)
+         for (int n = 0; n < nVUpCoastAdjacentPolygon.size(); n++)
             LogStream << nVUpCoastAdjacentPolygon[n] << " ";
          LogStream << endl;
          
          LogStream << "\tThere are " << nVDownCoastAdjacentPolygon.size() << " DOWN-COAST adjacent polygon(s) = ";
-         for (unsigned int n = 0; n < nVDownCoastAdjacentPolygon.size(); n++)
+         for (int n = 0; n < nVDownCoastAdjacentPolygon.size(); n++)
             LogStream << nVDownCoastAdjacentPolygon[n] << " ";
          LogStream << endl;
          
          LogStream << "\tUP-COAST boundary share(s) = ";
-         for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
+         for (int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
             LogStream << dVUpCoastBoundaryShare[n] << " ";
          LogStream << endl;
 //          LogStream << "\tTotal UP-COAST boundary length = " << dUpCoastTotBoundaryLen << endl;
          
          LogStream << "\tDOWN-COAST boundary share(s) = ";
-         for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
+         for (int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
             LogStream << dVDownCoastBoundaryShare[n] << " ";
          LogStream << endl;
 //          LogStream << "\tTotal DOWN-COAST boundary length = " << dDownCoastTotBoundaryLen << endl;
@@ -619,15 +619,15 @@ bool CSimulation::bIsWithinPolygon(CGeom2DPoint const* pPtStart, vector<CGeom2DP
 {
    bool bOddNodes = false;
 
-   unsigned int
-      nPolyCorners = static_cast<unsigned int>(pPtPoints->size()),
+   int
+      nPolyCorners = static_cast<int>(pPtPoints->size()),
       j = nPolyCorners-1;
 
    double
       dX = pPtStart->dGetX(),
       dY = pPtStart->dGetY();
 
-   for (unsigned int i = 0; i < nPolyCorners; i++)
+   for (int i = 0; i < nPolyCorners; i++)
    {
       double
          dCorneriX = pPtPoints->at(i).dGetX(),

@@ -41,11 +41,11 @@ int CSimulation::nCalcExternalForcing(void)
    // Increment SWL (note that increment may be zero)
    m_dAccumulatedSeaLevelChange += m_dDeltaSWLPerTimestep;
 
-   unsigned int nSize = static_cast<unsigned int>(m_VdTideData.size());
+   int nSize = static_cast<int>(m_VdTideData.size());
    if (nSize != 0)
    {
       // We have tide data
-      static unsigned int nTideDataCount = 0;
+      static int nTideDataCount = 0;
 
       // Wrap the tide data, i.e. start again with the first record if we do not have enough
       if (nTideDataCount > nSize-1)
@@ -65,8 +65,8 @@ int CSimulation::nCalcExternalForcing(void)
    if (! m_bSingleDeepWaterWaveValues)
    {
       // We have wave time series data: the number of time steps is total size divided by the number of points
-      unsigned int nWaveTimeSteps = static_cast<unsigned int>(m_VdDeepWaterWavePointHeightTS.size()) / static_cast<unsigned int>(m_VnDeepWaterWavePointID.size());     
-      static unsigned int nWaveDataCount = 0;
+      int nWaveTimeSteps = static_cast<int>(m_VdDeepWaterWavePointHeightTS.size()) / static_cast<int>(m_VnDeepWaterWavePointID.size());     
+      static int nWaveDataCount = 0;
 
        if (nWaveDataCount > nWaveTimeSteps-1)
        {
@@ -75,11 +75,11 @@ int CSimulation::nCalcExternalForcing(void)
        }
       
       // Update this time step deep water wave values: the order on the vector is determined by the points ID i.e. to ensure that stations match with time series
-      unsigned int 
-      nNumberDeepWaterWaveStations = static_cast<unsigned int>(m_VnDeepWaterWavePointID.size()),
+      int 
+      nNumberDeepWaterWaveStations = static_cast<int>(m_VnDeepWaterWavePointID.size()),
          nTot = nNumberDeepWaterWaveStations * nWaveDataCount;
          
-      for (unsigned int j = 0; j < nNumberDeepWaterWaveStations; j++)
+      for (int j = 0; j < nNumberDeepWaterWaveStations; j++)
       {
          m_VdDeepWaterWavePointHeight[j] = m_VdDeepWaterWavePointHeightTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
          m_VdDeepWaterWavePointAngle[j]  = m_VdDeepWaterWavePointAngleTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];

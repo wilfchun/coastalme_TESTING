@@ -71,9 +71,9 @@ int CSimulation::nUpdateGrid(void)
    }
 
    // Go along each coastline and update the grid with landform attributes, ready for next timestep
-   for (unsigned int i = 0; i < static_cast<unsigned int>(m_VCoast.size()); i++)
+   for (int i = 0; i < static_cast<int>(m_VCoast.size()); i++)
    {
-      for (unsigned int j = 0; j < m_VCoast[i].nGetCoastlineSize(); j++)
+      for (int j = 0; j < m_VCoast[i].nGetCoastlineSize(); j++)
       {
          int nRet = nLandformToGrid(i, j);
          if (nRet != RTN_OK)

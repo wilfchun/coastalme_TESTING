@@ -217,8 +217,8 @@ void CSimulation::Rand1Shuffle(int* nArray, int nLen)
    nLen--;
    while (nLen > 0)
    {
-      unsigned int n1 = nGetRand1To(nLen);      // uses Rand1()
-      unsigned int nTmp = nArray[n1];
+      int n1 = nGetRand1To(nLen);      // uses Rand1()
+      int nTmp = nArray[n1];
       nArray[n1] = nArray[nLen];
       nArray[nLen--] = nTmp;
    }

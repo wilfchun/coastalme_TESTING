@@ -141,7 +141,7 @@ void CSimulation::DoCoastCurvature(int const nCoast, int const nHandedness)
    {
       // We have a straight-line coast, so set the point of maximum detailed convexity at the coast mid-point
       nMaxConvexDetailedCoastPoint =
-      nMaxConvexSmoothedCoastPoint = nRound(nCoastSize / 2.0);
+      nMaxConvexSmoothedCoastPoint = nCoastSize / 2;
       
       m_VCoast[nCoast].SetDetailedCurvature(nMaxConvexDetailedCoastPoint, STRAIGHT_COAST_MAX_DETAILED_CURVATURE);
       
