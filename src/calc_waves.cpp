@@ -659,45 +659,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // Call CShore using the argument-passing wrapper
       CShoreWrapper(&nILine, &nIProfl, &nIPerm, &nIOver, &nIWCInt, &nIRoll, &nIWind, &nITide, &nILab, &nNWave, &nNSurge, &dDX, &m_dBreakingWaveHeightDepthRatio, &VdTWave[0], &VdTPIn[0], &VdHrmsIn[0], &VdWangIn[0], &VdTSurg[0], &VdSWLin[0], &nProfileDistXYSize, &VdProfileDistXY[0], &VdProfileZ[0], &VdFPInp[0], &nRet, &nOutSize, &VdXYDistFromCShoreOut[0], &VdFreeSurfaceStdOut[0], &VdSinWaveAngleRadiansOut[0], &VdFractionBreakingWavesOut[0]);
       
-      if (nRet != RTN_OK)
-      {
-         if (nRet == 1)
-         {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore did not reach convergence (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
-         }
-         else if (nRet == 2)
-         {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore has DUM <= 0 (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
-         }
-         else if (nRet == 3)
-         {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore has large energy gradients at the first node (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
-         }
-         else if (nRet == 4)
-         {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore has zero energy at the first node (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
-         }
-         else if (nRet == 5)
-         {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore has insufficient water depth (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << endl;
-         }
-         else if (nRet == -1)
-         {
-            // Error
-            return RTN_ERR_CSHORE_NEGATIVE_DEPTH;
-         }
-         else
-         {
-            // Error
-            return nRet;
-         }
-      }
-      
+      // OK, now check for warnings and errors
       if (nOutSize < 2)
       {
          // CShore sometimes returns only one row of results, which contains data for the seaward point of the profile. This happens when all other (more coastward) points give an invalid result during CShore's calculations. This is a problem. We don't want to abandon the simulation just because of this, so instead we just duplicate the row, so that the profile will later get marked as invalid
@@ -712,6 +674,46 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          // And increase the expected number of rows
          nOutSize++;
       }   
+      
+      if (nRet != RTN_OK)
+      {
+         if (nRet == 1)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore did not reach convergence (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
+         }
+         else if (nRet == 2)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore has DUM <= 0 (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
+         }
+         else if (nRet == 3)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore has large energy gradients at the first node (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
+         }
+         else if (nRet == 4)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore has zero energy at the first node (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
+         }
+         else if (nRet == 5)
+         {
+            // Warning
+            LogStream << m_ulIteration << ": " << WARN << "CShore has insufficient water depth (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
+         }
+         else if (nRet == -1)
+         {
+            // Error
+            return RTN_ERR_CSHORE_NEGATIVE_DEPTH;
+         }
+         else
+         {
+            // Error
+            return nRet;
+         }
+      }
+      
       
       InterpolateCShoreOutput(&VdProfileDistXY, nOutSize, &VdXYDistFromCShoreOut, &VdFreeSurfaceStdOut, &VdSinWaveAngleRadiansOut, &VdFractionBreakingWavesOut, &VdFreeSurfaceStd, &VdSinWaveAngleRadians, &VdFractionBreakingWaves);
       

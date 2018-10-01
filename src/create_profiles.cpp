@@ -24,6 +24,7 @@
 // #include <assert.h>
 
 #include <cmath>
+#include <cfloat>
 
 #include <iostream>
 using std::cout;
@@ -90,7 +91,7 @@ int CSimulation::nCreateAllProfiles(void)
          prVCurvature.push_back(make_pair(nCoastPoint, dCurvature));
       }
 
-      // Sort this pair vector in descending order, so that the most concave points are first
+      // Sort this pair vector in descending order, so that the most concave smoothed-curvature points are first
       sort(prVCurvature.begin(), prVCurvature.end(), bCurvaturePairCompareDescending);
 
       // Create a bool vector to mark coast points which have been searched
@@ -122,15 +123,17 @@ int CSimulation::nCreateAllProfiles(void)
       // Calculate a convexity threshold, which is two standard deviations below the mean: will not create non-cape profiles on coast points with smoothed convexity which exceeds this (i.e. with smoothed curvature values which are less than this threshold)
       double
          dStdCurvature = m_VCoast[nCoast].dGetSmoothCurvatureSTD(),
-         dCoastProfileConvexityThreshold = m_VCoast[nCoast].dGetSmoothCurvatureMean() - (2 * dStdCurvature);
-//          dCoastProfileConvexityThreshold = m_VCoast[nCoast].dGetSmoothCurvatureMean() - dStdCurvature;
+         dCoastProfileSmoothConvexityThreshold = m_VCoast[nCoast].dGetSmoothCurvatureMean() - (2 * dStdCurvature);
+//          dCoastProfileSmoothConvexityThreshold = m_VCoast[nCoast].dGetSmoothCurvatureMean() - dStdCurvature;
 
       // If we have a coast with almost identical curvature everywhere (e.g. a straight line), then set the threshold to a big -ve value, so that convexity at coastline points is ignored
       if (tAbs(dStdCurvature) < TOLERANCE)
-         dCoastProfileConvexityThreshold = -9999;
+         dCoastProfileSmoothConvexityThreshold = -DBL_MAX;
+      
+      LogStream << m_ulIteration << ": convexity threshold = " << dCoastProfileSmoothConvexityThreshold << endl;
 
       // Now create normals on either side of points of maximum smoothed convexity
-      CreateRestOfNormals(nCoast, nProfile, nProfileToNodeSpacing, dCoastProfileConvexityThreshold, &bVCoastPointSearched, &prVCurvature);
+      CreateRestOfNormals(nCoast, nProfile, nProfileToNodeSpacing, dCoastProfileSmoothConvexityThreshold, &bVCoastPointSearched, &prVCurvature);
 
       // Did we fail to create any normal profiles? If so, quit
       if (nProfile < 0)
@@ -291,7 +294,8 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile, in
 
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
-         LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " (intervention cape) created at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
+         
+         LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " (intervention cape) created at coast point " << nThisCapePoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "} (smoothed curvature = " << m_VCoast[nCoast].dGetSmoothCurvature(nThisCapePoint) << ", detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisCapePoint) << ")" << endl;
 
          // Mark points on either side of it
 //          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -348,7 +352,8 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
 
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
-         LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " (natural cape) created at coast point (" << nThisCapePoint << ") [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "}" << endl;
+         
+         LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " (natural cape) created at coast point " << nThisCapePoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "} (smoothed curvature = " << m_VCoast[nCoast].dGetSmoothCurvature(nThisCapePoint) << ", detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisCapePoint) << ")" << endl;
 
          // Mark points on either side of it
          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -371,7 +376,7 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
  Create normal profiles on the rest of the coastline
 
  ===============================================================================================================================*/
-void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const nProfileToNodeSpacing, double const dCoastProfileConvexityThreshold, vector<bool>* bVCoastPointSearched, vector<pair<int, double> > const* prVCurvature)
+void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const nProfileToNodeSpacing, double const dCoastProfileSmoothConvexityThreshold, vector<bool>* bVCoastPointSearched, vector<pair<int, double> > const* prVCurvature)
 {
    int nCoastSize = m_VCoast[nCoast].nGetCoastlineSize();
    
@@ -491,7 +496,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                   break;
 
                // Now check whether the coastline is too convex (a -ve number) here
-               if (m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) <= dCoastProfileConvexityThreshold)
+               if (m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) <= dCoastProfileSmoothConvexityThreshold)
                {
                   // The coastline is too convex here, so try the next point along
                   if (nDirection == DIRECTION_DOWNCOAST)
@@ -499,7 +504,7 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                   else
                      nProfileStartPoint--;
 
-//                   LogStream << m_ulIteration << ": excessive detailed convexity = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << ") at nThisPoint = " << nThisPoint << " when attempting to create nProfile = " << nProfile+1 << ", possible nProfileStartPoint changed to " << nProfileStartPoint << endl;
+//                   LogStream << m_ulIteration << ": excessive detailed convexity = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileSmoothConvexityThreshold << ") at nThisPoint = " << nThisPoint << " when attempting to create nProfile = " << nProfile+1 << ", possible nProfileStartPoint changed to " << nProfileStartPoint << endl;
                   
                   continue;
                }
@@ -509,7 +514,12 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                if (nRet == RTN_OK)
                {
                   // Profile created OK
-                  LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " created at coast point (" << nThisPoint << ") which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << " (convexity threshold = " << dCoastProfileConvexityThreshold << "). Search started from potential node point at coastline point " << nPossibleNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nPossibleNodePoint) << endl;
+                  CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisPoint);
+                  CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisPoint);
+                  
+                  LogStream << m_ulIteration << ": coast " << nCoast << " profile " << nProfile << " created at coast point " << nThisPoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "} (smoothed curvature = " << m_VCoast[nCoast].dGetSmoothCurvature(nThisPoint) << ", detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << ")" << endl;
+                  
+//                   LogStream << "\tSearch started from potential node point at coastline point " << nPossibleNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nPossibleNodePoint) << endl;
                }
                else
                {
@@ -764,7 +774,7 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    pProfile->AppendLineSegment();
    pProfile->AppendCoincidentProfileToLineSegments(make_pair(nProfile, 0));
 
-   LogStream << setiosflags(ios::fixed) << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " created at coastline " << (bCoastStart ? "start" : "end") << ", is from [" << PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] to [" << VPtiNormalPoints.back().nGetX() << "][" << VPtiNormalPoints.back().nGetY() << "]" << endl;
+   LogStream << setiosflags(ios::fixed) << m_ulIteration << ": coast " << nCoast << ", profile " << nProfile << " created at coast " << (bCoastStart ? "start" : "end") << " point " << (bCoastStart ? 0 : nCoastSize -1) << ", from [" << PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiProfileStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiProfileStart.nGetY()) << "} to [" << VPtiNormalPoints.back().nGetX() << "][" << VPtiNormalPoints.back().nGetY() << "] = {" << dGridCentroidXToExtCRSX(VPtiNormalPoints.back().nGetX()) << ", " << dGridCentroidYToExtCRSY(VPtiNormalPoints.back().nGetY()) << "}" << endl;
 
    return RTN_OK;
 }
@@ -1484,7 +1494,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                if (std::find(VnOtherProfileOK.begin(), VnOtherProfileOK.end(), nHitProfile) == VnOtherProfileOK.end())
                {                  
                   // Not found, so it must be the first time we've encountered this 'other' profile
-                  LogStream << "VVVV Profile " << nProfile << " touches profile " << nHitProfile << endl;                  
+//                   LogStream << "VVVV Profile " << nProfile << " touches profile " << nHitProfile << endl;                  
                   VnOtherProfileOK.push_back(nHitProfile);
 
                   // TODO Bodge in case we hit a profile which belongs to a different coast
@@ -1541,7 +1551,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                if (std::find(VnOtherProfileOK.begin(), VnOtherProfileOK.end(), nHitProfile) == VnOtherProfileOK.end())
                {                     
                   // Not found, so it must be the first time we've encountered this 'other' profile
-                  LogStream << "VVVV Profile " << nProfile << " touches profile " << nHitProfile << " diagonally" << endl;                  
+//                   LogStream << "VVVV Profile " << nProfile << " touches profile " << nHitProfile << " diagonally" << endl;                  
                   VnOtherProfileOK.push_back(nHitProfile);
                   
                   // TODO Bodge in case we hit a profile which belongs to a different coast

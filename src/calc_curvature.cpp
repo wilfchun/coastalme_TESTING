@@ -22,6 +22,8 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
+#include <cfloat>
+
 #include <iostream>
 using std::endl;
 
@@ -114,8 +116,8 @@ void CSimulation::DoCoastCurvature(int const nCoast, int const nHandedness)
       nMaxConvexSmoothedCoastPoint = -1,
       nMaxConvexDetailedCoastPoint = -1;
    double 
-      dMaxConvexDetailed = 999,
-      dMaxConvexSmoothed = 999;
+      dMaxConvexDetailed = DBL_MAX,
+      dMaxConvexSmoothed = DBL_MAX;
    for (int mm = 0; mm < nCoastSize; mm++)
    {
 //       CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(mm);
