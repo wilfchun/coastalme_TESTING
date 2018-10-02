@@ -1033,8 +1033,8 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                pOGRFeature->SetGeometry(&OGRPt);
 
                double
-                  dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulIteration,
-                  dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() / m_ulIteration;
+                  dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIteration),
+                  dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() / static_cast<double>(m_ulIteration);
 
                if ((dHeight == DBL_NODATA) || (dOrientation == DBL_NODATA))
                   continue;

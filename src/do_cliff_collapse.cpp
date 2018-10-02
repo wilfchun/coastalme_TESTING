@@ -360,7 +360,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
    for (int n = 0; n < m_nCliffDepositionPlanviewWidth; n++)
    {
       nVWidthDistSigned[n] = nSigned++;
-      nVProfileLength[n] = m_dCliffDepositionPlanviewLength;
+      nVProfileLength[n] = nRound(m_dCliffDepositionPlanviewLength);
       dVToDepositPerProfile[n] = (dTotSandToDeposit + dTotCoarseToDeposit) / m_nCliffDepositionPlanviewWidth;
    }
 
@@ -502,7 +502,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
             return RTN_ERR_LINETOGRID;
          }
 
-         int nRasterProfileLength = VCellsUnderProfile.size();
+         int nRasterProfileLength = static_cast<int>(VCellsUnderProfile.size());
          vector<double> dVProfileNow(nRasterProfileLength, 0);
          vector<bool> bVProfileValid(nRasterProfileLength, true);
 //         LogStream << "RASTER PROFILE LENGTH = " << nRasterProfileLength << endl;
@@ -847,7 +847,7 @@ int CSimulation::nRasterizeCliffCollapseProfile(vector<CGeom2DPoint> const* pVPo
 
       // Make sure the interpolated point is within the raster grid (can get this kind of problem due to rounding)
       if (! bIsWithinValidGrid(nX, nY))
-         KeepWithinValidGrid(dXStart, dYStart, nX, nY);
+         KeepWithinValidGrid(nRound(dXStart), nRound(dYStart), nX, nY);
 
       // This point is fine, so append it to the output vector
       pVIPointsOut->push_back(CGeom2DIPoint(nX, nY));         // In raster-grid co-ordinates

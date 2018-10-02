@@ -2559,7 +2559,7 @@ void CSimulation::AppendEnsureNoGap(vector<CGeom2DIPoint>* pVPtiPoints, CGeom2DI
 
       for (int n = 1; n < nDiff; n++)
       {
-         CGeom2DIPoint Pti(nXLast + (n * dXInc), nYLast + (n * dYInc));
+         CGeom2DIPoint Pti(nXLast + nRound(n * dXInc), nYLast + nRound(n * dYInc));
          pVPtiPoints->push_back(Pti);
       }
    }

@@ -436,7 +436,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
 
       ConstructParallelProfile(nProfileStartX, nProfileStartY, nParCoastX, nParCoastY, nProfSize, pProfile->pPtiVGetCellsInProfile(), &PtiVGridParProfile, &PtVExtCRSParProfile);
 
-      int const nParProfSize = PtiVGridParProfile.size();
+      int const nParProfSize = static_cast<int>(PtiVGridParProfile.size());
       // We have a parallel profile which starts at the coast, but is it long enough to be useful? May have been cut short because it extended outside the grid, or we hit an adjacent profile
       if (nParProfSize < 3)
       {
@@ -938,14 +938,14 @@ bool CSimulation::bCreateErosionPotentialLookUp(vector<double> *VdDepthOverDBIn,
       m_VdErosionPotential.push_back(0);              // This will hold the corresponding value of erosion potential for each sample point
    }
 
-   int nSize = VdDepthOverDB.size();
+   int nSize = static_cast<int>(VdDepthOverDB.size());
    vector<double>
    VdDeriv(nSize, 0),         // First derivative at the sample points: calculated by the spline function but not subsequently used
            VdDeriv2(nSize, 0.),       // Second derivative at the sample points, ditto
            VdDeriv3(nSize, 0.);       // Third derivative at the sample points, ditto
 
    // Calculate the value of erosion potential (is a -ve value) for each of the sample values of DepthOverDB, and store it for use in the look-up function
-   hermite_cubic_spline_value(VdDepthOverDBIn->size(), &(VdDepthOverDBIn->at(0)), &(VdErosionPotentialIn->at(0)), &(VdErosionPotentialFirstDerivIn->at(0)), nSize, &(VdDepthOverDB[0]), &(m_VdErosionPotential[0]), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
+   hermite_cubic_spline_value(static_cast<int>(VdDepthOverDBIn->size()), &(VdDepthOverDBIn->at(0)), &(VdErosionPotentialIn->at(0)), &(VdErosionPotentialFirstDerivIn->at(0)), nSize, &(VdDepthOverDB[0]), &(m_VdErosionPotential[0]), &(VdDeriv[0]), &(VdDeriv2[0]), &(VdDeriv3[0]));
 
    // Tidy the erosion potential look-up data: cut off values (after the first) for which erosion potential is no longer -ve
    int nLastVal = -1;

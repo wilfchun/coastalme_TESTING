@@ -31,7 +31,7 @@ int nNearestNeighbourIndex(vector<double> const* pVdX, double const dValue)
       dNewDist = dDist;
    int nIdx = 0;
 
-   for (int i = 0; i < pVdX->size(); ++i) 
+   for (unsigned int i = 0; i < pVdX->size(); ++i) 
    {
       dNewDist = tAbs(dValue - pVdX->at(i));
       if (dNewDist <= dDist) 
@@ -49,14 +49,15 @@ vector<double> VdInterp1(vector<double> const* pVdX, vector<double> const* pVdY,
 {
    vector<double> VdY_new;
    double dX, dY;
-   int x_max_idx = pVdX->size() - 1;
-   int x_new_size = pVdX_new->size();
+   unsigned int 
+      x_max_idx = static_cast<unsigned int>(pVdX->size()) - 1,
+      x_new_size = static_cast<unsigned int>(pVdX_new->size());
 
    VdY_new.reserve(x_new_size);
 
-   for (int i = 0; i < x_new_size; ++i)
+   for (unsigned int i = 0; i < x_new_size; ++i)
    {
-      int idx = nNearestNeighbourIndex(pVdX, pVdX_new->at(i));
+      unsigned int idx = nNearestNeighbourIndex(pVdX, pVdX_new->at(i));
 
       if (pVdX->at(idx) > pVdX_new->at(i))
       {

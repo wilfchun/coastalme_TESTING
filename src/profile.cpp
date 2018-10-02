@@ -234,7 +234,7 @@ void CGeomProfile::TruncateProfile(int const nSize)
 
 int CGeomProfile::nGetProfileSize(void) const
 {
-   return m_VPoints.size();
+   return static_cast<int>(m_VPoints.size());
 }
 
 CGeom2DPoint* CGeomProfile::pPtGetPointInProfile(int const n)
@@ -270,7 +270,7 @@ bool CGeomProfile::bIsPointInProfile(double const dX, double const dY, int& nPoi
    if (it != m_VPoints.end())
    {
       // Found, so return true and set nPoint to be the index of the point which was found
-      nPoint = it - m_VPoints.begin();
+      nPoint = static_cast<int>(it - m_VPoints.begin());
       return true;
    }
    else
@@ -396,7 +396,7 @@ CGeom2DIPoint* CGeomProfile::pPtiGetCellInProfile(int const n)
 int CGeomProfile::nGetNumCellsInProfile(void) const
 {
    // In grid CRS
-   return m_VCellInProfile.size();
+   return static_cast<int>(m_VCellInProfile.size());
 }
 
 
@@ -425,7 +425,7 @@ int CGeomProfile::nGetCellGivenDepth(CGeomRasterGrid const* pGrid, double const 
 {
    int nIndex = INT_NODATA;      // If not found, i.e. if every profile cell has sea depth less than dDepthIn
    
-   for (int n = 0; n < m_VCellInProfile.size(); n++)
+   for (unsigned int n = 0; n < m_VCellInProfile.size(); n++)
    {
       int
          nX = m_VCellInProfile[n].nGetX(),

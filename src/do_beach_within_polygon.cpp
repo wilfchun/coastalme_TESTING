@@ -253,7 +253,7 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
             }
          }
          
-         nParProfLen = VPtiParProfile.size();
+         nParProfLen = static_cast <int>(VPtiParProfile.size());
          
          if (nParProfLen < MIN_PAR_PROFILE_SIZE)
          {
@@ -394,7 +394,7 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
          // We have not been able to reach the target for erosion on this parallel profile. So find the offset that gives us the largest erosion amount
          int nOffsetForLargestPossible = -1;
          double dLargestPossibleErosion = 0;
-         for (int nn = 0; nn < VdAmountEachOffset.size(); nn++)
+         for (unsigned int nn = 0; nn < VdAmountEachOffset.size(); nn++)
          {
             if (VdAmountEachOffset[nn] > dLargestPossibleErosion)
             {
@@ -918,7 +918,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
          // Solve for dA so that the existing elevations at the end of the parallel profile, and at the end of a Dean equilibrium profile on that part-normal, are the same
          double dParProfA = (dParProfStartElev - dParProfEndElev) /  pow(dParProfDeanLen, DEAN_POWER);
 
-         nParProfLen = PtiVParProfile.size();
+         nParProfLen = static_cast<int>(PtiVParProfile.size());
          VdParProfileDeanElev.resize(nParProfLen, 0);
 
 //          for (int m = 0; m < static_cast<int>(PtiVParProfile.size()); m++)
@@ -1034,7 +1034,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
          dCoarseRatio = 1 - dSandRatio;
 //       assert(dRatio >= 0);
 
-      for (int nSeawardFromCoast = 0; nSeawardFromCoast < PtiVParProfile.size(); nSeawardFromCoast++)
+      for (unsigned int nSeawardFromCoast = 0; nSeawardFromCoast < PtiVParProfile.size(); nSeawardFromCoast++)
       {
          // Don't bother with tiny amounts
          if (dSandToDepositOnPoly < SEDIMENT_ELEV_TOLERANCE)
@@ -1380,7 +1380,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
             // Solve for dA so that the existing elevations at the end of the parallel profile, and at the end of a Dean equilibrium profile on that part-normal, are the same
             double dParProfA = (dParProfStartElev - dParProfEndElev) /  pow(dParProfDeanLen, DEAN_POWER);
 
-            nParProfLen = PtiVParProfile.size();
+            nParProfLen = static_cast<int>(PtiVParProfile.size());
             VdParProfileDeanElev.resize(nParProfLen, 0);
 
             double dInc = dParProfDeanLen / (nParProfLen - nSeawardOffset - 2);
@@ -1492,7 +1492,7 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
             dCoarseRatio = 1 - dSandRatio;
 
 
-         for (int nSeawardFromCoast = 0; nSeawardFromCoast < PtiVParProfile.size(); nSeawardFromCoast++)
+         for (unsigned int nSeawardFromCoast = 0; nSeawardFromCoast < PtiVParProfile.size(); nSeawardFromCoast++)
          {
             // Don't bother with tiny amounts
             if (dSandToDepositOnPoly < SEDIMENT_ELEV_TOLERANCE)

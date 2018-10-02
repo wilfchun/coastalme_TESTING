@@ -82,7 +82,7 @@ int CSimulation::nLocateSeaAndCoasts(void)
 void CSimulation::FindAllSeaCells(void)
 {
    // Go along the list of edge cells
-   for (int n = 0; n < m_VEdgeCell.size(); n++)
+   for (unsigned int n = 0; n < m_VEdgeCell.size(); n++)
    {
       if (m_bOmitSearchNorthEdge && m_VEdgeCellEdge[n] == NORTH)
          continue;
@@ -206,7 +206,7 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
 int CSimulation::nTraceAllCoasts(void)
 {
    // Go along the list of edge cells
-   for (int n = 0; n < m_VEdgeCell.size()-1; n++)
+   for (unsigned int n = 0; n < m_VEdgeCell.size()-1; n++)
    {
       if (m_bOmitSearchNorthEdge && (m_VEdgeCellEdge[n] == NORTH || m_VEdgeCellEdge[n+1] == NORTH))
          continue;
@@ -792,7 +792,7 @@ int CSimulation::nTraceCoastLine(int const nStartSearchDirection, int const nHan
    // Create a new coastline object and append to it the vector of coastline objects
    CRWCoast CoastTmp;
    m_VCoast.push_back(CoastTmp);
-   int nCoast = m_VCoast.size()-1;
+   int nCoast = static_cast<int>(m_VCoast.size())-1;
 
    // Set the coastline (Ext CRS)
    m_VCoast[nCoast].SetCoastlineExtCRS(&LTempExtCRS);

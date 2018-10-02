@@ -561,7 +561,7 @@ private:
    int nCreateAllProfiles(void);
    void CreateNaturalCapeNormals(int const, int&, int const, vector<bool>*, vector<pair<int, double> > const*);
    void CreateRestOfNormals(int const, int&, int const, double const, vector<bool>*, vector<pair<int, double> > const*);
-   void CreateInterventionProfiles(int const, int&, int const);
+   void CreateInterventionProfiles(int const, int& /*, int const*/);
    int nCreateProfile(int const, int const, int&);
    int nCreateGridEdgeProfile(bool const, int const, int&);
    int nPutAllProfilesOntoGrid(void);

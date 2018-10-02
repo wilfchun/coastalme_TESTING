@@ -46,10 +46,10 @@ CRWCoast::CRWCoast(void)
 
 CRWCoast::~CRWCoast(void)
 {
-   for (int i = 0; i < m_pVLandforms.size(); i++)
+   for (unsigned int i = 0; i < m_pVLandforms.size(); i++)
       delete m_pVLandforms[i];
 
-   for (int i = 0; i < m_pVPolygon.size(); i++)
+   for (unsigned int i = 0; i < m_pVPolygon.size(); i++)
       delete m_pVPolygon[i];
 }
 
@@ -405,10 +405,10 @@ int CRWCoast::nGetProfileFromAlongCoastProfileIndex(int const n) const
 int CRWCoast::nGetDownCoastProfileNumber(int const nProfile) const
 {
    // Return the number of the profile which is adjacent to and down-coast from the specified profile. It returns INT_NODATA if there is no valid up-coast profile
-   for (int n = 0; n < m_VnProfileCoastIndex.size()-1; n++)
+   for (unsigned int n = 0; n < m_VnProfileCoastIndex.size()-1; n++)
    {
       if (nProfile == m_VnProfileCoastIndex[n])
-         return m_VnProfileCoastIndex[n + 1];
+         return m_VnProfileCoastIndex[n+1];
    }
    
    // At end of m_VnProfileCoastIndex, so no down-coast profile
@@ -557,7 +557,7 @@ void CRWCoast::AppendCoastLandform(CACoastLandform* pCoastLandform)
 
 CACoastLandform* CRWCoast::pGetCoastLandform(int const nCoastPoint)
 {
-   if (nCoastPoint < m_pVLandforms.size())
+   if (nCoastPoint < static_cast<int>(m_pVLandforms.size()))
       return m_pVLandforms[nCoastPoint];
    
    return NULL;

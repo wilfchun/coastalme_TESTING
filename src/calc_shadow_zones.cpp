@@ -514,7 +514,7 @@ int CSimulation::nDoAllShadowZones(void)
                CGeom2DIPoint PtiCoastStart = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(0);
                CGeom2DIPoint PtiCoastEnd = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nCoastSize-1);
                
-               int nDistance = tMin(dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastStart), dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastEnd));
+               int nDistance = nRound(tMin(dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastStart), dGetDistanceBetween(&ILShadowBoundary.Back(), &PtiCoastEnd)));
                
                // Now store the shadow zone boundary information
                VILShadowBoundary.push_back(ILShadowBoundary);         
@@ -981,7 +981,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
       int nAlongCoast;      
       if (bSweepDownCoast)
       {
-         nAlongCoast = nShadowBoundaryStartPoint + dCoastDistSoFar;
+         nAlongCoast = nShadowBoundaryStartPoint + nRound(dCoastDistSoFar);
          
          if (nAlongCoast >= m_VCoast[nCoast].nGetCoastlineSize())
             break;
@@ -991,7 +991,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
       }            
       else
       {
-         nAlongCoast = nShadowBoundaryStartPoint - dCoastDistSoFar;
+         nAlongCoast = nShadowBoundaryStartPoint - nRound(dCoastDistSoFar);
          
          if (nAlongCoast < 0)
             break;
@@ -1000,7 +1000,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
             bPastShadowEnd = true;
       }
          
-      int nAlongDownDriftBoundary = dDownDriftBoundaryDistSoFar;
+      int nAlongDownDriftBoundary = nRound(dDownDriftBoundaryDistSoFar);
          
 //       LogStream << endl << m_ulIteration << ": dCoastDistSoFar = " << dCoastDistSoFar << " (nTotAlongCoastDistanceToDownDriftEndpoint = " << nTotAlongCoastDistanceToDownDriftEndpoint << ") dDownDriftBoundaryDistSoFar = " << dDownDriftBoundaryDistSoFar << " (nTotDownDriftBoundaryDistance = " << nTotDownDriftBoundaryDistance << ")" << endl;
       
@@ -1013,8 +1013,8 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
          nCoastY = pPtiCoast->nGetY();
       
       int
-         nDownDriftX = dExtCRSXToGridX(LDownDriftBoundary[nAlongDownDriftBoundary].dGetX()),
-         nDownDriftY = dExtCRSYToGridY(LDownDriftBoundary[nAlongDownDriftBoundary].dGetY());
+         nDownDriftX = nRound(dExtCRSXToGridX(LDownDriftBoundary[nAlongDownDriftBoundary].dGetX())),
+         nDownDriftY = nRound(dExtCRSYToGridY(LDownDriftBoundary[nAlongDownDriftBoundary].dGetY()));
       
       // Safety check, in case the two points are identical (can happen due to rounding)
       if ((nCoastX == nDownDriftX) && (nCoastY == nDownDriftY))

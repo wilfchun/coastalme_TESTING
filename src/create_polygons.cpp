@@ -256,7 +256,7 @@ void CSimulation::RasterizePolygonJoiningLine(CGeom2DPoint const* pPt1, CGeom2DP
 
       // Safety check
       if (! bIsWithinValidGrid(nX, nY))
-         KeepWithinValidGrid(dXStart, dYStart, nX, nY);
+         KeepWithinValidGrid(nRound(dXStart), nRound(dYStart), nX, nY);
 
       // Mark this point on the raster grid
       m_pRasterGrid->m_Cell[nX][nY].SetPolygonID(m_nGlobalPolygonID);
@@ -491,7 +491,7 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
             }
             
             // Calculate the up-coast boundary share
-            for (int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
+            for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
                dVUpCoastBoundaryShare[n] /= dUpCoastTotBoundaryLen;
             
             // Store in the polygon
@@ -558,7 +558,7 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
             }
             
             // Calculate the down-coast boundary share
-            for (int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
+            for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
                dVDownCoastBoundaryShare[n] /= dDownCoastTotBoundaryLen;
             
             // Store in the polygon
@@ -580,23 +580,23 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
          LogStream << m_ulIteration << ": coast " << nCoast << " polygon " << nPoly << endl;
          
          LogStream << "\tThere are " << nVUpCoastAdjacentPolygon.size() << " UP-COAST adjacent polygon(s) = ";
-         for (int n = 0; n < nVUpCoastAdjacentPolygon.size(); n++)
+         for (unsigned int n = 0; n < nVUpCoastAdjacentPolygon.size(); n++)
             LogStream << nVUpCoastAdjacentPolygon[n] << " ";
          LogStream << endl;
          
          LogStream << "\tThere are " << nVDownCoastAdjacentPolygon.size() << " DOWN-COAST adjacent polygon(s) = ";
-         for (int n = 0; n < nVDownCoastAdjacentPolygon.size(); n++)
+         for (unsigned int n = 0; n < nVDownCoastAdjacentPolygon.size(); n++)
             LogStream << nVDownCoastAdjacentPolygon[n] << " ";
          LogStream << endl;
          
          LogStream << "\tUP-COAST boundary share(s) = ";
-         for (int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
+         for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
             LogStream << dVUpCoastBoundaryShare[n] << " ";
          LogStream << endl;
 //          LogStream << "\tTotal UP-COAST boundary length = " << dUpCoastTotBoundaryLen << endl;
          
          LogStream << "\tDOWN-COAST boundary share(s) = ";
-         for (int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
+         for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
             LogStream << dVDownCoastBoundaryShare[n] << " ";
          LogStream << endl;
 //          LogStream << "\tTotal DOWN-COAST boundary length = " << dDownCoastTotBoundaryLen << endl;

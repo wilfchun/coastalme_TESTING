@@ -662,7 +662,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // OK, now check for warnings and errors
       if (nOutSize < 2)
       {
-         // CShore sometimes returns only one row of results, which contains data for the seaward point of the profile. This happens when all other (more coastward) points give an invalid result during CShore's calculations. This is a problem. We don't want to abandon the simulation just because of this, so instead we just duplicate the row, so that the profile will later get marked as invalid
+         // CShore sometimes returns only one row of results, which contains data only for the seaward point of the profile. This happens when all other (more coastward) points give an invalid result during CShore's calculations. This is a problem. We don't want to abandon the simulation just because of this, so instead we just duplicate the row
          LogStream << m_ulIteration << ": " << WARN << "for coast " << nCoast << " profile " << nProfile << ", only " << nOutSize << " CShore output row" << endl;
          
          // Duplicate the data
@@ -704,7 +704,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          }
          else if (nRet == -1)
          {
-            // Error
+            // Error TODO Is it possible to recover from this?
             return RTN_ERR_CSHORE_NEGATIVE_DEPTH;
          }
          else
@@ -875,7 +875,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    // Update wave attributes along the coastline object. Wave height at the coast is always calculated (i.e. whether or not waves are breaking)
    
    //cout << "Wave Height at the coast is " << VdWaveHeight[0] << endl;
-      m_VCoast[nCoast].SetCoastWaveHeight(nCoastPoint, VdWaveHeight[0]);
+   m_VCoast[nCoast].SetCoastWaveHeight(nCoastPoint, VdWaveHeight[0]);
    
    if (nProfileBreakingDist > 0)
    {
@@ -1455,7 +1455,7 @@ void CSimulation::InterpolateWavePropertiesToCoastline(int const nCoast, int con
       m_VCoast[nCoast].SetBreakingWaveHeight(n, dBreakingWaveHeight);
       m_VCoast[nCoast].SetBreakingWaveOrientation(n, dBreakingWaveOrientation);
       m_VCoast[nCoast].SetDepthOfBreaking(n, dBreakingDepth);
-      m_VCoast[nCoast].SetBreakingDistance(n, dBreakingDist);
+      m_VCoast[nCoast].SetBreakingDistance(n, nRound(dBreakingDist));
    }
 }
 

@@ -557,7 +557,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    else
    {
       // The user specified a profile spacing, is this too small?
-      m_nCoastNormalAvgSpacing = m_dCoastNormalAvgSpacing / m_dCellSide;
+      m_nCoastNormalAvgSpacing = nRound(m_dCoastNormalAvgSpacing / m_dCellSide);
 
       if (m_nCoastNormalAvgSpacing < MIN_PROFILE_SPACING)
       {
@@ -659,7 +659,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          return (nRet);
       
       // Read in time series values and initialize vector to store this time step deep water wave height, orientation and period
-      nRet = nReadWaveTimeSeries(m_VnDeepWaterWavePointID.size());
+      nRet = nReadWaveTimeSeries(static_cast<int>(m_VnDeepWaterWavePointID.size()));
       if (nRet != RTN_OK)
          return (nRet);
    }
@@ -700,7 +700,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 
    // Misc initialization calcs
    m_nCoastMax = COAST_LENGTH_MAX * tMax(m_nXGridMax, m_nYGridMax);                                        // Arbitrary but probably OK
-   m_nCoastMin = COAST_LENGTH_MIN_X_PROF_SPACE * m_dCoastNormalAvgSpacing / m_dCellSide;                   // Ditto
+   m_nCoastMin = nRound(COAST_LENGTH_MIN_X_PROF_SPACE * m_dCoastNormalAvgSpacing / m_dCellSide);           // Ditto
    m_nCoastCurvatureInterval = tMax(nRound(m_dCoastNormalAvgSpacing / (m_dCellSide * 2)), 2);              // Ditto
 
    // For beach erosion/deposition, conversion from immersed weight to bulk volumetric (sand and voids) transport rate (Leo Van Rijn)

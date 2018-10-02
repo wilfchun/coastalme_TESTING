@@ -734,7 +734,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       {
          // This is an integer layer
          CPLPushErrorHandler(CPLQuietErrorHandler);                        // Needed to get next line to fail silently, if it fails
-         nMissingValue = pGDALBand->GetNoDataValue();                      // Note will fail for some formats
+         nMissingValue = static_cast<int>(pGDALBand->GetNoDataValue());    // Note will fail for some formats
          CPLPopErrorHandler();
 
          if (nMissingValue != m_nMissingValue)
@@ -784,7 +784,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (LANDFORM_RASTER):
                {
                   // Initial Landform Class GIS data, is integer TODO Do we also need a landform sub-category input?
-                  int nTmp = pfScanline[nX];
+                  int nTmp = static_cast<int>(pfScanline[nX]);
                   if (! bDoubleIsValid(nTmp))              // Deal with any NaN values
                      nTmp = m_nMissingValue;
 
@@ -801,7 +801,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                case (INTERVENTION_CLASS_RASTER):
                {
                   // Intervention class, is integer
-                  int nTmp = pfScanline[nX];
+                  int nTmp = static_cast<int>(pfScanline[nX]);
                   if (! bDoubleIsValid(nTmp))              // Deal with any NaN values
                      nTmp = m_nMissingValue;
 
@@ -1294,13 +1294,13 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
       double
          dDataRange = dDataMax - dDataMin,
-         dWriteRange = m_lGDALMaxCanWrite - m_lGDALMinCanWrite;
+         dWriteRange = static_cast<double>(m_lGDALMaxCanWrite - m_lGDALMinCanWrite);
 
       if (dDataRange > 0)
          dRangeScale = dWriteRange / dDataRange;
 
       // If we are attempting to write values which are outside this format's allowable range, and the user has set the option, then scale the output
-      if (((dDataMin < m_lGDALMinCanWrite) || (dDataMax > m_lGDALMaxCanWrite)) && m_bScaleRasterOutput)
+      if (((dDataMin < static_cast<double>(m_lGDALMinCanWrite)) || (dDataMax > static_cast<double>(m_lGDALMaxCanWrite))) && m_bScaleRasterOutput)
          bScaleOutput = true;
    }
 
@@ -1345,7 +1345,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (RASTER_PLOT_AVG_SEA_DEPTH):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / m_ulIteration;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / static_cast<double>(m_ulIteration);
                break;
             }
 
@@ -1360,7 +1360,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (RASTER_PLOT_AVG_WAVE_HEIGHT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / m_ulIteration;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_ulIteration);
                break;
             }
 
@@ -1375,7 +1375,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             
             case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / m_ulIteration;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIteration);
                break;
             }
             
@@ -1459,7 +1459,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
             case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / m_ulIteration;
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / static_cast<double>(m_ulIteration);
                break;
             }
 
@@ -1573,11 +1573,11 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             if (dTmp == DBL_NODATA)
                dTmp = 0;         // TODO Improve this
             else
-               dTmp = dRound(m_lGDALMinCanWrite + (dRangeScale * (dTmp - dDataMin)));
+               dTmp = dRound(static_cast<double>(m_lGDALMinCanWrite) + (dRangeScale * (dTmp - dDataMin)));
          }
             
          // Write this value to the array
-         pfRaster[n++] = dTmp;
+         pfRaster[n++] = static_cast<float>(dTmp);
       }
    }
 
@@ -1881,13 +1881,13 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
 
       double
          dDataRange = dDataMax - dDataMin,
-         dWriteRange = m_lGDALMaxCanWrite - m_lGDALMinCanWrite;
+         dWriteRange = static_cast<double>(m_lGDALMaxCanWrite - m_lGDALMinCanWrite);
 
       if (dDataRange > 0)
          dRangeScale = dWriteRange / dDataRange;
 
       // If we are attempting to write values which are outside this format's allowable range, and the user has set the option, then scale the output
-      if (((dDataMin < m_lGDALMinCanWrite) || (dDataMax > m_lGDALMaxCanWrite)) && m_bScaleRasterOutput)
+      if (((dDataMin < static_cast<double>(m_lGDALMinCanWrite)) || (dDataMax > static_cast<double>(m_lGDALMaxCanWrite))) && m_bScaleRasterOutput)
          bScaleOutput = true;
    }
 
@@ -2003,7 +2003,7 @@ bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotT
 
          // If necessary, scale this value
          if (bScaleOutput)
-            nTmp = m_lGDALMinCanWrite + (dRangeScale * (nTmp - dDataMin));
+            nTmp = nRound(static_cast<double>(m_lGDALMinCanWrite) + (dRangeScale * (nTmp - dDataMin)));
 
          // Write it to the array
          pnRaster[n++] = nTmp;
@@ -2221,7 +2221,7 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
       VdOutX,
       VdOutY;
 
-   int nPoints = pVnX->size();
+   unsigned int nPoints = static_cast<unsigned int>(pVnX->size());
 
    for (int nDirection = 0; nDirection < 2; nDirection++)
    {
@@ -2230,7 +2230,7 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> cons
       double* dY = new double[nPoints];
       double* dZ = new double[nPoints];
 
-      for (int n = 0; n < nPoints; n++)
+      for (unsigned int n = 0; n < nPoints; n++)
       {
          dX[n] = pVnX->at(n);
          dY[n] = pVnY->at(n);
@@ -2428,14 +2428,14 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(void)
 ===============================================================================================================================*/
 int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<bool> const* pVbBreaking)
 {
-   int nPoints = pVnX->size();
+   unsigned int nPoints = static_cast<unsigned int>(pVnX->size());
 
    // It is necessary to transfer the data from the pVnX, pVnY and pVbBreaking vectors into c-style arrays of doubles, because this is what GDALGridCreate wants TODO try doing this earlier, for speed
    double* dX = new double[nPoints];
    double* dY = new double[nPoints];
    double* dZ = new double[nPoints];
 
-   for (int n = 0; n < nPoints; n++)
+   for (unsigned int n = 0; n < nPoints; n++)
    {
       dX[n] = pVnX->at(n);
       dY[n] = pVnY->at(n);
@@ -2569,7 +2569,7 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
 int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
 {
    // Interpolate deep water height and orientation from multiple user-supplied values
-   int nUserPoints = m_VdDeepWaterWavePointX.size();
+   unsigned int nUserPoints = static_cast<unsigned int>(m_VdDeepWaterWavePointX.size());
 
    // Call GDALGridCreate() with the GGA_InverseDistanceToAPower interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0).
    GDALGridInverseDistanceToAPowerOptions options;
