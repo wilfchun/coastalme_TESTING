@@ -650,7 +650,7 @@ private:
    static double dGetDistanceBetween(CGeom2DPoint const*, CGeom2DPoint const*);
    static double dGetDistanceBetween(CGeom2DIPoint const*, CGeom2DIPoint const*);
    static double dTriangleAreax2(CGeom2DPoint const*, CGeom2DPoint const*, CGeom2DPoint const*);
-   void KeepWithinValidGrid(int const, int const, int&, int&) const;
+   void KeepWithinValidGrid(int, int, int&, int&) const;
    void KeepWithinValidGrid(CGeom2DIPoint const*, CGeom2DIPoint*) const;
    static double dKeepWithin360(double const);
 //    vector<CGeom2DPoint> VGetPerpendicular(CGeom2DPoint const*, CGeom2DPoint const*, double const, int const);

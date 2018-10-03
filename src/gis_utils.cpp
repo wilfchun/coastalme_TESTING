@@ -254,13 +254,25 @@ void CSimulation::KeepWithinValidGrid(CGeom2DIPoint const* Pti0, CGeom2DIPoint* 
 
 /*==============================================================================================================================
 
- Given two points in the grid CRS (the first point asumed to be within the valid part of the raster grid, and the points assumed not to be coincident), this routine modifies the value of the second point so that it is on a line joining the original points and is a valid cell within the raster grid
+ Given two points in the grid CRS (the points assumed not to be coincident), this routine modifies the value of the second point so that it is on a line joining the original two points and is a valid cell within the raster grid
 
  However in some cases (e.g. if the first point is at the edge of the valid part of the raster grid) then the second cell will be coincident with the first cell, and the line joining them is thus of zero length. The calling routine has to be able to handle this
 
 ===============================================================================================================================*/
-void CSimulation::KeepWithinValidGrid(int const nX0, int const nY0, int& nX1, int& nY1) const
+void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) const
 {
+   // Safety check: make sure that the first point is within the valid grid
+   if (nX0 >= m_nXGridMax)
+      nX0 = m_nXGridMax-1;
+   else if (nX0 < 0)
+      nX0 = 0;
+   
+   if (nY0 >= m_nYGridMax)
+      nY0 = m_nYGridMax-1;
+   else if (nY0 < 0)
+      nY0 = 0;
+   
+   // OK let's go
    int
       nDiffX = nX0 - nX1,
       nDiffY = nY0 - nY1;
