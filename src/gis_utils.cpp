@@ -155,9 +155,11 @@ CGeom2DIPoint CSimulation::PtiExtCRSToGrid(CGeom2DPoint const* pPtIn) const
       dY = pPtIn->dGetY();
 
    int
-      nX = nRound((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
-      nY = nRound((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
-
+//       nX = nRound((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
+//       nY = nRound((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
+      nX = static_cast<int>((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
+      nY = static_cast<int>((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
+      
    return CGeom2DIPoint(nX, nY);
 }
 

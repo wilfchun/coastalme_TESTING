@@ -103,7 +103,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    LogStream << "    \tID    \tID   \t\td50" << endl;
    for (unsigned int n = 0; n < m_pVCoastPolygon.size(); n++)
    {
-      LogStream << n << "\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << m_pVCoastPolygon[n]->dGetAvgUnconsD50() << "\t\t\t";
+      LogStream << n << "\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << m_pVCoastPolygon[n]->dGetAvgUnconsD50() << "\t\t";
       for (int m = 0; m < m_pVCoastPolygon[n]->nGetNumUpCoastAdjacentPolygons(); m++)
       {
          if (! m_pVCoastPolygon[n]->bDownCoastThisTimestep())
@@ -122,7 +122,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
    LogStream << "Num \tGlobal\tCoast\t\tPotential\tActual\t\tFine\t\t\tSand\t\t\tCoarse" << endl;
    LogStream << "    \tID    \tID   \t\tErosion\t\tDeposition\tDeposition\tDeposition\tDeposition" << endl;
    for (unsigned int n = 0; n < m_pVCoastPolygon.size(); n++)
-      LogStream << n << "\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << -m_pVCoastPolygon[n]->dGetDeltaPotentialErosion() * m_dCellArea << "\t\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() * m_dCellArea << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine() * m_dCellArea <<  "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand() * m_dCellArea << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse() * m_dCellArea << endl;
+      LogStream << n << "\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << -m_pVCoastPolygon[n]->dGetDeltaPotentialErosion() * m_dCellArea << "\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() * m_dCellArea << "\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine() * m_dCellArea <<  "\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand() * m_dCellArea << "\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse() * m_dCellArea << endl;
    LogStream << endl;
 
    // OK, we know the potential (unconstrained) depth of erosion on each polygon, but we do not yet know the actual, supply-limited, depth. Nor do we know how much of the sediment which is to be removed is fine, sand or coarse. So next we estimate supply-limited sediment removal from each polygon, however we don't actually erode the polygon
@@ -178,7 +178,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
       dCheckCoarseDeposition = 0;
    for (unsigned int n = 0; n < m_pVCoastPolygon.size(); n++)
    {
-      LogStream << n << "\t\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << (m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsFine() + m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsSand() + m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsCoarse()) * m_dCellArea << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsFine() * m_dCellArea <<  "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsSand() * m_dCellArea <<  "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsCoarse() * m_dCellArea << endl;
+      LogStream << n << "\t\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << (m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsFine() + m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsSand() + m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsCoarse()) * m_dCellArea << "\t\t" << m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsFine() * m_dCellArea <<  "\t\t" << m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsSand() * m_dCellArea <<  "\t\t" << m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsCoarse() * m_dCellArea << endl;
 
       if ((m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsFine() + m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsSand() + m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsCoarse()) < 0)
          dCheckTotErosion += (m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsFine() + m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsSand() + m_pVCoastPolygon[n]->dGetDeltaEstimatedUnconsCoarse());
@@ -306,7 +306,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
 
    for (unsigned int n = 0; n < m_pVCoastPolygon.size(); n++)
    {
-      LogStream << n << "\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() * m_dCellArea << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine() * m_dCellArea <<  "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand() * m_dCellArea << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse() * m_dCellArea << endl;
+      LogStream << n << "\t\t" << m_pVCoastPolygon[n]->nGetGlobalID() << "\t\t\t" << m_pVCoastPolygon[n]->nGetCoastID() << "\t\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() * m_dCellArea << "\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsFine() * m_dCellArea <<  "\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsSand() * m_dCellArea << "\t\t" << m_pVCoastPolygon[n]->dGetDeltaActualUnconsCoarse() * m_dCellArea << endl;
 
       if (m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment() > 0)
          dCheckActualDeposition += m_pVCoastPolygon[n]->dGetDeltaActualTotalSediment();

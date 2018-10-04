@@ -48,6 +48,8 @@ using std::setiosflags;
 ===============================================================================================================================*/
 int CSimulation::nDoAllShorePlatFormErosion(void)
 {
+   // TODO Only do potential erosion if cell is in a polygon
+   
    static bool bForward = true;
 
    // Do this for each coast
@@ -472,6 +474,15 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
          {
             // It isn't so move along, nothing to do here
 //             LogStream << m_ulIteration << " : [" << nXPar << "][" << nYPar << "] is not inundated" << endl;
+            continue;
+         }
+         
+         // DFM TEST Is this cell in a polygon?
+         int nPolyID = m_pRasterGrid->m_Cell[nXPar][nYPar].nGetPolygonID();
+         if (nPolyID == INT_NODATA)
+         {
+            // It isn't so move along, nothing to do here
+            LogStream << m_ulIteration << " : [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " << dGridCentroidYToExtCRSY(nYPar) << "} is not in a polygon" << endl;
             continue;
          }
 
