@@ -477,12 +477,12 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
             continue;
          }
          
-         // DFM TEST Is this cell in a polygon?
+         // Is this cell in a polygon?
          int nPolyID = m_pRasterGrid->m_Cell[nXPar][nYPar].nGetPolygonID();
          if (nPolyID == INT_NODATA)
          {
-            // It isn't so move along, nothing to do here
-            LogStream << m_ulIteration << " : [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " << dGridCentroidYToExtCRSY(nYPar) << "} is not in a polygon" << endl;
+            // It isn't. This can happen at the seaward end of polygons TODO Is it a problem?
+//             LogStream << m_ulIteration << " : [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " << dGridCentroidYToExtCRSY(nYPar) << "} is not in a polygon" << endl;
             continue;
          }
 

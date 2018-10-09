@@ -554,7 +554,7 @@ private:
    // Lower-level simulation routines
    void FindAllSeaCells(void);
    void FloodFillSea(int const, int const);
-   int nTraceCoastLine(int const, int const, int const, int const);
+   int nTraceCoastLine(unsigned int const, int const, int const, vector<bool>*, vector<CGeom2DIPoint> const*);
    int nTraceAllCoasts(void);
    void DoCoastCurvature(int const, int const);
    int nCreateAllProfilesAndCheckForIntersection(void);

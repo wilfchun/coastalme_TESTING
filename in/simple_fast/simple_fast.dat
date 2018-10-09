@@ -23,9 +23,9 @@
 ; Run information -----------------------------------------------------------------------------------------------------
 Main output/log file names                              [omit path and extension]: simple
 
-#Duration of simulation                               [hours, days, months, years]: 30 days
-#Timestep (hours or days)                                                         : 6 hours
-#Save times                                           [hours, days, months, years]: 6 12 24 42 100 200 300 462 500 600  hours
+Duration of simulation                               [hours, days, months, years]: 30 days
+Timestep (hours or days)                                                         : 6 hours
+Save times                                           [hours, days, months, years]: 6 12 24 42 100 200 300 462 500 600  hours
 
 #Duration of simulation                               [hours, days, months, years]: 60 days
 #Timestep (hours or days)                                                         : 6 hours
@@ -35,9 +35,9 @@ Main output/log file names                              [omit path and extension
 #Timestep (hours or days)                                                         : 6 hours
 #Save times                                           [hours, days, months, years]: 1 10 20 30 40 50 60 70 80 90 days
 
-Duration of simulation                                [hours, days, months, years]: 365 days
-Timestep (hours or days)                                                          : 6 hours
-Save times                                            [hours, days, months, years]: 1.75 5 10 25 50 100 150 200 250 300 days
+#Duration of simulation                                [hours, days, months, years]: 365 days
+#Timestep (hours or days)                                                          : 6 hours
+#Save times                                            [hours, days, months, years]: 1.75 5 10 25 50 100 150 200 250 300 days
 
 
 Random number seed(s)                                                             : 280764
@@ -90,7 +90,7 @@ Density of sea water (kg/m3)                                                    
 Initial still water level (m), or per-timestep SWL file                                      : 29
 Final still water level (m)                                     [blank = same as initial SWL]:
 
-Deep water wave height (m)                                         [value or point shapefile]: 1.5
+Deep water wave height (m)                                         [value or point shapefile]: 3
 Deep water wave height time series         [omit if deep water wave height is a single value]:
 Deep water wave orientation (degrees)         [omit if deep water wave height from shapefile]: 230        ; 225 270 355 200 265 310 190 340
 Wave period (sec)                             [omit if deep water wave height from shapefile]: 10

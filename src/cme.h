@@ -374,7 +374,7 @@ int const      RTN_ERR_NO_PROFILES_1                  = 29;
 int const      RTN_ERR_NO_PROFILES_2                  = 30;
 int const      RTN_ERR_NOSEACELLS                     = 31;
 int const      RTN_ERR_GRIDTOLINE                     = 32;
-int const      RTN_ERR_FINDCOAST                      = 33;
+int const      RTN_ERR_TRACECOAST                     = 33;
 int const      RTN_ERR_NOCOAST                        = 34;
 int const      RTN_ERR_MASSBALANCE                    = 35;
 int const      RTN_ERR_PROFILEWRITE                   = 36;
@@ -463,7 +463,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 4 October 2018";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 9 October 2018";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 

@@ -88,7 +88,7 @@ Density of sea water (kg/m3)                                               : 102
 Initial still water level (m), or per-timestep SWL file                    : 28
 Final still water level (m)                   [blank = same as initial SWL]:
 
-Deep water wave height (m)                                         [value or point shapefile]: 2
+Deep water wave height (m)                                         [value or point shapefile]: 3
 Deep water wave height time series         [omit if deep water wave height is a single value]:
 Deep water wave orientation (degrees)         [omit if deep water wave height from shapefile]: 235   ; 349 193 225 270 355 200 265 310 190 340
 Wave period (sec)                             [omit if deep water wave height from shapefile]: 10
@@ -128,8 +128,8 @@ Resistance to erosion of cliff (m^(9/4)s^(3/2))                                 
 Notch overhang to initiate collapse (m)                                    : 0.5
 Notch base below still water level (m)                                     : 0.3
 Scale parameter A for cliff deposition (m^(1/3))                 [0 = auto]: 0         ; For a 0.2 mm D50, will be 0.1
-Planview width of cliff deposition talus (in cells)           [must be odd]: 11        ; was 5 7
-Planview length of cliff deposition talus (m)                              : 50        ; was 30 15
+Planview width of cliff deposition talus (in cells)           [must be odd]: 15        ; WAS 11 5 7
+Planview length of cliff deposition talus (m)                              : 70        ; WAS 50 30 15
 Height of landward talus end, as fraction of cliff elevation               : 0.1
 
 ; Other data -----------------------------------------------------------------------------------------------------------

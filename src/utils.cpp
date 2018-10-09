@@ -2072,8 +2072,8 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_GRIDTOLINE:
       strErr = "error when searching grid for linear feature";
       break;
-   case RTN_ERR_FINDCOAST:
-      strErr = "error finding coastline on grid";
+   case RTN_ERR_TRACECOAST:
+      strErr = "error tracing coastline on grid";
       break;
    case RTN_ERR_NOCOAST:
       strErr = "no coastlines found. Is the SWL correct?";
@@ -2160,7 +2160,7 @@ string CSimulation::strGetErrorText(int const nErr)
       strErr = "reading CShore output file";
       break;
    case RTN_ERR_CSHORE_NEGATIVE_DEPTH:
-      strErr = "CShore internal error";
+      strErr = "CShore calculated -ve depth";
       break;
    case RTN_ERR_WAVE_INTERPOLATION_LOOKUP:
       strErr = "during wave interpolation lookup";
