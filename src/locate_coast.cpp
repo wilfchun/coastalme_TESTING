@@ -200,7 +200,7 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
 
 /*===============================================================================================================================
 
- Locates coastline start points on the edges of the raster grid, and trace the vector coastline(s) from these start points. The vector coastlines are then smoothed
+ Locates all the potential coastline start points on the edges of the raster grid, then traces vector coastline(s) from these start points
 
 ===============================================================================================================================*/
 int CSimulation::nTraceAllCoasts(void)
@@ -245,7 +245,7 @@ int CSimulation::nTraceAllCoasts(void)
          {
             // It has not, so flag it
             m_pRasterGrid->m_Cell[nXThis][nYThis].SetPossibleCoastStartCell();
-            LogStream << "Flagging [" << nXThis << "][" << nYThis << "] = {" << dGridCentroidXToExtCRSX(nXThis) << ", " << dGridCentroidYToExtCRSY(nYThis ) << "} as possible coast start cell LEFT_HANDED EDGE" << endl;
+            LogStream << m_ulIteration << ": flagging [" << nXThis << "][" << nYThis << "] = {" << dGridCentroidXToExtCRSX(nXThis) << ", " << dGridCentroidYToExtCRSY(nYThis ) << "} as possible coast start cell. with left_handed edge" << endl;
             
             // And save it
             V2DIPossibleStartCell.push_back(CGeom2DIPoint(nXThis, nYThis));  
@@ -261,7 +261,7 @@ int CSimulation::nTraceAllCoasts(void)
          {
             // It has not, so flag it
             m_pRasterGrid->m_Cell[nXNext][nYNext].SetPossibleCoastStartCell();
-            LogStream << "Flagging [" << nXNext << "][" << nYNext << "] = {" << dGridCentroidXToExtCRSX(nXNext) << ", " << dGridCentroidYToExtCRSY(nYNext) << "} as possible coast start cell RIGHT_HANDED EDGE" << endl;
+            LogStream << m_ulIteration << ": flagging [" << nXNext << "][" << nYNext << "] = {" << dGridCentroidXToExtCRSX(nXNext) << ", " << dGridCentroidYToExtCRSY(nYNext) << "} as possible coast start cell, with right_handed edge" << endl;
             
             // And save it
             V2DIPossibleStartCell.push_back(CGeom2DIPoint(nXNext, nYNext));       
@@ -301,7 +301,7 @@ int CSimulation::nTraceAllCoasts(void)
 
 /*==============================================================================================================================
 
- Traces the coastline (which is defined to be just above still water level) on the grid using the 'wall follower' rule for maze traversal (http://en.wikipedia.org/wiki/Maze_solving_algorithm#Wall_follower)
+ Traces a coastline (which is defined to be just above still water level) on the grid using the 'wall follower' rule for maze traversal (http://en.wikipedia.org/wiki/Maze_solving_algorithm#Wall_follower). The vector coastlines are then smoothed
 
 ===============================================================================================================================*/
 int CSimulation::nTraceCoastLine(unsigned int const nTraceFromStartCellIndex, int const nStartSearchDirection, int const nHandedness, vector<bool>* pVbTraced, vector<CGeom2DIPoint> const* pV2DIPossibleStartCell)
@@ -391,7 +391,7 @@ int CSimulation::nTraceCoastLine(unsigned int const nTraceFromStartCellIndex, in
                
                if (bAtCoast && (nX == pV2DIPossibleStartCell->at(nn).nGetX()) && (nY == pV2DIPossibleStartCell->at(nn).nGetY()))
                {
-                  LogStream << "Valid coastline: trace from [" << nStartX << "][" << nStartY << "] hit another start cell at [" << nX << "][" << nY << "]" << endl;
+                  LogStream << m_ulIteration << ": valid coastline found, traced from [" << nStartX << "][" << nStartY << "] and hit another start cell at [" << nX << "][" << nY << "]" << endl;
 
                   pVbTraced->at(nn) = true;
                   bHitStartCell = true;                  
