@@ -251,7 +251,7 @@ private:
       m_dAllCellsDeepWaterWaveOrientation,
       m_dAllCellsDeepWaterWavePeriod,
       m_dMaxUserInputWaveHeight,
-      m_dMaxUserInputWavePeriod,       // Used to constrain depth of closure 
+      m_dMaxUserInputWavePeriod,       // Used to constrain depth of closure
       m_dR,
       m_dD50Fine,
       m_dD50Sand,
@@ -435,7 +435,7 @@ private:
    vector<unsigned long>
       m_VulProfileTimestep,
       m_VulDeepWaterWaveValuesAtTimestep;  // Calculate deep water wave values at these timesteps
-      
+
    vector<double>
       m_VdSliceElev,
       m_VdErosionPotential,            // For erosion potential lookup
@@ -450,7 +450,7 @@ private:
       m_VdDeepWaterWavePointHeightTS,    // Time series Wave height at deep water wave points
       m_VdDeepWaterWavePointAngleTS,     // Time series Wave orientation at deep water wave points
       m_VdDeepWaterWavePointPeriodTS,    // Time series Wave period at deep water wave points
-      
+
       m_VdTideData;                    // Tide data: one record per timestep, is the change (m) from still water level for that timestep
 
    vector<string>
@@ -602,7 +602,7 @@ private:
    void CalcD50AndFillWaveCalcHoles(void);
    int nDoAllShadowZones(void);
    static bool bOnOrOffShoreAndUpOrDownCoast(double const, double const, int const, bool&);
-   static CGeom2DIPoint PtiFollowWaveOrientation(CGeom2DIPoint const*, double const, double&);   
+   static CGeom2DIPoint PtiFollowWaveOrientation(CGeom2DIPoint const*, double const, double&);
    int nFindAllShadowZones(void);
    int nFloodFillShadowZone(int const, CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
    int nDoShadowZoneAndDownDriftZone(int const, int const, int const, int const);
@@ -646,7 +646,7 @@ private:
    CGeom2DIPoint PtiExtCRSToGrid(CGeom2DPoint const*) const;
    CGeom2DPoint PtGridCentroidToExt(CGeom2DIPoint const*) const;
    double dExtCRSXToGridX(double const) const;
-   double dExtCRSYToGridY(double const) const;   
+   double dExtCRSYToGridY(double const) const;
    static double dGetDistanceBetween(CGeom2DPoint const*, CGeom2DPoint const*);
    static double dGetDistanceBetween(CGeom2DIPoint const*, CGeom2DIPoint const*);
    static double dTriangleAreax2(CGeom2DPoint const*, CGeom2DPoint const*, CGeom2DPoint const*);
@@ -733,7 +733,7 @@ private:
    static double dGetStdDev(vector<double> const*);
    static void AppendEnsureNoGap(vector<CGeom2DIPoint>*, CGeom2DIPoint const*);
    static bool bIsNumeric(string const*);
-   double dConstrainFieldWidthForShapefile(double const);
+   static double dConstrainFieldWidthForShapefile(double const);
 
    // Random number stuff
    static unsigned long ulGetTausworthe(unsigned long const, unsigned long const, unsigned long const, unsigned long const, unsigned long const);

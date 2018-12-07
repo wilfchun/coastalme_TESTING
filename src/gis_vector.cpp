@@ -54,7 +54,7 @@ using std::stringstream;
       nNeedGeometry = 0;
    double
       dMaxVal = DBL_MIN,
-      dMaxPeriodVAl = DBL_MIN; 
+      dMaxPeriodVAl = DBL_MIN;
    string
       strGISFile,
       strDriverCode,
@@ -214,11 +214,11 @@ using std::stringstream;
                // Store the wave height for this point, will use it in the spatial interpolation routine later
                double dWaveHeight = pOGRFeature->GetFieldAsDouble(nFieldIndex);
                m_VdDeepWaterWavePointHeight.push_back(dWaveHeight);
-               
+
                // TODO this is too simple CHECK WITH ANDRES
                if (dWaveHeight > dMaxVal)
-                  dMaxVal = dWaveHeight;               
-	       
+                  dMaxVal = dWaveHeight;
+
 	       // Second get the wave orientation
                nFieldIndex = pOGRFeatureDefn->GetFieldIndex(DEEP_WATER_WAVE_VALUES_ANGLE.c_str());
                if (nFieldIndex == -1)
@@ -244,11 +244,11 @@ using std::stringstream;
                // Store the wave orientation for this point, will use it in the spatial interpolation routine later
                double dWavePeriod = pOGRFeature->GetFieldAsDouble(nFieldIndex);
                m_VdDeepWaterWavePointPeriod.push_back(dWavePeriod);
-	       
+
 	       // Save the maximun user input Wave Period
                if (dWavePeriod > dMaxPeriodVAl)
-                  dMaxPeriodVAl = dWavePeriod;        
-	       
+                  dMaxPeriodVAl = dWavePeriod;
+
                break;
 
                // TODO others
@@ -265,7 +265,7 @@ using std::stringstream;
       case (DEEP_WATER_WAVE_VALUES_VEC):
          m_dMaxUserInputWaveHeight = dMaxVal;
 	 m_dMaxUserInputWavePeriod = dMaxPeriodVAl;
-         
+
          m_strOGRDWWVDriverCode = pOGRDataSource->GetDriverName();
          m_strOGRDWWVDataType   = "double";
          m_strOGRDWWVGeometry   = strGeometry;
@@ -567,20 +567,20 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
          strFilePathName.append(VECTOR_SHADOW_BOUNDARY_NAME);
          break;
       }
-      
+
       case (VECTOR_PLOT_DOWNDRIFT_BOUNDARY):
       {
          strFilePathName.append(VECTOR_DOWNDRIFT_BOUNDARY_NAME);
          break;
       }
-      
+
       case (VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT):
       {
          strFilePathName.append(VECTOR_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_NAME);
          break;
       }
    }
-   
+
    // Append the 'save number' to the filename, and prepend zeros to the save number
    strFilePathName.append("_");
    stringstream ststrTmp;
@@ -612,21 +612,20 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
 
    // Create a spatial reference object
    OGRSpatialReference OGRSpatialRef;
-   
+
    // And tell it about the co-ordinate system used by the basement raster layer
-   char* pszWkt = const_cast<char*>(m_strGDALBasementDEMProjection.c_str());
-   OGRSpatialRef.importFromWkt(&pszWkt);
+   OGRSpatialRef.importFromWkt(m_strGDALBasementDEMProjection.c_str());
 
    OGRwkbGeometryType eGType = wkbUnknown;
-   string strType = "unknown"; 
-   
+   string strType = "unknown";
+
    // Now create the output layer
    OGRLayer* pOGRLayer = pGDALDataSet->CreateLayer(strFilePathNameNoExt.c_str(), &OGRSpatialRef, eGType, m_papszGDALVectorOptions);
    if (pOGRLayer == NULL)
    {
       cerr << ERR << "cannot create '" << strType << "' layer in " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
       return false;
-   }   
+   }
 
    switch (nDataItem)
    {
@@ -1205,12 +1204,12 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
 
          break;
       }
-      
+
       case (VECTOR_PLOT_DOWNDRIFT_BOUNDARY):
       {
          eGType = wkbLineString;
          strType = "line";
-         
+
          // Create an integer-numbered value (the number of the downdrift boundary line object) for the multi-line
          string strFieldValue1 = "DdriftLine";
          OGRFieldDefn OGRField1(strFieldValue1.c_str(), OFTInteger);
@@ -1219,53 +1218,53 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
             cerr << ERR << "cannot create " << strType << " attribute field 1 '" << strFieldValue1 << "' in " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
             return false;
          }
-         
+
          // OK, now do features
          OGRLineString OGRls;
-         
+
          for (int i = 0; i < static_cast<int>(m_VCoast.size()); i++)
          {
             for (int j = 0; j < m_VCoast[i].nGetNumShadowDowndriftBoundaries(); j++)
             {
                // Create a feature object, one per coast
                OGRFeature* pOGRFeature = OGRFeature::CreateFeature(pOGRLayer->GetLayerDefn());
-               
+
                // Set the feature's attribute (the downdrift boundary line number)
                pOGRFeature->SetField(strFieldValue1.c_str(), j);
-               
+
                // Now attach a geometry to the feature object
                CGeomLine LDowndrift = *m_VCoast[i].pGetShadowDowndriftBoundary(j);
                for (int nn = 0; nn < LDowndrift.nGetSize(); nn++)
                   OGRls.addPoint(LDowndrift.dGetXAt(nn), LDowndrift.dGetYAt(nn));
-               
+
                pOGRFeature->SetGeometry(&OGRls);
-               
+
                // Create the feature in the output layer
                if (pOGRLayer->CreateFeature(pOGRFeature) != OGRERR_NONE)
                {
                   cerr << ERR << "cannot create  " << strType << " feature " << strPlotTitle << j << " for coast " << i << " in " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
                   return false;
                }
-               
+
                // Tidy up: empty the line string and get rid of the feature object
                OGRls.empty();
                OGRFeature::DestroyFeature(pOGRFeature);
             }
          }
-         
+
          break;
       }
-      
+
       case (VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT):
       {
          eGType = wkbPoint;
          strType = "point";
-         
+
          // The layer has been created, so create real-numbered values associated with each point
          string
             strFieldValue1 = "Angle",
             strFieldValue2 = "Height";
-         
+
          // Create the first field
          OGRFieldDefn OGRField1(strFieldValue1.c_str(), OFTReal);
          if (pOGRLayer->CreateField(&OGRField1) != OGRERR_NONE)
@@ -1273,7 +1272,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
             cerr << ERR << "cannot create " << strType << " attribute field 1 '" << strFieldValue1 << "' in " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
             return false;
          }
-         
+
          // Create the second field
          OGRFieldDefn OGRField2(strFieldValue2.c_str(), OFTReal);
          if (pOGRLayer->CreateField(&OGRField2) != OGRERR_NONE)
@@ -1281,42 +1280,42 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
             cerr << ERR << "cannot create " << strType << " attribute field 2 '" << strFieldValue2 << "' in " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
             return false;
          }
-         
+
          // OK, now create features
          OGRLineString OGRls;
          OGRMultiLineString OGRmls;
          OGRPoint OGRPt;
-         
+
          for (int nX = 0; nX < m_nXGridMax; nX++)
          {
             for (int nY = 0; nY < m_nYGridMax; nY++)
             {
                // Create a feature object, one per cell (does this whether the sea is a sea cell or a land cell)
                OGRFeature* pOGRFeature = OGRFeature::CreateFeature(pOGRLayer->GetLayerDefn());
-               
+
                // Set the feature's geometry (in external CRS)
                OGRPt.setX(dGridCentroidXToExtCRSX(nX));
                OGRPt.setY(dGridCentroidYToExtCRSY(nY));
                pOGRFeature->SetGeometry(&OGRPt);
-               
+
                double
                   dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveOrientation(),
                   dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight();
-               
+
                if ((dHeight == DBL_NODATA) || (dOrientation == DBL_NODATA) || (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()))
                   continue;
-               
+
                // Set the feature's attributes
                pOGRFeature->SetField(strFieldValue1.c_str(), dOrientation);
                pOGRFeature->SetField(strFieldValue2.c_str(), dHeight);
-               
+
                // Create the feature in the output layer
                if (pOGRLayer->CreateFeature(pOGRFeature) != OGRERR_NONE)
                {
                   cerr << ERR << "cannot create " << strType << " feature " << strPlotTitle << " for cell [" << nX << "][" << nY << "] in " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
                   return false;
                }
-               
+
                // Get rid of the feature object
                OGRFeature::DestroyFeature(pOGRFeature);
             }
