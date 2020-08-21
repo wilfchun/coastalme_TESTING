@@ -1,6 +1,0 @@
-Number of Stations    : 3
-Number of time steps  : 1
-; Each row below contains the wave height (m), orientation (deg) and period (s) for each time step for all stations
-; Starting from the first station (i.e. station with id=1 on the corresponding point shape file)
-; Values separated by a COMMA
-1, 340, 7,   1, 340, 7,   1, 110, 10
