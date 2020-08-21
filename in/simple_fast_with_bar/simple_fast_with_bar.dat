@@ -67,12 +67,12 @@ Number of layers                                                                
 Basement DEM file                                                   [path and name]: in/simple_fast_with_bar/basement.asc
    ; LAYER 0 THICKNESS FILES, LAYER 0 IS LOWEST
    ; *** MUST HAVE AT LEAST ONE THICKNESS FILE FOR THE FIRST LAYER
-   Initial Unconsolidated fine sediment file                        [path and name]: 
-   Initial Unconsolidated sand sediment file                        [path and name]: in/simple_fast_with_bar/bay.tif
+   Initial Unconsolidated fine sediment file                        [path and name]:
+   Initial Unconsolidated sand sediment file                        [path and name]: in/simple_fast_with_bar/bay_new_2.tif
    Initial Unconsolidated coarse sediment file                      [path and name]:
-   Initial Consolidated fine sediment file                          [path and name]: 
-   Initial Consolidated sand sediment file                          [path and name]: 
-   Initial Consolidated coarse sediment file                        [path and name]: 
+   Initial Consolidated fine sediment file                          [path and name]:
+   Initial Consolidated sand sediment file                          [path and name]:
+   Initial Consolidated coarse sediment file                        [path and name]:
 
 ; OPTIONAL THICKNESS FILE
 Initial Suspended sediment file                                     [path and name]:
@@ -87,7 +87,7 @@ Wave propagation model                                       [0 = COVE, 1 = CSho
 
 Density of sea water (kg/m3)                                                       : 1029
 
-Initial still water level (m), or per-timestep SWL file                            : 51     ; WAS 52 53 54   ; 57 has two coasts
+Initial still water level (m), or per-timestep SWL file                            : 13
 Final still water level (m)                           [blank = same as initial SWL]:
 
 Deep water wave height (m)                                         [value or point shapefile]: in/simple_fast_with_bar/deep_sea_waves.shp
@@ -97,11 +97,11 @@ Wave period (sec)                             [omit if deep water wave height fr
 
 Tide data file                                                       [may be blank]:
 
-Breaking wave height to water depth ratio (non dimensional)                        : 0.8   	
+Breaking wave height to water depth ratio (non dimensional)                        : 0.8
 
 ; Sediment data --------------------------------------------------------------------------------------------------------
 Simulate coast platform erosion?                                                   : y
-Resistance to erosion of coast platform (m^(9/4)s^(3/2))                           : 2e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011)
+Resistance to erosion of coast platform (m^(9/4)s^(3/2))                           : 5e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011)
 
 Beach sediment transport at grid edges      [0 = closed, 1 = open, 2 = recirculate]: 1
 
@@ -126,12 +126,12 @@ Berm height i.e. height above SWL of start of depositional Dean profile (m)     
 
 ; Cliff collapse data --------------------------------------------------------------------------------------------------
 Simulate cliff collapse?                                                           : y
-Resistance to erosion of cliff (m^(9/4)s^(3/2))                                    : 2e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011),
+Resistance to erosion of cliff (m^(9/4)s^(3/2))                                    : 5e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011),
 Notch overhang to initiate collapse (m)                                            : 0.5
 Notch base below still water level (m)                                             : 0.3
 Scale parameter A for cliff deposition (m^(1/3))                         [0 = auto]: 0          ; For a 0.2 mm D50, will be 0.1
 Planview width of cliff deposition talus (in cells)                   [must be odd]: 15         ; was 11 5 7
-Planview length of cliff deposition talus (m)                                      : 100        ; was 15 50 30 15
+Planview length of cliff deposition talus (m)                                      : 50         ; *** 80        ; was 15 50 30 15
 Height of landward talus end, as fraction of cliff elevation                       : 0.01       ; was 0
 
 ; Other data -----------------------------------------------------------------------------------------------------------

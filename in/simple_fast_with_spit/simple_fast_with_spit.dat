@@ -31,17 +31,17 @@ Main output/log file names                                [omit path and extensi
 #Timestep (hours or days)                                                           : 6 hours
 #Save times                                             [hours, days, months, years]: 10 15 20 25 30 35 40 45 50 55 days
 
-#Duration of simulation                                 [hours, days, months, years]: 120 days
-#Timestep (hours or days)                                                           : 6 hours
-#Save times                                             [hours, days, months, years]: 20 30 40 50 60 70 80 90 100 110 days
+Duration of simulation                                 [hours, days, months, years]: 120 days
+Timestep (hours or days)                                                           : 6 hours
+Save times                                             [hours, days, months, years]: 20 30 40 50 60 70 80 90 100 110 days
 
 #Duration of simulation                                [hours, days, months, years]: 365 days
 #Timestep (hours or days)                                                          : 6 hours
 #Save times                                            [hours, days, months, years]: 1 5 10 25 50 100 150 200 250 300 days
 
-Duration of simulation                                 [hours, days, months, years]: 730 days
-Timestep (hours or days)                                                           : 6 hours
-Save times                                             [hours, days, months, years]: 1 10 50 100 200 300 400 500 600 700 days
+#Duration of simulation                                 [hours, days, months, years]: 730 days
+#Timestep (hours or days)                                                           : 6 hours
+#Save times                                             [hours, days, months, years]: 1 10 50 100 200 300 400 500 600 700 days
 
 
 Random number seed(s)                                                              : 280764
@@ -75,7 +75,7 @@ Basement DEM file                                                   [path and na
    Initial Unconsolidated sand sediment file                        [path and name]: in/simple_fast_with_spit/curve_to_north.tif
    Initial Unconsolidated coarse sediment file                      [path and name]:
    Initial Consolidated fine sediment file                          [path and name]:
-   Initial Consolidated sand sediment file                          [path and name]: 
+   Initial Consolidated sand sediment file                          [path and name]:
    Initial Consolidated coarse sediment file                        [path and name]:
 
 ; OPTIONAL THICKNESS FILE
@@ -101,11 +101,11 @@ Wave period (sec)                             [omit if deep water wave height fr
 
 Tide data file                                                       [may be blank]:
 
-Breaking wave height to water depth ratio (non dimensional)                        : 0.8   	
+Breaking wave height to water depth ratio (non dimensional)                        : 0.8
 
 ; Sediment data --------------------------------------------------------------------------------------------------------
 Simulate coast platform erosion?                                                   : y
-Resistance to erosion of coast platform (m^(9/4)s^(3/2))                           : 2e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011)
+Resistance to erosion of coast platform (m^(9/4)s^(3/2))                           : 6e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011)
 
 Beach sediment transport at grid edges     [0 = closed, 1 = open, 2 = re-circulate]: 1
 
@@ -124,7 +124,7 @@ Sand erosivity                                                                  
 Coarse erosivity                                                                   : 0.3
 
 Transport parameter KLS                                         [only for CERC eqn]: 0.5       ; Should vary between 0.4 to 0.79
-Transport parameter                                         [only for Kamphuis eqn]: 1.0
+Transport parameter                                         [only for Kamphuis eqn]: 0.3       ; was 0.7 1.0
 
 Berm height i.e. height above SWL of start of depositional Dean profile (m)        : 0.25
 
@@ -144,7 +144,7 @@ Gravitational acceleration (m2/s)                                               
 
 ; TEMPORARY ONLY, CHANGE DYNAMICALLY LATER
 Spacing of coastline normals (m)                              [0 = default minimum]: 0
-Random factor for spacing of normals                    [0 to 1, 0 = deterministic]: 0.1
+Random factor for spacing of normals                    [0 to 1, 0 = deterministic]: 0.2   ; *** WAS 0.1
 Length of coastline normals (m)                                                    : 130
 Maximum number of 'cape' normals                                                   : 6
 
