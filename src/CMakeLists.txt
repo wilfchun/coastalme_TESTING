@@ -79,7 +79,7 @@ if (CMAKE_COMPILER_IS_GNUCC)
    # For Debug builds under gcc
    if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
       set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wpointer-arith -Wconversion -Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls -Wno-strict-overflow -Wshadow -Wuninitialized -Wnull-dereference -Wchkp -mmpx -fcheck-pointer-bounds -Wformat -Wformat-overflow -Wformat-signedness -Wuseless-cast -Wempty-body")
-    
+
       if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.8")
          # Undefined behaviour sanitizer introduced with gcc 4.9, see http://developerblog.redhat.com/2014/10/16/gcc-undefined-behavior-sanitizer-ubsan/
 #         set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -fsanitize=shift -fsanitize=integer-divide-by-zero -fsanitize=unreachable -fsanitize=null -fsanitize=return -fsanitize=address")
@@ -95,7 +95,7 @@ if (CMAKE_COMPILER_IS_GNUCC)
 
 #      set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
    endif ()
-   
+
    # Finally set some gcc-specific linker flags
    set (CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined")
 endif()
@@ -174,24 +174,24 @@ if (GDAL_CONFIG)
       ARGS --version
       OUTPUT_VARIABLE GDAL_VERSION
    )
-   string (REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
-   string (REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
-
-   message (STATUS "GDAL is version ${GDAL_VERSION}")
-   #message ("GDAL_VERSION_MAJOR=${GDAL_VERSION_MAJOR}")
-   #message ("GDAL_VERSION_MINOR=${GDAL_VERSION_MINOR}")
+#    string (REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
+#    string (REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
+#
+#    message (STATUS "GDAL is version ${GDAL_VERSION}")
+#    message ("GDAL_VERSION_MAJOR=${GDAL_VERSION_MAJOR}")
+#    message ("GDAL_VERSION_MINOR=${GDAL_VERSION_MINOR}")
 
    # Now check the GDAL version: CoastalME can only be built with GDAL 2.1 or above
-   if (GDAL_VERSION_MAJOR LESS 2)
+   if (GDAL_VERSION VERSION_LESS "2.1")
       message (FATAL_ERROR "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
    endif ()
 
-   if (GDAL_VERSION_MAJOR GREATER 2)
-      if (GDAL_VERSION_MINOR LESS 1)
-         message (FATAL_ERROR "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
-      endif ()
-   endif ()
-   
+#    if (GDAL_VERSION_MAJOR GREATER 2)
+#       if (GDAL_VERSION_MINOR LESS 1)
+#          message (FATAL_ERROR "CoastalME requires GDAL 2.1 or later. You have version ${GDAL_VERSION}. Please upgrade")
+#       endif ()
+#    endif ()
+
 else ()
    message (FATAL_ERROR "${GDAL_CONFIG} not found, cannot determine GDAL version. Check your GDAL installation")
 endif ()
@@ -215,9 +215,9 @@ else ()
 endif ()
 
 if (CSHORE_INOUT_LC STREQUAL "file")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_FILE_INOUT")   
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_FILE_INOUT")
 elseif (CSHORE_INOUT_LC STREQUAL "arg")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_ARG_INOUT")   
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_ARG_INOUT")
 elseif (CSHORE_INOUT_LC STREQUAL "both")
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCSHORE_BOTH")
 else ()
@@ -241,7 +241,7 @@ if (UNIX)
                execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.LINUX.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
             endif ()
          endif ()
-         
+
       elseif (CSHORE_INOUT_LC STREQUAL "arg")
          if ((CMAKE_BUILD_TYPE_LC STREQUAL "debug") OR (CMAKE_BUILD_TYPE_LC STREQUAL "valgrind"))
             if (CSHORE_LIBRARY_LC STREQUAL "shared")
@@ -256,7 +256,7 @@ if (UNIX)
                execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.LINUX.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
             endif ()
          endif ()
-         
+
       elseif (CSHORE_INOUT_LC STREQUAL "both")
          if ((CMAKE_BUILD_TYPE_LC STREQUAL "debug") OR (CMAKE_BUILD_TYPE_LC STREQUAL "valgrind"))
             if (CSHORE_LIBRARY_LC STREQUAL "shared")
@@ -289,7 +289,7 @@ if (UNIX)
                execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.CYGWIN.FILEINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
             endif ()
          endif ()
-         
+
       elseif (CSHORE_INOUT_LC STREQUAL "arg")
          if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
             if (CSHORE_LIBRARY_LC STREQUAL "shared")
@@ -304,7 +304,7 @@ if (UNIX)
                execute_process (COMMAND ln -s -f "${CMAKE_SOURCE_DIR}/lib/libcshore.a.RELEASE.CYGWIN.ARGINOUT" "${CMAKE_SOURCE_DIR}/lib/libcshore.a")
             endif ()
          endif ()
-         
+
       elseif (CSHORE_INOUT_LC STREQUAL "both")
          if (CMAKE_BUILD_TYPE_LC STREQUAL "debug")
             if (CSHORE_LIBRARY_LC STREQUAL "shared")
@@ -345,20 +345,20 @@ if (CSHORE_LIBRARY_LC STREQUAL "static")
    #    include_directories (${GFORTRAN_INCLUDE_DIR})
    #    target_link_libraries (${CME_EXECUTABLE} ${LIBS} ${LIBGFORTRAN_LIBRARIES})
    #    target_link_libraries (${CME_EXECUTABLE} ${LIBS} ${LIBQUADMATH_LIBRARIES})
-   
+
 else ()
    # Assume that libcshore.a is either in one of the system library dirs, or is in a location specified by export LD_LIBRARY_PATH
    set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-   
+
    # We have the absolute path to the CShore library, now get the relative path from the install dir
    file (RELATIVE_PATH CSHORELIB_REL_FILEPATH ${CMAKE_INSTALL_DIR} ${CSHORELIB_DIR})
-   
+
    # Remove the file name
    get_filename_component(CSHORELIB_REL_PATH ${CSHORELIB_REL_FILEPATH} DIRECTORY)
-   
+
    # And get the absolute path (without the file name)
    get_filename_component(CSHORELIB_ABS_PATH ${CSHORELIB_DIR} DIRECTORY)
-   
+
    # And set the installed executable's RPATH/RUNPATH to point to the CShore library: first as a relative path (two versions of this, $ORIGIN and $$ORIGIN, dunno why), next as as absolute path, and finally a fallback to a system library folder
    #set (CMAKE_INSTALL_RPATH "${CSHORELIB_DIR}:$ORIGIN/src/lib/:$$ORIGIN/src/lib/")
    set (CMAKE_INSTALL_RPATH "$ORIGIN/${CSHORELIB_REL_PATH}:$$ORIGIN/${CSHORELIB_REL_PATH}:${CSHORELIB_ABS_PATH}:/usr/local/lib")

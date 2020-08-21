@@ -159,7 +159,7 @@ CGeom2DIPoint CSimulation::PtiExtCRSToGrid(CGeom2DPoint const* pPtIn) const
 //       nY = nRound((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
       nX = static_cast<int>((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
       nY = static_cast<int>((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
-      
+
    return CGeom2DIPoint(nX, nY);
 }
 
@@ -268,12 +268,12 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
       nX0 = m_nXGridMax-1;
    else if (nX0 < 0)
       nX0 = 0;
-   
+
    if (nY0 >= m_nYGridMax)
       nY0 = m_nYGridMax-1;
    else if (nY0 < 0)
       nY0 = 0;
-   
+
    // OK let's go
    int
       nDiffX = nX0 - nX1,
@@ -536,30 +536,79 @@ CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
 
 
 /*==============================================================================================================================
- 
+
  Returns a point (grid CRS) which is the average of a vector of grid CRS points
- 
+
 ===============================================================================================================================*/
 CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
 {
    int nSize = static_cast<int>(pVIn->size());
    if (nSize == 0)
       return CGeom2DIPoint(INT_NODATA, INT_NODATA);
-   
+
    double
       dAvgX = 0,
       dAvgY = 0;
-   
+
    for (int n = 0; n < nSize; n++)
    {
       dAvgX += pVIn->at(n).nGetX();
       dAvgY += pVIn->at(n).nGetY();
    }
-   
+
    dAvgX /= nSize;
    dAvgY /= nSize;
-   
+
    return CGeom2DIPoint(nRound(dAvgX), nRound(dAvgY));
+}
+
+
+/*==============================================================================================================================
+
+ Returns an integer point (grid CRS) which is the centroid of a polygon, given by a vector of grid CRS points. From https://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon
+
+===============================================================================================================================*/
+CGeom2DIPoint CSimulation::PtiPolygonCentroid(vector<CGeom2DIPoint>* pVIn)
+{
+   CGeom2DIPoint PtiCentroid(0, 0);
+   int
+      nSize = static_cast<int>(pVIn->size()),
+      nX0 = 0,       // Current vertex X
+      nY0 = 0,       // Current vertex Y
+      nX1 = 0,       // Next vertex X
+      nY1 = 0;       // Next vertex Y
+
+   double
+      dA = 0,        // Partial signed area
+      dSignedArea = 0.0;
+
+   // For all vertices except last
+   for (int i = 0; i < nSize-1; ++i)
+   {
+      nX0 = pVIn->at(i).nGetX();
+      nY0 = pVIn->at(i).nGetY();
+      nX1 = pVIn->at(i+1).nGetX();
+      nY1 = pVIn->at(i+1).nGetY();
+
+      dA = (nX0 * nY1) - (nX1 * nY0);
+      dSignedArea += dA;
+      PtiCentroid.AddXAddY((nX0 + nX1) * dA, (nY0 + nY1) * dA);
+   }
+
+   // Do last vertex separately to avoid performing an expensive modulus operation in each iteration
+   nX0 = pVIn->at(nSize-1).nGetX();
+   nY0 = pVIn->at(nSize-1).nGetY();
+   nX1 = pVIn->at(0).nGetX();
+   nY1 = pVIn->at(0).nGetY();
+
+   dA = (nX0 * nY1) - (nX1 * nY0);
+   dSignedArea += dA;
+   PtiCentroid.AddXAddY((nX0 + nX1) * dA, (nY0 + nY1) * dA);
+
+   dSignedArea *= 0.5;
+   PtiCentroid.DivXDivY(6.0 * dSignedArea, 6.0 * dSignedArea);
+
+   return PtiCentroid;
 }
 
 
@@ -675,9 +724,9 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(CGeom2DIPoint const* PtiStart, CG
 
 
 /*==============================================================================================================================
- 
+
  Returns a CGeom2DIPoint (grid CRS) which is the 'other' point of a two-point vector passing through [nStartX][nStartY], and which is perpendicular to the two-point vector from [nStartX][nStartY] to [nNextX][nNextY]
- 
+
 ==============================================================================================================================*/
 CGeom2DIPoint CSimulation::PtiGetPerpendicular(int const nStartX, int const nStartY, int const nNextX, int const nNextY, double const dDesiredLength, int const nHandedness)
 {
@@ -685,16 +734,16 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(int const nStartX, int const nSta
       dXLen = nNextX - nStartX,
       dYLen = nNextY - nStartY,
       dLength;
-   
+
    if (dXLen == 0)
       dLength = dYLen;
    else if (dYLen == 0)
       dLength = dXLen;
    else
       dLength = hypot(dXLen, dYLen);
-   
+
    double dScaleFactor = dDesiredLength / dLength;
-   
+
    // The difference vector is (dXLen, dYLen), so the perpendicular difference vector is (-dYLen, dXLen) or (dYLen, -dXLen)
    CGeom2DIPoint EndPti;
    if (nHandedness == RIGHT_HANDED)
@@ -707,7 +756,7 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(int const nStartX, int const nSta
       EndPti.SetX(nStartX - nRound(dScaleFactor * dYLen));
       EndPti.SetY(nStartY + nRound(dScaleFactor * dXLen));
    }
-   
+
    return EndPti;
 }
 
@@ -957,7 +1006,7 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
 
    if (! bWriteRasterGISFloat(RASTER_PLOT_WAVE_ORIENTATION, &RASTER_PLOT_WAVE_ORIENTATION_TITLE))
       return false;
-   
+
    if (! bWriteRasterGISFloat(RASTER_PLOT_BEACH_PROTECTION, &RASTER_PLOT_BEACH_PROTECTION_TITLE))
       return false;
 
@@ -1002,7 +1051,7 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
    if (m_bAvgWaveOrientationSave)
       if (! bWriteRasterGISFloat(RASTER_PLOT_AVG_WAVE_ORIENTATION, &RASTER_PLOT_AVG_WAVE_ORIENTATION_TITLE))
          return false;
-         
+
    if (m_bAvgSeaDepthSave)
       if (! bWriteRasterGISFloat(RASTER_PLOT_AVG_SEA_DEPTH, &RASTER_PLOT_AVG_SEA_DEPTH_TITLE))
       return false;
@@ -1153,41 +1202,41 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
    {
       if (! bWriteRasterGISInt(RASTER_PLOT_SHADOW_ZONE, &RASTER_PLOT_SHADOW_ZONE_TITLE))
          return false;
-      
+
       if (! bWriteRasterGISInt(RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE, &RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE_TITLE))
          return false;
    }
-   
+
    if (m_bDeepWaterWaveOrientationSave)
    {
       if (! bWriteRasterGISFloat(RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION, &RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE))
          return false;
    }
-   
+
    if (m_bDeepWaterWaveHeightSave)
    {
       if (! bWriteRasterGISFloat(RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT, &RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE))
          return false;
    }
-   
+
    if (m_bDeepWaterWavePeriodSave)
    {
       if (! bWriteRasterGISFloat(RASTER_PLOT_DEEP_WATER_WAVE_PERIOD, &RASTER_PLOT_DEEP_WATER_WAVE_PERIOD_TITLE))
          return false;
    }
-   
+
    if (m_bPolygonUnconsSedUpOrDownDrift)
    {
       if (! bWriteRasterGISInt(RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT, &RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT_TITLE))
          return false;
    }
-   
+
    if (m_bPolygonUnconssedGainOrLoss)
    {
       if (! bWriteRasterGISFloat(RASTER_PLOT_POLYGON_GAIN_OR_LOSS, &RASTER_PLOT_POLYGON_GAIN_OR_LOSS_TITLE))
          return false;
    }
-   
+
    return true;
 }
 
@@ -1277,14 +1326,14 @@ bool CSimulation::bSaveAllVectorGISFiles(void)
       if (! bWriteVectorGIS(VECTOR_PLOT_DOWNDRIFT_BOUNDARY, &VECTOR_PLOT_DOWNDRIFT_BOUNDARY_TITLE))
          return false;
    }
-   
+
    if (m_bDeepWaterWaveAngleAndHeightSave)
    {
       if (! bWriteVectorGIS(VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_TITLE))
          return false;
    }
-   
-   
+
+
    return true;
 }
 
@@ -1413,13 +1462,13 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
                   dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
                break;
             }
-            
+
             case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIteration);
                break;
             }
-            
+
             case (RASTER_PLOT_BEACH_PROTECTION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBeachProtectionFactor();
@@ -1559,41 +1608,41 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapseDeposition();
                break;
             }
-            
+
             case (RASTER_PLOT_SHADOW_ZONE):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneNumber();
                break;
-            }          
-            
+            }
+
             case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
                break;
-            }                  
-            
+            }
+
             case (RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
                break;
-            }                  
-            
+            }
+
             case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
             {
                dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
                break;
-            }                  
-            
+            }
+
             case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
             {
                int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
-               
+
                if (nPoly == INT_NODATA)
                   dTmp = m_dMissingValue;
                else
                   dTmp = m_pVCoastPolygon[nPoly]->dGetDeltaActualTotalSediment();
-               
-               break;               
+
+               break;
             }
          }
 
@@ -1719,9 +1768,9 @@ int CSimulation::nGetOppositeDirection(int const nDirection)
 
 
 /*==============================================================================================================================
- 
+
  Given two integer points, calculates the slope and intercept of the line passing through the points
- 
+
 ===============================================================================================================================*/
 void CSimulation::GetSlopeAndInterceptFromPoints(CGeom2DIPoint const* pPti1, CGeom2DIPoint const* pPti2, double& dSlope, double& dIntercept)
 {
@@ -1730,15 +1779,15 @@ void CSimulation::GetSlopeAndInterceptFromPoints(CGeom2DIPoint const* pPti1, CGe
       nY1 = pPti1->nGetY(),
       nX2 = pPti2->nGetX(),
       nY2 = pPti2->nGetY();
-      
+
    double
       dXDiff = nX1 - nX2,
       dYDiff = nY1 - nY2;
-   
+
    if (bFPIsEqual(dXDiff, 0.0, TOLERANCE))
       dSlope = 0;
    else
       dSlope = dYDiff / dXDiff;
-      
+
    dIntercept = nY1 - (dSlope * nX1);
 }

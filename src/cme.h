@@ -463,11 +463,11 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 7 December 2018";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 23 JULY 2020";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
-string const   COPYRIGHT                                                   = "(C) 2018 David Favis-Mortlock and Andres Payo";
+string const   COPYRIGHT                                                   = "(C) 2020 David Favis-Mortlock and Andres Payo";
 string const   LINE                                                        = "-------------------------------------------------------------------------------";
 string const   DISCLAIMER1                                                 = "This program is distributed in the hope that it will be useful, but WITHOUT ANY";
 string const   DISCLAIMER2                                                 = "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A";

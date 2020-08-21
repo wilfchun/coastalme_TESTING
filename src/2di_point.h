@@ -35,7 +35,7 @@ public:
    CGeom2DIPoint(void);
    CGeom2DIPoint(int const, int const);
    CGeom2DIPoint(CGeom2DIPoint const&);         // Copy constructor defined explicitly, to stop cppcheck from complaining
-   
+
    int nGetX(void) const;
    int nGetY(void) const;
    int* pnGetX();
@@ -44,8 +44,11 @@ public:
    void SetY(int const);
    void SetXY(int const, int const);
 //    void SetXY(CGeom2DIPoint const*);
-   
+
    void AddXAddY(int const, int const);
+   void AddXAddY(double const, double const);
+   void DivXDivY(double const, double const);
+
    void operator= (CGeom2DIPoint*);
    bool operator== (CGeom2DIPoint*) const;
    bool operator== (CGeom2DIPoint) const;

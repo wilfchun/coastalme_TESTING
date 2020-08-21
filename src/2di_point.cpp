@@ -22,6 +22,7 @@
 
 ===============================================================================================================================*/
 #include "2di_point.h"
+#include "cme.h"
 
 
 //! Constructor with no parameters (the X and Y co-ordinates of the CGeom2DIPoint object are set to zero)
@@ -97,11 +98,34 @@ void CGeom2DIPoint::SetXY(int const nNewX, int const nNewY)
 // }
 
 
-//! Adds the first parameter to the CGeom2DIPoint object's X co-ordinate, adds the second parameter to the CGeom2DIPoint object's Y co-ordinate
+//! Adds the first integer parameter to the CGeom2DIPoint object's X co-ordinate, adds the second integer parameter to the CGeom2DIPoint object's Y co-ordinate
 void CGeom2DIPoint::AddXAddY(int const nXToAdd, int const nYToAdd)
 {
    nX += nXToAdd;
    nY += nYToAdd;
+}
+
+//! Adds the first double parameter (rounded) to the CGeom2DIPoint object's X co-ordinate, adds the second double parameter (rounded) to the CGeom2DIPoint object's Y co-ordinate
+void CGeom2DIPoint::AddXAddY(double const dXToAdd, double const dYToAdd)
+{
+   nX += nRound(dXToAdd);
+   nY += nRound(dYToAdd);
+}
+
+
+//! Divides the CGeom2DIPoint object's X co-ordinate by the first double parameter (rounded), divides the CGeom2DIPoint object's Y co-ordinate by the second double parameter (rounded)
+void CGeom2DIPoint::DivXDivY(double const dXDiv, double const dYDiv)
+{
+   int
+      nXDiv = nRound(dXDiv),
+      nYDiv = nRound(dYDiv);
+
+   // Check for zero division
+   if (nXDiv != 0)
+      nX /= nXDiv;
+
+   if (nYDiv != 0)
+      nY /= nYDiv;
 }
 
 
@@ -135,7 +159,7 @@ bool CGeom2DIPoint::operator!= (CGeom2DIPoint* pPti) const
 {
    if ((pPti->nGetX() == nX) && (pPti->nGetY() == nY))
       return false;
-   
+
    return true;
 }
 
@@ -144,6 +168,6 @@ bool CGeom2DIPoint::operator!= (CGeom2DIPoint Pti) const
 {
    if ((Pti.nGetX() == nX) && (Pti.nGetY() == nY))
       return false;
-   
+
    return true;
 }
