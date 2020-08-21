@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  * \file 2di_shape.h
@@ -41,21 +41,21 @@ protected:
 public:
    CA2DIShape(void);
    virtual ~CA2DIShape(void);
-   
+
    CGeom2DIPoint& operator[] (int const);
-   
+
    CGeom2DIPoint& Back(void);
-   vector<CGeom2DIPoint>* pPtiVGetPoints(void);   
+   vector<CGeom2DIPoint>* pPtiVGetPoints(void);
 
    void Clear(void);
    void Resize(const int);
    int nGetSize(void) const;
-   
+
 //    void InsertAtFront(int const, int const);
    void Append(CGeom2DIPoint const*);
    void Append(int const, int const);
    void AppendIfNotAlready(int const, int const);
-   
+
 //    void SetPoints(const vector<CGeom2DIPoint>*);
 //    int nLookUp(CGeom2DIPoint*);
    virtual void Display() = 0;

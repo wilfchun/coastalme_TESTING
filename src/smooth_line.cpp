@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -182,7 +182,7 @@ CGeomLine CSimulation::LSmoothCoastSavitzkyGolay(CGeomLine* pLineIn, int const n
 
                double dY = LTemp.dGetYAt(i);
                dY += m_VdSavGolFCRWCoast[j+1] * pLineIn->dGetYAt(k);
-               
+
                LTemp[i] = CGeom2DPoint(dX, dY);
 //                LTemp.SetYAt(i, dY);
             }
@@ -298,9 +298,9 @@ vector<double> CSimulation::dVSmoothProfileSlope(vector<double>* pdVSlope)
    // Make a copy of the unsmoothed profile slope vector
    int const nSize = static_cast<int>(pdVSlope->size());
    vector<double> dVSmoothed = *pdVSlope;
-   
+
    // Note that m_nProfileSmoothWindow must be odd (have already checked this)
-   int const nHalfWindow = m_nProfileSmoothWindow / 2;   
+   int const nHalfWindow = m_nProfileSmoothWindow / 2;
 
    // Apply the running mean smoothing filter, with a variable window size at both ends of the line
    for (int i = 0; i < nSize; i++)

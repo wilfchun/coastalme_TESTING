@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -73,13 +73,13 @@ bool CGeomILine::bIsPresent(int const nX, int const nY)
    int nSize = static_cast<int>(m_VPoints.size());
    if (nSize == 0)
       return false;
-   
+
    for (int n = 0; n < nSize; n++)
    {
       if ((nX == m_VPoints[n].nGetX()) && (nY == m_VPoints[n].nGetY()))
          return true;
    }
-   
+
    return false;
 }
 

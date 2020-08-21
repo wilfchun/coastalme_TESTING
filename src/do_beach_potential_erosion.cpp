@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -105,7 +105,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
             nCoastPoints++;
             dAvgFluxOrientation += m_VCoast[nCoast].dGetFluxOrientation(nCoastPoint);
 
-	    
+
             double dThisBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nCoastPoint);
             if (dThisBreakingWaveHeight != DBL_NODATA)
             {
@@ -115,10 +115,10 @@ void CSimulation::DoAllPotentialBeachErosion(void)
 
                double dThisBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nCoastPoint);
 	       double dThisDeepWaterWavePeriod = m_VCoast[nCoast].dGetDeepWaterWavePeriod(nCoastPoint);
-	       
+
                dAvgBreakingWaveOrientation += dThisBreakingWaveOrientation;
-	       dAvgDeepWaterWavePeriod     += dThisDeepWaterWavePeriod; 
-	       
+	       dAvgDeepWaterWavePeriod     += dThisDeepWaterWavePeriod;
+
                dAvgBreakingDepth += m_VCoast[nCoast].dGetDepthOfBreaking(nCoastPoint);
 
                dAvgBreakingDist += (m_VCoast[nCoast].nGetBreakingDistance(nCoastPoint) * m_dCellSide);

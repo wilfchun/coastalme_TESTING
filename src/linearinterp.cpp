@@ -3,7 +3,7 @@
  * \brief Definitions of some routines from the linear interp library
  * \details TODO This is a more detailed description of the linear interp routines.
  * \author Modified by Andres Payo and David Favis-Mortlock
- * \date 2018
+ * \date 2020
  * \copyright GNU Lesser General Public License
  *
  * \file linearinterp.cpp
@@ -26,15 +26,15 @@
 
 int nNearestNeighbourIndex(vector<double> const* pVdX, double const dValue)
 {
-   double 
+   double
       dDist = DBL_MAX,
       dNewDist = dDist;
    int nIdx = 0;
 
-   for (unsigned int i = 0; i < pVdX->size(); ++i) 
+   for (unsigned int i = 0; i < pVdX->size(); ++i)
    {
       dNewDist = tAbs(dValue - pVdX->at(i));
-      if (dNewDist <= dDist) 
+      if (dNewDist <= dDist)
       {
          dDist = dNewDist;
          nIdx = i;
@@ -49,7 +49,7 @@ vector<double> VdInterp1(vector<double> const* pVdX, vector<double> const* pVdY,
 {
    vector<double> VdY_new;
    double dX, dY;
-   unsigned int 
+   unsigned int
       x_max_idx = static_cast<unsigned int>(pVdX->size()) - 1,
       x_new_size = static_cast<unsigned int>(pVdX_new->size());
 
@@ -69,7 +69,7 @@ vector<double> VdInterp1(vector<double> const* pVdX, vector<double> const* pVdY,
          else
          {
             dX = pVdX->at(idx+1) - pVdX->at(idx);
-            dY = pVdY->at(idx+1) - pVdY->at(idx);            
+            dY = pVdY->at(idx+1) - pVdY->at(idx);
          }
       }
       else
@@ -77,12 +77,12 @@ vector<double> VdInterp1(vector<double> const* pVdX, vector<double> const* pVdY,
          if (idx < x_max_idx)
          {
             dX = pVdX->at(idx+1) - pVdX->at(idx);
-            dY = pVdY->at(idx+1) - pVdY->at(idx);            
+            dY = pVdY->at(idx+1) - pVdY->at(idx);
          }
          else
          {
             dX = pVdX->at(idx) - pVdX->at(idx-1);
-            dY = pVdY->at(idx) - pVdY->at(idx-1);            
+            dY = pVdY->at(idx) - pVdY->at(idx-1);
          }
       }
 

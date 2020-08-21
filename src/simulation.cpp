@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -231,7 +231,7 @@ CSimulation::CSimulation(void)
    m_dAllCellsDeepWaterWaveHeight               =
    m_dAllCellsDeepWaterWaveOrientation          =
    m_dAllCellsDeepWaterWavePeriod               =
-   m_dMaxUserInputWaveHeight                    =   
+   m_dMaxUserInputWaveHeight                    =
    m_dMaxUserInputWavePeriod                    =
    m_dR                                         =
    m_dD50Fine                                   =
@@ -295,9 +295,9 @@ CSimulation::CSimulation(void)
    m_dThisTimestepCliffTalusSandErosion             =
    m_dThisTimestepCliffTalusCoarseErosion           =
    m_dCoastNormalRandSpaceFact                      =
-   m_dDeanProfileStartAboveSWL                      = 
-   m_dAccumulatedSeaLevelChange                     = 
-   m_dBreakingWaveHeightDepthRatio                   = 
+   m_dDeanProfileStartAboveSWL                      =
+   m_dAccumulatedSeaLevelChange                     =
+   m_dBreakingWaveHeightDepthRatio                   =
    m_dWaveDataWrapHours                             = 0;
 
    m_dMinSWL                                    = DBL_MAX;
@@ -405,7 +405,7 @@ CSimulation::~CSimulation(void)
       CliffCollapseNetTSStream.flush();
       CliffCollapseNetTSStream.close();
    }
-   
+
    if (SedLoadTSStream && SedLoadTSStream.is_open())
    {
       SedLoadTSStream.flush();
@@ -538,19 +538,19 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       return nRet;
 
    m_ulNumCells = m_nXGridMax * m_nYGridMax;
-   
-   // Mark edge cells, as defined by the basement layer 
+
+   // Mark edge cells, as defined by the basement layer
    nRet = nMarkBoundingBoxEdgeCells();
    if (nRet != RTN_OK)
       return nRet;
-   
+
 //    // DEBUG CODE =================================================
 //    for (int n = 0; n < m_VEdgeCell.size(); n++)
 //    {
 //       LogStream << "[" << m_VEdgeCell[n].nGetX() << "][" << m_VEdgeCell[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(m_VEdgeCell[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(m_VEdgeCell[n].nGetY()) << "} " << m_VEdgeCellEdge[n] << endl;
 //    }
 //    // DEBUG CODE =================================================
-   
+
    // If we are using the default cell spacing, then now that we know the size of the raster cells, we can set the size of profile spacing in m
    if (m_dCoastNormalAvgSpacing == 0)
       m_dCoastNormalAvgSpacing = MIN_PROFILE_SPACING * m_dCellSide;
@@ -657,7 +657,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nReadVectorGISData(DEEP_WATER_WAVE_VALUES_VEC);
       if (nRet != RTN_OK)
          return (nRet);
-      
+
       // Read in time series values and initialize vector to store this time step deep water wave height, orientation and period
       nRet = nReadWaveTimeSeries(static_cast<int>(m_VnDeepWaterWavePointID.size()));
       if (nRet != RTN_OK)
@@ -761,7 +761,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nLocateSeaAndCoasts();
       if (nRet != RTN_OK)
          return nRet;
-      
+
       LogStream << endl;
 
       // Locate estuaries
@@ -785,7 +785,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          return nRet;
 
       LogStream << endl;
-      
+
       // Create the coast polygons
       nRet = nCreateAllPolygons();
       if (nRet != RTN_OK)
@@ -808,16 +808,16 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //       LogStream << "Before marking polygon cells, N cells with NODATA polygon ID = " << nNODATA << endl;
 //       LogStream << "Before marking polygon cells, N cells with zero polygon ID = " << nPoly0 << endl;
 
-      // Mark cells of the raster grid that are within each polygon 
+      // Mark cells of the raster grid that are within each polygon
       MarkPolygonCells();
-      
+
       // Calculate the length of the shared normal between each polygon and the adjacent polygon(s)
       nRet = nDoPolygonSharedBoundaries();
       if (nRet != RTN_OK)
          return nRet;
-      
+
       LogStream << endl;
-      
+
 //       // TEST
 //       nNODATA = 0;
 //       nPoly0 = 0;
@@ -836,7 +836,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //       LogStream << "After marking polygon cells, N cells with zero polygon ID = " << nPoly0 << endl;
 
       // PropagateWind();
-      
+
       // Give every coast point a value for deep water wave height and direction
       nRet = nSetAllCoastpointDeepWaterWaveValues();
       if (nRet != RTN_OK)
@@ -846,9 +846,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nDoAllPropagateWaves();
       if (nRet != RTN_OK)
          return nRet;
-      
+
       LogStream << endl;
-      
+
       if (m_bDoCoastPlatformErosion)
       {
          // Calculate elevation change on the consolidated sediment which comprises the coastal platform
@@ -876,7 +876,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Add the fine sediment that was eroded this timestep (from the shore platform, from beach erosion, and cliff collapse talus deposition, minus the fine that went off-grid) to the suspended sediment load
       double dFineThisTimestep = m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualBeachErosionFine + m_dThisTimestepCliffErosionFine - m_dThisTimestepActualFineSedLostBeachErosion;
       m_dThisTimestepFineSedimentToSuspension += dFineThisTimestep;
-      
+
       // Do some end-of-timestep updates to the raster grid, also update per-timestep and running totals
       nRet = nUpdateGrid();
       if (nRet != RTN_OK)

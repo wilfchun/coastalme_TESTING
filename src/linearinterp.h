@@ -3,7 +3,7 @@
  * \brief Declarations of some routines from the linear interp library
  * \details TODO This is a more detailed description of the linear interp routiness.
  * \author Modified by Andres Payo and David Favis-Mortlock
- * \date 2018
+ * \date 2020
  * \copyright GNU Lesser General Public License
  *
  * \file linearinterp.h
@@ -35,7 +35,7 @@ using std::abs;
 #include "cme.h"
 
 
-int nNearestNeighbourIndex(vector<double> const*, double const);  
+int nNearestNeighbourIndex(vector<double> const*, double const);
 vector<double> VdInterp1(vector<double> const*, vector<double> const*, vector<double> const*);
-  
+
 #endif // LINEARINTERP_H

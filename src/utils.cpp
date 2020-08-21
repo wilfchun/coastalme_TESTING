@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -979,13 +979,13 @@ string CSimulation::strListVectorFiles(void) const
       strTmp.append(VECTOR_DOWNDRIFT_BOUNDARY_CODE);
       strTmp.append(", ");
    }
-   
+
    if (m_bDeepWaterWaveAngleAndHeightSave)
    {
       strTmp.append(VECTOR_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_CODE);
       strTmp.append(", ");
    }
-   
+
    // remove the trailing comma and space
    strTmp.resize(strTmp.size()-2);
 
@@ -1037,25 +1037,25 @@ string CSimulation::strListTSFiles(void) const
       strTmp.append(TIME_SERIES_CLIFF_COLLAPSE_NET_CODE);
       strTmp.append(", ");
    }
-   
+
    if (m_bBeachErosionTS)
    {
       strTmp.append(TIME_SERIES_BEACH_EROSION_CODE);
       strTmp.append(", ");
    }
-   
+
    if (m_bBeachDepositionTS)
    {
       strTmp.append(TIME_SERIES_BEACH_DEPOSITION_CODE);
       strTmp.append(", ");
    }
- 
+
  if (m_bBeachSedimentChangeNetTS)
    {
       strTmp.append(TIME_SERIES_BEACH_CHANGE_NET_CODE);
       strTmp.append(", ");
    }
- 
+
    if (m_bSuspSedTS)
    {
       strTmp.append(TIME_SERIES_SUSPENDED_SEDIMENT_CODE);
@@ -1169,7 +1169,7 @@ bool CSimulation::bSetUpTSFiles(void)
       strTSFile = m_strOutPath;
       strTSFile.append(TIME_SERIES_CLIFF_COLLAPSE_NET_NAME);
       strTSFile.append(CSVEXT);
-      
+
       // Open net cliff collapse time-series CSV file
       CliffCollapseNetTSStream.open(strTSFile.c_str(), ios::out | ios::trunc);
       if (! CliffCollapseNetTSStream)
@@ -1179,14 +1179,14 @@ bool CSimulation::bSetUpTSFiles(void)
          return false;
       }
    }
-   
+
    if (m_bBeachErosionTS)
    {
       // Beach erosion
       strTSFile = m_strOutPath;
       strTSFile.append(TIME_SERIES_BEACH_EROSION_NAME);
       strTSFile.append(CSVEXT);
-      
+
       // Open beach erosion time-series CSV file
       BeachErosionTSStream.open(strTSFile.c_str(), ios::out | ios::trunc);
       if (! BeachErosionTSStream)
@@ -1196,14 +1196,14 @@ bool CSimulation::bSetUpTSFiles(void)
          return false;
       }
    }
-   
+
    if (m_bBeachDepositionTS)
    {
       // Beach deposition
       strTSFile = m_strOutPath;
       strTSFile.append(TIME_SERIES_BEACH_DEPOSITION_NAME);
       strTSFile.append(CSVEXT);
-      
+
       // Open beach deposition time-series CSV file
       BeachDepositionTSStream.open(strTSFile.c_str(), ios::out | ios::trunc);
       if (! BeachDepositionTSStream)
@@ -1213,14 +1213,14 @@ bool CSimulation::bSetUpTSFiles(void)
          return false;
       }
    }
-   
+
    if (m_bBeachSedimentChangeNetTS)
    {
       // Beach sediment change
       strTSFile = m_strOutPath;
       strTSFile.append(TIME_SERIES_BEACH_CHANGE_NET_NAME);
       strTSFile.append(CSVEXT);
-      
+
       // Open net beach sediment change time-series CSV file
       BeachSedimentChangeNetTSStream.open(strTSFile.c_str(), ios::out | ios::trunc);
       if (! BeachSedimentChangeNetTSStream)
@@ -1229,8 +1229,8 @@ bool CSimulation::bSetUpTSFiles(void)
          cerr << ERR << "cannot open " << strTSFile << " for output" << endl;
          return false;
       }
-   }   
-   
+   }
+
    if (m_bSuspSedTS)
    {
       // Sediment load
@@ -1298,15 +1298,15 @@ void CSimulation::UpdateGrandTotals(void)
    LogStream << "Actual sand platform erosion = " << m_dThisTimestepActualPlatformErosionSand * m_dCellArea << endl;
    LogStream << "Actual coarse platform erosion = " << m_dThisTimestepActualPlatformErosionCoarse * m_dCellArea << endl;
    LogStream << "TOTAL actual platform erosion = " << (m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse) * m_dCellArea << endl;
-   
+
    LogStream << endl;
-   
+
    // Cliff collapse
    LogStream << "Cliff collapse fine = " << noshowpos << m_dThisTimestepCliffCollapseErosionFine * m_dCellArea << endl;
    LogStream << "Cliff collapse sand = " << m_dThisTimestepCliffCollapseErosionSand * m_dCellArea << endl;
    LogStream << "Cliff collapse coarse = " << m_dThisTimestepCliffCollapseErosionCoarse * m_dCellArea << endl;
    LogStream << "TOTAL cliff collapse = " << (m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse) * m_dCellArea << endl;
-   
+
    LogStream << endl;
 
    // Cliff collapse talus deposition
@@ -1318,9 +1318,9 @@ void CSimulation::UpdateGrandTotals(void)
    LogStream << "Erosion of previously-deposited sand talus = " << m_dThisTimestepCliffTalusSandErosion * m_dCellArea << endl;
    LogStream << "Erosion of previously-deposited coarse talus = " << m_dThisTimestepCliffTalusCoarseErosion * m_dCellArea << endl;
    LogStream << "TOTAL change in talus from cliff collapse = " << showpos << (-m_dThisTimestepCliffErosionFine + (m_dThisTimestepCliffDepositionSand - m_dThisTimestepCliffTalusSandErosion) + (m_dThisTimestepCliffDepositionCoarse - m_dThisTimestepCliffTalusCoarseErosion)) * m_dCellArea << endl;
-   
+
    LogStream << endl;
-   
+
    // Beach erosion
    LogStream << "Potential beach erosion = " << noshowpos << m_dThisTimestepPotentialBeachErosion * m_dCellArea << endl;
 
@@ -1334,9 +1334,9 @@ void CSimulation::UpdateGrandTotals(void)
 
    LogStream << "Change in fine beach sediment = " << -m_dThisTimestepActualBeachErosionFine * m_dCellArea << endl;
    LogStream << "Change in sand beach sediment = " << (m_dThisTimestepBeachDepositionSand - m_dThisTimestepActualBeachErosionSand) * m_dCellArea << endl;
-   LogStream << "Change in coarse beach sediment = " << (m_dThisTimestepBeachDepositionCoarse - m_dThisTimestepActualBeachErosionCoarse) * m_dCellArea << endl;   
-   LogStream << "TOTAL change in beach sediment = " << showpos << (-m_dThisTimestepActualBeachErosionFine + (m_dThisTimestepBeachDepositionSand - m_dThisTimestepActualBeachErosionSand) + (m_dThisTimestepBeachDepositionCoarse - m_dThisTimestepActualBeachErosionCoarse)) * m_dCellArea << endl;   
-   
+   LogStream << "Change in coarse beach sediment = " << (m_dThisTimestepBeachDepositionCoarse - m_dThisTimestepActualBeachErosionCoarse) * m_dCellArea << endl;
+   LogStream << "TOTAL change in beach sediment = " << showpos << (-m_dThisTimestepActualBeachErosionFine + (m_dThisTimestepBeachDepositionSand - m_dThisTimestepActualBeachErosionSand) + (m_dThisTimestepBeachDepositionCoarse - m_dThisTimestepActualBeachErosionCoarse)) * m_dCellArea << endl;
+
    LogStream << endl;
 
    // Sediment lost from grid due to beach erosion and deposition
@@ -1345,15 +1345,15 @@ void CSimulation::UpdateGrandTotals(void)
    LogStream << "Fine beach sediment actually lost from grid = " << m_dThisTimestepActualFineSedLostBeachErosion * m_dCellArea << endl;
    LogStream << "Sand beach sediment actually lost from grid = " << m_dThisTimestepActualSandSedLostBeachErosion * m_dCellArea << endl;
    LogStream << "Coarse beach sediment actually lost from grid = " << m_dThisTimestepActualCoarseSedLostBeachErosion * m_dCellArea << endl;
-   
+
    LogStream << endl;
 
    // Sediment lost from grid due to cliff collapse
    LogStream << "Sand sediment lost from grid due to cliff collapse = " << m_dThisTimestepSandSedLostCliffCollapse * m_dCellArea << endl;
    LogStream << "Coarse sediment lost from grid due to cliff collapse = " << m_dThisTimestepCoarseSedLostCliffCollapse * m_dCellArea << endl;
-   
+
    LogStream << "TOTAL beach sediment actually lost from grid (all processes)  = " << (m_dThisTimestepActualFineSedLostBeachErosion + m_dThisTimestepActualSandSedLostBeachErosion + m_dThisTimestepActualCoarseSedLostBeachErosion + m_dThisTimestepSandSedLostCliffCollapse + m_dThisTimestepCoarseSedLostCliffCollapse) * m_dCellArea << endl;
-   
+
    LogStream << endl;
 
    // Suspended sediment
@@ -1366,7 +1366,7 @@ void CSimulation::UpdateGrandTotals(void)
    LogStream << "Deposition errors = " << m_dThisTimestepMassBalanceDepositionError * m_dCellArea << endl;
 
    LogStream << endl;
-   
+
    // Add to grand totals: first platform erosion
    m_ldGTotPotentialPlatformErosion        += m_dThisTimestepPotentialPlatformErosion;
 
@@ -1747,9 +1747,9 @@ void CSimulation::AnnounceProgress(void)
 
 
 /*==============================================================================================================================
- 
+
  Calculates the Tausworthe value for the random number generator
- 
+
 ==============================================================================================================================*/
 unsigned long CSimulation::ulGetTausworthe(unsigned long const ulS, unsigned long const ulA, unsigned long const ulB, unsigned long const ulC, unsigned long const ulD)
 {
@@ -1758,9 +1758,9 @@ unsigned long CSimulation::ulGetTausworthe(unsigned long const ulS, unsigned lon
 
 
 /*==============================================================================================================================
- 
+
  Uses ulGetRand0() to return a double precision floating point number uniformly distributed in the range [0, 1) i.e. includes 0.0 but excludes 1.0. Based on a routine in taus.c from gsl-1.2
- 
+
 ==============================================================================================================================*/
 double CSimulation::dGetRand0d1(void)
 {
@@ -1782,9 +1782,9 @@ double CSimulation::dGetRand0d1(void)
 
 
 /*==============================================================================================================================
- 
+
  Returns an integer to return a double precision floating point number uniformly distributed in the range [0, nBound) i.e. includes 0 but excludes nBound. Based on a routine in taus.c from gsl-1.2
- 
+
 ==============================================================================================================================*/
 int CSimulation::nGetRand1To(int const nBound)
 {
@@ -1795,7 +1795,7 @@ int CSimulation::nGetRand1To(int const nBound)
       nRtn = static_cast<int>(ulGetRand1() / ulScale);
    }
    while (nRtn >= nBound);
-   
+
    return (nRtn);
 }
 
@@ -2190,7 +2190,7 @@ string CSimulation::strGetErrorText(int const nErr)
       // should never get here
       strErr = "unknown cause";
    }
-   
+
    return strErr;
 }
 
@@ -2220,7 +2220,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
    default:
       // Aborting because of some error
       cerr << RUN_END_NOTICE << "iteration " << m_ulIteration << ERROR_NOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
-      
+
       if (m_ulIteration > 1)
       {
          // If the run has actually started, then output all GIS files: this is very helpful in tracking down problems
@@ -2661,10 +2661,10 @@ double CSimulation::dSubtractProfiles(vector<double> const* pdVFirstProfile, vec
 ==============================================================================================================================*/
 void CSimulation::CalcDepthOfClosure(void)
 {
-   double 
+   double
       dDeepWaterWaveHeight,
       dDeepWaterPeriod;
-      
+
    if (m_bSingleDeepWaterWaveValues)
    {
       dDeepWaterWaveHeight = m_dAllCellsDeepWaterWaveHeight;
@@ -2672,10 +2672,10 @@ void CSimulation::CalcDepthOfClosure(void)
    }
    else
    {
-      dDeepWaterWaveHeight = m_dMaxUserInputWaveHeight;   
+      dDeepWaterWaveHeight = m_dMaxUserInputWaveHeight;
       dDeepWaterPeriod     = m_dMaxUserInputWavePeriod;
    }
-   
+
    // TODO Calculate depth of closure using 'average of the maximum values observed during a typical year'
    //    dL = 2.28 * Hsx − (68.5 * Hsx^2 / (g * Tsx^2))
    // where:
@@ -2704,19 +2704,19 @@ bool CSimulation::bIsNumeric(string const* strIn)
 
 
 /*==============================================================================================================================
-  
+
   Real (floating point) fields in ESRI shapefiles are treated as width 24 with 15 decimal places of precision (unless an explicit width is given). If fields exced this, then a "not successfully written. Possibly due to too larger number with respect to field width" error message is shown. This routine tests the input to see if it exceeds this limit, if so it rounds up. Modified from https://stackoverflow.com/questions/13094224/a-c-routine-to-round-a-float-to-n-significant-digits
-  
+
 ==============================================================================================================================*/
 double CSimulation::dConstrainFieldWidthForShapefile(double const dInField)
 {
    int const SHAPEFILE_MAX_WIDTH = 24;
    // int const SHAPEFILE_MAX_PRECISION = 15
-   
+
    // Avoid returning 'nan' due to the log10() of zero
-   if (dInField == 0.0) 
+   if (dInField == 0.0)
       return 0.0;
-   
+
    double dFactor = pow(10.0, SHAPEFILE_MAX_WIDTH - ceil(log10(fabs(dInField))));
-   return round(dInField * dFactor) / dFactor;   
+   return round(dInField * dFactor) / dFactor;
 }

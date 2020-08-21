@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -90,10 +90,10 @@ int CRWCoast::nGetEndEdge(void) const
 void CRWCoast::SetCoastlineExtCRS(CGeomLine const* pLCoast)
 {
    m_LCoastlineExtCRS = *pLCoast;
-   
+
    int nLen = m_LCoastlineExtCRS.nGetSize();
-   
-   m_VnProfileNumber = vector<int>(nLen, INT_NODATA);   
+
+   m_VnProfileNumber = vector<int>(nLen, INT_NODATA);
    m_VnPolygonNode = vector<int>(nLen, INT_NODATA);
    m_VnBreakingDistance = vector<int>(nLen, INT_NODATA);
 
@@ -107,7 +107,7 @@ void CRWCoast::SetCoastlineExtCRS(CGeomLine const* pLCoast)
    m_VdBreakingWaveOrientation = vector<double>(nLen, DBL_NODATA);
    m_VdDepthOfBreaking = vector<double>(nLen, DBL_NODATA);
    m_VdFluxOrientation = vector<double>(nLen, DBL_NODATA);
-   m_VdWaveEnergyAtBreaking = vector<double>(nLen, 0);  
+   m_VdWaveEnergyAtBreaking = vector<double>(nLen, 0);
 }
 
 
@@ -162,7 +162,7 @@ void CRWCoast::SetCoastlineGridCRS(CGeomILine const* pILCoastCells)
 // {
 //    m_ILCellsMarkedAsCoastline.Append(*pPti);
 // }
-// 
+//
 // void CRWCoast::AppendCellMarkedAsCoastline(int const nX, int const nY)
 // {
 //    m_ILCellsMarkedAsCoastline.Append(CGeom2DIPoint(nX, nY));
@@ -207,17 +207,17 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
          return nCoastPoint;
       }
    }
-   
+
    // This cell is not under a coastline, so try the adjacent cells
-   int 
+   int
       n = -1,
       nX = pPtiCell->nGetX(),
       nY = pPtiCell->nGetY(),
       nXAdj = 0,
       nYAdj = 0;
-      
+
    while (n <= 7)
-   {      
+   {
       switch (++n)
       {
          case 0:
@@ -253,7 +253,7 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
             nYAdj = nY-1;
             break;
       }
-      
+
       CGeom2DIPoint PtiTmp(nXAdj, nYAdj);
       for (int nCoastPoint = 0; nCoastPoint < m_ILCellsMarkedAsCoastline.nGetSize(); nCoastPoint++)
       {
@@ -263,8 +263,8 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
             return nCoastPoint;
          }
       }
-   }      
-   
+   }
+
    return INT_NODATA;
 }
 
@@ -410,7 +410,7 @@ int CRWCoast::nGetDownCoastProfileNumber(int const nProfile) const
       if (nProfile == m_VnProfileCoastIndex[n])
          return m_VnProfileCoastIndex[n+1];
    }
-   
+
    // At end of m_VnProfileCoastIndex, so no down-coast profile
    return INT_NODATA;
 }
@@ -559,7 +559,7 @@ CACoastLandform* CRWCoast::pGetCoastLandform(int const nCoastPoint)
 {
    if (nCoastPoint < static_cast<int>(m_pVLandforms.size()))
       return m_pVLandforms[nCoastPoint];
-   
+
    return NULL;
 }
 

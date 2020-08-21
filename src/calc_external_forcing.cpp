@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -52,7 +52,7 @@ int CSimulation::nCalcExternalForcing(void)
          nTideDataCount = 0;
 
       m_dThisTimestepSWL = m_dOrigSWL + m_VdTideData[nTideDataCount] + m_dAccumulatedSeaLevelChange;
-   
+
       // cout << m_dThisTimestepSWL << endl;
       nTideDataCount++;
    }
@@ -60,12 +60,12 @@ int CSimulation::nCalcExternalForcing(void)
    // Update min and max still water levels
    m_dMaxSWL = tMax(m_dThisTimestepSWL, m_dMaxSWL);
    m_dMinSWL = tMin(m_dThisTimestepSWL, m_dMinSWL);
-   
+
    // Update the wave height, orientation and period for this time step and start again with the first record if we do not have enough
    if (! m_bSingleDeepWaterWaveValues)
    {
       // We have wave time series data: the number of time steps is total size divided by the number of points
-      int nWaveTimeSteps = static_cast<int>(m_VdDeepWaterWavePointHeightTS.size()) / static_cast<int>(m_VnDeepWaterWavePointID.size());     
+      int nWaveTimeSteps = static_cast<int>(m_VdDeepWaterWavePointHeightTS.size()) / static_cast<int>(m_VnDeepWaterWavePointID.size());
       static int nWaveDataCount = 0;
 
        if (nWaveDataCount > nWaveTimeSteps-1)
@@ -73,21 +73,21 @@ int CSimulation::nCalcExternalForcing(void)
           // Wrap the tide data, i.e. start again with the first record if we do not have enough
           nWaveDataCount = 0;
        }
-      
+
       // Update this time step deep water wave values: the order on the vector is determined by the points ID i.e. to ensure that stations match with time series
-      int 
+      int
       nNumberDeepWaterWaveStations = static_cast<int>(m_VnDeepWaterWavePointID.size()),
          nTot = nNumberDeepWaterWaveStations * nWaveDataCount;
-         
+
       for (int j = 0; j < nNumberDeepWaterWaveStations; j++)
       {
          m_VdDeepWaterWavePointHeight[j] = m_VdDeepWaterWavePointHeightTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
          m_VdDeepWaterWavePointAngle[j]  = m_VdDeepWaterWavePointAngleTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
          m_VdDeepWaterWavePointPeriod[j] = m_VdDeepWaterWavePointPeriodTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
       }
-      
+
       nWaveDataCount++;
    }
-   
+
    return RTN_OK;
 }

@@ -5,7 +5,7 @@
  * \details The CGeom2DPoint geometry class is used to represent 2D points where the x and y co-ordinates are floating-point values, e.g. points for which the x and y co-ordinates are in the external CRS (co-ordinate reference system)
  * \author David Favis-Mortlock
  * \author Andres Payo
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  * \file 2d_point.h
@@ -35,14 +35,14 @@ public:
    CGeom2DPoint(void);
    CGeom2DPoint(double const, double const);
    CGeom2DPoint(CGeom2DPoint const&);        // Copy constructor defined explicitly, to stop cppcheck from complaining
-   
+
    double dGetX(void) const;
    double dGetY(void) const;
    void SetX(double const);
    void SetY(double const);
 //    void SetXY(double const, double const);
 //    void SetXY(CGeom2DPoint const*);
-   
+
    void operator= (CGeom2DPoint*);
    bool operator== (CGeom2DPoint*) const;
    bool operator!= (CGeom2DPoint*) const;

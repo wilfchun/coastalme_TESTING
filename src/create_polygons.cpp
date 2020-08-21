@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -416,7 +416,7 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
 {
    // Do this for every coast
    for (int nCoast = 0; nCoast < static_cast<int>(m_VCoast.size()); nCoast++)
-   {      
+   {
       int nNumPolygons = m_VCoast[nCoast].nGetNumPolygons();
 
       // Do this for every coastal polygon
@@ -427,18 +427,18 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
          vector<int>
             nVUpCoastAdjacentPolygon,
             nVDownCoastAdjacentPolygon;
-         
+
          vector<double>
             dVUpCoastBoundaryShare,
             dVDownCoastBoundaryShare;
-         
+
          // First deal with up-coast adjacent polygons
          if (nPoly == 0)
          {
             // We are at the start of the coastline, no other polygon is adjacent to the up-coast profile of the start-of-coast polygon
             nVUpCoastAdjacentPolygon.push_back(INT_NODATA);
             dVUpCoastBoundaryShare.push_back(1);
-            
+
             // Store in the polygon
             pPolygon->SetUpCoastAdjacentPolygons(&nVUpCoastAdjacentPolygon);
             pPolygon->SetUpCoastAdjacentPolygonBoundaryShares(&dVUpCoastBoundaryShare);
@@ -449,63 +449,63 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
             int
                nProfile = pPolygon->nGetUpCoastProfile(),
                nPointsInProfile = pPolygon->nGetUpCoastProfileNumPointsUsed();
-            
+
             double dUpCoastTotBoundaryLen = 0;
-            
+
             CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
-            
+
             for (int nPoint = 0; nPoint < nPointsInProfile-1; nPoint++)
             {
                CGeom2DPoint
                   PtStart = *pProfile->pPtGetPointInProfile(nPoint),
                   PtEnd = *pProfile->pPtGetPointInProfile(nPoint+1);
-               
+
                // Calculate the length of this segment of the normal profile. Note that it should not be zero, since we checked for duplicate points when creating profiles
                double dDistBetween = dGetDistanceBetween(&PtStart, &PtEnd);
-               
+
                // Find out which polygon is adjacent to each line segment of the polygon's up-coast profile boundary. The basic approach used is to count the number of coincident profiles in each line segment, and (because we are going up-coast) subtract this number from 'this' polygon's number. However, some of these coincident profiles may be invalid, so we must count only the valid co-incident profiles
-               int 
+               int
                   nNumCoinc = pProfile->nGetNumCoincidentProfilesInLineSegment(nPoint),
                   nNumValidCoinc = 0;
-                  
+
                for (int nCoinc = 0; nCoinc < nNumCoinc; nCoinc++)
                {
                   int nProf = pProfile->nGetCoincidentProfileForLineSegment(nPoint, nCoinc);
                   CGeomProfile* pProf = m_VCoast[nCoast].pGetProfile(nProf);
-                  
+
                   if (pProf->bProfileOK())
                      nNumValidCoinc++;
-               }               
-               
+               }
+
                // First stab at calculating the number of the adjacent polygon
                int nAdj = nPoly - nNumValidCoinc;
-               
+
                // However, if 'this' polygon is close to the start of the coastline, we get polygon numbers below zero i.e. beyond the start of the coastline. If this happens, set the adjacent polygon to 'off-edge'
                if (nAdj < 0)
                   nAdj = INT_NODATA;
-               
+
                nVUpCoastAdjacentPolygon.push_back(nAdj);
-               
+
                dUpCoastTotBoundaryLen += dDistBetween;
-               dVUpCoastBoundaryShare.push_back(dDistBetween); 
+               dVUpCoastBoundaryShare.push_back(dDistBetween);
             }
-            
+
             // Calculate the up-coast boundary share
             for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
                dVUpCoastBoundaryShare[n] /= dUpCoastTotBoundaryLen;
-            
+
             // Store in the polygon
             pPolygon->SetUpCoastAdjacentPolygons(&nVUpCoastAdjacentPolygon);
             pPolygon->SetUpCoastAdjacentPolygonBoundaryShares(&dVUpCoastBoundaryShare);
          }
-            
+
          // Now deal with down-coast adjacent polygons
          if (nPoly == nNumPolygons-1)
          {
             // We are at the end of the coastline, no other polygon is adjacent to the down-coast profile of the end-of-coast polygon
             nVDownCoastAdjacentPolygon.push_back(INT_NODATA);
             dVDownCoastBoundaryShare.push_back(1);
-            
+
             // Store in the polygon
             pPolygon->SetDownCoastAdjacentPolygons(&nVDownCoastAdjacentPolygon);
             pPolygon->SetDownCoastAdjacentPolygonBoundaryShares(&dVDownCoastBoundaryShare);
@@ -516,51 +516,51 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
             int
                nProfile = pPolygon->nGetDownCoastProfile(),
                nPointsInProfile = pPolygon->nGetDownCoastProfileNumPointsUsed();
-            
+
             double dDownCoastTotBoundaryLen = 0;
-            
+
             CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
-            
+
             for (int nPoint = 0; nPoint < nPointsInProfile-1; nPoint++)
             {
                CGeom2DPoint
                   PtStart = *pProfile->pPtGetPointInProfile(nPoint),
                   PtEnd = *pProfile->pPtGetPointInProfile(nPoint+1);
-               
+
                // Calculate the length of this segment of the normal profile. Note that it should not be zero, since we checked for duplicate points when creating profiles
                double dDistBetween = dGetDistanceBetween(&PtStart, &PtEnd);
-               
+
                // Find out which polygon is adjacent to each line segment of the polygon's down-coast profile boundary. The basic approach used is to count the number of coincident profiles in each line segment, and (because we are going down-coast) add this number to 'this' polygon's number. However, some of these coincident profiles may be invalid, so we must count only the valid co-incident profiles
-               int 
+               int
                   nNumCoinc = pProfile->nGetNumCoincidentProfilesInLineSegment(nPoint),
                   nNumValidCoinc = 0;
-               
+
                for (int nCoinc = 0; nCoinc < nNumCoinc; nCoinc++)
                {
                   int nProf = pProfile->nGetCoincidentProfileForLineSegment(nPoint, nCoinc);
                   CGeomProfile* pProf = m_VCoast[nCoast].pGetProfile(nProf);
-                  
+
                   if (pProf->bProfileOK())
                      nNumValidCoinc++;
-               }               
-               
+               }
+
                // First stab at calculating the number of the adjacent polygon
                int nAdj = nPoly + nNumValidCoinc;
-               
-               // However, if 'this' polygon is close to the end of the coastline, we get polygon numbers greater than the number of polygons i.e. beyond the end of the coastline. If this happens, set the adjacent polygon to 'off-edge'               
+
+               // However, if 'this' polygon is close to the end of the coastline, we get polygon numbers greater than the number of polygons i.e. beyond the end of the coastline. If this happens, set the adjacent polygon to 'off-edge'
                if (nAdj >= nNumPolygons)
                   nAdj = INT_NODATA;
-               
+
                nVDownCoastAdjacentPolygon.push_back(nAdj);
 
                dDownCoastTotBoundaryLen += dDistBetween;
                dVDownCoastBoundaryShare.push_back(dDistBetween);
             }
-            
+
             // Calculate the down-coast boundary share
             for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
                dVDownCoastBoundaryShare[n] /= dDownCoastTotBoundaryLen;
-            
+
             // Store in the polygon
             pPolygon->SetDownCoastAdjacentPolygons(&nVDownCoastAdjacentPolygon);
             pPolygon->SetDownCoastAdjacentPolygonBoundaryShares(&dVDownCoastBoundaryShare);
@@ -571,39 +571,39 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
 
          // And store it
          m_VCoast[nCoast].AppendPolygonLength(dPolygonSeawardLen);
-            
+
          // DEBUG CODE ======================================================
          assert(dVUpCoastBoundaryShare.size() == nVUpCoastAdjacentPolygon.size());
          assert(dVDownCoastBoundaryShare.size() == nVDownCoastAdjacentPolygon.size());
-         
+
          //             LogStream << m_ulIteration << ": polygon = " << nPoly << (pPolygon->bIsPointed() ? " IS TRIANGULAR" : "") << endl;
          LogStream << m_ulIteration << ": coast " << nCoast << " polygon " << nPoly << endl;
-         
+
          LogStream << "\tThere are " << nVUpCoastAdjacentPolygon.size() << " UP-COAST adjacent polygon(s) = ";
          for (unsigned int n = 0; n < nVUpCoastAdjacentPolygon.size(); n++)
             LogStream << nVUpCoastAdjacentPolygon[n] << " ";
          LogStream << endl;
-         
+
          LogStream << "\tThere are " << nVDownCoastAdjacentPolygon.size() << " DOWN-COAST adjacent polygon(s) = ";
          for (unsigned int n = 0; n < nVDownCoastAdjacentPolygon.size(); n++)
             LogStream << nVDownCoastAdjacentPolygon[n] << " ";
          LogStream << endl;
-         
+
          LogStream << "\tUP-COAST boundary share(s) = ";
          for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
             LogStream << dVUpCoastBoundaryShare[n] << " ";
          LogStream << endl;
 //          LogStream << "\tTotal UP-COAST boundary length = " << dUpCoastTotBoundaryLen << endl;
-         
+
          LogStream << "\tDOWN-COAST boundary share(s) = ";
          for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
             LogStream << dVDownCoastBoundaryShare[n] << " ";
          LogStream << endl;
 //          LogStream << "\tTotal DOWN-COAST boundary length = " << dDownCoastTotBoundaryLen << endl;
-         // DEBUG CODE ======================================================               
+         // DEBUG CODE ======================================================
       }
    }
-   
+
    return RTN_OK;
 }
 
@@ -659,7 +659,7 @@ bool CSimulation::bIsWithinPolygon(CGeom2DPoint const* pPtStart, vector<CGeom2DP
 ===============================================================================================================================*/
 CGeom2DPoint CSimulation::PtFindPointInPolygon(vector<CGeom2DPoint> const* pPtPoints, int const nStartPoint)
 {
-   int 
+   int
       nPolySize = static_cast<int>(pPtPoints->size()),
       nOffSet = 0;
    CGeom2DPoint PtStart;

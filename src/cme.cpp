@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -42,7 +42,7 @@ int main (int argc, char* argv[])
    // Run the simulation and then check how it ends
    int nRtn = pSimulation->nDoSimulation(argc, argv);
    pSimulation->DoSimulationEnd(nRtn);
-   
+
    // Get rid of the CSimulation object and close files
    delete pSimulation;
 

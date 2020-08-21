@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -49,7 +49,7 @@ CGeomCell::CGeomCell()
    m_dWaveOrientation(DBL_NODATA),
    m_dTotWaveOrientation(DBL_NODATA),
    m_dDeepWaterWaveHeight(DBL_NODATA),
-   m_dDeepWaterWaveOrientation(DBL_NODATA),   
+   m_dDeepWaterWaveOrientation(DBL_NODATA),
    m_dBeachProtectionFactor(DBL_NODATA),
    m_dSuspendedSediment(0),
    m_dTotSuspendedSediment(0),
@@ -80,7 +80,7 @@ CGeomCell::~CGeomCell(void)
 
 void CGeomCell::SetBoundingBoxEdge(int const nDirection)
 {
-   m_nBoundingBoxEdge = nDirection;   
+   m_nBoundingBoxEdge = nDirection;
 }
 
 int CGeomCell::nGetBoundingBoxEdge(void) const
@@ -227,7 +227,7 @@ bool CGeomCell::bIsinThisShadowZone(int const nZone) const
 {
    if (m_nShadowZoneNumber == nZone)
       return true;
-   
+
    return false;
 }
 
@@ -235,7 +235,7 @@ bool CGeomCell::bIsinAnyShadowZone(void) const
 {
    if (m_nShadowZoneNumber != 0)
       return true;
-   
+
    return false;
 }
 
@@ -287,7 +287,7 @@ bool CGeomCell::bBasementElevIsMissingValue(void) const
 {
    if (m_dBasementElevation == m_pGrid->pGetSim()->CSimulation::dGetMissingValue())
       return true;
-   
+
    return false;
 }
 
@@ -391,7 +391,7 @@ double CGeomCell::dGetSedimentTopElev(void) const
    return m_VdAllHorizonTopElev.back();
 }
 
-//! Returns the true elevation of the sediment's top surface for this cell (if there is a cliff notch, ignore the missing volume) plus the height of any intervention 
+//! Returns the true elevation of the sediment's top surface for this cell (if there is a cliff notch, ignore the missing volume) plus the height of any intervention
 double CGeomCell::dGetSedimentPlusInterventionTopElev(void) const
 {
    return m_VdAllHorizonTopElev.back() + m_dInterventionHeight;
@@ -466,7 +466,7 @@ void CGeomCell::CalcAllLayerElevsAndD50(void)
 {
    m_VdAllHorizonTopElev.clear();
    m_VdAllHorizonTopElev.push_back(m_dBasementElevation);      // Elevation of top of the basement
-   
+
    // Calculate the elevation of the top of all other layers
    int m = 0;
    for (unsigned int n = 0; n < m_VLayerAboveBasement.size(); n++)
@@ -500,13 +500,13 @@ int CGeomCell::nGetLayerAtElev(double const dElev) const
    /*! Returns ELEV_IN_BASEMENT if in basement, ELEV_ABOVE_SEDIMENT_TOP if higher than or equal to sediment top, or layer number (0 to n),  */
    if (dElev < m_VdAllHorizonTopElev[0])
       return ELEV_IN_BASEMENT;
-   
+
    for (unsigned int nLayer = 1; nLayer < m_VdAllHorizonTopElev.size(); nLayer++)
    {
       if ((m_VLayerAboveBasement[nLayer-1].dGetTotalThickness() > 0) && (dElev >= m_VdAllHorizonTopElev[nLayer-1]) && (dElev <= m_VdAllHorizonTopElev[nLayer]))
          return (nLayer-1);
    }
-   
+
    return ELEV_ABOVE_SEDIMENT_TOP;
 }
 
@@ -574,16 +574,16 @@ void CGeomCell::InitCell(void)
    m_bInContiguousSea            =
    m_bCoastline                  =
    m_bIsInActiveZone             =
-   m_bEstimated                  = 
-   m_bShadowBoundary             = 
+   m_bEstimated                  =
+   m_bShadowBoundary             =
    m_bPossibleCoastStartCell      = false;
 
    m_nPolygonID                  =
    m_nCoastlineNormal            = INT_NODATA;
-   
+
    m_nShadowZoneNumber           =
    m_nDownDriftZoneNumber        = 0;
-   
+
    m_dLocalConsSlope             =
    m_dPotentialPlatformErosion   =
    m_dActualPlatformErosion      =
@@ -831,7 +831,7 @@ void CGeomCell::SetInterventionClass(int const nSubCatCode)
    if (nSubCatCode != LF_NONE)
    {
       this->m_Landform.SetLFCategory(LF_CAT_INTERVENTION);
-      
+
       if (nSubCatCode == IO_INTERVENTION_STRUCT)
          this->m_Landform.SetLFSubCategory(LF_SUBCAT_INTERVENTION_STRUCT);
       else if (nSubCatCode == IO_INTERVENTION_NON_STRUCT)
@@ -843,7 +843,7 @@ void CGeomCell::SetInterventionClass(int const nSubCatCode)
 int CGeomCell::nGetInterventionClass(void) const
 {
    int nTmp = INT_NODATA;
-   
+
    if (this->m_Landform.nGetLFCategory() == LF_CAT_INTERVENTION)
    {
       if (this->m_Landform.nGetLFSubCategory() == LF_SUBCAT_INTERVENTION_STRUCT)
@@ -851,7 +851,7 @@ int CGeomCell::nGetInterventionClass(void) const
       else if (this->m_Landform.nGetLFSubCategory() == LF_SUBCAT_INTERVENTION_NON_STRUCT)
          nTmp = IO_INTERVENTION_NON_STRUCT;
    }
-   
+
    return nTmp;
 }
 
@@ -870,6 +870,6 @@ double CGeomCell::dGetInterventionHeight(void) const
 //! Returns the elevation of the top of the intervention, assuming it rests on the sediment-top surface
 double CGeomCell::dGetInterventionTopElev(void) const
 {
-   return m_VdAllHorizonTopElev.back() + m_dInterventionHeight;   
+   return m_VdAllHorizonTopElev.back() + m_dInterventionHeight;
 }
 

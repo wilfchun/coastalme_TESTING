@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  * \file i_line.h
@@ -35,15 +35,15 @@ class CGeomILine : public CA2DIShape
 public:
    CGeomILine(void);
    ~CGeomILine(void);
-   
+
    CGeom2DIPoint* pPtiGetAt(int const);
 //    int nGetXAt(int const);
 //    int nGetYAt(int const);
    void SetXAt(int const, int const);
    void SetYAt(int const, int const);
-   
+
    bool bIsPresent(int const, int const);
-   
+
    void Display(void);
 
 };

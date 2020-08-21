@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  * \file profile.h
@@ -131,14 +131,14 @@ public:
    void AppendCellInProfileExtCRS(CGeom2DPoint const*);
 //    vector<CGeom2DPoint>* PtVGetCellsInProfileExtCRS(void);
 
-   int nGetCellGivenDepth(CGeomRasterGrid const*, double const);   
-   
+   int nGetCellGivenDepth(CGeomRasterGrid const*, double const);
+
    void SetDeepWaterWaveHeight(double const);
    double dGetDeepWaterWaveHeight(void) const;
-   
+
    void SetDeepWaterWaveOrientation(double const);
    double dGetDeepWaterWaveOrientation(void) const;
-   
+
    void SetDeepWaterWavePeriod(double const);
    double dGetDeepWaterWavePeriod(void) const;
 };

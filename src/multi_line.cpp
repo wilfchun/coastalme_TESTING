@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -173,7 +173,7 @@ int CGeomMultiLine::nGetNumCoincidentProfilesInLineSegment(int const nSegment)
 bool CGeomMultiLine::bFindProfileInCoincidentProfilesOfLastLineSegment(int const nProfile)
 {
    long unsigned int nLineSegSize = m_prVVLineSegment.size();
-      
+
    // Note no check to ensure that nLineSegSize < 0
    long unsigned int nCoincidentSize = m_prVVLineSegment[nLineSegSize-1].size();
 

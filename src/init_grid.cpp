@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -120,7 +120,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
 
             // For the first timestep only, calculate the elevation of all this cell's layers. During the rest of the simulation, each cell's elevation is re-calculated just after any change occurs on that cell
             m_pRasterGrid->m_Cell[nX][nY].CalcAllLayerElevsAndD50();
-            
+
             if (m_bSingleDeepWaterWaveValues)
             {
                // All cells have same value for deep water wave height, deep water wave orientation, and deep water period and these values are unchanged throughout the simulation
@@ -138,7 +138,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
       int nRet = nInterpolateAllDeepWaterWaveValues();
       if (nRet != RTN_OK)
          return nRet;
-        
+
       /*for (int n = 0; n < m_VulDeepWaterWaveValuesAtTimestep.size(); n++)
       {
          if (m_ulIteration == m_VulDeepWaterWaveValuesAtTimestep[n])
@@ -146,9 +146,9 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
             // OK, this timestep we are doing the calculation
             if (m_VulDeepWaterWaveValuesAtTimestep[n] > 1)
             {
-               // For every timestep after the first, read in new values before doing the interpolation  TODO              
+               // For every timestep after the first, read in new values before doing the interpolation  TODO
             }
-            
+
             // Interpolate values each cell's values for deep water height and orientation from user-supplied values
             int nRet = nInterpolateAllDeepWaterWaveValues();
             if (nRet != RTN_OK)
@@ -156,7 +156,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
          }
       }*/
    }
-   
+
    if (nZeroThickness > 0)
    {
       cerr << m_ulIteration << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;

@@ -5,7 +5,7 @@
  * \details TODO This is a more detailed description of the CA2DShape abstract class.
  * \author David Favis-Mortlock
  * \author Andres Payo
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  * \file 2d_shape.h
@@ -43,13 +43,13 @@ protected:
 public:
    CA2DShape(void);
    virtual ~CA2DShape(void);
-   
+
    CGeom2DPoint& operator[] (int const);
-   
+
    void Clear(void);
    void Resize(int const);
    int nGetSize(void) const;
-   
+
    //    void InsertAtFront(double const, double const);
    void Append(CGeom2DPoint const*);
    void Append(double const, double const);
@@ -63,7 +63,7 @@ public:
    vector<CGeom2DPoint>* pPtVGetPoints(void);
 
    CGeom2DPoint PtGetCentroid(void);
-   
+
    void Reverse(void);
 
    virtual void Display() = 0;

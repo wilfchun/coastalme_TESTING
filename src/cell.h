@@ -5,7 +5,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  * \file cell.h
@@ -35,7 +35,7 @@
 class CGeomCell
 {
    friend class CSimulation;
-   
+
 private:
    bool
       m_bInContiguousSea,                    // Is a sea cell, contiguous with other sea cells
@@ -51,7 +51,7 @@ private:
       m_nCoastlineNormal,
       m_nShadowZoneNumber,
       m_nDownDriftZoneNumber;
-      
+
    double
       m_dLocalConsSlope,                     // As used in erosion calcs (really just for display purposes)
       m_dBasementElevation,                  // Elevation of basement surface (m)
@@ -114,17 +114,17 @@ public:
    void SetProfile(int const);
    int nGetProfile(void) const;
    bool bIsProfile(void) const;
-   
+
    void SetShadowZoneBoundary(void);
    bool bIsShadowZoneBoundary(void) const;
-   
+
    void SetBoundingBoxEdge(int const);
    int nGetBoundingBoxEdge(void) const;
    bool bIsBoundingBoxEdge(void) const;
-   
+
    void SetPossibleCoastStartCell(void);
    bool bIsPossibleCoastStartCell(void) const;
-   
+
    void SetPolygonID(int const);
    int nGetPolygonID(void) const;
 
@@ -157,15 +157,15 @@ public:
    double dGetTotWaveOrientation(void) const;
    void SetWavePeriod(double const);
    double dGetWavePeriod(void) const;
-   
-   
+
+
    void SetDeepWaterWaveHeight(double const);
    double dGetDeepWaterWaveHeight(void) const;
    void SetDeepWaterWaveOrientation(double const);
    double dGetDeepWaterWaveOrientation(void) const;
    void SetDeepWaterWavePeriod(double const);
    double dGetDeepWaterWavePeriod(void) const;
-   
+
    void SetWaveValuesToDeepWaterWaveValues(void);
 
    void SetBeachProtectionFactor(double const);
@@ -187,7 +187,7 @@ public:
    double dGetTotConsThickness(void) const;
    double dGetTotUnconsThickness(void) const;
    double dGetTotAllSedThickness(void) const;
-   
+
    void SetPotentialPlatformErosion(double const);
    double dGetPotentialPlatformErosion(void) const;
    double dGetTotPotentialPlatformErosion(void) const;
@@ -220,13 +220,13 @@ public:
    bool bBeachErosionOrDepositionThisTimestep(void) const;
 
    double dGetUnconsD50(void) const;
-   
+
    void SetInterventionClass(int const);
    int nGetInterventionClass(void) const;
    void SetInterventionHeight(double const);
    double dGetInterventionHeight(void) const;
    double dGetInterventionTopElev(void) const;
-   
+
    void SetShadowZoneNumber(int const);
    int nGetShadowZoneNumber(void) const;
    bool bIsinThisShadowZone(int const) const;

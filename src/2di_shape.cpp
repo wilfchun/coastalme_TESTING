@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -89,10 +89,10 @@ void CA2DIShape::Append(int const nX, int const nY)
 void CA2DIShape::AppendIfNotAlready(int const nX, int const nY)
 {
    CGeom2DIPoint PtiIn(nX, nY);
-   
+
    if (m_VPoints.empty())
       m_VPoints.push_back(PtiIn);
-   
+
    else if (m_VPoints.back() != &PtiIn)
       m_VPoints.push_back(PtiIn);
 }

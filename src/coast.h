@@ -5,7 +5,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  * \file coast.h
@@ -50,7 +50,7 @@ private:
       m_dCurvatureDetailedSTD,
       m_dCurvatureSmoothMean,
       m_dCurvatureSmoothSTD;
-      
+
    CGeomLine
       m_LCoastlineExtCRS;           // Smoothed line of points (external CRS) giving the plan view of the vector coast
 
@@ -74,7 +74,7 @@ private:
       m_VdDepthOfBreaking,          // The depth of breaking on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdFluxOrientation,          // As in the COVE model, is the orientation alongshore energy/sediment movement; a +ve flux is in direction of increasing indices along coast. At each point on m_LCoastlineExtCRS
       m_VdWaveEnergyAtBreaking;               // Wave energy at each point on m_LCoastlineExtCRS
-      
+
    vector<CACoastLandform*>
       m_pVLandforms;                // Pointer to a coastal landform object, at each point on m_LCoastlineExtCRS
 
@@ -91,7 +91,7 @@ private:
       m_LShadowBoundary;            // Lines which delineate the edge of a shadow zone, ext CRS
    vector<CGeomLine>
       m_LShadowDowndriftBoundary;         // Lines which delineate the edge of a downdrift zone, ext CRS
-      
+
 public:
    CRWCoast(void);
    ~CRWCoast(void);
@@ -109,12 +109,12 @@ public:
    void AppendPointToCoastlineExtCRS(double const, double const);
    CGeomLine* pLGetCoastlineExtCRS(void);
    CGeom2DPoint* pPtGetCoastlinePointExtCRS(int const);
-   
+
    int nGetCoastlineSize(void) const;
 //    double dGetCoastlineSegmentLength(int const, int const);
 //    double dGetCoastlineLengthSoFar(int const);
 //    void DisplayCoastline(void);
-   
+
    void SetCoastlineGridCRS(CGeomILine const*);
 //    void AppendCellMarkedAsCoastline(CGeom2DIPoint const*);
 //    void AppendCellMarkedAsCoastline(int const, int const);
@@ -136,7 +136,7 @@ public:
    double dGetSmoothCurvatureMean(void) const;
    void SetSmoothCurvatureSTD(double const);
    double dGetSmoothCurvatureSTD(void) const;
-   
+
    CGeomProfile* pGetProfile(int const);
    void AppendProfile(int const, int const);
 //    void ReplaceProfile(int const, vector<CGeom2DPoint> const*);
@@ -146,12 +146,12 @@ public:
 
    void CreateAlongCoastProfileIndex(void);
    int nGetProfileFromAlongCoastProfileIndex(int const) const;
-   int nGetDownCoastProfileNumber(int const nProfile) const;   
+   int nGetDownCoastProfileNumber(int const nProfile) const;
 //    int nGetAlongCoastlineIndexOfProfile(int const);
 
    void SetDeepWaterWaveHeight(int const, double const);
    double dGetDeepWaterWaveHeight(int const) const;
-   
+
    void SetDeepWaterWaveOrientation(int const, double const);
    double dGetDeepWaterWaveOrientation(int const) const;
 
@@ -163,22 +163,22 @@ public:
 
    void SetCoastWaveHeight(int const, double const);
    double dGetCoastWaveHeight(int const) const;
-   
+
    void SetBreakingWaveOrientation(int const, double const);
    double dGetBreakingWaveOrientation(int const) const;
-   
+
    void SetDepthOfBreaking(int const, double const);
    double dGetDepthOfBreaking(int const) const;
-   
+
    void SetBreakingDistance(int const, int const);
    int nGetBreakingDistance(int const) const;
-   
+
    void SetFluxOrientation(int const, double const);
    double dGetFluxOrientation(int const) const;
-   
+
    void SetWaveEnergyAtBreaking(int const, double const);
    double dGetWaveEnergyatBreaking(int const) const;
-   
+
    void AppendCoastLandform(CACoastLandform*);
    CACoastLandform* pGetCoastLandform(int const);
 
@@ -190,11 +190,11 @@ public:
 
    void AppendPolygonLength(const double);
    double dGetPolygonLength(int const) const;
-   
+
    int nGetNumShadowBoundaries(void);
    void AppendShadowBoundary(const CGeomLine);
    CGeomLine* pGetShadowBoundary(int const);
-   
+
    int nGetNumShadowDowndriftBoundaries(void);
    void AppendShadowDowndriftBoundary(const CGeomLine);
    CGeomLine* pGetShadowDowndriftBoundary(int const);

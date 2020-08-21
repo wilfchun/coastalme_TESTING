@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -47,7 +47,7 @@ CRWCellSediment::CRWCellSediment(CRWCellSediment const& OtherSediment)
    m_dSand            = OtherSediment.m_dSand;
    m_dNotchSandLost   = OtherSediment.m_dNotchSandLost;
    m_dCoarse          = OtherSediment.m_dCoarse;
-   m_dNotchCoarseLost = OtherSediment.m_dNotchCoarseLost;   
+   m_dNotchCoarseLost = OtherSediment.m_dNotchCoarseLost;
 }
 
 //! Sets one CRWCellSediment object equal to another

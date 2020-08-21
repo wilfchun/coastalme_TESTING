@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -54,12 +54,12 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
          CACoastLandform* pCoastLandform = m_VCoast[i].pGetCoastLandform(j);
 
          // Update accumulated wave energy for the coastal landform object
-         double 
+         double
             dWaveHeightAtCoast = m_VCoast[i].dGetCoastWaveHeight(j),
             dDeepWaterWavePeriod = m_VCoast[i].dGetDeepWaterWavePeriod(j),
             dWaveErosiveForce = pow(dWaveHeightAtCoast, WALKDEN_HALL_PARAM_1) * pow(dDeepWaterWavePeriod, WALKDEN_HALL_PARAM_2),
             dWaveEnergy = dWaveErosiveForce * m_dTimeStep * 3600;
-    
+
 //          assert(bIsFinite(dWaveEnergy));
          pCoastLandform->IncTotAccumWaveEnergy(dWaveEnergy);
 

@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -49,7 +49,7 @@ using std::setiosflags;
 int CSimulation::nDoAllShorePlatFormErosion(void)
 {
    // TODO Only do potential erosion if cell is in a polygon
-   
+
    static bool bForward = true;
 
    // Do this for each coast
@@ -381,7 +381,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       if ((nDirection == DIRECTION_UPCOAST) && (nThisPointOnCoast < 0))
       {
 //         LogStream << m_ulIteration << ": LEAVING LOOP since hit nThisPointOnCoast = " << nThisPointOnCoast << " while doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile = " << nProfile << ", dist from profile = " <<  nDistFromProfile << endl;
-         
+
          break;
       }
 
@@ -389,7 +389,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       if ((nDirection == DIRECTION_DOWNCOAST) && (nThisPointOnCoast >= nCoastMax))
       {
 //         LogStream << m_ulIteration << ": LEAVING LOOP since hit nThisPointOnCoast = " << nThisPointOnCoast << " while doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile = " << nProfile << ", dist from profile = " <<  nDistFromProfile << endl;
-         
+
          break;
       }
 
@@ -400,7 +400,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       {
          // This parallel profile is not in the active zone, so no platform erosion here. Move on to the next point along the coastline in this direction
          LogStream << m_ulIteration << ": not in active zone at coastline " << nCoast << " coast point " << nThisPointOnCoast << " when constructing parallel profile for potential platform erosion. Working from profile " << nProfile << ", " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast, dist from profile = " <<  nDistFromProfile << endl;
-         
+
          continue;
       }
 
@@ -476,7 +476,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
 //             LogStream << m_ulIteration << " : [" << nXPar << "][" << nYPar << "] is not inundated" << endl;
             continue;
          }
-         
+
          // Is this cell in a polygon?
          int nPolyID = m_pRasterGrid->m_Cell[nXPar][nYPar].nGetPolygonID();
          if (nPolyID == INT_NODATA)
@@ -520,7 +520,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       dVParConsSlope[nParProfSize-1] = dVParConsSlope[nParProfSize-2];
 
       if (m_nProfileSmoothWindow > 0)
-      {   
+      {
          // Smooth the vector of slopes for the consolidated-only profile
          dVParConsSlope = dVSmoothProfileSlope(&dVParConsSlope);
       }
@@ -682,7 +682,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
 void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
 {
 //    LogStream << m_ulIteration << ": doing platform erosion on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
-   
+
    // Get the beach protection factor, which quantifies the extent to which unconsolidated sediment on the shore platform (beach) protects the shore platform
    double const dBeachProtectionFactor = m_pRasterGrid->m_Cell[nX][nY].dGetBeachProtectionFactor();
    if (dBeachProtectionFactor == 0)

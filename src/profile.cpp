@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -424,7 +424,7 @@ void CGeomProfile::AppendCellInProfileExtCRS(CGeom2DPoint const* pPt)
 int CGeomProfile::nGetCellGivenDepth(CGeomRasterGrid const* pGrid, double const dDepthIn)
 {
    int nIndex = INT_NODATA;      // If not found, i.e. if every profile cell has sea depth less than dDepthIn
-   
+
    for (unsigned int n = 0; n < m_VCellInProfile.size(); n++)
    {
       int
@@ -435,14 +435,14 @@ int CGeomProfile::nGetCellGivenDepth(CGeomRasterGrid const* pGrid, double const 
       if (dCellDepth >= dDepthIn)
       {
          nIndex = n;
-         
+
          if (n > 0)
             nIndex = n-1;                            // Grid CRS units
-            
+
          break;
       }
    }
-   
+
    return nIndex;
 }
 

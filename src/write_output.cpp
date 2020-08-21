@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -170,7 +170,7 @@ void CSimulation::WriteStartRunDetails(void)
       }
    }
    OutStream << endl;
-   
+
    OutStream << " Grid edge(s) to omit when searching for coastline         \t: " << (m_bOmitSearchNorthEdge ? "N" : "") << (m_bOmitSearchSouthEdge ? "S" : "") << (m_bOmitSearchWestEdge ? "W" : "") << (m_bOmitSearchEastEdge ? "E" : "") << endl;
 
    if (m_nCoastSmooth != SMOOTH_NONE)
@@ -324,13 +324,13 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << " None" << endl;
    else
    {
-      
+
       OutStream << " Deep water wave stations shapefile                        \t: " << m_strDeepWaterWaveStationsFile << endl;
       OutStream << " GDAL/OGR deep water wave stations shapefile driver code   \t: " << m_strOGRDWWVDriverCode << endl;
       OutStream << " GDAL/OGR deep water wave stations shapefile data type     \t: " << m_strOGRDWWVDataType << endl;
       OutStream << " GDAL/OGR deep water wave stations shapefile geometry      \t: " << m_strOGRDWWVGeometry << endl;
       OutStream << " Deep water wave values file                               \t: " << m_strDeepWaterWaveValuesFile << endl;
-      
+
       if (m_dWaveDataWrapHours > 0)
          OutStream << " Deep water wave values will wrap every " << m_dWaveDataWrapHours << " hours" << endl;
    }
@@ -353,7 +353,7 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << " Deep water wave height                                    \t: " << m_dAllCellsDeepWaterWaveHeight << " m" << endl;
       OutStream << " Deep water wave orientation                               \t: " << m_dAllCellsDeepWaterWaveOrientation << " degrees" << endl;
       OutStream << " Wave period                                               \t: " << m_dAllCellsDeepWaterWavePeriod << " s" << endl;
-   
+
    }
    else
    {
@@ -636,7 +636,7 @@ bool CSimulation::bWriteTSFiles(void)
       if (ErosionTSStream.fail())
          return false;
    }
-   
+
    // Cliff collapse erosion (fine, sand, and coarse)
    if (m_bCliffCollapseErosionTS)
    {
@@ -659,50 +659,50 @@ bool CSimulation::bWriteTSFiles(void)
          return false;
    }
 
-   // Cliff collapse net 
+   // Cliff collapse net
    if (m_bCliffCollapseNetTS)
    {
       // Output as is (m depth equivalent)
       CliffCollapseNetTSStream << noshowpos << m_dSimElapsed << "\t,\t" << showpos << -m_dThisTimestepCliffErosionFine + (m_dThisTimestepCliffDepositionSand - m_dThisTimestepCliffTalusSandErosion) + (m_dThisTimestepCliffDepositionCoarse - m_dThisTimestepCliffTalusCoarseErosion) << endl;
-      
+
       // Did a time series file write error occur?
       if (CliffCollapseNetTSStream.fail())
          return false;
    }
-   
+
    // Beach erosion (fine, sand, and coarse)
    if (m_bBeachErosionTS)
    {
       // Output as is (m depth equivalent)
       BeachErosionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepActualBeachErosionFine << ",\t" << m_dThisTimestepActualBeachErosionSand << ",\t" << m_dThisTimestepActualBeachErosionCoarse << endl;
-      
+
       // Did a time series file write error occur?
       if (BeachErosionTSStream.fail())
          return false;
    }
-   
+
    // Beach deposition (sand and coarse)
    if (m_bBeachDepositionTS)
    {
       // Output as is (m depth equivalent)
       BeachDepositionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepBeachDepositionSand << ",\t" << m_dThisTimestepBeachDepositionCoarse << endl;
-      
+
       // Did a time series file write error occur?
       if (BeachDepositionTSStream.fail())
          return false;
    }
-   
+
    // Net change in beach sediment
    if (m_bBeachSedimentChangeNetTS)
    {
       // Output as is (m depth equivalent)
       BeachSedimentChangeNetTSStream << noshowpos << m_dSimElapsed << "\t,\t" << showpos << -m_dThisTimestepActualBeachErosionFine + (m_dThisTimestepBeachDepositionSand - m_dThisTimestepActualBeachErosionSand) + (m_dThisTimestepBeachDepositionCoarse - m_dThisTimestepActualBeachErosionCoarse) << endl;
-      
+
       // Did a time series file write error occur?
       if (BeachSedimentChangeNetTSStream.fail())
          return false;
    }
-   
+
    if (m_bSuspSedTS)
    {
       // Output as is (m depth equivalent)
@@ -1003,16 +1003,16 @@ int CSimulation::nWriteEndRunDetails(void)
    long double ldActualTotalEroded = m_ldGTotFineActualPlatformErosion + m_ldGTotSandActualPlatformErosion + m_ldGTotCoarseActualPlatformErosion + m_ldGTotCliffCollapseFine + m_ldGTotCliffCollapseSand + m_ldGTotCliffCollapseCoarse + m_ldGTotCliffTalusFineErosion + m_ldGTotCliffTalusSandErosion + m_ldGTotCliffTalusCoarseErosion + m_ldGTotActualFineBeachErosion + m_ldGTotActualSandBeachErosion + m_ldGTotActualCoarseBeachErosion;
    OutStream << "Total sediment eroded (all processes) = " << ldActualTotalEroded * m_dCellArea << " m^3" << endl;
 
-   long double ldTotalDepositedAndSuspension = m_ldGTotCliffTalusSandDeposition + m_ldGTotCliffTalusCoarseDeposition + m_ldGTotSandBeachDeposition + m_ldGTotCoarseBeachDeposition + m_ldGTotSuspendedSediment; 
+   long double ldTotalDepositedAndSuspension = m_ldGTotCliffTalusSandDeposition + m_ldGTotCliffTalusCoarseDeposition + m_ldGTotSandBeachDeposition + m_ldGTotCoarseBeachDeposition + m_ldGTotSuspendedSediment;
    OutStream << "Total sediment deposited and in suspension (all processes) = " << ldTotalDepositedAndSuspension * m_dCellArea << " m^3" << endl;
 
    long double ldTotalLost = m_ldGTotActualFineSedLostBeachErosion + m_ldGTotActualSandSedLostBeachErosion + m_ldGTotActualCoarseSedLostBeachErosion + m_ldGTotSandSedLostCliffCollapse + m_ldGTotCoarseSedLostCliffCollapse;
    OutStream << "Total sediment lost from grid (all processes) = " << ldTotalLost * m_dCellArea << " m^3" << endl;
    OutStream << "                                              = " << ldTotalLost * m_dCellArea / m_dSimDuration << " m^3/hour" << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(4);   
+   OutStream << setiosflags(ios::fixed) << setprecision(4);
    OutStream << "                                              = " << ldTotalLost * m_dCellArea / (m_dSimDuration * 3600) << " m^3/sec" << endl << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(2);   
-   
+   OutStream << setiosflags(ios::fixed) << setprecision(2);
+
    OutStream << "NOTE: grid edge option is ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
       OutStream << "CLOSED, therefore values above are for fine sediment only";
@@ -1041,23 +1041,23 @@ int CSimulation::nWriteEndRunDetails(void)
 
    // Write to log file
    LogStream << "END OF RUN ================================================================================================" << endl << endl;
-   
+
    LogStream << "ERRORS" << endl;
    LogStream << "Erosion error = " << m_ldGTotMassBalanceErosionError << " m^3" << endl;
    LogStream << "Deposition error = " << m_ldGTotMassBalanceDepositionError << " m^3" << endl;
    LogStream << endl;
-   
+
    LogStream << "ALL-PROCESS TOTALS" << endl;
    LogStream << "Total sediment eroded (all processes) = " << ldActualTotalEroded * m_dCellArea << " m^3" << endl;
-   
+
    LogStream << "Total sediment deposited and in suspension (all processes) = " << ldTotalDepositedAndSuspension * m_dCellArea << " m^3" << endl;
-   
+
    LogStream << "Total sediment lost from grid (all processes) = " << ldTotalLost * m_dCellArea << " m^3" << endl;
    LogStream << "                                              = " << ldTotalLost * m_dCellArea / m_dSimDuration << " m^3/hour" << endl;
-   LogStream << setiosflags(ios::fixed) << setprecision(4);   
+   LogStream << setiosflags(ios::fixed) << setprecision(4);
    LogStream << "                                              = " << ldTotalLost * m_dCellArea / (m_dSimDuration * 3600) << " m^3/sec" << endl << endl;
-   LogStream << setiosflags(ios::fixed) << setprecision(2);   
-   
+   LogStream << setiosflags(ios::fixed) << setprecision(2);
+
    LogStream << "NOTE: grid edge option is ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
       LogStream << "CLOSED, therefore values above are for fine sediment only";
@@ -1066,10 +1066,10 @@ int CSimulation::nWriteEndRunDetails(void)
    else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_RECIRCULATE)
       LogStream << "RE-CIRCULATING, therefore values above are for all sediment size classes";
    LogStream << endl;
-   
+
    LogStream << "Eroded + lost = " << ldLHS * m_dCellArea << " m^3" << endl;
    LogStream << "Deposited + suspension = " << ldRHS * m_dCellArea << " m^3" << endl << endl;
-   
+
    // Output averages for on-profile and between-profile potential shore platform erosion, ideally these are roughly equal
    LogStream << setiosflags(ios::fixed);
    LogStream << endl;

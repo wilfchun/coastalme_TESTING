@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -47,9 +47,9 @@ double dRound(double const d)
 
 
 /*==============================================================================================================================
- 
+
  Version of the above that returns an int
- 
+
  ==============================================================================================================================*/
 int nRound(double const d)
 {

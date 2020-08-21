@@ -5,7 +5,7 @@
  * \details TODO A more detailed description of these routines.
  * \author John Burkardt
  * \author Modified by David Favis-Mortlock, Andres Payo, Jim Hall
- * \date 2018
+ * \date 2020
  * \copyright GNU Lesser General Public License
  *
  */

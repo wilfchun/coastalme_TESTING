@@ -5,7 +5,7 @@
  * \details TODO A more detailed description of these routines.
  * \author David Favis-Mortlock
  * \author Andres Payo
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -75,10 +75,10 @@ void CA2DShape::Append(double const dX, double const dY)
 void CA2DShape::AppendIfNotAlready(double const dX, double const dY)
 {
    CGeom2DPoint PtIn(dX, dY);
-   
+
    if (m_VPoints.empty())
       m_VPoints.push_back(PtIn);
-   
+
    else if (m_VPoints.back() != &PtIn)
       m_VPoints.push_back(PtIn);
 }
@@ -165,5 +165,5 @@ CGeom2DPoint CA2DShape::PtGetCentroid(void)
 //! Reverses the sequence of pointsw in this 2D polygon
 void CA2DShape::Reverse(void)
 {
-   reverse(m_VPoints.begin(), m_VPoints.end());   
+   reverse(m_VPoints.begin(), m_VPoints.end());
 }

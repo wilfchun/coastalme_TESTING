@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -121,8 +121,8 @@ CGeom2DIPoint* CGeomCoastPolygon::pPtiGetAntiNode(void)
 // {
 //    m_nNumCells = nCells;
 // }
-// 
-// 
+//
+//
 // int CGeomCoastPolygon::nGetNumCellsinPolygon(void) const
 // {
 //    return m_nNumCells;

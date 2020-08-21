@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2018
+ * \date 2020
  * \copyright GNU General Public License
  *
  */
@@ -39,7 +39,7 @@ CGeomLine::CGeomLine(void)
 CGeomLine::CGeomLine(CGeom2DPoint const* pPt1, CGeom2DPoint const* pPt2)
 {
    m_VPoints.push_back(*pPt1);
-   m_VPoints.push_back(*pPt2);   
+   m_VPoints.push_back(*pPt2);
 }
 
 CGeomLine::CGeomLine(int const nNum)
