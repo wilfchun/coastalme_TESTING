@@ -78,6 +78,31 @@ bool bDoubleIsValid(double const dX)
 
 /*==============================================================================================================================
 
+Checks to see if a string is a valid floating-point number. From https://stackoverflow.com/questions/447206/c-isfloat-function
+
+==============================================================================================================================*/
+bool isFloat(string str)
+{
+   std::istringstream i(str);
+   double x;
+   if (!(i >> x))
+      return false;
+   return true;
+
+//    try
+//    {
+//       std::stof(str);
+//       return true;
+//    }
+//    catch(...)
+//    {
+//       return false;
+//    }
+}
+
+
+/*==============================================================================================================================
+
  Checks a double to see if it is finite. From http://www.johndcook.com/blog/IEEE_exceptions_in_cpp/
 
 ==============================================================================================================================*/

@@ -39,13 +39,6 @@ CGeom2DIPoint::CGeom2DIPoint(int const nNewX, int const nNewY)
 {
 }
 
-//! CGeom2DIPoint copy constructor
-CGeom2DIPoint::CGeom2DIPoint(CGeom2DIPoint const& Pti)
-{
-   nX = Pti.nX;
-   nY = Pti.nY;
-}
-
 
 //! Returns the CGeom2DIPoint object's integer X co-ordinate
 int CGeom2DIPoint::nGetX(void) const

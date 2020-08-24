@@ -39,13 +39,6 @@ CGeom2DPoint::CGeom2DPoint(double const dNewX, double const dNewY)
 {
 }
 
-//! CGeom2DPoint copy constructor
-CGeom2DPoint::CGeom2DPoint(CGeom2DPoint const& Pt)
-{
-   dX = Pt.dX;
-   dY = Pt.dY;
-}
-
 
 //! Returns the CGeom2DPoint object's double X co-ordinate
 double CGeom2DPoint::dGetX(void) const

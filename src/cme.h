@@ -463,11 +463,11 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 21 August 2020";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 23 August 2020";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
-string const   COPYRIGHT                                                   = "(C) 2020 David Favis-Mortlock and Andres Payo";
+string const   COPYRIGHT                                                   = "(C) 2020 Andres Payo and David Favis-Mortlock";
 string const   LINE                                                        = "-------------------------------------------------------------------------------";
 string const   DISCLAIMER1                                                 = "This program is distributed in the hope that it will be useful, but WITHOUT ANY";
 string const   DISCLAIMER2                                                 = "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A";
@@ -809,6 +809,7 @@ double dRound(double const);
 int nRound(double const);
 // bool bIsWhole(double const);
 bool bDoubleIsValid(double const);
+bool isFloat(string str);
 // bool bIsFinite(double const);
 struct FillToWidth
 {

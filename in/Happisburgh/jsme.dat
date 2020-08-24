@@ -51,7 +51,7 @@ Maximum elevation of beach above SWL (m)	[must be >=0]                    : 0
 ; Initial raster GIS layers --------------------------------------------------------------------------------------------
 Number of layers                                                           : 1
 ; BASEMENT DEM MUST BE PRESENT
-Basement DEM file                                           [path and name]: in/Happisburgh/HappisburghBasement.asc ;
+Basement DEM file                                           [path and name]: in/Happisburgh/HappisburghBasement.asc
    ; LAYER 0 THICKNESS FILES, LAYER 0 IS LOWEST
    ; *** MUST HAVE AT LEAST ONE THICKNESS FILE FOR THE FIRST LAYER
    Initial Unconsolidated fine sediment file                [path and name]: in/Happisburgh/1_U_F.asc
@@ -73,13 +73,13 @@ Intervention height file                                    [path and name]: in/
 Wave propagation model                               [0 = COVE, 1 = CShore]: 1
 Density of sea water (kg/m3)                                               : 1029
 
-Initial still water level (m), or per-timestep SWL file                    : 40.0  ;41.76
+Initial still water level (m), or per-timestep SWL file                    : 40.0      ; 41.76
 Final still water level (m)                   [blank = same as initial SWL]:
-Deep water wave height (m) [real value or point shapefile]                 : 1; in/Happisburgh/S002DeepWaterWavesOneStations.shp
+Deep water wave height (m) [real value or point shapefile]                 : in/Happisburgh/S002DeepWaterWavesOneStations.shp
 Deep water wave height Time Series (m) [empty if real value above]		   : in/Happisburgh/cme_1_hours_POLWAM_MyPoint_23.dat
-Deep water wave orientation (degrees)  [empty if time wave height series ] : 245; 225 315 270 355 200 265 310 190 340
+Deep water wave orientation (degrees)  [empty if time wave height series ] : 245       ; 225 315 270 355 200 265 310 190 340
 Wave period (sec)                      [empty if time wave height series ] : 5
-Tide data is the change (m) from still water level for each timestep       : in/Happisburgh/jsmeTide.dat ; in/Happisburgh/cme_1_hours_01_01_1999_00_00_00_CromerTide_15min_1999_2017.csv  ;  Either empty or a file
+Tide data is the change (m) from still water level for each timestep       : in/Happisburgh/jsmeTide.dat    ; Either empty or a file
 Breaking wave height to water depth ratio (non dimensional)                : 0.80
 
 ; Sediment data --------------------------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ Fine erosivity                                                             : 1
 Sand erosivity                                                             : 0.7
 Coarse erosivity                                                           : 0.3
 
-Transport parameter KLS                                 [only for CERC eqn]: 0.79         ; Should vary between 0.4 to 0.79
+Transport parameter KLS                                 [only for CERC eqn]: 0.79      ; Should vary between 0.4 to 0.79
 Transport parameter                                 [only for Kamphuis eqn]: 0.01
 
 Berm height i.e. height above SWL of start of depositional Dean profile (m): 0.5
@@ -121,12 +121,12 @@ Height of landward talus end, as fraction of cliff elevation               : 0
 Gravitational acceleration (m2/s)                                          : 9.81
 
 ; TEMPORARY ONLY, CHANGE DYNAMICALLY LATER
-Spacing of coastline normals (m)                      [0 = default minimum]: 0     ; *** WAS 0
+Spacing of coastline normals (m)                      [0 = default minimum]: 0
 Random factor for spacing of normals            [0 to 1, 0 = deterministic]: 0
-Length of coastline normals (m)                                            : 800    ; *** WAS 600
-Maximum number of 'cape' normals                                           : 6    ; **** WAS 6
+Length of coastline normals (m)                                            : 800       ; was 600
+Maximum number of 'cape' normals                                           : 6
 
-Start depth for wave calcs (ratio to deep water wave height)               : 30         ; was 10 30 15
+Start depth for wave calcs (ratio to deep water wave height)               : 30        ; was 10 30 15
 
 ; For testing only -----------------------------------------------------------------------------------------------------
 Save profile data?                                                         : n

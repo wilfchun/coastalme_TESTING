@@ -1711,21 +1711,6 @@ bool CSimulation::bReadRunData(void)
                strErr = "must have at least one non-zero erodibility value";
             break;
 
-/*
-     ; LAYER 1, LOWEST
-   dErodFine                                                      : 0.8
-   dErodSand                                                      : 0.7
-   dErodCoarse                                                    : 0.9
-   ; LAYER 2
-   dErodFine                                                      : 1.0
-   dErodSand                                                      : 0.9
-   dErodCoarse                                                    : 0.6
-   ; LAYER 3, HIGHEST
-   dErodFine                                                      : 0.95
-   dErodSand                                                      : 0.4
-   dErodCoarse                                                    : 0.3
-*/
-
          case 50:
             // Transport parameter KLS in CERC equation
             m_dKLS = atof(strRH.c_str());
@@ -1972,50 +1957,58 @@ bool CSimulation::bReadRunData(void)
    return true;
 }
 
+
 /*==============================================================================================================================
 
  Reads the tide data
 
 ==============================================================================================================================*/
 int CSimulation::nReadTideData()
- {
-    // Create an ifstream object
-    ifstream InStream;
+{
+   // Create an ifstream object
+   ifstream InStream;
 
-    // Try to open the file for input
-    InStream.open(m_strTideDataFile.c_str(), ios::in);
+   // Try to open the file for input
+   InStream.open(m_strTideDataFile.c_str(), ios::in);
 
-    // Did it open OK?
-    if (! InStream.is_open())
-    {
-       // Error: cannot open tide data file for input
-       cerr << ERR << "cannot open " << m_strTideDataFile << " for input" << endl;
-       return RTN_ERR_TIDEDATAFILE;
-    }
+   // Did it open OK?
+   if (! InStream.is_open())
+   {
+      // Error: cannot open tide data file for input
+      cerr << ERR << "cannot open " << m_strTideDataFile << " for input" << endl;
+      return RTN_ERR_TIDEDATAFILE;
+   }
 
-    // Opened OK
-    string strRec;
+   // Opened OK
+   string strRec;
 
-    // Now read the data from the file
-    while (getline(InStream, strRec))
-    {
-       // Trim off leading and trailing whitespace
-       strRec = strTrimLeft(&strRec);
-       strRec = strTrimRight(&strRec);
+   // Now read the data from the file
+   while (getline(InStream, strRec))
+   {
+      // Trim off leading and trailing whitespace
+      strRec = strTrimLeft(&strRec);
+      strRec = strTrimRight(&strRec);
 
-       // If it is a blank line or a comment then ignore it
-       if ((strRec.empty()) || (strRec[0] == QUOTE1) || (strRec[0] == QUOTE2))
-          continue;
+      // If it is a blank line or a comment then ignore it
+      if ((strRec.empty()) || (strRec[0] == QUOTE1) || (strRec[0] == QUOTE2))
+         continue;
 
-       // Convert to double then append the value to the vector TODO check for floating point validity
-       m_VdTideData.push_back(strtod(strRec.c_str(), NULL));
-    }
+      // Check for floating point validity
+      if (! isFloat(strRec))
+      {
+         cerr << ERR << "invalid floating point number '" << strRec << "' in " << m_strTideDataFile << endl;
+         return RTN_ERR_TIDEDATAFILE;
+      }
 
-    // Close file
-    InStream.close();
+      // Convert to double then append the value to the vector
+      m_VdTideData.push_back(strtod(strRec.c_str(), NULL));
+   }
 
-    return RTN_OK;
- }
+   // Close file
+   InStream.close();
+
+   return RTN_OK;
+}
 
 
 /*==============================================================================================================================
@@ -2081,10 +2074,10 @@ int CSimulation::nReadShapeFunction()
       VdErosionPotential.push_back(strtod(strTmp[1].c_str(), NULL));
       VdErosionPotentialFirstDeriv.push_back(strtod(strTmp[2].c_str(), NULL));
    }
-   // Now create the look up table values
-    m_VdErosionPotential = VdErosionPotential;
-    m_VdDepthOverDB = VdDepthOverDB;
-    m_dDepthOverDBMax = VdDepthOverDB[nRead-1];
+  // Now create the look up table values
+   m_VdErosionPotential = VdErosionPotential;
+   m_VdDepthOverDB = VdDepthOverDB;
+   m_dDepthOverDBMax = VdDepthOverDB[nRead-1];
 
 
    // Close file
@@ -2102,8 +2095,8 @@ int CSimulation::nReadShapeFunction()
    {
       if (m_VdErosionPotential[j]>0)
       {
-	 cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function cannot be positive" << endl;
-	 return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+      cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function cannot be positive" << endl;
+      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
       }
    }
 

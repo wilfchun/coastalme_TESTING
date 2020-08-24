@@ -34,7 +34,6 @@ private:
 public:
    CGeom2DPoint(void);
    CGeom2DPoint(double const, double const);
-   CGeom2DPoint(CGeom2DPoint const&);        // Copy constructor defined explicitly, to stop cppcheck from complaining
 
    double dGetX(void) const;
    double dGetY(void) const;

@@ -34,7 +34,6 @@ private:
 public:
    CGeom2DIPoint(void);
    CGeom2DIPoint(int const, int const);
-   CGeom2DIPoint(CGeom2DIPoint const&);         // Copy constructor defined explicitly, to stop cppcheck from complaining
 
    int nGetX(void) const;
    int nGetY(void) const;
