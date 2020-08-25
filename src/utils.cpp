@@ -2376,12 +2376,17 @@ string CSimulation::strTrimLeft(string const* strIn)
 ==============================================================================================================================*/
 string CSimulation::strTrimRight(string const* strIn)
 {
+   string strTmp(*strIn);
+
+   // Remove any stray carriage returns (can happen if file was edited in Windows)
+   strTmp.erase(std::remove(strTmp.begin(), strTmp.end(), '\r'), strTmp.end());
+
    // Trim trailing spaces
-   size_t nEndpos = strIn->find_last_not_of(" \t");
+   size_t nEndpos = strTmp.find_last_not_of(" \t");
    if (nEndpos == string::npos)
-      return *strIn;
+      return strTmp;
    else
-      return strIn->substr(0, nEndpos+1);
+      return strTmp.substr(0, nEndpos+1);
 }
 
 
@@ -2720,3 +2725,4 @@ double CSimulation::dConstrainFieldWidthForShapefile(double const dInField)
    double dFactor = pow(10.0, SHAPEFILE_MAX_WIDTH - ceil(log10(fabs(dInField))));
    return round(dInField * dFactor) / dFactor;
 }
+

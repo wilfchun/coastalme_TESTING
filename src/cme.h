@@ -463,7 +463,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 23 August 2020";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 25 August 2020";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -808,8 +808,8 @@ template <typename T> string strNumToStr(const T& t)
 double dRound(double const);
 int nRound(double const);
 // bool bIsWhole(double const);
-bool bDoubleIsValid(double const);
-bool isFloat(string str);
+bool bDoubleNotNaN(double const);
+bool bIsStringValidDouble(string&);
 // bool bIsFinite(double const);
 struct FillToWidth
 {

@@ -1993,8 +1993,8 @@ int CSimulation::nReadTideData()
       if ((strRec.empty()) || (strRec[0] == QUOTE1) || (strRec[0] == QUOTE2))
          continue;
 
-      // Check for floating point validity
-      if (! isFloat(strRec))
+      // Check that this is a valid double
+      if (! bIsStringValidDouble(strRec))
       {
          cerr << ERR << "invalid floating point number '" << strRec << "' in " << m_strTideDataFile << endl;
          return RTN_ERR_TIDEDATAFILE;
@@ -2067,9 +2067,19 @@ int CSimulation::nReadShapeFunction()
       // Split the string, and remove whitespace
       vector<string> strTmp = VstrSplit(&strRec, SPACE);
       for (unsigned int i = 0; i < strTmp.size(); i++)
-         strTmp[i] = strTrim(&strTmp[i]);
+      {
+         strTmp[i] = strTrimLeft(&strTmp[i]);
+         strTmp[i] = strTrimRight(&strTmp[i]);
 
-      // Convert to doubles then append the values to the vectors TODO check for floating point validity
+         // Check that this is a valid double
+         if (! bIsStringValidDouble(strTmp[i]))
+         {
+            cerr << ERR << "invalid floating point number '" << strTmp[i] << "' in " << m_strShapeFunctionFile << endl;
+            return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+         }
+      }
+
+      // Convert to doubles then append the values to the vectors
       VdDepthOverDB.push_back(strtod(strTmp[0].c_str(), NULL));
       VdErosionPotential.push_back(strtod(strTmp[1].c_str(), NULL));
       VdErosionPotentialFirstDeriv.push_back(strtod(strTmp[2].c_str(), NULL));

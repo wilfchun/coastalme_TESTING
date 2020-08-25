@@ -69,7 +69,7 @@ int nRound(double const d)
  Checks a double to see if it is NaN. From http://www.johndcook.com/blog/IEEE_exceptions_in_cpp/
 
 ==============================================================================================================================*/
-bool bDoubleIsValid(double const dX)
+bool bDoubleNotNaN(double const dX)
 {
    // This looks like it should always be true, but it is false if dX is a NaN
    return (dX == dX);
@@ -78,26 +78,18 @@ bool bDoubleIsValid(double const dX)
 
 /*==============================================================================================================================
 
-Checks to see if a string is a valid floating-point number. From https://stackoverflow.com/questions/447206/c-isfloat-function
+Checks to see if a string can be read as a valid double number. Does not find trailing (i.e.post-number) rubbish, but then neither does strtod(). From https://stackoverflow.com/questions/392981/how-can-i-convert-string-to-double-in-c
 
 ==============================================================================================================================*/
-bool isFloat(string str)
+bool bIsStringValidDouble(string& str)
 {
-   std::istringstream i(str);
-   double x;
-   if (!(i >> x))
-      return false;
-   return true;
+   std::istringstream iStr(str);
+   double dDummy;
 
-//    try
-//    {
-//       std::stof(str);
-//       return true;
-//    }
-//    catch(...)
-//    {
-//       return false;
-//    }
+   if (!(iStr >> dDummy))
+      return false;
+
+   return true;
 }
 
 

@@ -1040,7 +1040,7 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
    if (! bWriteRasterGISFloat(RASTER_PLOT_TOTAL_BEACH_DEPOSITION, &RASTER_PLOT_TOTAL_BEACH_DEPOSITION_TITLE))
       return false;
 
-   if (! bWriteRasterGISInt(RASTER_PLOT_LANDFORM, &RASTER_PLOT_LANDFORM_TITLE))
+   if (! bWriteRasterGISFloatISInt(RASTER_PLOT_LANDFORM, &RASTER_PLOT_LANDFORM_TITLE))
       return false;
 
    // These are optional
@@ -1115,26 +1115,26 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
    {
       for (int i = 0; i < static_cast<int>(m_VdSliceElev.size()); i++)
       {
-         if (! bWriteRasterGISInt(RASTER_PLOT_SLICE, &RASTER_PLOT_SLICE_TITLE, m_VdSliceElev[i]))
+         if (! bWriteRasterGISFloatISInt(RASTER_PLOT_SLICE, &RASTER_PLOT_SLICE_TITLE, m_VdSliceElev[i]))
             return false;
       }
    }
 
    if (m_bRasterCoastlineSave)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_COAST, &RASTER_PLOT_COAST_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_COAST, &RASTER_PLOT_COAST_TITLE))
          return false;
    }
 
    if (m_bRasterNormalSave)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_NORMAL, &RASTER_PLOT_NORMAL_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_NORMAL, &RASTER_PLOT_NORMAL_TITLE))
          return false;
    }
 
    if (m_bActiveZoneSave)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_ACTIVE_ZONE, &RASTER_PLOT_ACTIVE_ZONE_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_ACTIVE_ZONE, &RASTER_PLOT_ACTIVE_ZONE_TITLE))
          return false;
    }
 
@@ -1164,31 +1164,31 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
 
    if (m_bRasterPolygonSave)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_POLYGON, &RASTER_PLOT_POLYGON_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_POLYGON, &RASTER_PLOT_POLYGON_TITLE))
          return false;
    }
 
    if (m_bPotentialPlatformErosionMaskSave)
    {
-      if (! bWriteRasterGISInt(RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK, &RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK, &RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK_TITLE))
       return false;
    }
 
    if (m_bSeaMaskSave)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_INUNDATION_MASK, &RASTER_PLOT_INUNDATION_MASK_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_INUNDATION_MASK, &RASTER_PLOT_INUNDATION_MASK_TITLE))
       return false;
    }
 
    if (m_bBeachMaskSave)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_BEACH_MASK, &RASTER_PLOT_BEACH_MASK_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_BEACH_MASK, &RASTER_PLOT_BEACH_MASK_TITLE))
       return false;
    }
 
    if (m_bInterventionClassSave)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_INTERVENTION_CLASS, &RASTER_PLOT_INTERVENTION_CLASS_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_INTERVENTION_CLASS, &RASTER_PLOT_INTERVENTION_CLASS_TITLE))
          return false;
    }
 
@@ -1200,10 +1200,10 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
 
    if (m_bShadowZoneCodesSave)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_SHADOW_ZONE, &RASTER_PLOT_SHADOW_ZONE_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_SHADOW_ZONE, &RASTER_PLOT_SHADOW_ZONE_TITLE))
          return false;
 
-      if (! bWriteRasterGISInt(RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE, &RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE, &RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE_TITLE))
          return false;
    }
 
@@ -1227,7 +1227,7 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
 
    if (m_bPolygonUnconsSedUpOrDownDrift)
    {
-      if (! bWriteRasterGISInt(RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT, &RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT_TITLE))
+      if (! bWriteRasterGISFloatISInt(RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT, &RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT_TITLE))
          return false;
    }
 

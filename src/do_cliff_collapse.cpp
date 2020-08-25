@@ -408,7 +408,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
          // Remove this volume from the total still to be deposited
          dTotSandToDeposit -= (dVToDepositPerProfile[nAcross] * dSandProp);
          dTotCoarseToDeposit -= (dVToDepositPerProfile[nAcross] * dCoarseProp);
-//          assert(bDoubleIsValid(dTotSandToDeposit));
+//          assert(bDoubleNotNaN(dTotSandToDeposit));
 //          LogStream << "dTotSandToDeposit NOW = " << dTotSandToDeposit << " dTotCoarseToDeposit NOW = " << dTotCoarseToDeposit << endl;
 
          continue;

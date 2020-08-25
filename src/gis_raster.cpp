@@ -192,7 +192,7 @@ int CSimulation::nReadBasementDEMData(void)
       {
          // Deal with any NaN values
          double dTmp = pfScanline[i];
-         if (! bDoubleIsValid(dTmp))
+         if (! bDoubleNotNaN(dTmp))
             dTmp = m_dMissingValue;
 
          if (dTmp == dMissingValue)
@@ -785,7 +785,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Initial Landform Class GIS data, is integer TODO Do we also need a landform sub-category input?
                   int nTmp = static_cast<int>(pfScanline[nX]);
-                  if (! bDoubleIsValid(nTmp))              // Deal with any NaN values
+                  if (! bDoubleNotNaN(nTmp))              // Deal with any NaN values
                      nTmp = m_nMissingValue;
 
                   if (nTmp == nMissingValue)
@@ -802,7 +802,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Intervention class, is integer
                   int nTmp = static_cast<int>(pfScanline[nX]);
-                  if (! bDoubleIsValid(nTmp))              // Deal with any NaN values
+                  if (! bDoubleNotNaN(nTmp))              // Deal with any NaN values
                      nTmp = m_nMissingValue;
 
                   if (nTmp == nMissingValue)
@@ -819,7 +819,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Intervention height
                   dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleIsValid(dTmp))
+                  if (! bDoubleNotNaN(dTmp))
                      dTmp = m_dMissingValue;
 
                   if (dTmp == dMissingValue)
@@ -836,7 +836,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Initial Suspended Sediment GIS data
                   dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleIsValid(dTmp))
+                  if (! bDoubleNotNaN(dTmp))
                      dTmp = m_dMissingValue;
 
                   if (dTmp == dMissingValue)
@@ -853,7 +853,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Initial Unconsolidated Fine Sediment GIS data
                   dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleIsValid(dTmp))
+                  if (! bDoubleNotNaN(dTmp))
                      dTmp = m_dMissingValue;
 
                   if (dTmp == dMissingValue)
@@ -870,7 +870,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Initial Unconsolidated Sand Sediment GIS data
                   dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleIsValid(dTmp))
+                  if (! bDoubleNotNaN(dTmp))
                      dTmp = m_dMissingValue;
 
                   if (dTmp == dMissingValue)
@@ -887,7 +887,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Initial Unconsolidated Coarse Sediment GIS data
                   dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleIsValid(dTmp))
+                  if (! bDoubleNotNaN(dTmp))
                      dTmp = m_dMissingValue;
 
                   if (dTmp == dMissingValue)
@@ -904,7 +904,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Initial Consolidated Fine Sediment GIS data
                   dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleIsValid(dTmp))
+                  if (! bDoubleNotNaN(dTmp))
                      dTmp = m_dMissingValue;
 
                   if (dTmp == dMissingValue)
@@ -921,7 +921,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Initial Consolidated Sand Sediment GIS data
                   dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleIsValid(dTmp))
+                  if (! bDoubleNotNaN(dTmp))
                      dTmp = m_dMissingValue;
 
                   if (dTmp == dMissingValue)
@@ -938,7 +938,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
                {
                   // Initial Consolidated Coarse Sediment GIS data
                   dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleIsValid(dTmp))
+                  if (! bDoubleNotNaN(dTmp))
                      dTmp = m_dMissingValue;
 
                   if (dTmp == dMissingValue)
@@ -1717,7 +1717,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
  Writes integer GIS raster files using GDAL, using data from the RasterGrid array
 
 ===============================================================================================================================*/
-bool CSimulation::bWriteRasterGISInt(int const nDataItem, string const* strPlotTitle, double const dElev)
+bool CSimulation::bWriteRasterGISFloatISInt(int const nDataItem, string const* strPlotTitle, double const dElev)
 {
    // Begin constructing the file name for this save
    string strFilePathName(m_strOutPath);

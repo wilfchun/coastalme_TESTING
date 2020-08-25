@@ -525,7 +525,7 @@ private:
    int nReadRasterGISData(int const, int const);
    int nReadVectorGISData(int const);
    bool bWriteRasterGISFloat(int const, string const*, int const = 0);
-   bool bWriteRasterGISInt(int const, string const*, double const = 0);
+   bool bWriteRasterGISFloatISInt(int const, string const*, double const = 0);
    bool bWriteVectorGIS(int const, string const*);
    void GetRasterOutputMinMax(int const, double&, double&, int const, double const);
    void SetRasterFileCreationDefaults(void);
