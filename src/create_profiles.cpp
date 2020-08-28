@@ -1369,7 +1369,7 @@ int CSimulation::nPutAllProfilesOntoGrid(void)
  Given a pointer to a coastline-normal profile, returns an output vector of cells which are 'under' every line segment of the profile. If there is a problem with the profile (e.g. a rasterized cell is dry land or coast, or the profile has to be truncated) then we pass this back as an error code
 
 ===============================================================================================================================*/
-void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<CGeom2DIPoint>* pVIPointsOut, vector<bool>* pbVShared, bool& bTooShort, bool& bTruncated, bool& bHitCoast, bool& bHitLand, bool& bHitAnotherProfile)
+void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<CGeom2DIPoint>* pVIPointsOut, vector<bool>* pbVShared, bool& bTooShort, bool& bTruncated, bool& bHitCoast, bool const bHitLand, bool& bHitAnotherProfile)
 {
    CGeomProfile* const pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
 

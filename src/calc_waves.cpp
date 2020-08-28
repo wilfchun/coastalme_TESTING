@@ -757,7 +757,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          else
             VdWaveDirection[nProfilePoint] = dKeepWithin360(dAlpha + 270 + dFluxOrientationThis);
 
-         if ((VdFractionBreakingWaves[nProfilePoint] >= 0.10) & (! bBreaking))
+         if ((VdFractionBreakingWaves[nProfilePoint] >= 0.10) && (! bBreaking))
          {
             bBreaking = true;
             dProfileBreakingWaveHeight = VdWaveHeight[nProfilePoint];
@@ -1490,7 +1490,7 @@ void CSimulation::InterpolateWavePropertiesToCoastlineCells(int const nCoast)
      }
 
    // Interpolate all coast points. Check first that x,y have more than 3 points and are both of equal size
-   if((nVCoastWaveHeightX.size()>=3) & (nVCoastWaveHeightX.size()==dVCoastWaveHeightY.size()))
+   if((nVCoastWaveHeightX.size() >= 3) && (nVCoastWaveHeightX.size() == dVCoastWaveHeightY.size()))
    {
       for(int n = 0; n < nCoastPoints; n++)
       {

@@ -627,30 +627,30 @@ int CSimulation::nDoAllShadowZones(void)
          // Calculate the centroid
          CGeom2DIPoint PtiCentroid = PtiPolygonCentroid(LIBoundary.pPtiVGetPoints());
 
-         int nRet;
          if (bIsWithinValidGrid(&PtiCentroid))        // Safety check
-            nRet = nFloodFillShadowZone(nZone, &PtiCentroid, &PtiStart, &PtiEnd);
-
-         if (nRet != RTN_OK)
          {
-            // Could not find start point for flood fill. How serious we judge this to be depends on the length of the shadow zone line
-            if (nShadowLineLen < MAX_LEN_SHADOW_LINE_TO_IGNORE)
+            int nRet = nFloodFillShadowZone(nZone, &PtiCentroid, &PtiStart, &PtiEnd);
+            if (nRet != RTN_OK)
             {
-               LogStream << m_ulIteration << ": " << WARN << "could not find start point for flood fill of shadow zone " << nZone << " but continuing simulation because this is a small shadow zone (shadow line length = " << nShadowLineLen << " cells)" << endl;
+               // Could not find start point for flood fill. How serious we judge this to be depends on the length of the shadow zone line
+               if (nShadowLineLen < MAX_LEN_SHADOW_LINE_TO_IGNORE)
+               {
+                  LogStream << m_ulIteration << ": " << WARN << "could not find start point for flood fill of shadow zone " << nZone << " but continuing simulation because this is a small shadow zone (shadow line length = " << nShadowLineLen << " cells)" << endl;
 
-               continue;
+                  continue;
+               }
+               else
+               {
+                  LogStream << m_ulIteration << ": " << ERR << "could not find start point for flood fill of shadow zone " << nZone << " (shadow line length = " << nShadowLineLen << " cells)" << endl;
+                  return nRet;
+               }
             }
-            else
-            {
-               LogStream << m_ulIteration << ": " << ERR << "could not find start point for flood fill of shadow zone " << nZone << " (shadow line length = " << nShadowLineLen << " cells)" << endl;
+
+            // Sweep the shadow zone, changing wave orientation and height
+            nRet = nDoShadowZoneAndDownDriftZone(nCoast, nZone, VnShadowBoundaryStartCoastPoint[nZone], VnShadowBoundaryEndCoastPoint[nZone]);
+            if (nRet != RTN_OK)
                return nRet;
-            }
          }
-
-         // Sweep the shadow zone, changing wave orientation and height
-         nRet = nDoShadowZoneAndDownDriftZone(nCoast, nZone, VnShadowBoundaryStartCoastPoint[nZone], VnShadowBoundaryEndCoastPoint[nZone]);
-         if (nRet != RTN_OK)
-            return nRet;
       }
    }
 
