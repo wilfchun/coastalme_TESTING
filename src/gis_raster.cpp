@@ -158,7 +158,7 @@ int CSimulation::nReadBasementDEMData(void)
 
    if (dMissingValue != m_dMissingValue)
    {
-      cerr << WARN << "NODATA value in " << m_strInitialBasementDEMFile << " is " << dMissingValue << ", using default NODATA value " <<  m_dMissingValue << endl;
+      cerr << INFO << "NODATA value in " << m_strInitialBasementDEMFile << " is " << dMissingValue << ", using default NODATA value " <<  m_dMissingValue << endl;
    }
 
    // Next allocate memory for a 2D array of raster cell objects: tell the user what is happening
@@ -739,7 +739,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
          if (nMissingValue != m_nMissingValue)
          {
-            cerr << WARN << "NODATA value in " << strGISFile << " is " << nMissingValue << ", using default NODATA value " <<  m_nMissingValue << endl;
+            cerr << INFO << "NODATA value in " << strGISFile << " is " << nMissingValue << ", using default NODATA value " <<  m_nMissingValue << endl;
          }
       }
       else
@@ -751,7 +751,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
          if (dMissingValue != m_dMissingValue)
          {
-            cerr << WARN << "NODATA value in " << strGISFile << " is " << dMissingValue << ", using default NODATA value " <<  m_dMissingValue << endl;
+            cerr << INFO << "NODATA value in " << strGISFile << " is " << dMissingValue << ", using default NODATA value " <<  m_dMissingValue << endl;
          }
       }
 

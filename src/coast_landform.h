@@ -56,7 +56,7 @@ public:
    void IncTotAccumWaveEnergy(double const);
    double dGetTotAccumWaveEnergy(void) const;
 
-   // Pure virtual function, makes this an abstract class TODO Derived classes need to instantiate this, even tho' their implementation never uses their instantiation never gets called. Seems a waste of time. Alternative?
+   // Pure virtual function, makes this an abstract class TODO Derived classes need to instantiate this, even tho' their implementation never uses their instantiation and never gets called. Seems a waste of time. Alternative?
    virtual void Display() = 0;
 };
 #endif // COASTLANDFORM_H

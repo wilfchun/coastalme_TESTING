@@ -463,7 +463,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 25 August 2020";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING - 28 August 2020";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -530,6 +530,7 @@ string const   SPACESTR                                                    = " "
 
 string const   ERR                                                         = "ERROR ";
 string const   WARN                                                        = "WARNING ";
+string const   INFO                                                        = "INFO ";
 
 string const   PERITERHEAD1 =
 "<------ELAPSED-----><-SEA-><------POTENTIAL-----><-----------------ACTUAL----------------><-----POTENTIAL----><---------------ACTUAL----------------><------------BEACH--------------><-----------CLIFF COLLAPSE---------><-SUSP->";
@@ -816,7 +817,6 @@ struct FillToWidth
    FillToWidth(char f, int w) : chFill(f), nWidth(w)
    {
    }
-
    char chFill;
    int nWidth;
 };

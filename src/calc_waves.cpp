@@ -1099,8 +1099,8 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
          }
 
          // Number of columns is OK
-         VdXYDistCShore.push_back(atof(VstrItems[0].c_str()));
-         VdValuesCShore.push_back(atof(VstrItems[nCShorecolumn-1].c_str()));
+         VdXYDistCShore.push_back(strtod(VstrItems[0].c_str()), NULL);
+         VdValuesCShore.push_back(strtod(VstrItems[nCShorecolumn-1].c_str()), NULL);
       }
    }
 

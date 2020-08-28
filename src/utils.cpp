@@ -165,7 +165,7 @@ void CSimulation::StartClock(void)
    if (static_cast<clock_t>(-1) == clock())
    {
       // There's a problem with the clock, but continue anyway
-      LogStream << WARN << "CPU time not available" << endl;
+      LogStream << INFO << "CPU time not available" << endl;
       m_dCPUClock = -1;
    }
    else
