@@ -143,7 +143,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
                dTotCoarseEroded = 0;
 
             // Estimate how much we can erode on this polygon: traverse the polygon's shoreline in a down-coast direction (i.e. in the direction of increasing coastpoint indices), with profiles which are parallel to the polygon's up-coast boundary
-            // NOTE: also tried doing a second traverse, going up-coast, with profiles parallel to the down-coast boundary, if the down-coast routine was unable to reach its erosion target. But this second traverse almost always produced zero erosion, so seems not worth doing
+            // NOTE also tried doing a second traverse, going up-coast, with profiles parallel to the down-coast boundary, if the down-coast routine was unable to reach its erosion target. But this second traverse almost always produced zero erosion, so seems not worth doing
             nRet = nTraversePolygonAndEstimateBeachErosion(nCoast, nPoly, -dSedChange, dTotFineEroded, dTotSandEroded, dTotCoarseEroded);
             if (nRet != RTN_OK)
                return nRet;

@@ -2534,7 +2534,7 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
       m_dWaveDataWrapHours = nExpectedTimeSteps * m_dTimeStep;
       string strTmp = "Deep water wave data will wrap every " + (nExpectedTimeSteps > 1 ? to_string(nExpectedTimeSteps) + " " : "") + "time step" + (nExpectedTimeSteps > 1 ? "s" : "") + " (every " + to_string(m_dWaveDataWrapHours) + " hours)\n";
 
-      cout << INFO << strTmp;
+      cout << NOTE << strTmp;
    }
 
    return RTN_OK;

@@ -1013,7 +1013,7 @@ int CSimulation::nWriteEndRunDetails(void)
    OutStream << "                                              = " << ldTotalLost * m_dCellArea / (m_dSimDuration * 3600) << " m^3/sec" << endl << endl;
    OutStream << setiosflags(ios::fixed) << setprecision(2);
 
-   OutStream << "NOTE: grid edge option is ";
+   OutStream << "NOTE grid edge option is ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
       OutStream << "CLOSED, therefore values above are for fine sediment only";
    else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_OPEN)
@@ -1058,7 +1058,7 @@ int CSimulation::nWriteEndRunDetails(void)
    LogStream << "                                              = " << ldTotalLost * m_dCellArea / (m_dSimDuration * 3600) << " m^3/sec" << endl << endl;
    LogStream << setiosflags(ios::fixed) << setprecision(2);
 
-   LogStream << "NOTE: grid edge option is ";
+   LogStream << "NOTE grid edge option is ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
       LogStream << "CLOSED, therefore values above are for fine sediment only";
    else if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_OPEN)

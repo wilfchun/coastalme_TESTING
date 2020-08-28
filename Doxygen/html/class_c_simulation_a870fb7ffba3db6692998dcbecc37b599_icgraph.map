@@ -1,0 +1,5 @@
+<map id="CSimulation::nGetGridXMax" name="CSimulation::nGetGridXMax">
+<area shape="rect" id="node1" title="Returns the cell size." alt="" coords="308,31,495,57"/>
+<area shape="rect" id="node2" href="$class_c_geom_raster_grid.html#a6803b51c3b9d357eae0311108f0d6322" title=" " alt="" coords="29,5,237,32"/>
+<area shape="rect" id="node3" href="$class_c_geom_raster_grid.html#a519180e4809f755f4b0357514c647998" title=" " alt="" coords="5,56,260,83"/>
+</map>

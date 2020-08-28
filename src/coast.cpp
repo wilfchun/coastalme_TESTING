@@ -619,7 +619,7 @@ void CRWCoast::AppendShadowBoundary(const CGeomLine LBoundary)
 
 CGeomLine* CRWCoast::pGetShadowBoundary(int const n)
 {
-   // NOTE: no check to see if n < m_LShadowBoundary.size()
+   // NOTE no check to see if n < m_LShadowBoundary.size()
    return &m_LShadowBoundary[n];
 }
 
@@ -636,6 +636,6 @@ void CRWCoast::AppendShadowDowndriftBoundary(const CGeomLine LBoundary)
 
 CGeomLine* CRWCoast::pGetShadowDowndriftBoundary(int const n)
 {
-   // NOTE: no check to see if n < m_LShadowDowndriftBoundary.size()
+   // NOTE no check to see if n < m_LShadowDowndriftBoundary.size()
    return &m_LShadowDowndriftBoundary[n];
 }

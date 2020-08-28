@@ -528,9 +528,9 @@ string const   CSHOREDIR                                                   = "cs
 
 string const   SPACESTR                                                    = " ";
 
-string const   ERR                                                         = "ERROR ";
+string const   ERR                                                         = "*** ERROR ";
 string const   WARN                                                        = "WARNING ";
-string const   INFO                                                        = "INFO ";
+string const   NOTE                                                        = "      Note ";
 
 string const   PERITERHEAD1 =
 "<------ELAPSED-----><-SEA-><------POTENTIAL-----><-----------------ACTUAL----------------><-----POTENTIAL----><---------------ACTUAL----------------><------------BEACH--------------><-----------CLIFF COLLAPSE---------><-SUSP->";

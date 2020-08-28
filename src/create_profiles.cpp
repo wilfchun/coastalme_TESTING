@@ -1715,7 +1715,7 @@ void CSimulation::MergeProfilesAtFinalLineSegments(int const nCoast, int const n
       CGeomProfile* pThisProfile = m_VCoast[nCoast].pGetProfile(nThisProfile);
       int nProfileLength = pThisProfile->nGetProfileSize();
 
-      // NOTE: this is the final line segment of the first 'main' profile. We are assuming that it is also the final line segment of all co-incident profiles. This is fine, altho' each profile may well have a different number of line segments landwards i.e. the number of the line segment may be different for each co-incident profile
+      // NOTE this is the final line segment of the first 'main' profile. We are assuming that it is also the final line segment of all co-incident profiles. This is fine, altho' each profile may well have a different number of line segments landwards i.e. the number of the line segment may be different for each co-incident profile
       pThisProfile->SetPointInProfile(nProfileLength-1, dIntersectX, dIntersectY);
    }
 
@@ -1726,7 +1726,7 @@ void CSimulation::MergeProfilesAtFinalLineSegments(int const nCoast, int const n
       CGeomProfile* pThisProfile = m_VCoast[nCoast].pGetProfile(nThisProfile);
       int nProfileLength = pThisProfile->nGetProfileSize();
 
-      // NOTE: this is the final line segment of the second 'main' profile. We are assuming that it is also the final line segment of all co-incident profiles. This is fine, altho' each profile may well have a different number of line segments landwards i.e. the number of the line segment may be different for each co-incident profile
+      // NOTE this is the final line segment of the second 'main' profile. We are assuming that it is also the final line segment of all co-incident profiles. This is fine, altho' each profile may well have a different number of line segments landwards i.e. the number of the line segment may be different for each co-incident profile
       pThisProfile->SetPointInProfile(nProfileLength-1, dIntersectX, dIntersectY);
    }
 

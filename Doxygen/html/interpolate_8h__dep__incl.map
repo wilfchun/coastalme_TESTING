@@ -1,0 +1,6 @@
+<map id="interpolate.h" name="interpolate.h">
+<area shape="rect" id="node1" title="Definitions of Linear interpolation routines." alt="" coords="166,5,259,32"/>
+<area shape="rect" id="node2" href="$calc__waves_8cpp.html" title="Simulates wave propagation." alt="" coords="5,80,121,107"/>
+<area shape="rect" id="node3" href="$shore__platform_8cpp.html" title="Erodes the shore platform, extrapolating from erosion calculated on coastline&#45;normal profiles." alt="" coords="146,80,279,107"/>
+<area shape="rect" id="node4" href="$write__output_8cpp.html" title="Writes non&#45;GIS output files." alt="" coords="304,80,423,107"/>
+</map>
