@@ -66,7 +66,7 @@ int CSimulation::nLocateSeaAndCoasts(void)
    // Have we created any coasts?
    if (m_VCoast.empty())
    {
-      cerr << m_ulIteration << ": " << ERR << "no coastline located. SWL = " << m_dThisTimestepSWL << ", is this between the maximum and minimum elevations of the top surface of the DEM?" << endl;
+      cerr << m_ulIteration << ": " << ERR << "no coastline located: this iteration SWL = " << m_dThisTimestepSWL << ", maximum DEM top surface elevation = " << m_dThisTimestepTopElevMax << ", minimum DEM top surface elevation = " << m_dThisTimestepTopElevMin << endl;
       return RTN_ERR_NOCOAST;
    }
 

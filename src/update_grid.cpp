@@ -22,6 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
+#include <cfloat>
 #include <iostream>
 using std::endl;
 
@@ -39,6 +40,8 @@ using std::endl;
 int CSimulation::nUpdateGrid(void)
 {
    // Go through all cells in the raster grid and calculate some this-timestep totals
+   m_dThisTimestepTopElevMax = -DBL_MAX;
+   m_dThisTimestepTopElevMin = DBL_MAX;
    for (int nX = 0; nX < m_nXGridMax; nX++)
    {
       for (int nY = 0; nY < m_nYGridMax; nY++)
@@ -51,6 +54,15 @@ int CSimulation::nUpdateGrid(void)
             // Is a sea cell
             m_dThisTimestepTotSeaDepth += m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
          }
+
+         double dTopElev = m_pRasterGrid->m_Cell[nX][nY].dGetOverallTopElev();
+
+         // Get highest and lowest elevations of the top surface of the DEM
+         if (dTopElev > m_dThisTimestepTopElevMax)
+            m_dThisTimestepTopElevMax = dTopElev;
+
+         if (dTopElev < m_dThisTimestepTopElevMin)
+            m_dThisTimestepTopElevMin = dTopElev;
       }
    }
 

@@ -316,7 +316,9 @@ private:
       m_dCoastNormalRandSpaceFact,
       m_dDeanProfileStartAboveSWL,
       m_dMissingValue,
-      m_dWaveDataWrapHours;
+      m_dWaveDataWrapHours,
+      m_dThisTimestepTopElevMax,
+      m_dThisTimestepTopElevMin;
 
    // These grand totals are all long doubles, the aim is to minimize rounding errors when many very small numbers are added to a single much larger number, see e.g. http://www.ddj.com/cpp/184403224
    long double

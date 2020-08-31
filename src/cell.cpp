@@ -576,7 +576,7 @@ void CGeomCell::InitCell(void)
    m_bIsInActiveZone             =
    m_bEstimated                  =
    m_bShadowBoundary             =
-   m_bPossibleCoastStartCell      = false;
+   m_bPossibleCoastStartCell     = false;
 
    m_nPolygonID                  =
    m_nCoastlineNormal            = INT_NODATA;

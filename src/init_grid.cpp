@@ -126,7 +126,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
                // All cells have same value for deep water wave height, deep water wave orientation, and deep water period and these values are unchanged throughout the simulation
                m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveHeight(m_dAllCellsDeepWaterWaveHeight);
                m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveOrientation(m_dAllCellsDeepWaterWaveOrientation);
-	       m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWavePeriod(m_dAllCellsDeepWaterWavePeriod);
+               m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWavePeriod(m_dAllCellsDeepWaterWavePeriod);
             }
          }
       }

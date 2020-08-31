@@ -298,10 +298,12 @@ CSimulation::CSimulation(void)
    m_dDeanProfileStartAboveSWL                      =
    m_dAccumulatedSeaLevelChange                     =
    m_dBreakingWaveHeightDepthRatio                  =
-   m_dWaveDataWrapHours                             = 0;
+   m_dWaveDataWrapHours                             =
+   m_dThisTimestepTopElevMax                        =
+   m_dThisTimestepTopElevMin                        = 0;
 
-   m_dMinSWL                                    = DBL_MAX;
-   m_dMaxSWL                                    = DBL_MIN;
+   m_dMinSWL                                        = DBL_MAX;
+   m_dMaxSWL                                        = DBL_MIN;
 
    for (int i = 0; i < 6; i++)
       m_dGeoTransform[i] = 0;
