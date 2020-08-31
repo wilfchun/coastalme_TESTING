@@ -66,7 +66,7 @@ int CSimulation::nLocateSeaAndCoasts(void)
    // Have we created any coasts?
    if (m_VCoast.empty())
    {
-      cerr << m_ulIteration << ": " << ERR << "no coastline located" << endl;
+      cerr << m_ulIteration << ": " << ERR << "no coastline located. SWL = " << m_dThisTimestepSWL << ", is this between the maximum and minimum elevations of the top surface of the DEM?" << endl;
       return RTN_ERR_NOCOAST;
    }
 
@@ -754,7 +754,7 @@ int CSimulation::nTraceCoastLine(unsigned int const nTraceFromStartCellIndex, in
 
    if (bOffEdge)
    {
-//       LogStream << m_ulIteration << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} since hit off-edge cell at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, coastline size is " << nCoastSize << endl;
+      LogStream << m_ulIteration << ": ignoring temporary coastline from [" << nStartX << "][" << nStartY << "] = {" << dGridCentroidXToExtCRSX(nStartX) << ", " << dGridCentroidYToExtCRSY(nStartY) << "} since hit off-edge cell at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, coastline size is " << nCoastSize << endl;
 
       // Unmark these cells as coast cells
       for (int n = 0; n < nCoastSize; n++)
