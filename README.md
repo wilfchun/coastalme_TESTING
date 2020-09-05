@@ -8,9 +8,9 @@ INSTRUCTIONS
 
 CoastalME builds easily using Linux. If you wish to run CoastalME on Windows, then we currently recommend using the Cygwin pseudo-Linux software to do this.
 
-1. Create a local copy of the github repository, for example by downloading a zipfile, then unpacking it
+1. Create a local copy of the github repository, for example by downloading a zipfile, then unpacking it. For example, unpack it to /home/<YOUR NAME>/coast/CoastalME.
 
-2. At a command-line prompt, change to the coastalme-master folder, then to the src folder
+2. At a command-line prompt, change to the CoastalME folder, then to the src folder
 
 3. If using Linux: copy run_cmake.sh.LINUX to run_cmake.sh OR if using Cygwin under Windows: copy run_cmake.CYGWIN to run_cmake.sh. Then run run_cmake.sh. If you see error messages re. missing software (for example, telling you that CMake cannot be found or is too old, or GDAL cannot be found or is too old) then you need to install or update the software that is causing the problem
 
