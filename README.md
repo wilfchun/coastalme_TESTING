@@ -8,9 +8,9 @@ INSTRUCTIONS
 
 CoastalME builds easily using Linux. If you wish to run CoastalME on Windows, then we currently recommend using the Cygwin pseudo-Linux software to do this.
 
-1. Create a local copy of the github repository, for example by downloading a zipfile, then unpacking it. We suggest unpacking it to something like /home/<YOUR NAME>/coast/CoastalME/, this is your CoastalME folder.
+1. Create a local copy of the github repository, for example by downloading a zipfile, then unpacking it. We suggest unpacking it to something like "/home/YOUR NAME/coast/CoastalME/", this is your CoastalME folder.
 
-2. In a terminal window (i.e. at a command-line prompt) move to the CoastalME folder (in other words, to /home/<YOUR NAME>/coast/CoastalME/ or whatever you decided to call it). Check that you can see a folder structure like this:
+2. In a terminal window (i.e. at a command-line prompt) move to the CoastalME folder (i.e. to "/home/YOUR NAME/coast/CoastalME/" or whatever you decided to call it). Check that you can see a folder structure like this:
 
       Doxygen<br>
       cshore<br>
