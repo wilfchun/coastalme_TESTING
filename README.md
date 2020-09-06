@@ -8,17 +8,30 @@ INSTRUCTIONS
 
 CoastalME builds easily using Linux. If you wish to run CoastalME on Windows, then we currently recommend using the Cygwin pseudo-Linux software to do this.
 
-1. Create a local copy of the github repository, for example by downloading a zipfile, then unpacking it. For example, unpack it to /home/<YOUR NAME>/coast/CoastalME.
+1. Create a local copy of the github repository, for example by downloading a zipfile, then unpacking it. We suggest unpacking it to something like /home/<YOUR NAME>/coast/CoastalME/, this is your CoastalME folder.
 
-2. At a command-line prompt, change to the CoastalME folder, then to the src folder
+2. In a terminal window (i.e. at a command-line prompt) move to the CoastalME folder (in other words, to /home/<YOUR NAME>/coast/CoastalME/ or whatever you decided to call it). Check that you can see a folder structure like this:
 
-3. If using Linux: copy run_cmake.sh.LINUX to run_cmake.sh OR if using Cygwin under Windows: copy run_cmake.CYGWIN to run_cmake.sh. Then run run_cmake.sh. If you see error messages re. missing software (for example, telling you that CMake cannot be found or is too old, or GDAL cannot be found or is too old) then you need to install or update the software that is causing the problem
+Doxygen
+cshore
+in
+out
+scape
+src
 
-4. Run make install. This will create an executable file called cme in the coastalme-master folder
+Then move to the the src folder. Check that you can see a folder structure like this:
 
-5. Edit cme.ini to tell CoastalME which input file you wish to use (for example, in/CliffFineBays/CliffFineBays.dat)
+cmake/Modules
+inc
+lib
 
-6. Run cme. Output will appear in the out/ folder
+3. If using Linux: copy run_cmake.sh.LINUX to run_cmake.sh OR if using Cygwin under Windows: copy run_cmake.CYGWIN to run_cmake.sh. Then run <b>run_cmake.sh</b>. If you see error messages re. missing software (for example, telling you that CMake cannot be found or is too old, or GDAL cannot be found or is too old) then you need to install or update the software that is causing the problem
+
+4. Run <b>make install</b>. This will create an executable file called <b>cme</b> in the CoastalME folder.
+
+5. Edit <b>cme.ini</b> to tell CoastalME which input file to read (for example, in/minimal/minimal.dat)
+
+6. Run <b>cme</b>. Output will appear in the out/ folder.
 
 8. Enjoy!
 
