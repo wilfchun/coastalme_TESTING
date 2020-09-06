@@ -12,18 +12,18 @@ CoastalME builds easily using Linux. If you wish to run CoastalME on Windows, th
 
 2. In a terminal window (i.e. at a command-line prompt) move to the CoastalME folder (in other words, to /home/<YOUR NAME>/coast/CoastalME/ or whatever you decided to call it). Check that you can see a folder structure like this:
 
-Doxygen<br>
-cshore<br>
-in<br>
-out<br>
-scape<br>
-src<br>
+      Doxygen<br>
+      cshore<br>
+      in<br>
+      out<br>
+      scape<br>
+      src<br>
 
-Then move to the the src folder. Check that you can see a folder structure like this:
+   Then move to the the src folder. Check that you can see a folder structure like this:
 
-cmake/Modules<br>
-inc<br>
-lib<br>
+      cmake/Modules<br>
+      inc<br>
+      lib<br>
 
 3. If using Linux: copy run_cmake.sh.LINUX to run_cmake.sh OR if using Cygwin under Windows: copy run_cmake.CYGWIN to run_cmake.sh. Then run <b>run_cmake.sh</b>. If you see error messages re. missing software (for example, telling you that CMake cannot be found or is too old, or GDAL cannot be found or is too old) then you need to install or update the software that is causing the problem
 
