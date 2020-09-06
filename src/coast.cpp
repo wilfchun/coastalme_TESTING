@@ -220,38 +220,38 @@ int CRWCoast::nGetCoastPointGivenCell(CGeom2DIPoint* pPtiCell)
    {
       switch (++n)
       {
-         case 0:
-            nXAdj = nX;
-            nYAdj = nY-1;
-            break;
-         case 1:
-            nXAdj = nX+1;
-            nYAdj = nY-1;
-            break;
-         case 2:
-            nXAdj = nX+1;
-            nYAdj = nY;
-            break;
-         case 3:
-            nXAdj = nX+1;
-            nYAdj = nY+1;
-            break;
-         case 4:
-            nXAdj = nX;
-            nYAdj = nY+1;
-            break;
-         case 5:
-            nXAdj = nX-1;
-            nYAdj = nY+1;
-            break;
-         case 6:
-            nXAdj = nX-1;
-            nYAdj = nY;
-            break;
-         case 7:
-            nXAdj = nX-1;
-            nYAdj = nY-1;
-            break;
+      case 0:
+         nXAdj = nX;
+         nYAdj = nY-1;
+         break;
+      case 1:
+         nXAdj = nX+1;
+         nYAdj = nY-1;
+         break;
+      case 2:
+         nXAdj = nX+1;
+         nYAdj = nY;
+         break;
+      case 3:
+         nXAdj = nX+1;
+         nYAdj = nY+1;
+         break;
+      case 4:
+         nXAdj = nX;
+         nYAdj = nY+1;
+         break;
+      case 5:
+         nXAdj = nX-1;
+         nYAdj = nY+1;
+         break;
+      case 6:
+         nXAdj = nX-1;
+         nYAdj = nY;
+         break;
+      case 7:
+         nXAdj = nX-1;
+         nYAdj = nY-1;
+         break;
       }
 
       CGeom2DIPoint PtiTmp(nXAdj, nYAdj);

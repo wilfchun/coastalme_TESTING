@@ -39,11 +39,11 @@ message ("")
 # Set up project-specific defaults
 project (CME)
 
-#set (CMAKE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")       # Assume that we are in the src folder
-#set (CMAKE_INSTALL_DIR "${CMAKE_SOURCE_DIR}/..")
+set (CMAKE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")       # Assume that we are in the src folder
+set (CMAKE_INSTALL_DIR "${CMAKE_SOURCE_DIR}/..")
 
-set (CMAKE_SOURCE_DIR "$ENV{HOME}/coast/CoastalME/src")     # May be changed by the user
-set (CMAKE_INSTALL_DIR "$ENV{HOME}/coast/CoastalME")        # May be changed by the user
+# set (CMAKE_SOURCE_DIR "$ENV{HOME}/coast/CoastalME/src")     # May be changed by the user
+# set (CMAKE_INSTALL_DIR "$ENV{HOME}/coast/CoastalME")        # May be changed by the user
 
 file (GLOB CME_SOURCE_FILES *.cpp)
 set (CME_EXECUTABLE cme)

@@ -458,75 +458,55 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
    switch (nDataItem)
    {
-      case (LANDFORM_RASTER):
-      {
-         // Initial Landform Class GIS data
-         strGISFile = m_strInitialLandformFile;
-         break;
-      }
+   case (LANDFORM_RASTER):
+      // Initial Landform Class GIS data
+      strGISFile = m_strInitialLandformFile;
+      break;
 
-      case (INTERVENTION_CLASS_RASTER):
-      {
-         // Intervention class
-         strGISFile = m_strInterventionClassFile;
-         break;
-      }
+   case (INTERVENTION_CLASS_RASTER):
+      // Intervention class
+      strGISFile = m_strInterventionClassFile;
+      break;
 
-      case (INTERVENTION_HEIGHT_RASTER):
-      {
-         // Intervention height
-         strGISFile = m_strInterventionHeightFile;
-         break;
-      }
+   case (INTERVENTION_HEIGHT_RASTER):
+      // Intervention height
+      strGISFile = m_strInterventionHeightFile;
+      break;
 
-      case (SUSP_SED_RASTER):
-      {
-         // Initial Suspended Sediment GIS data
-         strGISFile = m_strInitialSuspSedimentFile;
-         break;
-      }
+   case (SUSP_SED_RASTER):
+      // Initial Suspended Sediment GIS data
+      strGISFile = m_strInitialSuspSedimentFile;
+      break;
 
-      case (FINE_UNCONS_RASTER):
-      {
-         // Initial Unconsolidated Fine Sediment GIS data
-         strGISFile = m_VstrInitialFineUnconsSedimentFile[nLayer];
-         break;
-      }
+   case (FINE_UNCONS_RASTER):
+      // Initial Unconsolidated Fine Sediment GIS data
+      strGISFile = m_VstrInitialFineUnconsSedimentFile[nLayer];
+      break;
 
-      case (SAND_UNCONS_RASTER):
-      {
-         // Initial Unconsolidated Sand Sediment GIS data
-         strGISFile = m_VstrInitialSandUnconsSedimentFile[nLayer];
-         break;
-      }
+   case (SAND_UNCONS_RASTER):
+      // Initial Unconsolidated Sand Sediment GIS data
+      strGISFile = m_VstrInitialSandUnconsSedimentFile[nLayer];
+      break;
 
-      case (COARSE_UNCONS_RASTER):
-      {
-         // Initial Unconsolidated Coarse Sediment GIS data
-         strGISFile = m_VstrInitialCoarseUnconsSedimentFile[nLayer];
-         break;
-      }
+   case (COARSE_UNCONS_RASTER):
+      // Initial Unconsolidated Coarse Sediment GIS data
+      strGISFile = m_VstrInitialCoarseUnconsSedimentFile[nLayer];
+      break;
 
-      case (FINE_CONS_RASTER):
-      {
-         // Initial Consolidated Fine Sediment GIS data
-         strGISFile = m_VstrInitialFineConsSedimentFile[nLayer];
-         break;
-      }
+   case (FINE_CONS_RASTER):
+      // Initial Consolidated Fine Sediment GIS data
+      strGISFile = m_VstrInitialFineConsSedimentFile[nLayer];
+      break;
 
-      case (SAND_CONS_RASTER):
-      {
-         // Initial Consolidated Sand Sediment GIS data
-         strGISFile = m_VstrInitialSandConsSedimentFile[nLayer];
-         break;
-      }
+   case (SAND_CONS_RASTER):
+      // Initial Consolidated Sand Sediment GIS data
+      strGISFile = m_VstrInitialSandConsSedimentFile[nLayer];
+      break;
 
-      case (COARSE_CONS_RASTER):
-      {
-         // Initial Consolidated Coarse Sediment GIS data
-         strGISFile = m_VstrInitialCoarseConsSedimentFile[nLayer];
-         break;
-      }
+   case (COARSE_CONS_RASTER):
+      // Initial Consolidated Coarse Sediment GIS data
+      strGISFile = m_VstrInitialCoarseConsSedimentFile[nLayer];
+      break;
    }
 
    // Do we have a filename for this data item? If we don't then just return
@@ -625,105 +605,85 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
       switch (nDataItem)
       {
-         case (LANDFORM_RASTER):
-         {
-            // Initial Landform Class GIS data
-            m_strGDALLDriverCode = strDriverCode;
-            m_strGDALLDriverDesc = strDriverDesc;
-            m_strGDALLProjection = strProjection;
-            m_strGDALLDataType = strDataType;
-            break;
-         }
+      case (LANDFORM_RASTER):
+         // Initial Landform Class GIS data
+         m_strGDALLDriverCode = strDriverCode;
+         m_strGDALLDriverDesc = strDriverDesc;
+         m_strGDALLProjection = strProjection;
+         m_strGDALLDataType = strDataType;
+         break;
 
-         case (INTERVENTION_CLASS_RASTER):
-         {
-            // Intervention class
-            m_strGDALICDriverCode = strDriverCode;
-            m_strGDALICDriverDesc = strDriverDesc;
-            m_strGDALICProjection = strProjection;
-            m_strGDALICDataType = strDataType;
-            break;
-         }
+      case (INTERVENTION_CLASS_RASTER):
+         // Intervention class
+         m_strGDALICDriverCode = strDriverCode;
+         m_strGDALICDriverDesc = strDriverDesc;
+         m_strGDALICProjection = strProjection;
+         m_strGDALICDataType = strDataType;
+         break;
 
-         case (INTERVENTION_HEIGHT_RASTER):
-         {
-            // Intervention height
-            m_strGDALIHDriverCode = strDriverCode;
-            m_strGDALIHDriverDesc = strDriverDesc;
-            m_strGDALIHProjection = strProjection;
-            m_strGDALIHDataType = strDataType;
-            break;
-         }
+      case (INTERVENTION_HEIGHT_RASTER):
+         // Intervention height
+         m_strGDALIHDriverCode = strDriverCode;
+         m_strGDALIHDriverDesc = strDriverDesc;
+         m_strGDALIHProjection = strProjection;
+         m_strGDALIHDataType = strDataType;
+         break;
 
-         case (SUSP_SED_RASTER):
-         {
-            // Initial Suspended Sediment GIS data
-            m_strGDALISSDriverCode = strDriverCode;
-            m_strGDALISSDriverDesc = strDriverDesc;
-            m_strGDALISSProjection = strProjection;
-            m_strGDALISSDataType = strDataType;
-            break;
-         }
+      case (SUSP_SED_RASTER):
+         // Initial Suspended Sediment GIS data
+         m_strGDALISSDriverCode = strDriverCode;
+         m_strGDALISSDriverDesc = strDriverDesc;
+         m_strGDALISSProjection = strProjection;
+         m_strGDALISSDataType = strDataType;
+         break;
 
-         case (FINE_UNCONS_RASTER):
-         {
-            // Initial Unconsolidated Fine Sediment GIS data
-            m_VstrGDALIUFDriverCode[nLayer] = strDriverCode;
-            m_VstrGDALIUFDriverDesc[nLayer] = strDriverDesc;
-            m_VstrGDALIUFProjection[nLayer] = strProjection;
-            m_VstrGDALIUFDataType[nLayer] = strDataType;
-            break;
-         }
+      case (FINE_UNCONS_RASTER):
+         // Initial Unconsolidated Fine Sediment GIS data
+         m_VstrGDALIUFDriverCode[nLayer] = strDriverCode;
+         m_VstrGDALIUFDriverDesc[nLayer] = strDriverDesc;
+         m_VstrGDALIUFProjection[nLayer] = strProjection;
+         m_VstrGDALIUFDataType[nLayer] = strDataType;
+         break;
 
-         case (SAND_UNCONS_RASTER):
-         {
-            // Initial Unconsolidated Sand Sediment GIS data
-            m_VstrGDALIUSDriverCode[nLayer] = strDriverCode;
-            m_VstrGDALIUSDriverDesc[nLayer] = strDriverDesc;
-            m_VstrGDALIUSProjection[nLayer] = strProjection;
-            m_VstrGDALIUSDataType[nLayer] = strDataType;
-            break;
-         }
+      case (SAND_UNCONS_RASTER):
+         // Initial Unconsolidated Sand Sediment GIS data
+         m_VstrGDALIUSDriverCode[nLayer] = strDriverCode;
+         m_VstrGDALIUSDriverDesc[nLayer] = strDriverDesc;
+         m_VstrGDALIUSProjection[nLayer] = strProjection;
+         m_VstrGDALIUSDataType[nLayer] = strDataType;
+         break;
 
-         case (COARSE_UNCONS_RASTER):
-         {
-            // Initial Unconsolidated Coarse Sediment GIS data
-            m_VstrGDALIUCDriverCode[nLayer] = strDriverCode;
-            m_VstrGDALIUCDriverDesc[nLayer] = strDriverDesc;
-            m_VstrGDALIUCProjection[nLayer] = strProjection;
-            m_VstrGDALIUCDataType[nLayer] = strDataType;
-            break;
-         }
+      case (COARSE_UNCONS_RASTER):
+         // Initial Unconsolidated Coarse Sediment GIS data
+         m_VstrGDALIUCDriverCode[nLayer] = strDriverCode;
+         m_VstrGDALIUCDriverDesc[nLayer] = strDriverDesc;
+         m_VstrGDALIUCProjection[nLayer] = strProjection;
+         m_VstrGDALIUCDataType[nLayer] = strDataType;
+         break;
 
-         case (FINE_CONS_RASTER):
-         {
-            // Initial Consolidated Fine Sediment GIS data
-            m_VstrGDALICFDriverCode[nLayer] = strDriverCode;
-            m_VstrGDALICFDriverDesc[nLayer] = strDriverDesc;
-            m_VstrGDALICFProjection[nLayer] = strProjection;
-            m_VstrGDALICFDataType[nLayer] = strDataType;
-            break;
-         }
+      case (FINE_CONS_RASTER):
+         // Initial Consolidated Fine Sediment GIS data
+         m_VstrGDALICFDriverCode[nLayer] = strDriverCode;
+         m_VstrGDALICFDriverDesc[nLayer] = strDriverDesc;
+         m_VstrGDALICFProjection[nLayer] = strProjection;
+         m_VstrGDALICFDataType[nLayer] = strDataType;
+         break;
 
-         case (SAND_CONS_RASTER):
-         {
-            // Initial Consolidated Sand Sediment GIS data
-            m_VstrGDALICSDriverCode[nLayer] = strDriverCode;
-            m_VstrGDALICSDriverDesc[nLayer] = strDriverDesc;
-            m_VstrGDALICSProjection[nLayer] = strProjection;
-            m_VstrGDALICSDataType[nLayer] = strDataType;
-            break;
-         }
+      case (SAND_CONS_RASTER):
+         // Initial Consolidated Sand Sediment GIS data
+         m_VstrGDALICSDriverCode[nLayer] = strDriverCode;
+         m_VstrGDALICSDriverDesc[nLayer] = strDriverDesc;
+         m_VstrGDALICSProjection[nLayer] = strProjection;
+         m_VstrGDALICSDataType[nLayer] = strDataType;
+         break;
 
-         case (COARSE_CONS_RASTER):
-         {
-            // Initial Consolidated Coarse Sediment GIS data
-            m_VstrGDALICCDriverCode[nLayer] = strDriverCode;
-            m_VstrGDALICCDriverDesc[nLayer] = strDriverDesc;
-            m_VstrGDALICCProjection[nLayer] = strProjection;
-            m_VstrGDALICCDataType[nLayer] = strDataType;
-            break;
-         }
+      case (COARSE_CONS_RASTER):
+         // Initial Consolidated Coarse Sediment GIS data
+         m_VstrGDALICCDriverCode[nLayer] = strDriverCode;
+         m_VstrGDALICCDriverDesc[nLayer] = strDriverDesc;
+         m_VstrGDALICCProjection[nLayer] = strProjection;
+         m_VstrGDALICCDataType[nLayer] = strDataType;
+         break;
       }
 
       // If present, get the missing value setting
@@ -779,177 +739,158 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
          // All OK, so read scanline into cells (including any missing values)
          for (int nX = 0; nX < m_nXGridMax; nX++)
          {
+            int nTmp;
             switch (nDataItem)
             {
-               case (LANDFORM_RASTER):
-               {
-                  // Initial Landform Class GIS data, is integer TODO Do we also need a landform sub-category input?
-                  int nTmp = static_cast<int>(pfScanline[nX]);
-                  if (! bDoubleNotNaN(nTmp))              // Deal with any NaN values
-                     nTmp = m_nMissingValue;
+            case (LANDFORM_RASTER):
+               // Initial Landform Class GIS data, is integer TODO Do we also need a landform sub-category input?
+               nTmp = static_cast<int>(pfScanline[nX]);
+               if (! bDoubleNotNaN(nTmp))              // Deal with any NaN values
+                  nTmp = m_nMissingValue;
 
-                  if (nTmp == nMissingValue)
-                     nTmp = m_nMissingValue;
+               if (nTmp == nMissingValue)
+                  nTmp = m_nMissingValue;
 
-                  if (nTmp == m_nMissingValue)
-                     nMissing++;
+               if (nTmp == m_nMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFCategory(nTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFCategory(nTmp);
+               break;
 
-               case (INTERVENTION_CLASS_RASTER):
-               {
-                  // Intervention class, is integer
-                  int nTmp = static_cast<int>(pfScanline[nX]);
-                  if (! bDoubleNotNaN(nTmp))              // Deal with any NaN values
-                     nTmp = m_nMissingValue;
+            case (INTERVENTION_CLASS_RASTER):
+               // Intervention class, is integer
+               nTmp = static_cast<int>(pfScanline[nX]);
+               if (! bDoubleNotNaN(nTmp))              // Deal with any NaN values
+                  nTmp = m_nMissingValue;
 
-                  if (nTmp == nMissingValue)
-                     nTmp = m_nMissingValue;
+               if (nTmp == nMissingValue)
+                  nTmp = m_nMissingValue;
 
-                  if (nTmp == m_nMissingValue)
-                     nMissing++;
+               if (nTmp == m_nMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].SetInterventionClass(nTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].SetInterventionClass(nTmp);
+               break;
 
-               case (INTERVENTION_HEIGHT_RASTER):
-               {
-                  // Intervention height
-                  dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleNotNaN(dTmp))
-                     dTmp = m_dMissingValue;
+            case (INTERVENTION_HEIGHT_RASTER):
+               // Intervention height
+               dTmp = pfScanline[nX];       // Deal with any NaN values
+               if (! bDoubleNotNaN(dTmp))
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == dMissingValue)
-                     dTmp = m_dMissingValue;
+               if (dTmp == dMissingValue)
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == m_dMissingValue)
-                     nMissing++;
+               if (dTmp == m_dMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].SetInterventionHeight(dTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].SetInterventionHeight(dTmp);
+               break;
 
-               case (SUSP_SED_RASTER):
-               {
-                  // Initial Suspended Sediment GIS data
-                  dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleNotNaN(dTmp))
-                     dTmp = m_dMissingValue;
+            case (SUSP_SED_RASTER):
+               // Initial Suspended Sediment GIS data
+               dTmp = pfScanline[nX];       // Deal with any NaN values
+               if (! bDoubleNotNaN(dTmp))
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == dMissingValue)
-                     dTmp = m_dMissingValue;
+               if (dTmp == dMissingValue)
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == m_dMissingValue)
-                     nMissing++;
+               if (dTmp == m_dMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].SetSuspendedSediment(dTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].SetSuspendedSediment(dTmp);
+               break;
 
-               case (FINE_UNCONS_RASTER):
-               {
-                  // Initial Unconsolidated Fine Sediment GIS data
-                  dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleNotNaN(dTmp))
-                     dTmp = m_dMissingValue;
+            case (FINE_UNCONS_RASTER):
+               // Initial Unconsolidated Fine Sediment GIS data
+               dTmp = pfScanline[nX];       // Deal with any NaN values
+               if (! bDoubleNotNaN(dTmp))
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == dMissingValue)
-                     dTmp = m_dMissingValue;
+               if (dTmp == dMissingValue)
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == m_dMissingValue)
-                     nMissing++;
+               if (dTmp == m_dMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetFine(dTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetFine(dTmp);
+               break;
 
-               case (SAND_UNCONS_RASTER):
-               {
-                  // Initial Unconsolidated Sand Sediment GIS data
-                  dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleNotNaN(dTmp))
-                     dTmp = m_dMissingValue;
+            case (SAND_UNCONS_RASTER):
+               // Initial Unconsolidated Sand Sediment GIS data
+               dTmp = pfScanline[nX];       // Deal with any NaN values
+               if (! bDoubleNotNaN(dTmp))
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == dMissingValue)
-                     dTmp = m_dMissingValue;
+               if (dTmp == dMissingValue)
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == m_dMissingValue)
-                     nMissing++;
+               if (dTmp == m_dMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetSand(dTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetSand(dTmp);
+               break;
 
-               case (COARSE_UNCONS_RASTER):
-               {
-                  // Initial Unconsolidated Coarse Sediment GIS data
-                  dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleNotNaN(dTmp))
-                     dTmp = m_dMissingValue;
+            case (COARSE_UNCONS_RASTER):
+               // Initial Unconsolidated Coarse Sediment GIS data
+               dTmp = pfScanline[nX];       // Deal with any NaN values
+               if (! bDoubleNotNaN(dTmp))
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == dMissingValue)
-                     dTmp = m_dMissingValue;
+               if (dTmp == dMissingValue)
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == m_dMissingValue)
-                     nMissing++;
+               if (dTmp == m_dMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetCoarse(dTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetCoarse(dTmp);
+               break;
 
-               case (FINE_CONS_RASTER):
-               {
-                  // Initial Consolidated Fine Sediment GIS data
-                  dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleNotNaN(dTmp))
-                     dTmp = m_dMissingValue;
+            case (FINE_CONS_RASTER):
+               // Initial Consolidated Fine Sediment GIS data
+               dTmp = pfScanline[nX];       // Deal with any NaN values
+               if (! bDoubleNotNaN(dTmp))
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == dMissingValue)
-                     dTmp = m_dMissingValue;
+               if (dTmp == dMissingValue)
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == m_dMissingValue)
-                     nMissing++;
+               if (dTmp == m_dMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetFine(dTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetFine(dTmp);
+               break;
 
-               case (SAND_CONS_RASTER):
-               {
-                  // Initial Consolidated Sand Sediment GIS data
-                  dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleNotNaN(dTmp))
-                     dTmp = m_dMissingValue;
+            case (SAND_CONS_RASTER):
+               // Initial Consolidated Sand Sediment GIS data
+               dTmp = pfScanline[nX];       // Deal with any NaN values
+               if (! bDoubleNotNaN(dTmp))
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == dMissingValue)
-                     dTmp = m_dMissingValue;
+               if (dTmp == dMissingValue)
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == m_dMissingValue)
-                     nMissing++;
+               if (dTmp == m_dMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetSand(dTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetSand(dTmp);
+               break;
 
-               case (COARSE_CONS_RASTER):
-               {
-                  // Initial Consolidated Coarse Sediment GIS data
-                  dTmp = pfScanline[nX];       // Deal with any NaN values
-                  if (! bDoubleNotNaN(dTmp))
-                     dTmp = m_dMissingValue;
+            case (COARSE_CONS_RASTER):
+               // Initial Consolidated Coarse Sediment GIS data
+               dTmp = pfScanline[nX];       // Deal with any NaN values
+               if (! bDoubleNotNaN(dTmp))
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == dMissingValue)
-                     dTmp = m_dMissingValue;
+               if (dTmp == dMissingValue)
+                  dTmp = m_dMissingValue;
 
-                  if (dTmp == m_dMissingValue)
-                     nMissing++;
+               if (dTmp == m_dMissingValue)
+                  nMissing++;
 
-                  m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetCoarse(dTmp);
-                  break;
-               }
+               m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetCoarse(dTmp);
+               break;
             }
          }
       }
@@ -986,239 +927,163 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
 
    switch (nDataItem)
    {
-      case (RASTER_PLOT_BASEMENT_ELEVATION):
-      {
-         strFilePathName.append(RASTER_BASEMENT_ELEVATION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_BASEMENT_ELEVATION):
+      strFilePathName.append(RASTER_BASEMENT_ELEVATION_NAME);
+      break;
 
-      case (RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV):
-      {
-         strFilePathName.append(RASTER_SEDIMENT_TOP_NAME);
-         break;
-      }
+   case (RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV):
+      strFilePathName.append(RASTER_SEDIMENT_TOP_NAME);
+      break;
 
-      case (RASTER_PLOT_OVERALL_TOP_ELEVATION):
-      {
-         strFilePathName.append(RASTER_TOP_NAME);
-         break;
-      }
+   case (RASTER_PLOT_OVERALL_TOP_ELEVATION):
+      strFilePathName.append(RASTER_TOP_NAME);
+      break;
 
-      case (RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT):
-      {
-         strFilePathName.append(RASTER_LOCAL_SLOPE_NAME);
-         break;
-      }
+   case (RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT):
+      strFilePathName.append(RASTER_LOCAL_SLOPE_NAME);
+      break;
 
-      case (RASTER_PLOT_SEA_DEPTH):
-      {
-         strFilePathName.append(RASTER_SEA_DEPTH_NAME);
-         break;
-      }
+   case (RASTER_PLOT_SEA_DEPTH):
+      strFilePathName.append(RASTER_SEA_DEPTH_NAME);
+      break;
 
-      case (RASTER_PLOT_AVG_SEA_DEPTH):
-      {
-         strFilePathName.append(RASTER_AVG_SEA_DEPTH_NAME);
-         break;
-      }
+   case (RASTER_PLOT_AVG_SEA_DEPTH):
+      strFilePathName.append(RASTER_AVG_SEA_DEPTH_NAME);
+      break;
 
-      case (RASTER_PLOT_WAVE_HEIGHT):
-      {
-         strFilePathName.append(RASTER_WAVE_HEIGHT_NAME);
-         break;
-      }
+   case (RASTER_PLOT_WAVE_HEIGHT):
+      strFilePathName.append(RASTER_WAVE_HEIGHT_NAME);
+      break;
 
-      case (RASTER_PLOT_AVG_WAVE_HEIGHT):
-      {
-         strFilePathName.append(RASTER_AVG_WAVE_HEIGHT_NAME);
-         break;
-      }
+   case (RASTER_PLOT_AVG_WAVE_HEIGHT):
+      strFilePathName.append(RASTER_AVG_WAVE_HEIGHT_NAME);
+      break;
 
-      case (RASTER_PLOT_WAVE_ORIENTATION):
-      {
-         strFilePathName.append(RASTER_WAVE_ORIENTATION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_WAVE_ORIENTATION):
+      strFilePathName.append(RASTER_WAVE_ORIENTATION_NAME);
+      break;
 
-      case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
-      {
-         strFilePathName.append(RASTER_AVG_WAVE_ORIENTATION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
+      strFilePathName.append(RASTER_AVG_WAVE_ORIENTATION_NAME);
+      break;
 
-      case (RASTER_PLOT_BEACH_PROTECTION):
-      {
-         strFilePathName.append(RASTER_BEACH_PROTECTION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_BEACH_PROTECTION):
+      strFilePathName.append(RASTER_BEACH_PROTECTION_NAME);
+      break;
 
-      case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION):
-      {
-         strFilePathName.append(RASTER_POTENTIAL_PLATFORM_EROSION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION):
+      strFilePathName.append(RASTER_POTENTIAL_PLATFORM_EROSION_NAME);
+      break;
 
-      case (RASTER_PLOT_ACTUAL_PLATFORM_EROSION):
-      {
-         strFilePathName.append(RASTER_ACTUAL_PLATFORM_EROSION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_ACTUAL_PLATFORM_EROSION):
+      strFilePathName.append(RASTER_ACTUAL_PLATFORM_EROSION_NAME);
+      break;
 
-      case (RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION):
-      {
-         strFilePathName.append(RASTER_TOTAL_POTENTIAL_PLATFORM_EROSION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION):
+      strFilePathName.append(RASTER_TOTAL_POTENTIAL_PLATFORM_EROSION_NAME);
+      break;
 
-      case (RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION):
-      {
-         strFilePathName.append(RASTER_TOTAL_ACTUAL_PLATFORM_EROSION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION):
+      strFilePathName.append(RASTER_TOTAL_ACTUAL_PLATFORM_EROSION_NAME);
+      break;
 
-      case (RASTER_PLOT_POTENTIAL_BEACH_EROSION):
-      {
-         strFilePathName.append(RASTER_POTENTIAL_BEACH_EROSION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_POTENTIAL_BEACH_EROSION):
+      strFilePathName.append(RASTER_POTENTIAL_BEACH_EROSION_NAME);
+      break;
 
-      case (RASTER_PLOT_ACTUAL_BEACH_EROSION):
-      {
-         strFilePathName.append(RASTER_ACTUAL_BEACH_EROSION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_ACTUAL_BEACH_EROSION):
+      strFilePathName.append(RASTER_ACTUAL_BEACH_EROSION_NAME);
+      break;
 
-      case (RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION):
-      {
-         strFilePathName.append(RASTER_TOTAL_POTENTIAL_BEACH_EROSION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION):
+      strFilePathName.append(RASTER_TOTAL_POTENTIAL_BEACH_EROSION_NAME);
+      break;
 
-      case (RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION):
-      {
-         strFilePathName.append(RASTER_TOTAL_ACTUAL_BEACH_EROSION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION):
+      strFilePathName.append(RASTER_TOTAL_ACTUAL_BEACH_EROSION_NAME);
+      break;
 
-      case (RASTER_PLOT_BEACH_DEPOSITION):
-      {
-         strFilePathName.append(RASTER_BEACH_DEPOSITION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_BEACH_DEPOSITION):
+      strFilePathName.append(RASTER_BEACH_DEPOSITION_NAME);
+      break;
 
-      case (RASTER_PLOT_TOTAL_BEACH_DEPOSITION):
-      {
-         strFilePathName.append(RASTER_TOTAL_BEACH_DEPOSITION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_TOTAL_BEACH_DEPOSITION):
+      strFilePathName.append(RASTER_TOTAL_BEACH_DEPOSITION_NAME);
+      break;
 
-      case (RASTER_PLOT_SUSPENDED_SEDIMENT):
-      {
-         strFilePathName.append(RASTER_SUSP_SED_NAME);
-         break;
-      }
+   case (RASTER_PLOT_SUSPENDED_SEDIMENT):
+      strFilePathName.append(RASTER_SUSP_SED_NAME);
+      break;
 
-      case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
-      {
-         strFilePathName.append(RASTER_AVG_SUSP_SED_NAME);
-         break;
-      }
+   case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
+      strFilePathName.append(RASTER_AVG_SUSP_SED_NAME);
+      break;
 
-      case (RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT):
-      {
-         strFilePathName.append(RASTER_FINE_UNCONS_NAME);
-         strFilePathName.append(strLayer);
-         break;
-      }
+   case (RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT):
+      strFilePathName.append(RASTER_FINE_UNCONS_NAME);
+      strFilePathName.append(strLayer);
+      break;
 
-      case (RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT):
-      {
-         strFilePathName.append(RASTER_SAND_UNCONS_NAME);
-         strFilePathName.append(strLayer);
-         break;
-      }
+   case (RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT):
+      strFilePathName.append(RASTER_SAND_UNCONS_NAME);
+      strFilePathName.append(strLayer);
+      break;
 
-      case (RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT):
-      {
-         strFilePathName.append(RASTER_COARSE_UNCONS_NAME);
-         strFilePathName.append(strLayer);
-         break;
-      }
+   case (RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT):
+      strFilePathName.append(RASTER_COARSE_UNCONS_NAME);
+      strFilePathName.append(strLayer);
+      break;
 
-      case (RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT):
-      {
-         strFilePathName.append(RASTER_FINE_CONS_NAME);
-         strFilePathName.append(strLayer);
-         break;
-      }
+   case (RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT):
+      strFilePathName.append(RASTER_FINE_CONS_NAME);
+      strFilePathName.append(strLayer);
+      break;
 
-      case (RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT):
-      {
-         strFilePathName.append(RASTER_SAND_CONS_NAME);
-         strFilePathName.append(strLayer);
-         break;
-      }
+   case (RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT):
+      strFilePathName.append(RASTER_SAND_CONS_NAME);
+      strFilePathName.append(strLayer);
+      break;
 
-      case (RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT):
-      {
-         strFilePathName.append(RASTER_COARSE_CONS_NAME);
-         strFilePathName.append(strLayer);
-         break;
-      }
+   case (RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT):
+      strFilePathName.append(RASTER_COARSE_CONS_NAME);
+      strFilePathName.append(strLayer);
+      break;
 
-      case (RASTER_PLOT_CLIFF_COLLAPSE):
-      {
-         strFilePathName.append(RASTER_CLIFF_COLLAPSE_NAME);
-         break;
-      }
+   case (RASTER_PLOT_CLIFF_COLLAPSE):
+      strFilePathName.append(RASTER_CLIFF_COLLAPSE_NAME);
+      break;
 
-      case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE):
-      {
-         strFilePathName.append(RASTER_TOTAL_CLIFF_COLLAPSE_NAME);
-         break;
-      }
+   case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE):
+      strFilePathName.append(RASTER_TOTAL_CLIFF_COLLAPSE_NAME);
+      break;
 
-      case (RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT):
-      {
-         strFilePathName.append(RASTER_CLIFF_COLLAPSE_DEPOSITION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT):
+      strFilePathName.append(RASTER_CLIFF_COLLAPSE_DEPOSITION_NAME);
+      break;
 
-      case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
-      {
-         strFilePathName.append(RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
+      strFilePathName.append(RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_NAME);
+      break;
 
-      case (RASTER_PLOT_INTERVENTION_HEIGHT):
-      {
-         strFilePathName.append(RASTER_INTERVENTION_HEIGHT_NAME);
-         break;
-      }
+   case (RASTER_PLOT_INTERVENTION_HEIGHT):
+      strFilePathName.append(RASTER_INTERVENTION_HEIGHT_NAME);
+      break;
 
-      case (RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION):
-      {
-         strFilePathName.append(RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME);
-         break;
-      }
+   case (RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION):
+      strFilePathName.append(RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME);
+      break;
 
-      case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
-      {
-         strFilePathName.append(RASTER_DEEP_WATER_WAVE_HEIGHT_NAME);
-         break;
-      }
+   case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
+      strFilePathName.append(RASTER_DEEP_WATER_WAVE_HEIGHT_NAME);
+      break;
 
-      case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
-      {
-         strFilePathName.append(RASTER_POLYGON_GAIN_OR_LOSS_NAME);
-         break;
-      }
+   case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
+      strFilePathName.append(RASTER_POLYGON_GAIN_OR_LOSS_NAME);
+      break;
 
-      case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
-      {
-         strFilePathName.append(RASTER_WAVE_PERIOD_NAME);
-         break;
-      }
+   case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
+      strFilePathName.append(RASTER_WAVE_PERIOD_NAME);
+      break;
    }
 
    // Append the 'save number' to the filename, and prepend zeros to the save number
@@ -1313,258 +1178,181 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
       {
          switch (nDataItem)
          {
-            case (RASTER_PLOT_BASEMENT_ELEVATION):
+         case (RASTER_PLOT_BASEMENT_ELEVATION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBasementElev();
+            break;
+
+         case (RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev();
+            break;
+
+         case (RASTER_PLOT_OVERALL_TOP_ELEVATION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentPlusInterventionTopElev(); // APayo April 2018 this is now sed top elev + intervention
+            break;
+
+         case (RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetLocalConsSlope();
+            break;
+
+         case (RASTER_PLOT_SEA_DEPTH):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
+            break;
+
+         case (RASTER_PLOT_AVG_SEA_DEPTH):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / static_cast<double>(m_ulIteration);
+            break;
+
+         case (RASTER_PLOT_WAVE_HEIGHT):
+            if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
+               dTmp = m_dMissingValue;
+            else
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
+            break;
+
+         case (RASTER_PLOT_AVG_WAVE_HEIGHT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_ulIteration);
+            break;
+
+         case (RASTER_PLOT_WAVE_ORIENTATION):
+            if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
+               dTmp = m_dMissingValue;
+            else
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
+            break;
+
+         case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIteration);
+            break;
+
+         case (RASTER_PLOT_BEACH_PROTECTION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBeachProtectionFactor();
+
+            if (dTmp == DBL_NODATA)
+               dTmp = m_dMissingValue;
+            else
+               dTmp = 1 - dTmp;                 // Output the inverse, seems more intuitive
+
+            break;
+
+         case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetPotentialPlatformErosion();
+            break;
+
+         case (RASTER_PLOT_ACTUAL_PLATFORM_EROSION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetActualPlatformErosion();
+            break;
+
+         case (RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotPotentialPlatformErosion();
+            break;
+
+         case (RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotActualPlatformErosion();
+            break;
+
+         case (RASTER_PLOT_POTENTIAL_BEACH_EROSION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetPotentialBeachErosion();
+            break;
+
+         case (RASTER_PLOT_ACTUAL_BEACH_EROSION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetActualBeachErosion();
+            break;
+
+         case (RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotPotentialBeachErosion();
+            break;
+
+         case (RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotActualBeachErosion();
+            break;
+
+         case (RASTER_PLOT_BEACH_DEPOSITION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBeachDeposition();
+            break;
+
+         case (RASTER_PLOT_TOTAL_BEACH_DEPOSITION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotBeachDeposition();
+            break;
+
+         case (RASTER_PLOT_SUSPENDED_SEDIMENT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSuspendedSediment();
+            break;
+
+         case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / static_cast<double>(m_ulIteration);
+            break;
+
+         case (RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->dGetFine();
+            break;
+
+         case (RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->dGetSand();
+            break;
+
+         case (RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->dGetCoarse();
+            break;
+
+         case (RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->dGetFine();
+            break;
+
+         case (RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->dGetSand();
+            break;
+
+         case (RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->dGetCoarse();
+            break;
+
+         case (RASTER_PLOT_CLIFF_COLLAPSE):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetCliffCollapse();
+            break;
+
+         case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapse();
+            break;
+
+         case (RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetCliffCollapseDeposition();
+            break;
+
+         case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapseDeposition();
+            break;
+
+         case (RASTER_PLOT_INTERVENTION_HEIGHT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetInterventionHeight();
+            break;
+
+         case (RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveOrientation();
+            break;
+
+         case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight();
+            break;
+
+         case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWavePeriod();
+            break;
+
+         case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
+            int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+
+            if (nPoly == INT_NODATA)
+               dTmp = m_dMissingValue;
+            else
             {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBasementElev();
-               break;
+               // Get total volume (all sediment size classes) of change in sediment for this polygon for this timestep (-ve erosion, +ve deposition)
+               dTmp = m_pVCoastPolygon[nPoly]->dGetDeltaActualTotalSediment() * m_dCellArea;
+
+               // Calculate the rate in m^3 / sec
+               dTmp /= (m_dTimeStep * 3600);
             }
 
-            case (RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev();
-               break;
-            }
-
-            case (RASTER_PLOT_OVERALL_TOP_ELEVATION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentPlusInterventionTopElev(); // APayo April 2018 this is now sed top elev + intervention
-               break;
-            }
-
-            case (RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetLocalConsSlope();
-               break;
-            }
-
-            case (RASTER_PLOT_SEA_DEPTH):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
-               break;
-            }
-
-            case (RASTER_PLOT_AVG_SEA_DEPTH):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / static_cast<double>(m_ulIteration);
-               break;
-            }
-
-            case (RASTER_PLOT_WAVE_HEIGHT):
-            {
-               if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
-                  dTmp = m_dMissingValue;
-               else
-                  dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
-               break;
-            }
-
-            case (RASTER_PLOT_AVG_WAVE_HEIGHT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_ulIteration);
-               break;
-            }
-
-            case (RASTER_PLOT_WAVE_ORIENTATION):
-            {
-               if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
-                  dTmp = m_dMissingValue;
-               else
-                  dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
-               break;
-            }
-
-            case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIteration);
-               break;
-            }
-
-            case (RASTER_PLOT_BEACH_PROTECTION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBeachProtectionFactor();
-
-               if (dTmp == DBL_NODATA)
-                  dTmp = m_dMissingValue;
-               else
-                  dTmp = 1 - dTmp;                 // Output the inverse, seems more intuitive
-
-               break;
-            }
-
-            case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetPotentialPlatformErosion();
-               break;
-            }
-
-            case (RASTER_PLOT_ACTUAL_PLATFORM_EROSION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetActualPlatformErosion();
-               break;
-            }
-
-            case (RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotPotentialPlatformErosion();
-               break;
-            }
-
-            case (RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotActualPlatformErosion();
-               break;
-            }
-
-            case (RASTER_PLOT_POTENTIAL_BEACH_EROSION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetPotentialBeachErosion();
-               break;
-            }
-
-            case (RASTER_PLOT_ACTUAL_BEACH_EROSION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetActualBeachErosion();
-               break;
-            }
-
-            case (RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotPotentialBeachErosion();
-               break;
-            }
-
-            case (RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotActualBeachErosion();
-               break;
-            }
-
-            case (RASTER_PLOT_BEACH_DEPOSITION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBeachDeposition();
-               break;
-            }
-
-            case (RASTER_PLOT_TOTAL_BEACH_DEPOSITION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotBeachDeposition();
-               break;
-            }
-
-            case (RASTER_PLOT_SUSPENDED_SEDIMENT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetSuspendedSediment();
-               break;
-            }
-
-            case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / static_cast<double>(m_ulIteration);
-               break;
-            }
-
-            case (RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->dGetFine();
-               break;
-            }
-
-            case (RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->dGetSand();
-               break;
-            }
-
-            case (RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->dGetCoarse();
-               break;
-            }
-
-            case (RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->dGetFine();
-               break;
-            }
-
-            case (RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->dGetSand();
-               break;
-            }
-
-            case (RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->dGetCoarse();
-               break;
-            }
-
-            case (RASTER_PLOT_CLIFF_COLLAPSE):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetCliffCollapse();
-               break;
-            }
-
-            case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapse();
-               break;
-            }
-
-            case (RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetCliffCollapseDeposition();
-               break;
-            }
-
-            case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotCliffCollapseDeposition();
-               break;
-            }
-
-            case (RASTER_PLOT_INTERVENTION_HEIGHT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetInterventionHeight();
-               break;
-            }
-
-            case (RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveOrientation();
-               break;
-            }
-
-            case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight();
-               break;
-            }
-
-            case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
-            {
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWavePeriod();
-               break;
-            }
-
-            case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
-            {
-               int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
-
-               if (nPoly == INT_NODATA)
-                  dTmp = m_dMissingValue;
-               else
-               {
-                  // Get total volume (all sediment size classes) of change in sediment for this polygon for this timestep (-ve erosion, +ve deposition)
-                  dTmp = m_pVCoastPolygon[nPoly]->dGetDeltaActualTotalSediment() * m_dCellArea;
-
-                  // Calculate the rate in m^3 / sec
-                  dTmp /= (m_dTimeStep * 3600);
-               }
-
-               break;
-            }
-
+            break;
          }
 
          // If necessary, scale this value
@@ -1588,65 +1376,55 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
    string strUnits;
    switch (nDataItem)
    {
-      case (RASTER_PLOT_BASEMENT_ELEVATION):
-      case (RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV):
-      case (RASTER_PLOT_OVERALL_TOP_ELEVATION):
-      case (RASTER_PLOT_SEA_DEPTH):
-      case (RASTER_PLOT_AVG_SEA_DEPTH):
-      case (RASTER_PLOT_WAVE_HEIGHT):
-      case (RASTER_PLOT_AVG_WAVE_HEIGHT):
-      case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION):
-      case (RASTER_PLOT_ACTUAL_PLATFORM_EROSION):
-      case (RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION):
-      case (RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION):
-      case (RASTER_PLOT_POTENTIAL_BEACH_EROSION):
-      case (RASTER_PLOT_ACTUAL_BEACH_EROSION):
-      case (RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION):
-      case (RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION):
-      case (RASTER_PLOT_BEACH_DEPOSITION):
-      case (RASTER_PLOT_TOTAL_BEACH_DEPOSITION):
-      case (RASTER_PLOT_SUSPENDED_SEDIMENT):
-      case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
-      case (RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT):
-      case (RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT):
-      case (RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT):
-      case (RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT):
-      case (RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT):
-      case (RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT):
-      case (RASTER_PLOT_CLIFF_COLLAPSE):
-      case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE):
-      case (RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT):
-      case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
-      case (RASTER_PLOT_INTERVENTION_HEIGHT):
-      case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
-      {
-         strUnits = "m";
-         break;
-      }
+   case (RASTER_PLOT_BASEMENT_ELEVATION):
+   case (RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV):
+   case (RASTER_PLOT_OVERALL_TOP_ELEVATION):
+   case (RASTER_PLOT_SEA_DEPTH):
+   case (RASTER_PLOT_AVG_SEA_DEPTH):
+   case (RASTER_PLOT_WAVE_HEIGHT):
+   case (RASTER_PLOT_AVG_WAVE_HEIGHT):
+   case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION):
+   case (RASTER_PLOT_ACTUAL_PLATFORM_EROSION):
+   case (RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION):
+   case (RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION):
+   case (RASTER_PLOT_POTENTIAL_BEACH_EROSION):
+   case (RASTER_PLOT_ACTUAL_BEACH_EROSION):
+   case (RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION):
+   case (RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION):
+   case (RASTER_PLOT_BEACH_DEPOSITION):
+   case (RASTER_PLOT_TOTAL_BEACH_DEPOSITION):
+   case (RASTER_PLOT_SUSPENDED_SEDIMENT):
+   case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
+   case (RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT):
+   case (RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT):
+   case (RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT):
+   case (RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT):
+   case (RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT):
+   case (RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT):
+   case (RASTER_PLOT_CLIFF_COLLAPSE):
+   case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE):
+   case (RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT):
+   case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
+   case (RASTER_PLOT_INTERVENTION_HEIGHT):
+   case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
+      strUnits = "m";
+      break;
 
-      case (RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT):
-      {
-         strUnits = "m/m";
-         break;
-      }
+   case (RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT):
+      strUnits = "m/m";
+      break;
 
-      case (RASTER_PLOT_WAVE_ORIENTATION):
-      case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
-      {
-         strUnits = "degrees";
-         break;
-      }
+   case (RASTER_PLOT_WAVE_ORIENTATION):
+   case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
+      strUnits = "degrees";
+      break;
 
-      case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
-      {
-         strUnits = "cumecs";
-         break;
-      }
-      case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
-      {
-         strUnits = "secs";
-         break;
-      }
+   case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
+      strUnits = "cumecs";
+      break;
+   case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
+      strUnits = "secs";
+      break;
    }
 
    CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails
@@ -1725,86 +1503,60 @@ bool CSimulation::bWriteRasterGISFloatISInt(int const nDataItem, string const* s
 
    switch (nDataItem)
    {
-      case (RASTER_PLOT_BEACH_MASK):
-      {
-         strFilePathName.append(RASTER_BEACH_MASK_NAME);
-         break;
-      }
+   case (RASTER_PLOT_BEACH_MASK):
+      strFilePathName.append(RASTER_BEACH_MASK_NAME);
+      break;
 
-      case (RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
-      {
-         strFilePathName.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_NAME);
-         break;
-      }
+   case (RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
+      strFilePathName.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_NAME);
+      break;
 
-      case (RASTER_PLOT_INUNDATION_MASK):
-      {
-         strFilePathName.append(RASTER_INUNDATION_MASK_NAME);
-         break;
-      }
+   case (RASTER_PLOT_INUNDATION_MASK):
+      strFilePathName.append(RASTER_INUNDATION_MASK_NAME);
+      break;
 
-      case (RASTER_PLOT_SLICE):
-      {
-         // TODO get working for multiple slices
-         strFilePathName.append(RASTER_SLICE_NAME);
-         ststrTmp << "_" << dElev << "_";
-         strFilePathName.append(ststrTmp.str());
-         break;
-      }
+   case (RASTER_PLOT_SLICE):
+      // TODO get working for multiple slices
+      strFilePathName.append(RASTER_SLICE_NAME);
+      ststrTmp << "_" << dElev << "_";
+      strFilePathName.append(ststrTmp.str());
+      break;
 
-      case (RASTER_PLOT_LANDFORM):
-      {
-         strFilePathName.append(RASTER_LANDFORM_NAME);
-         break;
-      }
+   case (RASTER_PLOT_LANDFORM):
+      strFilePathName.append(RASTER_LANDFORM_NAME);
+      break;
 
-      case (RASTER_PLOT_INTERVENTION_CLASS):
-      {
-         strFilePathName.append(RASTER_INTERVENTION_CLASS_NAME);
-         break;
-      }
+   case (RASTER_PLOT_INTERVENTION_CLASS):
+      strFilePathName.append(RASTER_INTERVENTION_CLASS_NAME);
+      break;
 
-      case (RASTER_PLOT_COAST):
-      {
-         strFilePathName.append(RASTER_COAST_NAME);
-         break;
-      }
+   case (RASTER_PLOT_COAST):
+      strFilePathName.append(RASTER_COAST_NAME);
+      break;
 
-      case (RASTER_PLOT_NORMAL):
-      {
-         strFilePathName.append(RASTER_COAST_NORMAL_NAME);
-         break;
-      }
+   case (RASTER_PLOT_NORMAL):
+      strFilePathName.append(RASTER_COAST_NORMAL_NAME);
+      break;
 
-      case (RASTER_PLOT_ACTIVE_ZONE):
-      {
-         strFilePathName.append(RASTER_ACTIVE_ZONE_NAME);
-         break;
-      }
+   case (RASTER_PLOT_ACTIVE_ZONE):
+      strFilePathName.append(RASTER_ACTIVE_ZONE_NAME);
+      break;
 
-      case (RASTER_PLOT_POLYGON):
-      {
-         strFilePathName.append(RASTER_POLYGON_NAME);
-         break;
-      }
+   case (RASTER_PLOT_POLYGON):
+      strFilePathName.append(RASTER_POLYGON_NAME);
+      break;
 
-      case (RASTER_PLOT_SHADOW_ZONE):
-      {
-         strFilePathName.append(RASTER_SHADOW_ZONE_NAME);
-         break;
-      }
+   case (RASTER_PLOT_SHADOW_ZONE):
+      strFilePathName.append(RASTER_SHADOW_ZONE_NAME);
+      break;
 
-      case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
-      {
-         strFilePathName.append(RASTER_SHADOW_DOWNDRIFT_ZONE_NAME);
-         break;
-      }
+   case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+      strFilePathName.append(RASTER_SHADOW_DOWNDRIFT_ZONE_NAME);
+      break;
 
-      case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
-      {
-         strFilePathName.append(RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME);
-         break;
-      }
+   case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+      strFilePathName.append(RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME);
+      break;
    }
 
    // Append the 'save number' to the filename, and prepend zeros to the save number
@@ -1892,113 +1644,83 @@ bool CSimulation::bWriteRasterGISFloatISInt(int const nDataItem, string const* s
    }
 
    // Fill the array
-   int nTmp  = 0, n = 0;
+   int nTmp  = 0,
+      n = 0,
+      nTopLayer = 0;
    for (int nY = 0; nY < m_nYGridMax; nY++)
    {
       for (int nX = 0; nX < m_nXGridMax; nX++)
       {
          switch (nDataItem)
          {
-            case (RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
-            {
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].bPotentialPlatformErosion();
+         case (RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
+            nTmp = m_pRasterGrid->m_Cell[nX][nY].bPotentialPlatformErosion();
+            break;
+
+         case (RASTER_PLOT_INUNDATION_MASK):
+            nTmp = m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea();
+            break;
+
+         case (RASTER_PLOT_BEACH_MASK):
+            nTmp = 0;
+            nTopLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopNonZeroLayerAboveBasement();
+            if ((nTopLayer == INT_NODATA) || (nTopLayer == NO_NONZERO_THICKNESS_LAYERS))
                break;
-            }
 
-            case (RASTER_PLOT_INUNDATION_MASK):
+            if ((m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->dGetUnconsolidatedThickness() > 0) && (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL))
+               nTmp = 1;
+            break;
+
+         case (RASTER_PLOT_SLICE):
+            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetLayerAtElev(dElev);
+            break;
+
+         case (RASTER_PLOT_LANDFORM):
+            nTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory();
+            if ((nTmp == LF_CAT_DRIFT) || (nTmp == LF_CAT_CLIFF))
+               nTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFSubCategory();
+            break;
+
+         case (RASTER_PLOT_INTERVENTION_CLASS):
+            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetInterventionClass();
+            break;
+
+         case (RASTER_PLOT_COAST):
+            nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsCoastline() ? 1 : 0);
+            break;
+
+         case (RASTER_PLOT_NORMAL):
+            nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsProfile() ? 1 : 0);
+            break;
+
+         case (RASTER_PLOT_ACTIVE_ZONE):
+            nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsInActiveZone() ? 1 : 0);
+            break;
+
+         case (RASTER_PLOT_POLYGON):
+            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+            break;
+
+         case (RASTER_PLOT_SHADOW_ZONE):
+            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneNumber();
+            break;
+
+         case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
+            break;
+
+         case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+            int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+            if (nPoly == INT_NODATA)
+               nTmp = m_nMissingValue;
+            else
             {
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea();
-               break;
-            }
-
-            case (RASTER_PLOT_BEACH_MASK):
-            {
-               nTmp = 0;
-
-               int const nTopLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopNonZeroLayerAboveBasement();
-               if ((nTopLayer == INT_NODATA) || (nTopLayer == NO_NONZERO_THICKNESS_LAYERS))
-                  break;
-
-               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->dGetUnconsolidatedThickness() > 0) && (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL))
+               if (m_pVCoastPolygon[nPoly]->bDownCoastThisTimestep())
                   nTmp = 1;
-
-               break;
-            }
-
-            case (RASTER_PLOT_SLICE):
-            {
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetLayerAtElev(dElev);
-               break;
-            }
-
-            case (RASTER_PLOT_LANDFORM):
-            {
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory();
-
-               if ((nTmp == LF_CAT_DRIFT) || (nTmp == LF_CAT_CLIFF))
-                  nTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFSubCategory();
-
-               break;
-            }
-
-            case (RASTER_PLOT_INTERVENTION_CLASS):
-            {
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetInterventionClass();
-               break;
-            }
-
-            case (RASTER_PLOT_COAST):
-            {
-               nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsCoastline() ? 1 : 0);
-               break;
-            }
-
-            case (RASTER_PLOT_NORMAL):
-            {
-               nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsProfile() ? 1 : 0);
-               break;
-            }
-
-            case (RASTER_PLOT_ACTIVE_ZONE):
-            {
-               nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsInActiveZone() ? 1 : 0);
-               break;
-            }
-
-            case (RASTER_PLOT_POLYGON):
-            {
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
-               break;
-            }
-
-            case (RASTER_PLOT_SHADOW_ZONE):
-            {
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneNumber();
-               break;
-            }
-
-            case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
-            {
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
-               break;
-            }
-
-            case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
-            {
-               int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
-
-               if (nPoly == INT_NODATA)
-                  nTmp = m_nMissingValue;
                else
-               {
-                  if (m_pVCoastPolygon[nPoly]->bDownCoastThisTimestep())
-                     nTmp = 1;
-                  else
-                     nTmp = 0;
-               }
-
-               break;
+                  nTmp = 0;
             }
+            break;
          }
 
          // If necessary, scale this value
@@ -2017,23 +1739,21 @@ bool CSimulation::bWriteRasterGISFloatISInt(int const nDataItem, string const* s
    string strUnits;
    switch (nDataItem)
    {
-      case (RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
-      case (RASTER_PLOT_INUNDATION_MASK):
-      case (RASTER_PLOT_BEACH_MASK):
-      case (RASTER_PLOT_SLICE):
-      case (RASTER_PLOT_LANDFORM):
-      case (RASTER_PLOT_INTERVENTION_CLASS):
-      case (RASTER_PLOT_COAST):
-      case (RASTER_PLOT_NORMAL):
-      case (RASTER_PLOT_ACTIVE_ZONE):
-      case (RASTER_PLOT_POLYGON):
-      case (RASTER_PLOT_SHADOW_ZONE):
-      case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
-      case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
-      {
-         strUnits = "none";
-         break;
-      }
+   case (RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
+   case (RASTER_PLOT_INUNDATION_MASK):
+   case (RASTER_PLOT_BEACH_MASK):
+   case (RASTER_PLOT_SLICE):
+   case (RASTER_PLOT_LANDFORM):
+   case (RASTER_PLOT_INTERVENTION_CLASS):
+   case (RASTER_PLOT_COAST):
+   case (RASTER_PLOT_NORMAL):
+   case (RASTER_PLOT_ACTIVE_ZONE):
+   case (RASTER_PLOT_POLYGON):
+   case (RASTER_PLOT_SHADOW_ZONE):
+   case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+   case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+      strUnits = "none";
+      break;
    }
 
    CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails
@@ -2063,97 +1783,77 @@ bool CSimulation::bWriteRasterGISFloatISInt(int const nDataItem, string const* s
    char** papszCategoryNames = NULL;
    switch (nDataItem)
    {
-      case (RASTER_PLOT_SLICE):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Basement");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 0");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 1");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 2");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 3");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 4");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 5");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 6");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 7");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 8");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 9");
-         break;
-      }
+   case (RASTER_PLOT_SLICE):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Basement");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 0");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 1");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 2");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 3");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 4");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 5");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 6");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 7");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 8");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 9");
+      break;
 
-      case (RASTER_PLOT_LANDFORM):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "None");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Hinterland");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Sea");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Drift");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Intervention");
+   case (RASTER_PLOT_LANDFORM):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "None");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Hinterland");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Sea");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Drift");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Intervention");
 
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff on Coastline");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Inland Cliff");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff on Coastline");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Inland Cliff");
 
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Mixed Drift");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Talus");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Beach");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Dunes");
-         break;
-      }
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Mixed Drift");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Talus");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Beach");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Dunes");
+      break;
 
-      case (RASTER_PLOT_INTERVENTION_CLASS):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "None");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Structural");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Non-Structural");
-         break;
-      }
+   case (RASTER_PLOT_INTERVENTION_CLASS):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "None");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Structural");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Non-Structural");
+      break;
 
-      case (RASTER_PLOT_COAST):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Not coastline");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Coastline");
-         break;
-      }
+   case (RASTER_PLOT_COAST):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Not coastline");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Coastline");
+      break;
 
-      case (RASTER_PLOT_NORMAL):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Not coastline-normal profile");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Coastline-normal profile");
-         break;
-      }
+   case (RASTER_PLOT_NORMAL):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Not coastline-normal profile");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Coastline-normal profile");
+      break;
 
-      case (RASTER_PLOT_ACTIVE_ZONE):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Not in active zone");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "In active zone");
-         break;
-      }
+   case (RASTER_PLOT_ACTIVE_ZONE):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Not in active zone");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "In active zone");
+      break;
 
-      case (RASTER_PLOT_POLYGON):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Not polygon");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "In polygon");
-         break;
-      }
+   case (RASTER_PLOT_POLYGON):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Not polygon");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "In polygon");
+      break;
 
-      case (RASTER_PLOT_SHADOW_ZONE):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow zone");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow zone");
-         break;
-      }
+   case (RASTER_PLOT_SHADOW_ZONE):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow zone");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow zone");
+      break;
 
-      case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow downdrift zone");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow downdrift zone");
-         break;
-      }
+   case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow downdrift zone");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow downdrift zone");
+      break;
 
-      case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
-      {
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Updrift movement of unconsolidated sediment ");
-         papszCategoryNames = CSLAddString(papszCategoryNames, "Downdrift movement of unconsolidated sediment");
-         break;
-      }
+   case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Updrift movement of unconsolidated sediment ");
+      papszCategoryNames = CSLAddString(papszCategoryNames, "Downdrift movement of unconsolidated sediment");
+      break;
    }
 
    CPLPushErrorHandler(CPLQuietErrorHandler);        // Needed to get next line to fail silently, if it fails

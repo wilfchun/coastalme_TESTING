@@ -1,3 +1,5 @@
+Timestep              : 6 hours
+Start date/time       : 01/01/1999 00:00:00
 Number of Stations    : 1
 Number of time steps  : 26585
 ; Each row below contains the wave height (m), orientation (deg) and period (s) for each time step for all stations

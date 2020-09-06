@@ -1547,7 +1547,7 @@ bool CSimulation::bReadRunData(void)
 
                if (strRH.empty())
                {
-                  strErr = "deep water wave height must be either a number or a filename";
+                  strErr = "deep water wave height must be either a number or a filename (filename must not start with a number)";
                   break;
                }
 
@@ -2379,8 +2379,8 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
          // It isn't so increment counter
          nRead++;
 
-         // The header lines (the two first lines of the file) contains leading description separated by a colon from the data
-         if (nRead < 3)
+         // The header lines (the first four lines of the file) contains leading description separated by a colon from the data
+         if (nRead < 5)
          {
             // Find the colon: note that lines MUST have a colon separating data from leading description portion
             size_t nPos = strRec.find(':');
@@ -2416,9 +2416,19 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
             // Remove trailing whitespace
             strRH = strTrimRight(&strRH);
 
-            // Read the number of stations on the file
-            if (nRead == 1)
+            switch (nRead)
             {
+            case 1:
+
+               break;
+
+            case 2:
+
+               break;
+
+
+            case 3:
+               // Read the number of stations on the file
                nExpectedStations = atoi(strRH.c_str());
 
                // Check that the number of expected stations is equal to the number of stations on the point shape file
@@ -2429,11 +2439,10 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
 
                   return  RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
                }
-            }
+               break;
 
-            // Read the expected number of time steps in the file
-            if (nRead == 2)
-            {
+            case 4:
+               // Read the expected number of time steps in the file
                nExpectedTimeSteps = atoi(strRH.c_str());
 
                if (nExpectedTimeSteps < 1)
@@ -2443,9 +2452,9 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
 
                   return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
                }
+               break;
             }
          }
-
          else
          {
             // This is not a header line

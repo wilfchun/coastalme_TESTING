@@ -196,78 +196,78 @@ int CSimulation::nAssignAllCoastalLandforms(void)
 //
 //          switch (nCat)
 //          {
-//             case LF_CAT_HINTERLAND:
-//                LogStream << "hinterland";
-//                break;
+//          case LF_CAT_HINTERLAND:
+//             LogStream << "hinterland";
+//             break;
 //
-//             case LF_CAT_SEA:
-//                LogStream << "sea";
-//                break;
+//          case LF_CAT_SEA:
+//             LogStream << "sea";
+//             break;
 //
-//             case LF_CAT_CLIFF:
-//                LogStream << "cliff";
-//                break;
+//          case LF_CAT_CLIFF:
+//             LogStream << "cliff";
+//             break;
 //
-//             case LF_CAT_DRIFT:
-//                LogStream << "drift";
-//                break;
+//          case LF_CAT_DRIFT:
+//             LogStream << "drift";
+//             break;
 //
-//             case LF_CAT_INTERVENTION:
-//                LogStream << "intervention";
-//                break;
+//          case LF_CAT_INTERVENTION:
+//             LogStream << "intervention";
+//             break;
 //
-//             case LF_NONE:
-//                LogStream << "none";
-//                break;
+//          case LF_NONE:
+//             LogStream << "none";
+//             break;
 //
-//             default:
-//                LogStream << "NONE";
-//                break;
+//          default:
+//             LogStream << "NONE";
+//             break;
 //          }
 //
 //          LogStream << " and landform subcategory = ";
 //
 //          switch (nSubCat)
 //          {
-//             case LF_SUBCAT_CLIFF_ON_COASTLINE:
-//                LogStream << "cliff on coastline";
-//                break;
+//          case LF_SUBCAT_CLIFF_ON_COASTLINE:
+//             LogStream << "cliff on coastline";
+//             break;
 //
-//             case LF_SUBCAT_CLIFF_INLAND:
-//                LogStream << "cliff inland";
-//                break;
+//          case LF_SUBCAT_CLIFF_INLAND:
+//             LogStream << "cliff inland";
+//             break;
 //
-//             case LF_SUBCAT_DRIFT_MIXED:
-//                LogStream << "mixed drift";
-//                break;
+//          case LF_SUBCAT_DRIFT_MIXED:
+//             LogStream << "mixed drift";
+//             break;
 //
-//             case LF_SUBCAT_DRIFT_TALUS:
-//                LogStream << "talus";
-//                break;
+//          case LF_SUBCAT_DRIFT_TALUS:
+//             LogStream << "talus";
+//             break;
 //
-//             case LF_SUBCAT_DRIFT_BEACH:
-//                LogStream << "beach";
-//                break;
+//          case LF_SUBCAT_DRIFT_BEACH:
+//             LogStream << "beach";
+//             break;
 //
-//             case LF_SUBCAT_DRIFT_DUNES:
-//                LogStream << "dunes";
-//                break;
+//          case LF_SUBCAT_DRIFT_DUNES:
+//             LogStream << "dunes";
+//             break;
 //
-//             case LF_SUBCAT_INTERVENTION_STRUCT:
-//                LogStream << "structural intervention";
-//                break;
+//          case LF_SUBCAT_INTERVENTION_STRUCT:
+//             LogStream << "structural intervention";
+//             break;
 //
-//             case LF_SUBCAT_INTERVENTION_NON_STRUCT:
-//                LogStream << "non-structural intervention";
-//                break;
+//          case LF_SUBCAT_INTERVENTION_NON_STRUCT:
+//             LogStream << "non-structural intervention";
+//             break;
 //
-//             case LF_NONE:
-//                LogStream << "none";
-//                break;
+//          case LF_NONE:
+//             LogStream << "none";
+//             break;
 //
-//             default:
-//                LogStream << "NONE";
-//                break;
+//          default:
+//             LogStream << "NONE";
+//             break;
 //          }
 //          LogStream << endl;
 //       }
