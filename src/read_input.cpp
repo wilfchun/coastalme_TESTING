@@ -2176,7 +2176,7 @@ bool CSimulation::bReadRunData(void)
 
 /*==============================================================================================================================
 
- Reads the tide data
+ Reads the tide time series data
 
 ==============================================================================================================================*/
 int CSimulation::nReadTideData()
@@ -2339,7 +2339,7 @@ int CSimulation::nReadShapeFunction()
 
 /*==============================================================================================================================
 
- Reads the deep water wave time series and initialize vector to store this time step deep water wave height, orientation, Period
+ Reads the deep water wave time series data
 
 ==============================================================================================================================*/
 int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
@@ -2364,7 +2364,7 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
       nExpectedTimeSteps = 0,
       nRead = 0,
       nTimeStepsRead = 0;
-   string strRec;
+   string strRec, strErr;
 
    // Read each line avoiding comments of first two lines
    while (getline(InStream, strRec))
@@ -2416,13 +2416,58 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
             // Remove trailing whitespace
             strRH = strTrimRight(&strRH);
 
+            double
+               dMult,
+               dThisTimestep;
             switch (nRead)
             {
             case 1:
+               // Get the timestep of this data (in hours or days)
+               strRH = strToLower(&strRH);
+
+               dMult = dGetTimeMultiplier(&strRH);
+               if (static_cast<int>(dMult) == TIME_UNKNOWN)
+               {
+                  strErr = "units for timestep in deep water wave time series file '" + m_strDeepWaterWaveValuesFile + "'";
+                  break;
+               }
+
+               // we have the multiplier, now calculate the timestep in hours: look for the whitespace between the number and unit
+               nPos = strRH.rfind(SPACE);
+               if (nPos == string::npos)
+               {
+                  strErr = "format of timestep in deep water wave time series file '" + m_strDeepWaterWaveValuesFile + "'";
+                  break;
+               }
+
+               // cut off rh bit of string
+               strRH = strRH.substr(0, nPos+1);
+
+               // remove trailing spaces
+               strRH = strTrimRight(&strRH);
+
+               // Check that this is a valid double
+               if (! bIsStringValidDouble(strRH))
+               {
+                  strErr = "invalid floating point number for timestep '" + strRH + "' in '" + m_strDeepWaterWaveValuesFile + "'";
+                  break;
+               }
+
+               dThisTimestep = strtod(strRH.c_str(), NULL) * dMult;         // in hours
+
+               if (dThisTimestep <= 0)
+                  strErr = "timestep must be greater than zero in '" + m_strDeepWaterWaveValuesFile + "'";
+
+               if (dThisTimestep >= m_dSimDuration)
+                  strErr = "timestep must be less than the duration of the simulation in '" + m_strDeepWaterWaveValuesFile + "'";
+
+               if (dThisTimestep != m_dTimeStep)
+                  strErr = "timestep in '" + m_strDeepWaterWaveValuesFile + "' must be the same as the simulation timestep";
 
                break;
 
             case 2:
+               // Get the start date/time of this data TODO not implemented yet
 
                break;
 
@@ -2435,9 +2480,9 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
                if (nExpectedStations != nNumberStations)
                {
                   // Error: number of points on shape file does not match the number of stations on the wave time series file
-                  cerr << ERR << "number of wave stations in " << m_strDeepWaterWaveStationsFile << " = " << nNumberStations << " but the number of wave stations in "<<  m_strDeepWaterWaveValuesFile << " = " << nExpectedStations << endl;
+                  strErr = "number of wave stations in " + m_strDeepWaterWaveStationsFile + " = " + to_string(nNumberStations) + " but the number of wave stations in " +  m_strDeepWaterWaveValuesFile + " = " + to_string(nExpectedStations);
 
-                  return  RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+                  break;
                }
                break;
 
@@ -2448,9 +2493,8 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
                if (nExpectedTimeSteps < 1)
                {
                   // Error: must have value(s) for at least one timestep
-                  cerr << ERR << "must have values for at least one timestep in " << m_strDeepWaterWaveValuesFile << endl;
-
-                  return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+                  strErr = "must have values for at least one timestep in " + m_strDeepWaterWaveValuesFile;
+                  break;
                }
                break;
             }
@@ -2470,8 +2514,8 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
                // Check that this is a valid double
                if (! bIsStringValidDouble(strTmp[i]))
                {
-                  cerr << ERR << "invalid floating point number for deep water wave value '" << strTmp[i] << "' in " << m_strDeepWaterWaveValuesFile << endl;
-                  return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+                  strErr = "invalid floating point number for deep water wave value '" + strTmp[i] + "' in " + m_strDeepWaterWaveValuesFile;
+                  break;
                }
             }
 
@@ -2491,6 +2535,16 @@ int CSimulation::nReadWaveTimeSeries(int const nNumberStations)
                   m_dMaxUserInputWavePeriod = m_VdDeepWaterWavePointPeriodTS.back();
             }
          }
+      }
+
+      // Did an error occur?
+      if (! strErr.empty())
+      {
+         // Error in input to initialisation file
+         cerr << ERR << "reading " << strErr << " in " << m_strDeepWaterWaveValuesFile << endl << "'" << strRec << "'" << endl;
+         InStream.close();
+
+         return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
       }
    }
 

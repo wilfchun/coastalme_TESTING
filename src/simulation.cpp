@@ -660,7 +660,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return (nRet);
 
-      // Read in time series values and initialize vector to store this time step deep water wave height, orientation and period
+      // Read in time series values, and initialize the vector which stores each timestep's deep water wave height, orientation and period
       nRet = nReadWaveTimeSeries(static_cast<int>(m_VnDeepWaterWavePointID.size()));
       if (nRet != RTN_OK)
          return (nRet);
