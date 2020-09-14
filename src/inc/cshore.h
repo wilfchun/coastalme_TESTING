@@ -1,5 +1,6 @@
 #ifndef CSHORE_H
 #define CSHORE_H
+
 extern "C"
 {
 void cshore(int*);

@@ -187,7 +187,13 @@ private:
       m_nXMaxBoundingBox,
       m_nYMinBoundingBox,
       m_nYMaxBoundingBox,
-      m_nWavePropagationModel;
+      m_nWavePropagationModel,
+      m_nSimStartSec,
+      m_nSimStartMin,
+      m_nSimStartHour,
+      m_nSimStartDay,
+      m_nSimStartMonth,
+      m_nSimStartYear;
 
    GDALDataType
       m_GDALWriteIntDataType,
@@ -699,6 +705,8 @@ private:
    static int nDoTimeUnits(string const*);
    int nDoSimulationTimeMultiplier(string const*);
    static double dGetTimeMultiplier(string const*);
+   bool bParseDate(string const*, int&, int&, int&);
+   bool bParseTime(string const*, int&, int&, int&);
    void UpdateGrandTotals(void);
    static string strGetBuild(void);
    static string strGetComputerName(void);

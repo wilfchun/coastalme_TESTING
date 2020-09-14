@@ -165,7 +165,13 @@ CSimulation::CSimulation(void)
    m_nGlobalPolygonID                              =
    m_nUnconsSedimentHandlingAtGridEdges            =
    m_nBeachErosionDepositionEquation               =
-   m_nWavePropagationModel                         = 0;
+   m_nWavePropagationModel                         =
+   m_nSimStartSec                                  =
+   m_nSimStartMin                                  =
+   m_nSimStartHour                                 =
+   m_nSimStartDay                                  =
+   m_nSimStartMonth                                =
+   m_nSimStartYear                                 = 0;
 
    // NOTE May wish to make this a user-supplied value
    m_nMissingValue                                 = INT_NODATA;

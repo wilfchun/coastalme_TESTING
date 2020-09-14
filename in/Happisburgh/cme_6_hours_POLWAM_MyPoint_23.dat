@@ -1,10 +1,10 @@
-Timestep              : 6 hours
-Start date/time       : 01/01/1999 00:00:00
-Number of Stations    : 1
-Number of time steps  : 26585
+Start time/date   [hh-mm-ss dd/mm/yyyy]: 00-00-00 01/01/1999
+Timestep                               : 6 hours
+Number of Stations                     : 1
+Number of time steps                   : 26585
 ; Each row below contains the wave height (m), orientation (deg) and period (s) for each time step for all stations
 ; Starting from the first station (i.e. station with id=1 on the corresponding point shape file)
-; Values separated by a COMMA
+; Values separated by a comma
 ; Starting on 01/01/1999 00:00:00 at 6 hours time step interval
 ; Coordinates of wave point lat: 52.83 lon: 1.583
    0.1,  240.0,    2.6

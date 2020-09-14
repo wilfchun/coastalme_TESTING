@@ -23,6 +23,7 @@
 ; Run information -----------------------------------------------------------------------------------------------------
 Main output/log file names                                          [omit path and extension]: minimal
 
+Simulation start date and time                                          [hh-mm-ss dd/mm/yyyy]: 00-00-00 01/01/1999
 Duration of simulation                                           [hours, days, months, years]: 30 days
 Timestep (hours or days)                                                                     : 6 hours
 Save times                                                       [hours, days, months, years]: 6 12 24 42 100 200 300 462 500 600 hours

@@ -147,6 +147,10 @@ char const     SPACE                                                       = ' '
 char const     QUOTE1                                                      = ';';
 char const     QUOTE2                                                      = '#';
 char const     COMMA                                                       = ',';
+char const     DASH                                                        = '-';
+char const     COLON                                                       = ':';
+char const     SLASH                                                       = '/';
+char const     TILDE                                                       = '~';
 
 // TESTING options
 bool const     USE_DEEP_WATER_FOR_SHADOW_LINE                              = true;        // Use deep water wave orientation in determining shadow line orientation?
@@ -463,7 +467,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 7 September 2020";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 14 September 2020";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -525,8 +529,6 @@ string const   SCAPESHAPEFUNCTIONFILE                                      = "Sh
 string const   EROSIONPOTENTIALLOOKUPFILE                                  = "ErosionPotential.csv";
 
 string const   CSHOREDIR                                                   = "cshore/";
-
-string const   SPACESTR                                                    = " ";
 
 string const   ERR                                                         = "*** ERROR ";
 string const   WARN                                                        = "WARNING ";

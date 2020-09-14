@@ -1274,8 +1274,7 @@ bool CSimulation::bTimeToQuit(void)
    m_ulIteration++;
    m_ulTotTimestep = static_cast<unsigned long>(dRound(m_dSimDuration / m_dTimeStep));
 
-   // Check to see if we have done CLOCK_CHECK_ITERATION timesteps: if so, it is time to reset the CPU time running total in case the clock()
-   // function later rolls over
+   // Check to see if we have done CLOCK_CHECK_ITERATION timesteps: if so, it is time to reset the CPU time running total in case the clock() function later rolls over
    if (0 == m_ulIteration % CLOCK_CHECK_ITERATION)
       DoCPUClockReset();
 
@@ -2399,6 +2398,9 @@ string CSimulation::strTrim(string const* strIn)
 {
    string strTmp = *strIn;
 
+   // Remove any stray carriage returns (can happen if file was edited in Windows)
+   strTmp.erase(std::remove(strTmp.begin(), strTmp.end(), '\r'), strTmp.end());
+
    // Trim trailing spaces
    size_t nPos = strTmp.find_last_not_of(" \t");
 
@@ -2724,5 +2726,91 @@ double CSimulation::dConstrainFieldWidthForShapefile(double const dInField)
 
    double dFactor = pow(10.0, SHAPEFILE_MAX_WIDTH - ceil(log10(fabs(dInField))));
    return round(dInField * dFactor) / dFactor;
+}
+
+
+/*==============================================================================================================================
+
+Parses a date string into days, months, and years, and checks each of them
+
+==============================================================================================================================*/
+bool CSimulation::bParseDate(string const* strDate, int& nDay, int& nMonth, int& nYear)
+{
+   vector<string> VstrTmp = VstrSplit(strDate, SLASH);
+
+   if (VstrTmp.size() < 3)
+   {
+      cerr << "date string must include day, month, and year" << endl;
+      return false;
+   }
+
+   // Sort out day
+   nDay = stoi(VstrTmp[0]);
+   if ((nDay < 1) || (nDay > 31))
+   {
+      cerr << "invalid start day" << endl;
+      return false;
+   }
+
+   // Sort out month
+   nMonth = stoi(VstrTmp[1]);
+   if ((nMonth < 1) || (nMonth > 12))
+   {
+      cerr << "invalid start month" << endl;
+      return false;
+   }
+
+   // Sort out year
+   nYear = stoi(VstrTmp[2]);
+   if (nYear < 0)
+   {
+      cerr << "invalid start year" << endl;
+      return false;
+   }
+
+   return true;
+}
+
+
+/*==============================================================================================================================
+
+ Parses a time string into hours, minutes, and seconds, and checks each of them
+
+==============================================================================================================================*/
+bool CSimulation::bParseTime(string const* strTime, int& nHour, int& nMin, int& nSec)
+{
+   vector<string> VstrTmp = VstrSplit(strTime, DASH);
+
+   if (VstrTmp.size() < 3)
+   {
+      cerr << "time string must include hours, minutes, and seconds" << endl;
+      return false;
+   }
+
+   // Sort out hour
+   nHour = stoi(VstrTmp[0]);
+   if ((nHour < 0) || (nHour > 23))
+   {
+      cerr << "invalid start hours" << endl;
+      return false;
+   }
+
+   // Sort out minutes
+   nMin = stoi(VstrTmp[1]);
+   if ((nMin < 0) || (nMin > 59))
+   {
+      cerr << "invalid start minutes" << endl;
+      return false;
+   }
+
+   // Sort out seconds
+   nSec = stoi(VstrTmp[2]);
+   if ((nSec < 0) || (nSec > 59))
+   {
+      cerr << "invalid start seconds" << endl;
+      return false;
+   }
+
+   return true;
 }
 

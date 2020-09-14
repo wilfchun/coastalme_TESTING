@@ -23,6 +23,7 @@
 ; Run information -----------------------------------------------------------------------------------------------------
 Main output/log file names                              [omit path and extension]: simple
 
+Simulation start date and time                              [hh-mm-ss dd/mm/yyyy]: 00-00-00 01/01/1999
 Duration of simulation                               [hours, days, months, years]: 30 days
 Timestep (hours or days)                                                         : 6 hours
 Save times                                           [hours, days, months, years]: 6 12 24 42 100 200 300 462 500 600  hours
@@ -67,10 +68,10 @@ Number of layers                                                                
 Basement DEM file                                                   [path and name]: in/simple_fast_irregular/irregular_basement.tif
    ; LAYER 0 THICKNESS FILES, LAYER 0 IS LOWEST
    ; *** MUST HAVE AT LEAST ONE THICKNESS FILE FOR THE FIRST LAYER
-   Initial Unconsolidated fine sediment file                        [path and name]: 
+   Initial Unconsolidated fine sediment file                        [path and name]:
    Initial Unconsolidated sand sediment file                        [path and name]:
    Initial Unconsolidated coarse sediment file                      [path and name]:
-   Initial Consolidated fine sediment file                          [path and name]: 
+   Initial Consolidated fine sediment file                          [path and name]:
    Initial Consolidated sand sediment file                          [path and name]: in/simple_fast_irregular/two_bays.tif
    Initial Consolidated coarse sediment file                        [path and name]:
 
@@ -97,7 +98,7 @@ Wave period (sec)                             [omit if deep water wave height fr
 
 Tide data file                                                                 [may be blank]:
 
-Breaking wave height to water depth ratio (non dimensional)                                  : 0.8   	
+Breaking wave height to water depth ratio (non dimensional)                                  : 0.8
 
 ; Sediment data --------------------------------------------------------------------------------------------------------
 Simulate coast platform erosion?                                                   : y

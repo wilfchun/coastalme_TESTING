@@ -38,6 +38,7 @@ using std::setiosflags;
 using std::resetiosflags;
 using std::setprecision;
 using std::setw;
+using std::setfill;
 using std::put_time;
 
 #include <sstream>
@@ -66,7 +67,7 @@ void CSimulation::WriteStartRunDetails(void)
    // ----------------------------------------------- Run Information ----------------------------------------------------------
    OutStream << "RUN DETAILS" << endl;
    OutStream << " Name                                                      \t: " << m_strRunName << endl;
-   OutStream << " Started                                                   \t: " << put_time(localtime(&m_tSysStartTime), "%T %A %d %B %Y") << endl;
+   OutStream << " Run started                                               \t: " << put_time(localtime(&m_tSysStartTime), "%T %A %d %B %Y") << endl;
 
    // Same info. for Log file
    LogStream << m_strRunName << " run started at " << put_time(localtime(&m_tSysStartTime), "%T on %A %d %B %Y") << endl << endl;
@@ -85,6 +86,10 @@ void CSimulation::WriteStartRunDetails(void)
 #else
       << m_strDataPathName << endl;
 #endif
+
+   OutStream << " Simulation start date/time                                \t: ";
+   // hh:mm:ss dd/mm/yyyy
+   OutStream << setfill('0') << setw(2) << m_nSimStartHour << COLON << setw(2) << m_nSimStartMin << COLON << setw(2) << m_nSimStartSec << SPACE << setw(2) << m_nSimStartDay << SLASH << setw(2) << m_nSimStartMonth << SLASH << setw(2) << m_nSimStartYear << endl;
 
    OutStream << " Duration of simulation                                    \t: ";
    OutStream << strDispSimTime(m_dSimDuration) << endl;
