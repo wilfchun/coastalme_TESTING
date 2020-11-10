@@ -158,7 +158,7 @@ int CSimulation::nReadBasementDEMData(void)
 
    if (dMissingValue != m_dMissingValue)
    {
-      cerr << NOTE << "NODATA value in " << m_strInitialBasementDEMFile << " is " << dMissingValue << "\n      using default NODATA value " <<  m_dMissingValue << endl;
+      cerr << NOTE << "NODATA value in " << m_strInitialBasementDEMFile << " is " << dMissingValue << "\n      instead using default NODATA value " <<  m_dMissingValue << endl;
    }
 
    // Next allocate memory for a 2D array of raster cell objects: tell the user what is happening
@@ -192,7 +192,7 @@ int CSimulation::nReadBasementDEMData(void)
       {
          // Deal with any NaN values
          double dTmp = pfScanline[i];
-         if (! bDoubleNotNaN(dTmp))
+         if (! bIsDoubleNotNaN(dTmp))
             dTmp = m_dMissingValue;
 
          if (dTmp == dMissingValue)
@@ -699,7 +699,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
          if (nMissingValue != m_nMissingValue)
          {
-            cerr << NOTE << "NODATA value in " << strGISFile << " is " << nMissingValue << "\n      using default NODATA value " <<  m_nMissingValue << endl;
+            cerr << NOTE << "NODATA value in " << strGISFile << " is " << nMissingValue << "\n      instead using default NODATA value " <<  m_nMissingValue << endl;
          }
       }
       else
@@ -711,7 +711,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
          if (dMissingValue != m_dMissingValue)
          {
-            cerr << NOTE << "NODATA value in " << strGISFile << " is " << dMissingValue << "\n      using default NODATA value " <<  m_dMissingValue << endl;
+            cerr << NOTE << "NODATA value in " << strGISFile << " is " << dMissingValue << "\n      instead using default NODATA value " <<  m_dMissingValue << endl;
          }
       }
 
@@ -745,7 +745,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (LANDFORM_RASTER):
                // Initial Landform Class GIS data, is integer TODO Do we also need a landform sub-category input?
                nTmp = static_cast<int>(pfScanline[nX]);
-               if (! bDoubleNotNaN(nTmp))              // Deal with any NaN values
+               if (! bIsDoubleNotNaN(nTmp))              // Deal with any NaN values
                   nTmp = m_nMissingValue;
 
                if (nTmp == nMissingValue)
@@ -760,7 +760,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (INTERVENTION_CLASS_RASTER):
                // Intervention class, is integer
                nTmp = static_cast<int>(pfScanline[nX]);
-               if (! bDoubleNotNaN(nTmp))              // Deal with any NaN values
+               if (! bIsDoubleNotNaN(nTmp))              // Deal with any NaN values
                   nTmp = m_nMissingValue;
 
                if (nTmp == nMissingValue)
@@ -775,7 +775,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (INTERVENTION_HEIGHT_RASTER):
                // Intervention height
                dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bDoubleNotNaN(dTmp))
+               if (! bIsDoubleNotNaN(dTmp))
                   dTmp = m_dMissingValue;
 
                if (dTmp == dMissingValue)
@@ -790,7 +790,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (SUSP_SED_RASTER):
                // Initial Suspended Sediment GIS data
                dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bDoubleNotNaN(dTmp))
+               if (! bIsDoubleNotNaN(dTmp))
                   dTmp = m_dMissingValue;
 
                if (dTmp == dMissingValue)
@@ -805,7 +805,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (FINE_UNCONS_RASTER):
                // Initial Unconsolidated Fine Sediment GIS data
                dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bDoubleNotNaN(dTmp))
+               if (! bIsDoubleNotNaN(dTmp))
                   dTmp = m_dMissingValue;
 
                if (dTmp == dMissingValue)
@@ -820,7 +820,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (SAND_UNCONS_RASTER):
                // Initial Unconsolidated Sand Sediment GIS data
                dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bDoubleNotNaN(dTmp))
+               if (! bIsDoubleNotNaN(dTmp))
                   dTmp = m_dMissingValue;
 
                if (dTmp == dMissingValue)
@@ -835,7 +835,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (COARSE_UNCONS_RASTER):
                // Initial Unconsolidated Coarse Sediment GIS data
                dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bDoubleNotNaN(dTmp))
+               if (! bIsDoubleNotNaN(dTmp))
                   dTmp = m_dMissingValue;
 
                if (dTmp == dMissingValue)
@@ -850,7 +850,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (FINE_CONS_RASTER):
                // Initial Consolidated Fine Sediment GIS data
                dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bDoubleNotNaN(dTmp))
+               if (! bIsDoubleNotNaN(dTmp))
                   dTmp = m_dMissingValue;
 
                if (dTmp == dMissingValue)
@@ -865,7 +865,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (SAND_CONS_RASTER):
                // Initial Consolidated Sand Sediment GIS data
                dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bDoubleNotNaN(dTmp))
+               if (! bIsDoubleNotNaN(dTmp))
                   dTmp = m_dMissingValue;
 
                if (dTmp == dMissingValue)
@@ -880,7 +880,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             case (COARSE_CONS_RASTER):
                // Initial Consolidated Coarse Sediment GIS data
                dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bDoubleNotNaN(dTmp))
+               if (! bIsDoubleNotNaN(dTmp))
                   dTmp = m_dMissingValue;
 
                if (dTmp == dMissingValue)
@@ -2269,7 +2269,7 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
 int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
 {
    // Interpolate deep water height and orientation from multiple user-supplied values
-   unsigned int nUserPoints = static_cast<unsigned int>(m_VdDeepWaterWavePointX.size());
+   unsigned int nUserPoints = static_cast<unsigned int>(m_VdDeepWaterWaveStationX.size());
 
    // Call GDALGridCreate() with the GGA_InverseDistanceToAPower interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0).
    GDALGridInverseDistanceToAPowerOptions options;
@@ -2289,7 +2289,7 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
 //    CPLSetConfigOption("GDAL_NUM_THREADS", "1");
 
    // OK, now create a gridded version of wave height: first create the GDAL context
-   GDALGridContext* pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints, &m_VdDeepWaterWavePointX[0], &m_VdDeepWaterWavePointY[0], &m_VdDeepWaterWavePointHeight[0], true);
+   GDALGridContext* pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints, &m_VdDeepWaterWaveStationX[0], &m_VdDeepWaterWaveStationY[0], &m_VdDeepWaterWaveStationHeight[0], true);
    if (pContext == NULL)
    {
       return RTN_ERR_GRIDCREATE;
@@ -2309,7 +2309,7 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    GDALGridContextFree(pContext);
 
    // Next create a gridded version of wave orientation: first create the GDAL context
-   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints,  &(m_VdDeepWaterWavePointX[0]), &(m_VdDeepWaterWavePointY[0]), (&m_VdDeepWaterWavePointAngle[0]), true);
+   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints,  &(m_VdDeepWaterWaveStationX[0]), &(m_VdDeepWaterWaveStationY[0]), (&m_VdDeepWaterWaveStationAngle[0]), true);
    if (pContext == NULL)
    {
       delete[] dHeightOut;
@@ -2332,7 +2332,7 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    GDALGridContextFree(pContext);
 
     // OK, now create a gridded version of wave period: first create the GDAL context
-   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints, &m_VdDeepWaterWavePointX[0], &m_VdDeepWaterWavePointY[0], &m_VdDeepWaterWavePointPeriod[0], true);
+   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints, &m_VdDeepWaterWaveStationX[0], &m_VdDeepWaterWaveStationY[0], &m_VdDeepWaterWaveStationPeriod[0], true);
    if (pContext == NULL)
    {
       return RTN_ERR_GRIDCREATE;

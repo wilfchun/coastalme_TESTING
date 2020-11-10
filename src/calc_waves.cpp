@@ -1047,7 +1047,7 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
 ==============================================================================================================================*/
 int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFilename, int const nExpectedColumns, int const nCShorecolumn, vector<double> const* pVdProfileDistXYCME, vector<double>* pVdInterpolatedValues)
 {
-   // Select the interpolation method to be used: CSHORE_INTERPOLATION_HERMITE_CUBIC seems to work better for spit growth
+   // Select the interpolation method to be used: CSHORE_INTERPOLATION_HERMITE_CUBIC seems to work better generally
 //    int nInterpolationMethod = CSHORE_INTERPOLATION_LINEAR;
    int nInterpolationMethod = CSHORE_INTERPOLATION_HERMITE_CUBIC;
 
@@ -1061,7 +1061,7 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
       // Error: cannot open CShore file for input
       LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", cannot open " << *strCShoreFilename << " for input" << endl;
 
-      return RTN_ERR_CSHORE_FILE_OUTPUT;
+      return RTN_ERR_READING_CSHORE_FILE_OUTPUT;
    }
 
    // Opened OK, so set up the vectors to hold the CShore output data
@@ -1082,7 +1082,15 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
       {
          // Read in the header line
          vector<string> VstrItems = VstrSplit(&strLineIn, SPACE);
-         nExpectedRows = stoi(VstrItems[1].c_str());
+
+         if (! bIsStringValidInt(VstrItems[1]))
+         {
+            strErr = "invalid integer for number of expected rows '" + VstrItems[1] + "' in " + *strCShoreFilename;
+            return RTN_ERR_READING_CSHORE_FILE_OUTPUT;
+         }
+
+         // Get the number of expected rows
+         nExpectedRows = stoi(VstrItems[1]);
       }
       else
       {
@@ -1095,7 +1103,7 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
             // Error: did not read the expected number of CShore output columns
             LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", expected " << nExpectedColumns << " CShore output columns but read " << nCols << " columns from header section of file " << *strCShoreFilename << endl;
 
-            return RTN_ERR_CSHORE_FILE_OUTPUT;
+            return RTN_ERR_READING_CSHORE_FILE_OUTPUT;
          }
 
          // Number of columns is OK
@@ -1111,7 +1119,7 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
       // Error: did not get nExpectedRows CShore output rows
       LogStream << m_ulIteration << ": " << ERR << "for profile " << nProfile << ", expected " << nExpectedRows << " CShore output rows, but read " << nReadRows << " rows from file " << *strCShoreFilename << endl;
 
-      return RTN_ERR_CSHORE_FILE_OUTPUT;
+      return RTN_ERR_READING_CSHORE_FILE_OUTPUT;
    }
 
    if (nReadRows < 2)

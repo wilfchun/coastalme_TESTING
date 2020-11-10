@@ -65,7 +65,7 @@ int CSimulation::nCalcExternalForcing(void)
    if (! m_bSingleDeepWaterWaveValues)
    {
       // We have wave time series data: the number of time steps is total size divided by the number of points
-      int nWaveTimeSteps = static_cast<int>(m_VdDeepWaterWavePointHeightTS.size()) / static_cast<int>(m_VnDeepWaterWavePointID.size());
+      int nWaveTimeSteps = static_cast<int>(m_VdDeepWaterWaveStationHeightTS.size()) / static_cast<int>(m_VnDeepWaterWaveStationID.size());
       static int nWaveDataCount = 0;
 
        if (nWaveDataCount > nWaveTimeSteps-1)
@@ -76,14 +76,14 @@ int CSimulation::nCalcExternalForcing(void)
 
       // Update this time step deep water wave values: the order on the vector is determined by the points ID i.e. to ensure that stations match with time series
       int
-      nNumberDeepWaterWaveStations = static_cast<int>(m_VnDeepWaterWavePointID.size()),
+      nNumberDeepWaterWaveStations = static_cast<int>(m_VnDeepWaterWaveStationID.size()),
          nTot = nNumberDeepWaterWaveStations * nWaveDataCount;
 
       for (int j = 0; j < nNumberDeepWaterWaveStations; j++)
       {
-         m_VdDeepWaterWavePointHeight[j] = m_VdDeepWaterWavePointHeightTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
-         m_VdDeepWaterWavePointAngle[j]  = m_VdDeepWaterWavePointAngleTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
-         m_VdDeepWaterWavePointPeriod[j] = m_VdDeepWaterWavePointPeriodTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];
+         m_VdDeepWaterWaveStationHeight[j] = m_VdDeepWaterWaveStationHeightTS[(m_VnDeepWaterWaveStationID[j]-1) + nTot];
+         m_VdDeepWaterWaveStationAngle[j]  = m_VdDeepWaterWaveStationAngleTS[(m_VnDeepWaterWaveStationID[j]-1) + nTot];
+         m_VdDeepWaterWaveStationPeriod[j] = m_VdDeepWaterWaveStationPeriodTS[(m_VnDeepWaterWaveStationID[j]-1) + nTot];
       }
 
       nWaveDataCount++;

@@ -125,6 +125,9 @@ Transport parameter                                         [only for Kamphuis e
 
 Berm height i.e. height above SWL of start of depositional Dean profile (m)        : 0.25
 
+Sediment input location                                            [optional point shapefile]:
+Sediment input details file                            [optional, required if have shapefile]:
+
 ; Cliff collapse data --------------------------------------------------------------------------------------------------
 Simulate cliff collapse?                                                           : y
 Resistance to erosion of cliff (m^(9/4)s^(3/2))                                    : 2e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011),

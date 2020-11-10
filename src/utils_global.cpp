@@ -69,7 +69,7 @@ int nRound(double const d)
  Checks a double to see if it is NaN. From http://www.johndcook.com/blog/IEEE_exceptions_in_cpp/
 
 ==============================================================================================================================*/
-bool bDoubleNotNaN(double const dX)
+bool bIsDoubleNotNaN(double const dX)
 {
    // This looks like it should always be true, but it is false if dX is a NaN
    return (dX == dX);
@@ -90,6 +90,27 @@ bool bIsStringValidDouble(string& str)
       return false;
 
    return true;
+}
+
+
+/*==============================================================================================================================
+
+Checks to see if a string can be read as a valid integer, from https://stackoverflow.com/questions/2844817/how-do-i-check-if-a-c-string-is-an-int
+
+==============================================================================================================================*/
+bool bIsStringValidInt(string& str)
+{
+   // Trim leading whitespace
+   size_t nPos = str.find_first_not_of(" \t");
+   if (nPos != string::npos)
+      str = str.substr(nPos);
+
+   // If the first character is the sign, remove it
+   if ((str[0] == '-') || (str[0] == '+'))
+      str.erase(0, 1);
+
+   // Now check that the string contains only numbers
+   return (str.find_first_not_of("0123456789") == string::npos);
 }
 
 

@@ -161,7 +161,7 @@ CSimulation::CSimulation(void)
    m_nCoastMin                                     =
    m_nNThisTimestepCliffCollapse                   =
    m_nNTotCliffCollapse                            =
-   m_nCliffDepositionPlanviewWidth                 =
+   m_nCliffCollapseTalusPlanviewWidth                 =
    m_nGlobalPolygonID                              =
    m_nUnconsSedimentHandlingAtGridEdges            =
    m_nBeachErosionDepositionEquation               =
@@ -505,11 +505,11 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    AnnounceLicence();
 
    // Read the .ini file and get the name of the run-data file, and path for output etc.
-   if (! bReadIni())
+   if (! bReadIniFile())
       return (RTN_ERR_INI);
 
    // We have the name of the run-data input file, so read it
-   if (! bReadRunData())
+   if (! bReadRunDataFile())
       return RTN_ERR_RUNDATA;
 
    // Check raster GIS output format
@@ -630,7 +630,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    if (nRet != RTN_OK)
       return (nRet);
 
-   // If required, read in the Landform class, and the Intervention class for each cell. Otherwise calculate all/any of these during the first timestep using the identification rules
+   // Maybe read in the landform class data, otherwise calculate this during the first timestep using identification rules
    if (! m_strInitialLandformFile.empty())
    {
       AnnounceReadLGIS();
@@ -639,51 +639,32 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          return (nRet);
    }
 
+   // Maybe read in intervention data
    if (! m_strInterventionClassFile.empty())
    {
       AnnounceReadICGIS();
       nRet = nReadRasterGISData(INTERVENTION_CLASS_RASTER, 0);
       if (nRet != RTN_OK)
          return (nRet);
-   }
 
-   if (! m_strInterventionHeightFile.empty())
-   {
       AnnounceReadIHGIS();
       nRet = nReadRasterGISData(INTERVENTION_HEIGHT_RASTER, 0);
       if (nRet != RTN_OK)
          return (nRet);
    }
 
-   if (! m_bSingleDeepWaterWaveValues)
-   {
-      // We are reading deep water wave height, orientation and period from a file of vector points and file time series
-      AnnounceReadVectorFiles();
-      AnnounceReadDeepWaterWaveValuesGIS();
-
-      // Read in vector points
-      nRet = nReadVectorGISData(DEEP_WATER_WAVE_VALUES_VEC);
-      if (nRet != RTN_OK)
-         return (nRet);
-
-      // Read in time series values, and initialize the vector which stores each timestep's deep water wave height, orientation and period
-      nRet = nReadWaveTimeSeries(static_cast<int>(m_VnDeepWaterWavePointID.size()));
-      if (nRet != RTN_OK)
-         return (nRet);
-   }
-
-   // Read in the tide data
+   // Maybe read in the tide data
     if (! m_strTideDataFile.empty())
     {
        AnnounceReadTideData();
-       nRet = nReadTideData();
+       nRet = nReadTideDataFile();
        if (nRet != RTN_OK)
           return (nRet);
     }
 
    // Read in the erosion potential shape function data
    AnnounceReadSCAPEShapeFunctionFile();
-   nRet = nReadShapeFunction();
+   nRet = nReadShapeFunctionFile();
    if (nRet != RTN_OK)
       return (nRet);
 
@@ -691,7 +672,45 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    if (m_bOutputLookUpData)
       WriteLookUpData();
 
-   // Open OUT file
+   // OK, now read in tthe vector files (if any)
+   if ((! m_bSingleDeepWaterWaveValues) || (! m_strSedimentInputEventShapefile.empty()))
+      AnnounceReadVectorFiles();
+
+   // Maybe read in deep water wave data
+   if (! m_bSingleDeepWaterWaveValues)
+   {
+      // We are reading deep water wave height, orientation and period from a file of vector points and file time series
+      AnnounceReadDeepWaterWaveValuesGIS();
+
+      // Read in vector points
+      nRet = nReadVectorGISData(DEEP_WATER_WAVE_STATIONS_VEC);
+      if (nRet != RTN_OK)
+         return (nRet);
+
+      // Read in time series values, and initialize the vector which stores each timestep's deep water wave height, orientation and period
+      nRet = nReadWaveStationTimeSeriesFile(static_cast<int>(m_VnDeepWaterWaveStationID.size()));
+      if (nRet != RTN_OK)
+         return (nRet);
+   }
+
+   // Maybe read in sediment input event data
+   if (! m_strSedimentInputEventShapefile.empty())
+   {
+      // We are reading sediment input event data
+      AnnounceReadSedimentEventInputValuesGIS();
+
+      // Read in vector points for sediment input events
+      nRet = nReadVectorGISData(SEDIMENT_INPUT_EVENT_LOCATION_VEC);
+      if (nRet != RTN_OK)
+         return (nRet);
+
+      // Read in the time series values for sediment input events
+      nRet = nReadSedimentInputEventTimeSeriesFile();
+      if (nRet != RTN_OK)
+         return (nRet);
+   }
+
+   // Open the main output
    OutStream.open(m_strOutFile.c_str(), ios::out | ios::trunc);
    if (! OutStream)
    {

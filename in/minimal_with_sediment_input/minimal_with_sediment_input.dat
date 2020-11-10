@@ -52,14 +52,14 @@ Maximum elevation of beach above SWL                                            
 ; Initial raster GIS layers --------------------------------------------------------------------------------------------
 Number of layers                                                                             : 1
 ; BASEMENT DEM MUST BE PRESENT
-Basement DEM file                                                             [path and name]: in/minimal/basement.asc
+Basement DEM file                                                             [path and name]: in/minimal_with_sediment_input/basement.asc
    ; LAYER 0 THICKNESS FILES, LAYER 0 IS LOWEST
    ; *** MUST HAVE AT LEAST ONE THICKNESS FILE FOR THE FIRST LAYER
    Initial Unconsolidated fine sediment file                                  [path and name]:
    Initial Unconsolidated sand sediment file                                  [path and name]:
    Initial Unconsolidated coarse sediment file                                [path and name]:
    Initial Consolidated fine sediment file                                    [path and name]:
-   Initial Consolidated sand sediment file                                    [path and name]: in/minimal/two_bays.tif
+   Initial Consolidated sand sediment file                                    [path and name]: in/minimal_with_sediment_input/two_bays.tif
    Initial Consolidated coarse sediment file                                  [path and name]:
 
 ; OPTIONAL THICKNESS FILE
@@ -112,8 +112,8 @@ Transport parameter                                                   [only for 
 
 Berm height i.e. height above SWL of start of depositional Dean profile (m)                  : 0.25
 
-Sediment input location                                            [optional point shapefile]:
-Sediment input details file                            [optional, required if have shapefile]:
+Sediment input location                                            [optional point shapefile]: in/minimal_with_sediment_input/sediment_input.shp
+Sediment input details file                            [optional, required if have shapefile]: in/minimal_with_sediment_input/sediment_input.dat
 
 ; Cliff collapse data --------------------------------------------------------------------------------------------------
 Simulate cliff collapse?                                                                     : y

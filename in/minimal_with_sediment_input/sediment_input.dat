@@ -1,0 +1,26 @@
+; This is the sediment input event data file.
+;
+; The associated shapefile stores a location and ID for each sediment input event. This location should be a point
+; on the coastline. Sediment input at each point is assumed to be in the shape of a rectangular block. This block has
+; uniform thickness (height), extends a length L into the sea (normal to the coastline), and has an along-coastline
+; width W. However, because the coastline shifts during the simulation, it is not possible to specify, before the
+; simulation begins, a location which is exactly on the coastline at a given time. Therefore CoastalME finds the
+; nearest point on the coastline at the time of the event. The sediment input event is assumed to occur at this
+; coastline point.
+;
+; Each row below contains the following comma-separated values:
+;  * the location ID of the sediment input event (same as the ID in the shapefile. IDs start from 1 and must run
+;    consecutively)
+;  * the timing of the sediment input event. This can be either relative (i.e. a number of hours or days after the
+;    simulation start) or absolute (i.e. a time/date in the format hh-mm-ss dd/mm/yyyy)
+;  * the volume (m3) of fine sediment in the sediment block
+;  * the volume (m3) of sand sediment in the sediment block
+;  * the volume (m3) of coarse sediment in the sediment block
+;  * the coast-normal length L (m) of the sediment block
+;  * the along-coast width W (m) of the sediment block.
+;
+; Rows must be in time sequence. If more than one sediment input event occurs simultaneously (i.e. events occur at
+; the same time at more than one location), then list each event on its own line, consecutively, ordered by ID.
+
+1, 00-00-00 02/01/1999, 0, 200, 0, 100, 20
+#1, 6 hours, 0, 200, 0, 100, 20

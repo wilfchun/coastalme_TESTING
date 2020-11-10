@@ -58,6 +58,7 @@ class CRWCoast;
 class CGeomProfile;
 class CGeomCoastPolygon;
 class CRWCliff;
+class CSedInputEvent;
 
 class CSimulation
 {
@@ -178,7 +179,7 @@ private:
       m_nCoastMin,
       m_nNThisTimestepCliffCollapse,
       m_nNTotCliffCollapse,
-      m_nCliffDepositionPlanviewWidth,
+      m_nCliffCollapseTalusPlanviewWidth,
       m_nGlobalPolygonID,                    // There are m_nGlobalPolygonID + 1 polygons at any time (all coasts)
       m_nUnconsSedimentHandlingAtGridEdges,
       m_nBeachErosionDepositionEquation,
@@ -378,36 +379,41 @@ private:
       m_strGDALBasementDEMDriverDesc,
       m_strGDALBasementDEMProjection,
       m_strGDALBasementDEMDataType,
-      m_strGDALLDriverCode,                     // Initial Landform Class (raster)
+      m_strGDALLDriverCode,                     // Initial landform class (raster)
       m_strGDALLDriverDesc,
       m_strGDALLProjection,
       m_strGDALLDataType,
-      m_strGDALICDriverCode,                    // Initial Intervention Class (raster)
+      m_strGDALICDriverCode,                    // Initial intervention class (raster)
       m_strGDALICDriverDesc,
       m_strGDALICProjection,
       m_strGDALICDataType,
-      m_strGDALIHDriverCode,                    // Initial Intervention Class (raster)
+      m_strGDALIHDriverCode,                    // Initial intervention class (raster)
       m_strGDALIHDriverDesc,
       m_strGDALIHProjection,
       m_strGDALIHDataType,
-      m_strGDALIWDriverCode,                    // Initial Water Depth (raster)
+      m_strGDALIWDriverCode,                    // Initial water depth (raster)
       m_strGDALIWDriverDesc,
       m_strGDALIWProjection,
       m_strGDALIWDataType,
-      m_strGDALISSDriverCode,                   // Initial Suspended Sediment (raster)
+      m_strGDALISSDriverCode,                   // Initial suspended sediment (raster)
       m_strGDALISSDriverDesc,
       m_strGDALISSProjection,
       m_strGDALISSDataType,
-      m_strOGRDWWVDriverCode,                   // Initial Deep Water Wave Values (vector)
+      m_strOGRDWWVDriverCode,                   // Initial deep water wave stations (vector)
       m_strOGRDWWVGeometry,
       m_strOGRDWWVDataType,
+      m_strOGRSedInputDriverCode,               // Sediment input event locations (vector)
+      m_strOGRSedInputGeometry,
+      m_strOGRSedInputDataType,
       m_strGDALRasterOutputDriverLongname,
       m_strGDALRasterOutputDriverExtension,
       m_strOGRVectorOutputExtension,
       m_strRunName,
       m_strDurationUnits,
-      m_strDeepWaterWaveStationsFile,
-      m_strDeepWaterWaveValuesFile;
+      m_strDeepWaterWaveStationsShapefile,
+      m_strDeepWaterWavesTimeSeriesFile,
+      m_strSedimentInputEventShapefile,
+      m_strSedimentInputEventTimeSeriesFile;
 
    struct RandState
    {
@@ -437,29 +443,31 @@ private:
 
    vector<int>
       m_VnProfileToSave,
-      m_VnDeepWaterWavePointID,        // ID for deep water wave point = integer that correspond with the columns on wave time series file
-      m_VnSavGolIndexCoast;            // Savitzky-Golay shift index for the coastline vector(s)
+      m_VnDeepWaterWaveStationID,         // ID for deep water wave station, this corresponds with the ID in the wave time series file
+      m_VnSedimentInputLocationID,        // ID for sediment input location, this corresponds with the ID in the sediment input time series file
+      m_VnSavGolIndexCoast;               // Savitzky-Golay shift index for the coastline vector(s)
 
    vector<unsigned long>
       m_VulProfileTimestep,
-      m_VulDeepWaterWaveValuesAtTimestep;  // Calculate deep water wave values at these timesteps
+      m_VulDeepWaterWaveValuesAtTimestep; // Calculate deep water wave values at these timesteps
 
    vector<double>
       m_VdSliceElev,
-      m_VdErosionPotential,            // For erosion potential lookup
-      m_VdDepthOverDB,            // For erosion potential lookup
-      m_VdSavGolFCRWCoast,             // Savitzky-Golay filter coefficients for the coastline vector(s)
-      m_VdSavGolFCGeomProfile,         // Savitzky-Golay filter coefficients for the profile vectors
-      m_VdDeepWaterWavePointX,         // X co-ordinate (grid CRS) for deep water wave point
-      m_VdDeepWaterWavePointY,         // Y co-ordinate (grid CRS) for deep water wave point
-      m_VdDeepWaterWavePointHeight,    // This time step Wave height at deep water wave point
-      m_VdDeepWaterWavePointAngle,     // This time step Wave orientation at deep water wave point
-      m_VdDeepWaterWavePointPeriod,     //This time step Wave period at deep water wave point
-      m_VdDeepWaterWavePointHeightTS,    // Time series Wave height at deep water wave points
-      m_VdDeepWaterWavePointAngleTS,     // Time series Wave orientation at deep water wave points
-      m_VdDeepWaterWavePointPeriodTS,    // Time series Wave period at deep water wave points
-
-      m_VdTideData;                    // Tide data: one record per timestep, is the change (m) from still water level for that timestep
+      m_VdErosionPotential,               // For erosion potential lookup
+      m_VdDepthOverDB,                    // For erosion potential lookup
+      m_VdSavGolFCRWCoast,                // Savitzky-Golay filter coefficients for the coastline vector(s)
+      m_VdSavGolFCGeomProfile,            // Savitzky-Golay filter coefficients for the profile vectors
+      m_VdTideData,                       // Tide data: one record per timestep, is the change (m) from still water level for that timestep
+      m_VdDeepWaterWaveStationX,          // X co-ordinate (grid CRS) for deep water wave station
+      m_VdDeepWaterWaveStationY,          // Y co-ordinate (grid CRS) for deep water wave station
+      m_VdDeepWaterWaveStationHeight,     // This time step: wave height at deep water wave station
+      m_VdDeepWaterWaveStationAngle,      // This time step: wave orientation at deep water wave station
+      m_VdDeepWaterWaveStationPeriod,     // This time step: wave period at deep water wave station
+      m_VdDeepWaterWaveStationHeightTS,   // Time series of wave heights at deep water wave station
+      m_VdDeepWaterWaveStationAngleTS,    // Time series of wave orientation at deep water wave station
+      m_VdDeepWaterWaveStationPeriodTS,   // Time series of wave period at deep water wave station
+      m_VdSedimentInputLocationX,         // X co-ordinate (grid CRS) for sediment input event
+      m_VdSedimentInputLocationY;         // X co-ordinate (grid CRS) for sediment input event
 
    vector<string>
       m_VstrInitialFineUnconsSedimentFile,
@@ -468,7 +476,7 @@ private:
       m_VstrInitialFineConsSedimentFile,
       m_VstrInitialSandConsSedimentFile,
       m_VstrInitialCoarseConsSedimentFile,
-      m_VstrGDALIUFDriverCode,          // Initial Fine Unconsolidated Sediment (raster)
+      m_VstrGDALIUFDriverCode,            // Initial Fine Unconsolidated Sediment (raster)
       m_VstrGDALIUFDriverDesc,
       m_VstrGDALIUFProjection,
       m_VstrGDALIUFDataType,
@@ -493,7 +501,7 @@ private:
       m_VstrGDALICCProjection,
       m_VstrGDALICCDataType;
 
-   // The raster grid object
+   // Pointer to the raster grid object
    CGeomRasterGrid* m_pRasterGrid;
 
    // The coastline objects
@@ -508,20 +516,24 @@ private:
    // And the grid edge that each edge cell belongs to
    vector<int> m_VEdgeCellEdge;
 
+   // Sediment input events
+   vector<CSedInputEvent*> m_pVSedInputEvent;
+
 private:
    // Input and output routines
    static int nHandleCommandLineParams(int, char* []);
-   bool bReadIni(void);
-   bool bReadRunData(void);
+   bool bReadIniFile(void);
+   bool bReadRunDataFile(void);
    bool bOpenLogFile(void);
    bool bSetUpTSFiles(void);
    void WriteStartRunDetails(void);
    bool bWritePerTimestepResults(void);
    bool bWriteTSFiles(void);
    int nWriteEndRunDetails(void);
-   int nReadShapeFunction(void);
-   int nReadWaveTimeSeries(int const);
-   int nReadTideData(void);
+   int nReadShapeFunctionFile(void);
+   int nReadWaveStationTimeSeriesFile(int const);
+   int nReadSedimentInputEventTimeSeriesFile(void);
+   int nReadTideDataFile(void);
    int nSaveProfile(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
    bool bWriteProfileData(int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*) const;
    int nSaveParProfile(int const, int const, int const, int const, int const, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*, vector<CGeom2DIPoint>* const, vector<double> const*);
@@ -694,6 +706,7 @@ private:
    void AnnounceReadInitialSandConsSedGIS(int const) const;
    void AnnounceReadInitialCoarseConsSedGIS(int const) const;
    void AnnounceReadDeepWaterWaveValuesGIS(void) const;
+   void AnnounceReadSedimentEventInputValuesGIS(void) const;
    void AnnounceReadTideData(void) const;
    static void AnnounceReadSCAPEShapeFunctionFile(void);
    static void AnnounceAllocateMemory(void);

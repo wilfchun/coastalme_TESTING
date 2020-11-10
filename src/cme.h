@@ -270,9 +270,12 @@ int const      VEC_GEOMETRY_POLYGON                                        = 3;
 int const      VEC_GEOMETRY_OTHER                                          = 4;
 
 // GIS vector input codes and constraints
-int const      DEEP_WATER_WAVE_VALUES_VEC                                  = 1;
-int const      DEEP_WATER_WAVE_VALUES_MAX_LAYER                            = 1;
-int const      DEEP_WATER_WAVE_VALUES_GEOMETRY                             = VEC_GEOMETRY_POINT;
+int const      DEEP_WATER_WAVE_STATIONS_VEC                                = 1;
+int const      DEEP_WATER_WAVE_STATIONS_MAX_LAYER                          = 1;
+int const      DEEP_WATER_WAVE_STATIONS_GEOMETRY                           = VEC_GEOMETRY_POINT;
+int const      SEDIMENT_INPUT_EVENT_LOCATION_VEC                           = 2;
+int const      SEDIMENT_INPUT_EVENT_LOCATION_MAX_LAYER                     = 1;
+int const      SEDIMENT_INPUT_EVENT_LOCATION_GEOMETRY                      = VEC_GEOMETRY_POINT;
 
 // GIS raster output codes
 int const      RASTER_PLOT_ACTIVE_ZONE                                     = 12;
@@ -401,7 +404,7 @@ int const      RTN_ERR_SHADOW_ZONE_FLOOD_FILL_NOGRID  = 52;
 int const      RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT  = 53;
 int const      RTN_ERR_CSHORE_EMPTY_PROFILE           = 54;
 int const      RTN_ERR_CSHORE_FILE_INPUT              = 55;
-int const      RTN_ERR_CSHORE_FILE_OUTPUT             = 56;
+int const      RTN_ERR_READING_CSHORE_FILE_OUTPUT     = 56;
 int const      RTN_ERR_CSHORE_NEGATIVE_DEPTH          = 57;
 int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 58;
 int const      RTN_ERR_GRIDCREATE                     = 59;
@@ -411,6 +414,7 @@ int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 62;
 int const      RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA      = 63;
 int const      RTN_ERR_READ_DEEP_WATER_WAVE_DATA      = 64;
 int const      RTN_ERR_BOUNDING_BOX                   = 65;
+int const      RTN_ERR_READ_SEDIMENT_INPUT_EVENT      = 66;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                       = -1;
@@ -467,7 +471,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 14 September 2020";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 10 November 2020";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -508,7 +512,8 @@ string const   READ_CONS_FINE_SEDIMENT_FILE                                = "  
 string const   READ_CONS_SAND_SEDIMENT_FILE                                = "    - Consolidated sand sediment (layer ";
 string const   READ_CONS_COARSE_SEDIMENT_FILE                              = "    - Consolidated coarse sediment (layer ";
 string const   READVECTORFILES                                             = "  - Reading vector GIS files";
-string const   READDWWVFILE                                                = "    - Deep water wave values: ";
+string const   READDEEPWATERWAVEFILE                                       = "    - Deep water wave values: ";
+string const   READSEDINPUTEVENTFILE                                       = "    - Sediment input event values: ";
 string const   READSCAPESHAPEFUNCTIONFILE                                  = "  - Reading SCAPE shape function file";
 string const   READTIDEDATAFILE                                            = "  - Reading tide data file: ";
 string const   ALLOCATEMEMORY                                              = "  - Allocating memory for raster grid";
@@ -561,9 +566,10 @@ string const   LOGEXT                                                      = ".l
 string const   CSVEXT                                                      = ".csv";
 
 string const   DEEP_WATER_WAVE_STATION_ID                                  = "id";
-string const   DEEP_WATER_WAVE_VALUES_HEIGHT                               = "HEIGHT";
-string const   DEEP_WATER_WAVE_VALUES_ANGLE                                = "ANGLE";
-string const   DEEP_WATER_WAVE_VALUES_PERIOD                               = "PERIOD";
+string const   DEEP_WATER_WAVE_STATIONS_HEIGHT                             = "HEIGHT";
+string const   DEEP_WATER_WAVE_STATIONS_ANGLE                              = "ANGLE";
+string const   DEEP_WATER_WAVE_STATIONS_PERIOD                             = "PERIOD";
+string const   SEDIMENT_INPUT_EVENT_LOCATION_ID                            = "id";
 
 // GIS raster output user codes
 string const   RASTER_ALL_OUTPUT_CODE                                      = "all";
@@ -811,8 +817,9 @@ template <typename T> string strNumToStr(const T& t)
 double dRound(double const);
 int nRound(double const);
 // bool bIsWhole(double const);
-bool bDoubleNotNaN(double const);
+bool bIsDoubleNotNaN(double const);
 bool bIsStringValidDouble(string&);
+bool bIsStringValidInt(string&);
 // bool bIsFinite(double const);
 struct FillToWidth
 {

@@ -485,11 +485,28 @@ void CSimulation::AnnounceReadIHGIS(void) const
 void CSimulation::AnnounceReadDeepWaterWaveValuesGIS(void) const
 {
    // Tell the user what is happening
-   if (! m_strDeepWaterWaveValuesFile.empty())
+   if (! m_strDeepWaterWavesTimeSeriesFile.empty())
 #ifdef _WIN32
-      cout << READDWWVFILE << pstrChangeToForwardSlash(&m_strDeepWaterWaveValuesFile) << endl;
+      cout << READDEEPWATERWAVEFILE << pstrChangeToForwardSlash(&m_strDeepWaterWavesTimeSeriesFile) << endl;
 #else
-      cout << READDWWVFILE << m_strDeepWaterWaveValuesFile << endl;
+      cout << READDEEPWATERWAVEFILE << m_strDeepWaterWavesTimeSeriesFile << endl;
+#endif
+}
+
+
+/*==============================================================================================================================
+
+ Tells the user that we are now reading the sediment input events GIS file
+
+==============================================================================================================================*/
+void CSimulation::AnnounceReadSedimentEventInputValuesGIS(void) const
+{
+   // Tell the user what is happening
+   if (! m_strSedimentInputEventTimeSeriesFile.empty())
+#ifdef _WIN32
+      cout << READSEDINPUTEVENTFILE << pstrChangeToForwardSlash(&m_strSedimentInputEventTimeSeriesFile) << endl;
+#else
+      cout << READSEDINPUTEVENTFILE << m_strSedimentInputEventTimeSeriesFile << endl;
 #endif
 }
 
@@ -2155,7 +2172,7 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_CSHORE_FILE_INPUT:
       strErr = "creating file for CShore input";
       break;
-   case RTN_ERR_CSHORE_FILE_OUTPUT:
+   case RTN_ERR_READING_CSHORE_FILE_OUTPUT:
       strErr = "reading CShore output file";
       break;
    case RTN_ERR_CSHORE_NEGATIVE_DEPTH:
@@ -2177,13 +2194,16 @@ string CSimulation::strGetErrorText(int const nErr)
       strErr = "Could not find cell under coastline";
       break;
    case RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA:
-      strErr = "opening deep sea wave values file";
+      strErr = "opening deep sea wave time series file";
       break;
    case RTN_ERR_READ_DEEP_WATER_WAVE_DATA:
-      strErr = "reading deep sea wave values file";
+      strErr = "reading deep sea wave time series file";
       break;
    case RTN_ERR_BOUNDING_BOX:
       strErr = "finding edges of the bounding box";
+      break;
+   case RTN_ERR_READ_SEDIMENT_INPUT_EVENT:
+      strErr = "reading sediment input event time series file";
       break;
    default:
       // should never get here
@@ -2740,31 +2760,52 @@ bool CSimulation::bParseDate(string const* strDate, int& nDay, int& nMonth, int&
 
    if (VstrTmp.size() < 3)
    {
-      cerr << "date string must include day, month, and year" << endl;
+      cerr << "date string must include day, month, and year '" << strDate << "'" << endl;
       return false;
    }
 
    // Sort out day
+   if (! bIsStringValidInt(VstrTmp[0]))
+   {
+      cerr << "invalid integer for day in date '" << strDate << "'" << endl;
+      return false;
+   }
+
    nDay = stoi(VstrTmp[0]);
+
    if ((nDay < 1) || (nDay > 31))
    {
-      cerr << "invalid start day" << endl;
+      cerr << "day must be between 1 and 31 in date '" << strDate << "'" << endl;
       return false;
    }
 
    // Sort out month
+   if (! bIsStringValidInt(VstrTmp[1]))
+   {
+      cerr << "invalid integer for month in date '" << strDate << "'" << endl;
+      return false;
+   }
+
    nMonth = stoi(VstrTmp[1]);
+
    if ((nMonth < 1) || (nMonth > 12))
    {
-      cerr << "invalid start month" << endl;
+      cerr << "month must be between 1 and 12 in date '" << strDate << "'" << endl;
       return false;
    }
 
    // Sort out year
+   if (! bIsStringValidInt(VstrTmp[2]))
+   {
+      cerr << "invalid integer for year in date '" << strDate << "'" << endl;
+      return false;
+   }
+
    nYear = stoi(VstrTmp[2]);
+
    if (nYear < 0)
    {
-      cerr << "invalid start year" << endl;
+      cerr << "year must be greater than zero in date '" << strDate << "'" << endl;
       return false;
    }
 
@@ -2783,31 +2824,52 @@ bool CSimulation::bParseTime(string const* strTime, int& nHour, int& nMin, int& 
 
    if (VstrTmp.size() < 3)
    {
-      cerr << "time string must include hours, minutes, and seconds" << endl;
+      cerr << "time string must include hours, minutes, and seconds '" << strTime << "'" << endl;
       return false;
    }
 
    // Sort out hour
+   if (! bIsStringValidInt(VstrTmp[0]))
+   {
+      cerr << "invalid integer for hours in time '" << strTime << "'" << endl;
+      return false;
+   }
+
    nHour = stoi(VstrTmp[0]);
+
    if ((nHour < 0) || (nHour > 23))
    {
-      cerr << "invalid start hours" << endl;
+      cerr << "hour must be between 0 and 23 in time '" << strTime << "'" << endl;
       return false;
    }
 
    // Sort out minutes
+   if (! bIsStringValidInt(VstrTmp[1]))
+   {
+      cerr << "invalid integer for minutes in time '" << strTime << "'" << endl;
+      return false;
+   }
+
    nMin = stoi(VstrTmp[1]);
+
    if ((nMin < 0) || (nMin > 59))
    {
-      cerr << "invalid start minutes" << endl;
+      cerr << "minutes must be betwen 0 and 59 in time '" << strTime << "'" << endl;
       return false;
    }
 
    // Sort out seconds
+   if (! bIsStringValidInt(VstrTmp[2]))
+   {
+      cerr << "invalid integer for seconds in time '" << strTime << "'" << endl;
+      return false;
+   }
+
    nSec = stoi(VstrTmp[2]);
+
    if ((nSec < 0) || (nSec > 59))
    {
-      cerr << "invalid start seconds" << endl;
+      cerr << "seconds must be betwen 0 and 59 in time '" << strTime << "'" << endl;
       return false;
    }
 

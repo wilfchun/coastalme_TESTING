@@ -350,44 +350,44 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 
    // Calculate the proportion per planview collapse profile
    vector<int>
-      nVWidthDistSigned(m_nCliffDepositionPlanviewWidth),
-      nVProfileLength(m_nCliffDepositionPlanviewWidth);
+      nVWidthDistSigned(m_nCliffCollapseTalusPlanviewWidth),
+      nVProfileLength(m_nCliffCollapseTalusPlanviewWidth);
    vector<double>
-      dVToDepositPerProfile(m_nCliffDepositionPlanviewWidth);
+      dVToDepositPerProfile(m_nCliffCollapseTalusPlanviewWidth);
 
    // TODO IMPROVE LATER, at present all planview profiles are the same length
-   int nSigned = - (m_nCliffDepositionPlanviewWidth - 1) / 2;
-   for (int n = 0; n < m_nCliffDepositionPlanviewWidth; n++)
+   int nSigned = - (m_nCliffCollapseTalusPlanviewWidth - 1) / 2;
+   for (int n = 0; n < m_nCliffCollapseTalusPlanviewWidth; n++)
    {
       nVWidthDistSigned[n] = nSigned++;
       nVProfileLength[n] = nRound(m_dCliffDepositionPlanviewLength);
-      dVToDepositPerProfile[n] = (dTotSandToDeposit + dTotCoarseToDeposit) / m_nCliffDepositionPlanviewWidth;
+      dVToDepositPerProfile[n] = (dTotSandToDeposit + dTotCoarseToDeposit) / m_nCliffCollapseTalusPlanviewWidth;
    }
 
 //    LogStream << "Width offsets = ";
-//    for (int n = 0; n < m_nCliffDepositionPlanviewWidth; n++)
+//    for (int n = 0; n < m_nCliffCollapseTalusPlanviewWidth; n++)
 //    {
 //       LogStream << nVWidthDistSigned[n] << " ";
 //    }
 //    LogStream << endl << "Profile lengths = ";
-//    for (int n = 0; n < m_nCliffDepositionPlanviewWidth; n++)
+//    for (int n = 0; n < m_nCliffCollapseTalusPlanviewWidth; n++)
 //    {
 //       LogStream << nVProfileLength[n] << " ";
 //    }
 //    LogStream << endl << "Deposition per profile = ";
-//    for (int n = 0; n < m_nCliffDepositionPlanviewWidth; n++)
+//    for (int n = 0; n < m_nCliffCollapseTalusPlanviewWidth; n++)
 //    {
 //       LogStream << dVToDepositPerProfile[n] << " ";
 //    }
 //    LogStream << endl;
 
-//   LogStream << "dSandCollapse = " << dSandCollapse << " dCoarseCollapse = " << dCoarseCollapse << " m_nCliffDepositionPlanviewWidth = " << m_nCliffDepositionPlanviewWidth << endl;
+//   LogStream << "dSandCollapse = " << dSandCollapse << " dCoarseCollapse = " << dCoarseCollapse << " m_nCliffCollapseTalusPlanviewWidth = " << m_nCliffCollapseTalusPlanviewWidth << endl;
 
 //    int nX = pCliff->pPtiGetCellMarkedAsLF()->nGetX();
 //    int nY = pCliff->pPtiGetCellMarkedAsLF()->nGetY();
 //   LogStream << "Cliff object is at cell[" << nX << "][" << nY << "] which is " << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << endl;
 
-   for (int nAcross = 0; nAcross < m_nCliffDepositionPlanviewWidth; nAcross++)
+   for (int nAcross = 0; nAcross < m_nCliffCollapseTalusPlanviewWidth; nAcross++)
    {
       int nWidthDistSigned = nVWidthDistSigned[nAcross];
 
@@ -408,7 +408,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
          // Remove this volume from the total still to be deposited
          dTotSandToDeposit -= (dVToDepositPerProfile[nAcross] * dSandProp);
          dTotCoarseToDeposit -= (dVToDepositPerProfile[nAcross] * dCoarseProp);
-//          assert(bDoubleNotNaN(dTotSandToDeposit));
+//          assert(bIsDoubleNotNaN(dTotSandToDeposit));
 //          LogStream << "dTotSandToDeposit NOW = " << dTotSandToDeposit << " dTotCoarseToDeposit NOW = " << dTotCoarseToDeposit << endl;
 
          continue;
@@ -466,19 +466,19 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
             if (nRtn == RTN_ERR_NO_SOLUTION_FOR_ENDPOINT)
             {
                // The profile has a different problem, so (if possible) move one point along the coast and try again. Must add this profile's sediment to the amount remaining per profile however
-//                for (int n = 0; n < m_nCliffDepositionPlanviewWidth; n++)
+//                for (int n = 0; n < m_nCliffCollapseTalusPlanviewWidth; n++)
 //                {
 //                   LogStream << dVToDepositPerProfile[n] << " ";
 //                }
 //                LogStream << endl;
 //                LogStream << "Deposition per profile WAS = ";
 
-               int nWidthRemaining = m_nCliffDepositionPlanviewWidth - nAcross - 1;
-               for (int n = nAcross+1; n < m_nCliffDepositionPlanviewWidth; n++)
+               int nWidthRemaining = m_nCliffCollapseTalusPlanviewWidth - nAcross - 1;
+               for (int n = nAcross+1; n < m_nCliffCollapseTalusPlanviewWidth; n++)
                   dVToDepositPerProfile[n] = (dTotSandToDeposit + dTotCoarseToDeposit) / nWidthRemaining;
 
 //                LogStream << "Deposition per profile NOW = ";
-//                for (int n = 0; n < m_nCliffDepositionPlanviewWidth; n++)
+//                for (int n = 0; n < m_nCliffCollapseTalusPlanviewWidth; n++)
 //                {
 //                   LogStream << dVToDepositPerProfile[n] << " ";
 //                }

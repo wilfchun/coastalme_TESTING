@@ -89,7 +89,9 @@ void CSimulation::WriteStartRunDetails(void)
 
    OutStream << " Simulation start date/time                                \t: ";
    // hh:mm:ss dd/mm/yyyy
-   OutStream << setfill('0') << setw(2) << m_nSimStartHour << COLON << setw(2) << m_nSimStartMin << COLON << setw(2) << m_nSimStartSec << SPACE << setw(2) << m_nSimStartDay << SLASH << setw(2) << m_nSimStartMonth << SLASH << setw(2) << m_nSimStartYear << endl;
+   char cPrev = OutStream.fill('0');
+   OutStream << setw(2) << m_nSimStartHour << COLON << setw(2) << m_nSimStartMin << COLON << setw(2) << m_nSimStartSec << SPACE << setw(2) << m_nSimStartDay << SLASH << setw(2) << m_nSimStartMonth << SLASH << setw(2) << m_nSimStartYear << endl;
+   OutStream.fill(cPrev);
 
    OutStream << " Duration of simulation                                    \t: ";
    OutStream << strDispSimTime(m_dSimDuration) << endl;
@@ -330,11 +332,11 @@ void CSimulation::WriteStartRunDetails(void)
    else
    {
 
-      OutStream << " Deep water wave stations shapefile                        \t: " << m_strDeepWaterWaveStationsFile << endl;
+      OutStream << " Deep water wave stations shapefile                        \t: " << m_strDeepWaterWaveStationsShapefile << endl;
       OutStream << " GDAL/OGR deep water wave stations shapefile driver code   \t: " << m_strOGRDWWVDriverCode << endl;
       OutStream << " GDAL/OGR deep water wave stations shapefile data type     \t: " << m_strOGRDWWVDataType << endl;
       OutStream << " GDAL/OGR deep water wave stations shapefile geometry      \t: " << m_strOGRDWWVGeometry << endl;
-      OutStream << " Deep water wave values file                               \t: " << m_strDeepWaterWaveValuesFile << endl;
+      OutStream << " Deep water wave values file                               \t: " << m_strDeepWaterWavesTimeSeriesFile << endl;
 
       if (m_dWaveDataWrapHours > 0)
          OutStream << " Deep water wave values will wrap every " << m_dWaveDataWrapHours << " hours" << endl;
@@ -407,7 +409,7 @@ void CSimulation::WriteStartRunDetails(void)
    else
       OutStream << m_dCliffDepositionA << "  m^(1/3)";
    OutStream << endl;
-   OutStream << " Planview width of cliff deposition talus                  \t: " << m_nCliffDepositionPlanviewWidth << " cells" << endl;
+   OutStream << " Planview width of cliff deposition talus                  \t: " << m_nCliffCollapseTalusPlanviewWidth << " cells" << endl;
    OutStream << " Planview length of cliff deposition talus                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dCliffDepositionPlanviewLength << " m" << endl;
    OutStream << " Height of talus at land end (fraction of cliff elevation) \t: " << m_dCliffDepositionHeightFrac << endl;
    OutStream << " Gravitational acceleration                                \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dG << " m^2/s" << endl;
