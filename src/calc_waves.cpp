@@ -33,6 +33,7 @@ using std::to_string;
 #include <iostream>
 using std::ifstream;
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::ios;
 
@@ -640,7 +641,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // Set the error flag: this will be changed within CShore if there is a problem
       nRet = 0;
 
-      int const CSHOREARRAYOUTSIZE = 1000;
+      int const CSHOREARRAYOUTSIZE = 1500;
       double dDX = 1;      // Nodal spacing for input bottom geometry
 
       vector<double>
@@ -924,9 +925,9 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
    }
 
    // We have all the inputs in the CShore format, so we can create the input file
-   ofstream OutStream;
-   OutStream.open(strFName.c_str(), ios::out | ios::app);
-   if (OutStream.fail())
+   ofstream CShoreOutStream;
+   CShoreOutStream.open(strFName.c_str(), ios::out | ios::app);
+   if (CShoreOutStream.fail())
    {
       // Error, cannot open file for writing
       LogStream << m_ulIteration << ": " << ERR << "cannot write to CShore input file " << strFName << endl;
@@ -934,25 +935,25 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
    }
 
    // OK, write to the file
-   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << m_dBreakingWaveHeightDepthRatio << "                        -> GAMMA" << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(0); OutStream << setw(11) << 0 << "                        -> ILAB" << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(0); OutStream << setw(11) << 1 << "                        -> NWAVE" << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(0); OutStream << setw(11) << 1 << "                        -> NSURGE" << endl;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << m_dBreakingWaveHeightDepthRatio << "                        -> GAMMA" << endl;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(0); CShoreOutStream << setw(11) << 0 << "                        -> ILAB" << endl;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(0); CShoreOutStream << setw(11) << 1 << "                        -> NWAVE" << endl;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(0); CShoreOutStream << setw(11) << 1 << "                        -> NSURGE" << endl;
 
-   OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << 0.0;
-   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << dTimestep;
-   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(2); CShoreOutStream << setw(11) << 0.0;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(2); CShoreOutStream << setw(11) << dTimestep;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
 
-   OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << 0.0;
-   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << dSurgeLevel << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(2); OutStream << setw(11) << dTimestep;
-   OutStream << setiosflags(ios::fixed) << setprecision(4); OutStream << setw(11) << dSurgeLevel << endl;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(2); CShoreOutStream << setw(11) << 0.0;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << dSurgeLevel << endl;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(2); CShoreOutStream << setw(11) << dTimestep;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << dSurgeLevel << endl;
 
-   OutStream << setw(8) << pVdXdist->size() << "                        -> NBINP" << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(4);
-   for (int i = 0; i < pVdXdist->size(); i++)
-      OutStream << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << pVdWaveFriction->at(i) << endl;
+   CShoreOutStream << setw(8) << pVdXdist->size() << "                        -> NBINP" << endl;
+   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4);
+   for (unsigned int i = 0; i < pVdXdist->size(); i++)
+      CShoreOutStream << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << pVdWaveFriction->at(i) << endl;
 
    return RTN_OK;
 }
@@ -1085,7 +1086,10 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
 
          if (! bIsStringValidInt(VstrItems[1]))
          {
-            strErr = "invalid integer for number of expected rows '" + VstrItems[1] + "' in " + *strCShoreFilename;
+            string strErr = ERR + "invalid integer for number of expected rows '" + VstrItems[1] + "' in " + *strCShoreFilename + "\n";
+            cerr << strErr;
+            LogStream << strErr;
+
             return RTN_ERR_READING_CSHORE_FILE_OUTPUT;
          }
 
@@ -1097,7 +1101,7 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
          // Read in a data line
          vector<string> VstrItems = VstrSplit(&strLineIn, SPACE);
 
-         int nCols = VstrItems.size();
+         int nCols = static_cast<int>(VstrItems.size());
          if (nCols != nExpectedColumns)
          {
             // Error: did not read the expected number of CShore output columns
@@ -1107,13 +1111,13 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
          }
 
          // Number of columns is OK
-         VdXYDistCShore.push_back(strtod(VstrItems[0].c_str()), NULL);
-         VdValuesCShore.push_back(strtod(VstrItems[nCShorecolumn-1].c_str()), NULL);
+         VdXYDistCShore.push_back(strtod(VstrItems[0].c_str(), NULL));
+         VdValuesCShore.push_back(strtod(VstrItems[nCShorecolumn-1].c_str(), NULL));
       }
    }
 
    // Check that we have read nExpectedRows from the file
-   int nReadRows = VdXYDistCShore.size();
+   int nReadRows = static_cast<int>(VdXYDistCShore.size());
    if (nReadRows != nExpectedRows)
    {
       // Error: did not get nExpectedRows CShore output rows
