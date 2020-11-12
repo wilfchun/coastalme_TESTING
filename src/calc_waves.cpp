@@ -724,31 +724,27 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          switch(nRet)
          {
          case -1:
-            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has negative water depth ";
-            break;
-
-         case 1:
-            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore did not reach convergence ";
+            strErr = to_string(m_ulIteration) + ": CShore ERROR: negative depth at the first node ";
             break;
 
          case 2:
-            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has a negative value at end of landward marching computation ";
+            strErr = to_string(m_ulIteration) + ": CShore WARNING 2: negative value at end of landward marching computation ";
             break;
 
          case 3:
-            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has large energy gradients at the first node: small waves with short period at sea boundary ";
+            strErr = to_string(m_ulIteration) + ": CShore WARNING 3: large energy gradients at the first node: small waves with short period at sea boundary ";
             break;
 
          case 4:
-            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has zero energy at the first node ";
+            strErr= to_string(m_ulIteration) + ": CShore WARNING 4: zero energy at the first node ";
             break;
 
          case 5:
-            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has insufficient water depth at end of landward marching computation ";
+            strErr = to_string(m_ulIteration) + ": CShore WARNING 5: at end of landward marching computation, insufficient water depth ";
             break;
 
          case 7:
-            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore did not reach convergence ";
+            strErr = to_string(m_ulIteration) + ": CShore WARNING 7: did not reach convergence ";
             break;
          }
 
