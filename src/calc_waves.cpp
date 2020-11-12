@@ -740,7 +740,6 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
             break;
 
          case 4:
-         {
             strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has zero energy at the first node ";
             break;
 
