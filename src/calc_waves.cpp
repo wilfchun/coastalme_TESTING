@@ -571,9 +571,50 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       // Run CShore for this profile
       cshore(&nRet);
 
-      // Check for error
+      // Check return code for error
       if (nRet != 0)
-         return RTN_ERR_CSHORE_ERROR;
+      {
+         string strErr;
+
+         switch(nRet)
+         {
+         case -1:
+            strErr = to_string(m_ulIteration) + ": CShore ERROR: negative depth at the first node ";
+            break;
+
+         case 2:
+            strErr = to_string(m_ulIteration) + ": CShore WARNING 2: negative value at end of landward marching computation ";
+            break;
+
+         case 3:
+            strErr = to_string(m_ulIteration) + ": CShore WARNING 3: large energy gradients at the first node: small waves with short period at sea boundary ";
+            break;
+
+         case 4:
+            strErr= to_string(m_ulIteration) + ": CShore WARNING 4: zero energy at the first node ";
+            break;
+
+         case 5:
+            strErr = to_string(m_ulIteration) + ": CShore WARNING 5: at end of landward marching computation, insufficient water depth ";
+            break;
+
+         case 7:
+            strErr = to_string(m_ulIteration) + ": CShore WARNING 7: did not reach convergence ";
+            break;
+         }
+
+         strErr += "(coast " + to_string(nCoast) + " profile " + to_string(nProfile) + ")\n";
+         cerr << strErr;
+         LogStream << strErr;
+
+         if (nRet < 0)
+         {
+            // This is serious, so give up
+            return RTN_ERR_CSHORE_ERROR;
+         }
+
+         // Not too serious, so carry on
+      }
 
       // Fetch the CShore results by reading files written by CShore
       string
@@ -678,44 +719,54 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 
       if (nRet != RTN_OK)
       {
-         if (nRet == 1)
+         string strErr;
+
+         switch(nRet)
          {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore did not reach convergence (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
-         }
-         else if (nRet == 2)
+         case -1:
+            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has negative water depth ";
+            break;
+
+         case 1:
+            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore did not reach convergence ";
+            break;
+
+         case 2:
+            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has a negative value at end of landward marching computation ";
+            break;
+
+         case 3:
+            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has large energy gradients at the first node: small waves with short period at sea boundary ";
+            break;
+
+         case 4:
          {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore has DUM <= 0 (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
+            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has zero energy at the first node ";
+            break;
+
+         case 5:
+            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore has insufficient water depth at end of landward marching computation ";
+            break;
+
+         case 7:
+            strErr = to_string(m_ulIteration) + ": " << WARN << "CShore did not reach convergence ";
+            break;
          }
-         else if (nRet == 3)
+
+         strErr += "(coast " + to_string(nCoast) + " profile " + to_string(nProfile) + " profile length " + to_string(nOutSize) + ")\n";
+         cerr << strErr;
+         LogStream << strErr;
+
+         if (nRet < 0)
          {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore has large energy gradients at the first node (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
+            // This is serious, so give up
+            return RTN_ERR_CSHORE_ERROR;
          }
-         else if (nRet == 4)
-         {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore has zero energy at the first node (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
-         }
-         else if (nRet == 5)
-         {
-            // Warning
-            LogStream << m_ulIteration << ": " << WARN << "CShore has insufficient water depth (coast " << nCoast << " profile " << nProfile << " profile length " << nOutSize << ")" << endl;
-         }
-         else if (nRet == -1)
-         {
-            // Error TODO Is it possible to recover from this?
-            return RTN_ERR_CSHORE_NEGATIVE_DEPTH;
-         }
-         else
-         {
-            // Error
-            return nRet;
-         }
+
+         // Not too serious, so carry on
       }
 
-
+      // Now interpolate the output
       InterpolateCShoreOutput(&VdProfileDistXY, nOutSize, &VdXYDistFromCShoreOut, &VdFreeSurfaceStdOut, &VdSinWaveAngleRadiansOut, &VdFractionBreakingWavesOut, &VdFreeSurfaceStd, &VdSinWaveAngleRadians, &VdFractionBreakingWaves);
 
 #endif
@@ -955,6 +1006,11 @@ int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, doubl
    for (unsigned int i = 0; i < pVdXdist->size(); i++)
       CShoreOutStream << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << pVdWaveFriction->at(i) << endl;
 
+   CShoreOutStream << endl;
+
+   // File written
+   CShoreOutStream.close();
+
    return RTN_OK;
 }
 #endif
@@ -977,7 +1033,8 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
       dXDist,
       dYDist,
       dProfileDistXY = 0,
-      dProfileFricFact = 0;
+      dProfileFricFact = 0,
+      dPrevDist = -1;
 
    CGeomProfile* pProfile = m_VCoast[nCoast].pGetProfile(nProfile);
 
@@ -1016,7 +1073,10 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
       double VdProfileZ = m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() - m_dThisTimestepSWL;
       VdVZ->push_back(VdProfileZ);
 
-      // Store the X-Y plane distance from the start of the profile
+      // Before we store the X-Y distance, must check that it is not the same as the previously-stored distance (if it is, we get zero-divide errors in CShore). If they are the same, skip this one
+      if (dProfileDistXY == dPrevDist) continue;
+
+      // Now store the X-Y plane distance from the start of the profile
       VdDistXY->push_back(dProfileDistXY);
 
       // Get the landform type at each point along the profile
@@ -1034,6 +1094,9 @@ int CSimulation::nGetThisProfileElevationVectorsForCShore(int const nCoast, int 
 
       // Store the friction factor
       VdFricF->push_back(dProfileFricFact);
+
+      // For next time round
+      dPrevDist = dProfileDistXY;
    }
 
    return RTN_OK;

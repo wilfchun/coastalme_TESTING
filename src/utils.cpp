@@ -2175,9 +2175,6 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_READING_CSHORE_FILE_OUTPUT:
       strErr = "reading CShore output file";
       break;
-   case RTN_ERR_CSHORE_NEGATIVE_DEPTH:
-      strErr = "CShore calculated -ve depth";
-      break;
    case RTN_ERR_WAVE_INTERPOLATION_LOOKUP:
       strErr = "during wave interpolation lookup";
       break;
