@@ -566,7 +566,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          nNWave   = 1,           // Number of waves at x = 0 starting from time = 0
          nNSurge  = 1;           // Number of water levels at x = 0 from time = 0
       double
-         dX = VdProfileDistXY.back() / (static_cast<double>(VdProfileDistXY.size() - 1)),
+         dDX = VdProfileDistXY.back() / (static_cast<double>(VdProfileDistXY.size() - 1)),
          dWaveInitTime = 0,      // CShore wave start time
          dSurgeInitTime = 0;     // CShore surge start time
 
@@ -579,7 +579,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 
 #if defined CSHORE_FILE_INOUT
       // We are communicating with CShore using ASCII files, so create an input file for this profile which will be read by CShore
-      nRet = nCreateCShoreInfile(nCoast, nProfile, nILine, nIProfl, nIPerm, nIOver, nIWCInt, nIRoll, nIWind, nITide, nILab, nNWave, nNSurge, dX, dCShoreTimeStep, dWaveInitTime, dDeepWaterWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeInitTime, dSurgeLevel, &VdProfileDistXY, &VdProfileZ, &VdProfileFrictionFactor);
+      nRet = nCreateCShoreInfile(nCoast, nProfile, nILine, nIProfl, nIPerm, nIOver, nIWCInt, nIRoll, nIWind, nITide, nILab, nNWave, nNSurge, dDX, dCShoreTimeStep, dWaveInitTime, dDeepWaterWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeInitTime, dSurgeLevel, &VdProfileDistXY, &VdProfileZ, &VdProfileFrictionFactor);
       if (nRet != RTN_OK)
          return nRet;
 
@@ -689,14 +689,12 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       nRet = 0;
 
       int const CSHOREARRAYOUTSIZE = 1500;
-      double dDX = 1;      // Nodal spacing for input bottom geometry
-
       vector<double>
-         VdInitTime = {0, dCShoreTimeStep},                                      // Size is nNwave+1, value 1 is for the start of the CShore run, value 2 for end of CShore run
+      VdInitTime = {dWaveInitTime, dCShoreTimeStep},                             // Size is nNwave+1, value 1 is for the start of the CShore run, value 2 for end of CShore run
          VdTPIn = {dDeepWaterWavePeriod, dDeepWaterWavePeriod},                  // Ditto
          VdHrmsIn = {dProfileDeepWaterWaveHeight, dProfileDeepWaterWaveHeight},  // Ditto
          VdWangIn = {dWaveToNormalAngle, dWaveToNormalAngle},                    // Ditto
-         VdTSurg = {0, dCShoreTimeStep},                                         // Ditto
+         VdTSurg = {dSurgeInitTime, dCShoreTimeStep},                            // Ditto
          VdSWLin = {dSurgeLevel, dSurgeLevel},                                   // Ditto
          VdFPInp = VdProfileFrictionFactor,                                      // Set the value for wave friction at every point of the normal profile
          VdXYDistFromCShoreOut(CSHOREARRAYOUTSIZE, 0),         // Output from CShore
