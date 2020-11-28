@@ -356,7 +356,7 @@ int const      RTN_ERR_BADPARAM                       = 4;
 int const      RTN_ERR_INI                            = 5;
 int const      RTN_ERR_CMEDIR                         = 6;
 int const      RTN_ERR_RUNDATA                        = 7;
-int const      RTN_ERR_SCAPESHAPEFUNCTIONFILE         = 8;
+int const      RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE         = 8;
 int const      RTN_ERR_TIDEDATAFILE                   = 9;
 int const      RTN_ERR_LOGFILE                        = 10;
 int const      RTN_ERR_OUTFILE                        = 11;
@@ -411,9 +411,9 @@ int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 59;
 int const      RTN_ERR_CSHORE_ERROR                   = 60;
 int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 61;
 int const      RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA      = 62;
-int const      RTN_ERR_READ_DEEP_WATER_WAVE_DATA      = 63;
+int const      RTN_ERR_READING_DEEP_WATER_WAVE_DATA   = 63;
 int const      RTN_ERR_BOUNDING_BOX                   = 64;
-int const      RTN_ERR_READ_SEDIMENT_INPUT_EVENT      = 65;
+int const      RTN_ERR_READING_SEDIMENT_INPUT_EVENT   = 65;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                       = -1;
@@ -440,7 +440,6 @@ int const      UNCONS_SEDIMENT_EQUATION_KAMPHUIS      = 1;
 
 
 unsigned long const  MASK                                                  = 0xfffffffful;
-
 
 double const   PI                                                          = 3.141592653589793238462643;
 
@@ -470,7 +469,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 12 November 2020";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 27 November 2020";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -503,36 +502,37 @@ string const   READING_RASTER_FILES                                        = "  
 string const   READING_LANDFORM_FILE                                       = "    - Landform class: ";
 string const   READING_INTERVENTION_CLASS_FILE                             = "    - Intervention class: ";
 string const   READING_INTERVENTION_HEIGHT_FILE                            = "    - Intervention height: ";
-string const   READ_SUSPENDED_SEDIMENT_FILE                                = "    - Suspended sediment: ";
-string const   READ_UNCONS_FINE_SEDIMENT_FILE                              = "    - Unconsolidated fine sediment (layer ";
-string const   READ_UNCONS_SAND_SEDIMENT_FILE                              = "    - Unconsolidated sand sediment (layer ";
-string const   READ_UNCONS_COARSE_SEDIMENT_FILE                            = "    - Unconsolidated coarse sediment (layer ";
-string const   READ_CONS_FINE_SEDIMENT_FILE                                = "    - Consolidated fine sediment (layer ";
-string const   READ_CONS_SAND_SEDIMENT_FILE                                = "    - Consolidated sand sediment (layer ";
-string const   READ_CONS_COARSE_SEDIMENT_FILE                              = "    - Consolidated coarse sediment (layer ";
-string const   READVECTORFILES                                             = "  - Reading vector GIS files";
-string const   READDEEPWATERWAVEFILE                                       = "    - Deep water wave values: ";
-string const   READSEDINPUTEVENTFILE                                       = "    - Sediment input event values: ";
-string const   READSCAPESHAPEFUNCTIONFILE                                  = "  - Reading SCAPE shape function file";
-string const   READTIDEDATAFILE                                            = "  - Reading tide data file: ";
-string const   ALLOCATEMEMORY                                              = "  - Allocating memory for raster grid";
-string const   ADDLAYERS                                                   = "  - Adding sediment layers to raster grid";
+string const   READING_SUSPENDED_SEDIMENT_FILE                             = "    - Suspended sediment: ";
+string const   READING_UNCONS_FINE_SEDIMENT_FILE                           = "    - Unconsolidated fine sediment (layer ";
+string const   READING_UNCONS_SAND_SEDIMENT_FILE                           = "    - Unconsolidated sand sediment (layer ";
+string const   READING_UNCONS_COARSE_SEDIMENT_FILE                         = "    - Unconsolidated coarse sediment (layer ";
+string const   READING_CONS_FINE_SEDIMENT_FILE                             = "    - Consolidated fine sediment (layer ";
+string const   READING_CONS_SAND_SEDIMENT_FILE                             = "    - Consolidated sand sediment (layer ";
+string const   READING_CONS_COARSE_SEDIMENT_FILE                           = "    - Consolidated coarse sediment (layer ";
+string const   READING_VECTOR_FILES                                        = "  - Reading vector GIS files";
+string const   READING_DEEP_WATER_WAVE_FILE                                = "    - Deep water wave values: ";
+string const   READING_SED_INPUT_EVENT_FILE                                = "    - Sediment input event values: ";
+string const   READING_SCAPE_SHAPE_FUNCTION_FILE                           = "  - Reading SCAPE shape function file";
+string const   READING_TIDE_DATA_FILE                                      = "  - Reading tide data file: ";
+string const   ALLOCATE_MEMORY                                             = "  - Allocating memory for raster grid";
+string const   ADD_LAYERS                                                  = "  - Adding sediment layers to raster grid";
 string const   INITIALIZING                                                = "  - Initializing";
-string const   RUNNOTICE                                                   = "- Running simulation";
+string const   RUN_NOTICE                                                  = "- Running simulation";
 string const   SIMULATING                                                  = "\r  - Simulating ";
-string const   FINALOUTPUT                                                 = "- Writing final output";
-string const   SENDEMAIL                                                   = "  - Sending email to ";
+string const   FINAL_OUTPUT                                                = "- Writing final output";
+string const   SEND_EMAIL                                                  = "  - Sending email to ";
 string const   RUN_END_NOTICE                                              = "- Run ended at ";
-string const   PRESSKEY                                                    = "Press any key to continue...";
+string const   PRESS_KEY                                                   = "Press any key to continue...";
 
 string const   ERROR_NOTICE                                                = " with error code ";
-string const   EMAILERROR                                                  = "Could not send email";
+string const   EMAIL_ERROR                                                 = "Could not send email";
 
-string const   SCAPEDIR                                                    = "scape/";
-string const   SCAPESHAPEFUNCTIONFILE                                      = "ShapeFunction.dat";
-string const   EROSIONPOTENTIALLOOKUPFILE                                  = "ErosionPotential.csv";
+string const   SCAPE_DIR                                                   = "scape/";
+string const   SCAPE_SHAPE_FUNCTION_FILE                                   = "ShapeFunction.dat";
+string const   EROSION_POTENTIAL_LOOKUP_FILE                               = "ErosionPotential.csv";
 
-string const   CSHOREDIR                                                   = "cshore/";
+string const   CSHORE_DIR                                                  = "cshore/";
+string const   CSHORE_INFILE                                               = "infile";
 
 string const   ERR                                                         = "*** ERROR ";
 string const   WARN                                                        = "WARNING ";

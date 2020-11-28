@@ -388,7 +388,7 @@ void CSimulation::AnnounceReadBasementDEM(void) const
 ==============================================================================================================================*/
 void CSimulation::AnnounceAllocateMemory(void)
 {
-   cout << ALLOCATEMEMORY << endl;
+   cout << ALLOCATE_MEMORY << endl;
 }
 
 
@@ -400,7 +400,7 @@ void CSimulation::AnnounceAllocateMemory(void)
 void CSimulation::AnnounceAddLayers(void)
 {
    // Tell the user what is happening
-   cout << ADDLAYERS << endl;
+   cout << ADD_LAYERS << endl;
 }
 
 
@@ -422,7 +422,7 @@ void CSimulation::AnnounceReadRasterFiles(void)
 ==============================================================================================================================*/
 void CSimulation::AnnounceReadVectorFiles(void)
 {
-   cout << READVECTORFILES << endl;
+   cout << READING_VECTOR_FILES << endl;
 }
 
 
@@ -487,9 +487,9 @@ void CSimulation::AnnounceReadDeepWaterWaveValuesGIS(void) const
    // Tell the user what is happening
    if (! m_strDeepWaterWavesTimeSeriesFile.empty())
 #ifdef _WIN32
-      cout << READDEEPWATERWAVEFILE << pstrChangeToForwardSlash(&m_strDeepWaterWavesTimeSeriesFile) << endl;
+      cout << READING_DEEP_WATER_WAVE_FILE << pstrChangeToForwardSlash(&m_strDeepWaterWavesTimeSeriesFile) << endl;
 #else
-      cout << READDEEPWATERWAVEFILE << m_strDeepWaterWavesTimeSeriesFile << endl;
+      cout << READING_DEEP_WATER_WAVE_FILE << m_strDeepWaterWavesTimeSeriesFile << endl;
 #endif
 }
 
@@ -504,9 +504,9 @@ void CSimulation::AnnounceReadSedimentEventInputValuesGIS(void) const
    // Tell the user what is happening
    if (! m_strSedimentInputEventTimeSeriesFile.empty())
 #ifdef _WIN32
-      cout << READSEDINPUTEVENTFILE << pstrChangeToForwardSlash(&m_strSedimentInputEventTimeSeriesFile) << endl;
+      cout << READING_SED_INPUT_EVENT_FILE << pstrChangeToForwardSlash(&m_strSedimentInputEventTimeSeriesFile) << endl;
 #else
-      cout << READSEDINPUTEVENTFILE << m_strSedimentInputEventTimeSeriesFile << endl;
+      cout << READING_SED_INPUT_EVENT_FILE << m_strSedimentInputEventTimeSeriesFile << endl;
 #endif
 }
 
@@ -520,9 +520,9 @@ void CSimulation::AnnounceReadInitialSuspSedGIS(void) const
 {
    // Tell the user what is happening
 #ifdef _WIN32
-   cout << READ_SUSPENDED_SEDIMENT_FILE << pstrChangeToForwardSlash(&m_strInitialSuspSedimentFile) << endl;
+   cout << READING_SUSPENDED_SEDIMENT_FILE << pstrChangeToForwardSlash(&m_strInitialSuspSedimentFile) << endl;
 #else
-   cout << READ_SUSPENDED_SEDIMENT_FILE << m_strInitialSuspSedimentFile << endl;
+   cout << READING_SUSPENDED_SEDIMENT_FILE << m_strInitialSuspSedimentFile << endl;
 #endif
 }
 
@@ -536,9 +536,9 @@ void CSimulation::AnnounceReadInitialFineUnconsSedGIS(int const nLayer) const
 {
    // Tell the user what is happening
 #ifdef _WIN32
-   cout << READ_UNCONS_FINE_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialFineUnconsSedimentFile[nLayer]) << endl;
+   cout << READING_UNCONS_FINE_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialFineUnconsSedimentFile[nLayer]) << endl;
 #else
-   cout << READ_UNCONS_FINE_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialFineUnconsSedimentFile[nLayer] << endl;
+   cout << READING_UNCONS_FINE_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialFineUnconsSedimentFile[nLayer] << endl;
 #endif
 }
 
@@ -552,9 +552,9 @@ void CSimulation::AnnounceReadInitialSandUnconsSedGIS(int const nLayer) const
 {
    // Tell the user what is happening
 #ifdef _WIN32
-   cout << READ_UNCONS_SAND_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialSandUnconsSedimentFile[nLayer]) << endl;
+   cout << READING_UNCONS_SAND_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialSandUnconsSedimentFile[nLayer]) << endl;
 #else
-   cout << READ_UNCONS_SAND_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialSandUnconsSedimentFile[nLayer] << endl;
+   cout << READING_UNCONS_SAND_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialSandUnconsSedimentFile[nLayer] << endl;
 #endif
 }
 
@@ -568,9 +568,9 @@ void CSimulation::AnnounceReadInitialCoarseUnconsSedGIS(int const nLayer) const
 {
    // Tell the user what is happening
 #ifdef _WIN32
-   cout << READ_UNCONS_COARSE_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialCoarseUnconsSedimentFile[nLayer]) << endl;
+   cout << READING_UNCONS_COARSE_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialCoarseUnconsSedimentFile[nLayer]) << endl;
 #else
-   cout << READ_UNCONS_COARSE_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialCoarseUnconsSedimentFile[nLayer] << endl;
+   cout << READING_UNCONS_COARSE_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialCoarseUnconsSedimentFile[nLayer] << endl;
 #endif
 }
 
@@ -584,9 +584,9 @@ void CSimulation::AnnounceReadInitialFineConsSedGIS(int const nLayer) const
 {
    // Tell the user what is happening
 #ifdef _WIN32
-   cout << READ_CONS_FINE_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialFineConsSedimentFile[nLayer]) << endl;
+   cout << READING_CONS_FINE_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialFineConsSedimentFile[nLayer]) << endl;
 #else
-   cout << READ_CONS_FINE_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialFineConsSedimentFile[nLayer] << endl;
+   cout << READING_CONS_FINE_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialFineConsSedimentFile[nLayer] << endl;
 #endif
 }
 
@@ -600,9 +600,9 @@ void CSimulation::AnnounceReadInitialSandConsSedGIS(int const nLayer) const
 {
    // Tell the user what is happening
 #ifdef _WIN32
-   cout << READ_CONS_SAND_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialSandConsSedimentFile[nLayer]) << endl;
+   cout << READING_CONS_SAND_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialSandConsSedimentFile[nLayer]) << endl;
 #else
-   cout << READ_CONS_SAND_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialSandConsSedimentFile[nLayer] << endl;
+   cout << READING_CONS_SAND_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialSandConsSedimentFile[nLayer] << endl;
 #endif
 }
 
@@ -616,9 +616,9 @@ void CSimulation::AnnounceReadInitialCoarseConsSedGIS(int const nLayer) const
 {
    // Tell the user what is happening
 #ifdef _WIN32
-   cout << READ_CONS_COARSE_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialCoarseConsSedimentFile[nLayer]) << endl;
+   cout << READING_CONS_COARSE_SEDIMENT_FILE << nLayer+1 << "): " << pstrChangeToForwardSlash(&m_VstrInitialCoarseConsSedimentFile[nLayer]) << endl;
 #else
-   cout << READ_CONS_COARSE_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialCoarseConsSedimentFile[nLayer] << endl;
+   cout << READING_CONS_COARSE_SEDIMENT_FILE << nLayer+1 << "): " << m_VstrInitialCoarseConsSedimentFile[nLayer] << endl;
 #endif
 }
 
@@ -631,9 +631,9 @@ void CSimulation::AnnounceReadInitialCoarseConsSedGIS(int const nLayer) const
 void CSimulation::AnnounceReadTideData(void) const
  {
  #ifdef _WIN32
-       cout << READTIDEDATAFILE << pstrChangeToForwardSlash(&m_strTideDataFile) << endl;
+       cout << READING_TIDE_DATA_FILE << pstrChangeToForwardSlash(&m_strTideDataFile) << endl;
  #else
-       cout << READTIDEDATAFILE << m_strTideDataFile << endl;
+       cout << READING_TIDE_DATA_FILE << m_strTideDataFile << endl;
  #endif
  }
 
@@ -645,7 +645,7 @@ void CSimulation::AnnounceReadTideData(void) const
 ==============================================================================================================================*/
 void CSimulation::AnnounceReadSCAPEShapeFunctionFile(void)
 {
-   cout << READSCAPESHAPEFUNCTIONFILE << endl;
+   cout << READING_SCAPE_SHAPE_FUNCTION_FILE << endl;
 }
 
 
@@ -668,7 +668,7 @@ void CSimulation::AnnounceInitializing(void)
 ==============================================================================================================================*/
 void CSimulation::AnnounceIsRunning(void)
 {
-   cout << RUNNOTICE << endl;
+   cout << RUN_NOTICE << endl;
 }
 
 
@@ -1514,7 +1514,7 @@ void CSimulation::DoCPUClockReset(void)
 ==============================================================================================================================*/
 void CSimulation::AnnounceSimEnd(void)
 {
-   cout << endl << FINALOUTPUT << endl;
+   cout << endl << FINAL_OUTPUT << endl;
 }
 
 
@@ -2034,7 +2034,7 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_RUNDATA:
       strErr = "error reading run details file";
       break;
-   case RTN_ERR_SCAPESHAPEFUNCTIONFILE:
+   case RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE:
       strErr = "error reading SCAPE shape function file";
       break;
    case RTN_ERR_TIDEDATAFILE:
@@ -2193,13 +2193,13 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA:
       strErr = "opening deep sea wave time series file";
       break;
-   case RTN_ERR_READ_DEEP_WATER_WAVE_DATA:
+   case RTN_ERR_READING_DEEP_WATER_WAVE_DATA:
       strErr = "reading deep sea wave time series file";
       break;
    case RTN_ERR_BOUNDING_BOX:
       strErr = "finding edges of the bounding box";
       break;
-   case RTN_ERR_READ_SEDIMENT_INPUT_EVENT:
+   case RTN_ERR_READING_SEDIMENT_INPUT_EVENT:
       strErr = "reading sediment input event time series file";
       break;
    default:
@@ -2264,7 +2264,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
    if (isatty(fileno(stdout)))
    {
       // Stdout is connected to a tty, so not running as a background job
-      cout << endl << PRESSKEY;
+      cout << endl << PRESS_KEY;
       cout.flush();
       getchar();
    }
@@ -2273,7 +2273,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
       // Stdout is not connected to a tty, so must be running in the background; if we have something entered for the email address, then send an email
       if (! m_strMailAddress.empty())
       {
-         cout << SENDEMAIL << m_strMailAddress << endl;
+         cout << SEND_EMAIL << m_strMailAddress << endl;
 
          string strCmd("echo \"");
 
@@ -2319,7 +2319,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
          }
          int nRet = system(strCmd.c_str());
          if (WEXITSTATUS(nRet) != 0)
-            cerr << ERR << EMAILERROR << endl;
+            cerr << ERR << EMAIL_ERROR << endl;
       }
    }
 #endif

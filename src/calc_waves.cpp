@@ -552,16 +552,34 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          VdSinWaveAngleRadians(nProfileDistXYSize, 0),     // This is converted to deg by asin(VdSinWaveAngleRadians)*(180/pi)
          VdFractionBreakingWaves(nProfileDistXYSize, 0);   // Is 0 if no wave breaking, and 1 if all waves breaking
 
+      // Now define the other values that CShore requires
+      int
+         nILine   = 1,           // This is the number of cross-shore lines i.e. the number of CoastalME profiles. Only one at a time, at present
+         nIProfl  = 0,           // 0 for fixed bottom profile, 1 for profile evolution computation
+         nIPerm   = 0,           // 0 for impermeable bottom, 1 for permeable bottom of stone structure
+         nIOver   = 0,           // 0 for no wave overtopping and overflow on crest, 1 for wave overtopping and overflow
+         nIWCInt  = 0,           // 0 for no wave/current interaction, 1 for wave/current interaction in frequency dispersion, momentum and wave action equations
+         nIRoll   = 0,           // 0 for no roller effects, 1 for roller effects in governing equations
+         nIWind   = 0,           // 0 for no wind effects, 1 for wind shear stresses on momentum equations
+         nITide   = 0,           // 0 for no tidal effect on currents, 1 for longshore and cross-shore tidal currents
+         nILab    = 0,           // 0 for field data set, 1 for laboratory data set
+         nNWave   = 1,           // Number of waves at x = 0 starting from time = 0
+         nNSurge  = 1;           // Number of water levels at x = 0 from time = 0
+      double
+         dX = VdProfileDistXY.back() / (static_cast<double>(VdProfileDistXY.size() - 1)),
+         dWaveInitTime = 0,      // CShore wave start time
+         dSurgeInitTime = 0;     // CShore surge start time
+
 #if defined CSHORE_FILE_INOUT || CSHORE_BOTH
       // Move to the CShore folder
-      nRet = chdir(CSHOREDIR.c_str());
+      nRet = chdir(CSHORE_DIR.c_str());
       if (nRet != RTN_OK)
          return nRet;
 #endif
 
 #if defined CSHORE_FILE_INOUT
       // We are communicating with CShore using ASCII files, so create an input file for this profile which will be read by CShore
-      nRet = nCreateCShoreInfile(dCShoreTimeStep, dDeepWaterWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeLevel, &VdProfileDistXY, &VdProfileZ, &VdProfileFrictionFactor);
+      nRet = nCreateCShoreInfile(nCoast, nProfile, nILine, nIProfl, nIPerm, nIOver, nIWCInt, nIRoll, nIWind, nITide, nILab, nNWave, nNSurge, dX, dCShoreTimeStep, dWaveInitTime, dDeepWaterWavePeriod, dProfileDeepWaterWaveHeight, dWaveToNormalAngle, dSurgeInitTime, dSurgeLevel, &VdProfileDistXY, &VdProfileZ, &VdProfileFrictionFactor);
       if (nRet != RTN_OK)
          return nRet;
 
@@ -664,20 +682,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 #endif
 
 #if defined CSHORE_ARG_INOUT || CSHORE_BOTH
-      // We are communicating with CShore by passing arguments, so set up some switches for CShore
-      int
-         nILine = 1,       // This is the number of cross-shore lines i.e. the number of CoastalME profiles. Only one at a time, at present
-         nIProfl = 0,      // 0 for fixed bottom profile, 1 for profile evolution computation
-         nIPerm = 0,       // 0 for impermeable bottom, 1 for permeable bottom of stone structure
-         nIOver = 0,       // 0 for no wave overtopping and overflow on crest, 1 for wave overtopping and overflow
-         nIWCInt = 0,      // 0 for no wave/current interaction, 1 for wave/current interaction in frequency dispersion, momentum and wave action equations
-         nIRoll = 0,       // 0 for no roller effects, 1 for roller effects in governing equations
-         nIWind = 0,       // 0 for no wind effects, 1 for wind shear stresses on momentum equations
-         nITide = 0,       // 0 for no tidal effect on currents, 1 for longshore and cross-shore tidal currents
-         nILab = 0,        // 0 for field data set, 1 for laboratory data set
-         nNWave = 1,       // Number of waves at x = 0 starting from time = 0
-         nNSurge = 1,      // Number of water levels at x = 0 from time = 0
-         nOutSize = 0;     // CShore will return the size of the output vectors
+      // We are communicating with CShore by passing arguments
+      int nOutSize = 0;     // CShore will return the size of the output vectors
 
       // Set the error flag: this will be changed within CShore if there is a problem
       nRet = 0;
@@ -686,7 +692,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       double dDX = 1;      // Nodal spacing for input bottom geometry
 
       vector<double>
-         VdTWave = {0, dCShoreTimeStep},                                         // Size is nNwave+1, value 1 is for the start of the CShore run, value 2 for end of CShore run
+         VdInitTime = {0, dCShoreTimeStep},                                      // Size is nNwave+1, value 1 is for the start of the CShore run, value 2 for end of CShore run
          VdTPIn = {dDeepWaterWavePeriod, dDeepWaterWavePeriod},                  // Ditto
          VdHrmsIn = {dProfileDeepWaterWaveHeight, dProfileDeepWaterWaveHeight},  // Ditto
          VdWangIn = {dWaveToNormalAngle, dWaveToNormalAngle},                    // Ditto
@@ -699,7 +705,7 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          VdFractionBreakingWavesOut(CSHOREARRAYOUTSIZE, 0);    // Ditto
 
       // Call CShore using the argument-passing wrapper
-      CShoreWrapper(&nILine, &nIProfl, &nIPerm, &nIOver, &nIWCInt, &nIRoll, &nIWind, &nITide, &nILab, &nNWave, &nNSurge, &dDX, &m_dBreakingWaveHeightDepthRatio, &VdTWave[0], &VdTPIn[0], &VdHrmsIn[0], &VdWangIn[0], &VdTSurg[0], &VdSWLin[0], &nProfileDistXYSize, &VdProfileDistXY[0], &VdProfileZ[0], &VdFPInp[0], &nRet, &nOutSize, &VdXYDistFromCShoreOut[0], &VdFreeSurfaceStdOut[0], &VdSinWaveAngleRadiansOut[0], &VdFractionBreakingWavesOut[0]);
+      CShoreWrapper(&nILine, &nIProfl, &nIPerm, &nIOver, &nIWCInt, &nIRoll, &nIWind, &nITide, &nILab, &nNWave, &nNSurge, &dDX, &m_dBreakingWaveHeightDepthRatio, &VdInitTime[0], &VdTPIn[0], &VdHrmsIn[0], &VdWangIn[0], &VdTSurg[0], &VdSWLin[0], &nProfileDistXYSize, &VdProfileDistXY[0], &VdProfileZ[0], &VdFPInp[0], &nRet, &nOutSize, &VdXYDistFromCShoreOut[0], &VdFreeSurfaceStdOut[0], &VdSinWaveAngleRadiansOut[0], &VdFractionBreakingWavesOut[0]);
 
       // OK, now check for warnings and errors
       if (nOutSize < 2)
@@ -952,58 +958,72 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
 #if defined CSHORE_FILE_INOUT
 /*===============================================================================================================================
 
- Create the CShore input file
+ Create and write to the CShore input file
 
 ===============================================================================================================================*/
-int CSimulation::nCreateCShoreInfile(double dTimestep, double dWavePeriod, double dHrms, double dWaveAngle , double dSurgeLevel, vector<double> const* pVdXdist, vector<double> const* pVdBottomElevation, vector<double> const* pVdWaveFriction)
+int CSimulation::nCreateCShoreInfile(int const nCoast, int const nProfile, int const nILine, int const nIProfl, int const nIPerm, int const nIOver, int const nIWcint, int const nIRoll, int const nIWind, int const nITide, int const nILab, int const nWave, int const nSurge, double const dX, double const dTimestep, double const dWaveInitTime, double const dWavePeriod, double const dHrms, double const dWaveAngle, double const dSurgeInitTime, double const dSurgeLevel, vector<double> const* pVdXdist, vector<double> const* pVdBottomElevation, vector<double> const* pVdWaveFriction)
 {
-   string strFName = "infile";
-
-   // Initialize inifile from infileTemplate
-   string strCommand = "cp infileTemplate ";
-   strCommand += strFName;
-   int nRet = system(strCommand.c_str());       // The infileTemplate must be in the working directory
-   if (nRet == -1)
-   {
-      // Error, cannot copy infileTemplate
-      LogStream << m_ulIteration << ": " << ERR << "cannot copy " << strFName << " to create CShore input file " << strFName << endl;
-      return RTN_ERR_CSHORE_FILE_INPUT;
-   }
-
-   // We have all the inputs in the CShore format, so we can create the input file
+   // Create the CShore input file
    ofstream CShoreOutStream;
-   CShoreOutStream.open(strFName.c_str(), ios::out | ios::app);
+   CShoreOutStream.open(CSHORE_INFILE.c_str(), ios::out | ios::app);
    if (CShoreOutStream.fail())
    {
       // Error, cannot open file for writing
-      LogStream << m_ulIteration << ": " << ERR << "cannot write to CShore input file " << strFName << endl;
+      LogStream << m_ulIteration << ": " << ERR << "cannot write to CShore input file '" << CSHORE_INFILE << "'" << endl;
       return RTN_ERR_CSHORE_FILE_INPUT;
    }
 
-   // OK, write to the file
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << m_dBreakingWaveHeightDepthRatio << "                        -> GAMMA" << endl;
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(0); CShoreOutStream << setw(11) << 0 << "                        -> ILAB" << endl;
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(0); CShoreOutStream << setw(11) << 1 << "                        -> NWAVE" << endl;
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(0); CShoreOutStream << setw(11) << 1 << "                        -> NSURGE" << endl;
+   // And write to the file
+   CShoreOutStream << 3 << endl;       // Number of comment lines
+   CShoreOutStream << "------------------------------------------------------------" << endl;
+   CShoreOutStream << "CShore input file created by CoastalME for iteration " << m_ulIteration << ", coast " << nCoast << ", profile " << nProfile << endl;
+   CShoreOutStream << "------------------------------------------------------------" << endl;
+   CShoreOutStream << nILine  << "                                         -> ILINE" << endl;
+   CShoreOutStream << nIProfl << "                                         -> IPROFL" << endl;
+   CShoreOutStream << nIPerm  << "                                         -> IPERM" << endl;
+   CShoreOutStream << nIOver  << "                                         -> IOVER" << endl;
+   CShoreOutStream << nIWcint << "                                         -> IWCINT" << endl;
+   CShoreOutStream << nIRoll  << "                                         -> IROLL" << endl;
+   CShoreOutStream << nIWind  << "                                         -> IWIND" << endl;
+   CShoreOutStream << nITide  << "                                         -> ITIDE" << endl;
+   CShoreOutStream << setiosflags(ios::fixed);
+   CShoreOutStream << setw(11) << setprecision(4) << dX << "                               -> DX" << endl;
+   CShoreOutStream << setw(11) << m_dBreakingWaveHeightDepthRatio << "                               -> GAMMA" << endl;
+   CShoreOutStream << setw(11) << nILab  << "                               -> ILAB" << endl;
+   CShoreOutStream << setw(11) << nWave  << "                               -> NWAVE" << endl;
+   CShoreOutStream << setw(11) << nSurge << "                               -> NSURGE" << endl;
 
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(2); CShoreOutStream << setw(11) << 0.0;
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(2); CShoreOutStream << setw(11) << dTimestep;
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << dWavePeriod << setw(11) << dHrms << setw(11) << dWaveAngle << endl;
+   // Line 18 of infile
+   CShoreOutStream << setw(11) << setprecision(2) << dWaveInitTime;        // TWAVE(1) in CShore
+   CShoreOutStream << setw(11) << setprecision(4) << dWavePeriod;          // TPIN(1) in CShore
+   CShoreOutStream << setw(11) << dHrms;                                   // HRMS(1) in CShore
+   CShoreOutStream << setw(11) << dWaveAngle << endl;                      // WANGIN(1) in CShore
 
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(2); CShoreOutStream << setw(11) << 0.0;
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << dSurgeLevel << endl;
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(2); CShoreOutStream << setw(11) << dTimestep;
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4); CShoreOutStream << setw(11) << dSurgeLevel << endl;
+   // Line 19 of infile
+   CShoreOutStream << setw(11) << setprecision(2) << dTimestep;            // TWAVE(2) in CShore
+   CShoreOutStream << setw(11) << setprecision(4) << dWavePeriod;          // TPIN(2) in CShore
+   CShoreOutStream << setw(11) << dHrms;                                   // HRMS(2) in CShore
+   CShoreOutStream << setw(11) << dWaveAngle << endl;                      // WANGIN(2) in CShore
 
-   CShoreOutStream << setw(8) << pVdXdist->size() << "                        -> NBINP" << endl;
+   // Line 20 of infile
+   CShoreOutStream << setw(11) << setprecision(2) << dSurgeInitTime;       // TSURG(1) in CShore
+   CShoreOutStream << setw(11) << setprecision(4) << dSurgeLevel << endl;  // SWLIN(1) in CShore
+
+   // Line 21 of infile
+   CShoreOutStream << setw(11) << setprecision(2) << dTimestep;            // TSURG(2) in CShore
+   CShoreOutStream << setw(11) << setprecision(4) << dSurgeLevel << endl;  // SWLIN(2) in CShore
+
+   // Line 22 of infile
+   CShoreOutStream << setw(8) << pVdXdist->size() << "                                  -> NBINP" << endl;
+
    CShoreOutStream << setiosflags(ios::fixed) << setprecision(4);
    for (unsigned int i = 0; i < pVdXdist->size(); i++)
+      // These are BINP(J,1), ZBINP(J,1), FBINP(J-1,1) in CShore
       CShoreOutStream << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << pVdWaveFriction->at(i) << endl;
 
    CShoreOutStream << endl;
 
-   // File written
+   // File written, so close it
    CShoreOutStream.close();
 
    return RTN_OK;

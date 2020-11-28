@@ -441,7 +441,7 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << " Output parallel profile data?                             \t: " << (m_bOutputParallelProfileData ? "Y": "N") << endl;
    OutStream << " Output erosion potential look-up data?                    \t: " << (m_bOutputLookUpData ? "Y": "N");
    if (m_bOutputLookUpData)
-      OutStream << " (see " << m_strOutPath << EROSIONPOTENTIALLOOKUPFILE << ")";
+      OutStream << " (see " << m_strOutPath << EROSION_POTENTIAL_LOOKUP_FILE << ")";
    OutStream << endl;
    OutStream << " Erode coast in alternate directions?                      \t: " << (m_bErodeShorePlatformAlternateDirection ? "Y": "N") << endl;
 
@@ -732,7 +732,7 @@ void CSimulation::WriteLookUpData(void)
 {
    // Open the output file
    string strLookUpFile = m_strOutPath;
-   strLookUpFile.append(EROSIONPOTENTIALLOOKUPFILE);
+   strLookUpFile.append(EROSION_POTENTIAL_LOOKUP_FILE);
    ofstream LookUpOutStream;
    LookUpOutStream.open(strLookUpFile.c_str(), ios::out | ios::trunc);
 

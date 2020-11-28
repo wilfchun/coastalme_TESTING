@@ -2496,8 +2496,8 @@ int CSimulation::nReadShapeFunctionFile()
 {
    // Sort out the path and filename
    m_strShapeFunctionFile = m_strCMEDir;
-   m_strShapeFunctionFile.append(SCAPEDIR);
-   m_strShapeFunctionFile.append(SCAPESHAPEFUNCTIONFILE);
+   m_strShapeFunctionFile.append(SCAPE_DIR);
+   m_strShapeFunctionFile.append(SCAPE_SHAPE_FUNCTION_FILE);
 
    // Create an ifstream object
    ifstream InStream;
@@ -2510,7 +2510,7 @@ int CSimulation::nReadShapeFunctionFile()
    {
       // Error: cannot open shape function file for input
       cerr << ERR << "cannot open " << m_strShapeFunctionFile << " for input" << endl;
-      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+      return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
    }
 
    // Opened OK
@@ -2550,7 +2550,7 @@ int CSimulation::nReadShapeFunctionFile()
          if (! bIsStringValidDouble(strTmp[i]))
          {
             cerr << ERR << "invalid floating point number for Erosion Potential Shape data '" << strTmp[i] << "' in " << m_strShapeFunctionFile << endl;
-            return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+            return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
          }
       }
 
@@ -2572,7 +2572,7 @@ int CSimulation::nReadShapeFunctionFile()
    if (nExpected != nRead)
    {
       cout << ERR << "read in " << nRead << " lines from " << m_strShapeFunctionFile << " but " << nExpected << " lines expected" << endl;
-      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+      return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
    }
 
    // Is the shape funcion well defined? i.e. it must be -ve or 0.0 for all values
@@ -2581,7 +2581,7 @@ int CSimulation::nReadShapeFunctionFile()
       if (m_VdErosionPotential[j]>0)
       {
       cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function cannot be positive" << endl;
-      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+      return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
       }
    }
 
@@ -2589,7 +2589,7 @@ int CSimulation::nReadShapeFunctionFile()
 //   if (! bCreateErosionPotentialLookUp(&VdDepthOverDB, &VdErosionPotential, &VdErosionPotentialFirstDeriv))
 //   {
 //      cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function is unbounded for high values of depth over DB" << endl;
-//      return RTN_ERR_SCAPESHAPEFUNCTIONFILE;
+//      return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
 //   }
 //
    return RTN_OK;
@@ -2614,7 +2614,7 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
    {
       // Error: cannot open time series file for input
       cerr << ERR << "cannot open " << m_strDeepWaterWavesTimeSeriesFile << " for input" << endl;
-      return RTN_ERR_READ_SEDIMENT_INPUT_EVENT;
+      return RTN_ERR_READING_SEDIMENT_INPUT_EVENT;
    }
 
    // Opened OK
@@ -2646,14 +2646,14 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
             {
                // Error: badly formatted line (no colon)
                cerr << ERR << "badly formatted line (no ':') in " << m_strDeepWaterWavesTimeSeriesFile << endl << "'" << strRec << "'" << endl;
-               return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+               return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
             }
 
             if (nPos == strRec.size()-1)
             {
                // Error: badly formatted line (colon with nothing following)
                cerr << ERR << "badly formatted line (nothing following ':') in " << m_strDeepWaterWavesTimeSeriesFile << endl << "'" << strRec << "'" << endl;
-               return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+               return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
             }
 
             // Strip off leading portion (the bit up to and including the colon)
@@ -2855,7 +2855,7 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
          cerr << ERR << strErr << " in deep water wave time series file " << m_strDeepWaterWavesTimeSeriesFile << endl << "'" << strRec << "'" << endl;
          InStream.close();
 
-         return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+         return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
       }
    }
 
@@ -2864,7 +2864,7 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
       // Error: number of timesteps read does not match the number given in the file's header
       cerr << ERR << "in " << m_strDeepWaterWavesTimeSeriesFile << ", data for " << nTimeStepsRead << " timesteps was read, but " << nExpectedTimeSteps << " timesteps were specified in the file's header" << endl;
 
-      return  RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+      return  RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
 
    // Close file
@@ -2876,21 +2876,21 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
    {
       cout << ERR << "read in " << m_VdDeepWaterWaveStationHeightTS.size() << " lines from " << m_strDeepWaterWavesTimeSeriesFile << " but " << nTotExpected << " values expected" << endl;
 
-      return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+      return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
 
    if (m_VdDeepWaterWaveStationAngleTS.size() != nTotExpected)
    {
       cout << ERR << "read in " << m_VdDeepWaterWaveStationAngleTS.size() << " lines from " << m_strDeepWaterWavesTimeSeriesFile << " but " << nTotExpected << " values expected" << endl;
 
-      return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+      return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
 
    if (m_VdDeepWaterWaveStationPeriodTS.size() != nTotExpected)
    {
       cout << ERR << "read in " << m_VdDeepWaterWaveStationPeriodTS.size() << " lines from " << m_strDeepWaterWavesTimeSeriesFile << " but " << nTotExpected << " values expected" << endl;
 
-      return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+      return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
 
    // All is OK, so we can now initialize the vectors that will store this time step deep water wave values
@@ -2933,7 +2933,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
    {
       // Error: cannot open time series file for input
       cerr << ERR << "cannot open " << m_strSedimentInputEventTimeSeriesFile << " for input" << endl;
-      return RTN_ERR_READ_SEDIMENT_INPUT_EVENT;
+      return RTN_ERR_READING_SEDIMENT_INPUT_EVENT;
    }
 
    // Opened OK
@@ -3038,7 +3038,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
       cerr << ERR << strErr << " in deep water wave time series file " << m_strDeepWaterWavesTimeSeriesFile << endl << "'" << strRec << "'" << endl;
       InStream.close();
 
-      return RTN_ERR_READ_DEEP_WATER_WAVE_DATA;
+      return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
 
    // Close file
