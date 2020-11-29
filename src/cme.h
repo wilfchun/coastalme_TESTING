@@ -182,7 +182,7 @@ int const      NUMBER_OF_INTERVENTION_CAPES                                = 4;
 int const      CSHORE_INTERPOLATION_LINEAR                                 = 0;
 int const      CSHORE_INTERPOLATION_HERMITE_CUBIC                          = 1;
 
-int const      INT_NODATA                                                  = -999;
+int const      INT_NODATA                                                  = -9999;
 
 int const      NO_DIRECTION                                                = 0;
 int const      NORTH                                                       = 1;
@@ -469,7 +469,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 28 November 2020";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 29 November 2020";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 

@@ -622,12 +622,12 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          }
 
          strErr += "(coast " + to_string(nCoast) + " profile " + to_string(nProfile) + ")\n";
-         cerr << strErr;
          LogStream << strErr;
 
          if (nRet < 0)
          {
             // This is serious, so give up
+            cerr << strErr;
             return RTN_ERR_CSHORE_ERROR;
          }
 
@@ -753,12 +753,12 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          }
 
          strErr += "(coast " + to_string(nCoast) + " profile " + to_string(nProfile) + " profile length " + to_string(nOutSize) + ")\n";
-         cerr << strErr;
          LogStream << strErr;
 
          if (nRet < 0)
          {
             // This is serious, so give up
+            cerr << strErr;
             return RTN_ERR_CSHORE_ERROR;
          }
 
