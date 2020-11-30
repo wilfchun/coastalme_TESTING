@@ -469,7 +469,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 29 November 2020";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 30 November 2020";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -539,17 +539,17 @@ string const   WARN                                                        = "WA
 string const   NOTE                                                        = "      Note ";
 
 string const   PERITERHEAD1 =
-"<------ELAPSED-----><-SEA-><------POTENTIAL-----><-----------------ACTUAL----------------><-----POTENTIAL----><---------------ACTUAL----------------><------------BEACH--------------><-----------CLIFF COLLAPSE---------><-SUSP->";
+"<-----ELAPSED----><-SEA-><----POTENTIAL---><----------ACTUAL-----------><-----POTENTIAL----><-----------ACTUAL------------><----------BEACH------------><--CLIFF COLLAPSE--><SUSP>";
 
 string const   PERITERHEAD2 =
-"        TIME         DEPTH     PLATFORM EROSION                PLATFORM EROSION               BEACH EROSION                BEACH EROSION                        DEPOSITION                    EROSION         DEPOSITION     SED  ";
+"       TIME        DEPTH  PLATFORM EROSION        PLATFORM EROSION          BEACH EROSION           BEACH EROSION                   DEPOSITION            EROSION DEPOSITION  SED";
 
 string const   PERITERHEAD3 =
-"Time   Hours   Years   Avg   % Sea    All Eroding  % Sea     All Eroding  <-sea area avg->  % Sea  All Erosion  % Sea   All Eroding  <-sea area avg->  % Sea   All Deposit <-sea avg-><------coast avg-------><-sea avg->";
+"Time  Hours  Years   Avg  % Sea   All  Erod % Sea   All Erod <-sea avg->  % Sea    All  Erod  % Sea   All  Erod <-sea avg->  % Sea   All Deposit <-sea-><-coast avg><--sea->";
 string const   PERITERHEAD4 =
-"Step                          Area    Sea    Area   Area     Sea    Area  Fine  Sand  Crse   Area  Sea    Area   Area   Sea    Area  Fine  Sand  Crse   Area   Sea    Area  Sand  Crse    Fine    Sand    Crse Sand  Crse";
+"Step                       Area   Sea  Area  Area   Sea Area   F   S   C   Area    Sea  Area   Area   Sea  Area   F   S   C   Area   Sea    Area   S   C   F   S   C   S   C    F";
 string const   PERITERHEAD5 =
-"                                      Avg     Avg            Avg     Avg                           Avg     Avg          Avg     Avg                            Avg     Avg";
+"                                  Avg   Avg         Avg  Avg                             Avg          Avg   Avg                      Avg     Avg";
 
 string const   PERITERHEAD =
 "PER-ITERATION RESULTS ============================================================================================================================================================================================================";

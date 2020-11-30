@@ -984,7 +984,7 @@ int CSimulation::nCreateCShoreInfile(int const nCoast, int const nProfile, int c
    CShoreOutStream << nIRoll  << "                                         -> IROLL" << endl;
    CShoreOutStream << nIWind  << "                                         -> IWIND" << endl;
    CShoreOutStream << nITide  << "                                         -> ITIDE" << endl;
-   CShoreOutStream << setiosflags(ios::fixed);
+   CShoreOutStream << std::fixed;
    CShoreOutStream << setw(11) << setprecision(4) << dX << "                               -> DX" << endl;
    CShoreOutStream << setw(11) << m_dBreakingWaveHeightDepthRatio << "                               -> GAMMA" << endl;
    CShoreOutStream << setw(11) << nILab  << "                               -> ILAB" << endl;
@@ -1014,7 +1014,7 @@ int CSimulation::nCreateCShoreInfile(int const nCoast, int const nProfile, int c
    // Line 22 of infile
    CShoreOutStream << setw(8) << pVdXdist->size() << "                                  -> NBINP" << endl;
 
-   CShoreOutStream << setiosflags(ios::fixed) << setprecision(4);
+   CShoreOutStream << std::fixed << setprecision(4);
    for (unsigned int i = 0; i < pVdXdist->size(); i++)
       // These are BINP(J,1), ZBINP(J,1), FBINP(J-1,1) in CShore
       CShoreOutStream << setw(11) << pVdXdist->at(i) << setw(11) << pVdBottomElevation->at(i) << setw(11) << pVdWaveFriction->at(i) << endl;

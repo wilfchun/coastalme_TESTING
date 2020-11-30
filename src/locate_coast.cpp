@@ -192,7 +192,7 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
       }
    }
 
-//    LogStream << m_ulIteration << ": flood fill of sea from [" << nXStart << "][" << nYStart << "] = {" << dGridCentroidXToExtCRSX(nXStart) << ", " << dGridCentroidYToExtCRSY(nYStart) << "} with SWL = " << m_dThisTimestepSWL << ", " << m_ulThisTimestepNumSeaCells << " of " << m_ulNumCells << " cells now marked as sea (" <<  setiosflags(ios::fixed) << setprecision(2) << 100.0 * m_ulThisTimestepNumSeaCells / m_ulNumCells << " %)" << endl;
+//    LogStream << m_ulIteration << ": flood fill of sea from [" << nXStart << "][" << nYStart << "] = {" << dGridCentroidXToExtCRSX(nXStart) << ", " << dGridCentroidYToExtCRSY(nYStart) << "} with SWL = " << m_dThisTimestepSWL << ", " << m_ulThisTimestepNumSeaCells << " of " << m_ulNumCells << " cells now marked as sea (" <<  std::fixed << setprecision(2) << 100.0 * m_ulThisTimestepNumSeaCells / m_ulNumCells << " %)" << endl;
 
 //    LogStream << " m_nXMinBoundingBox = " << m_nXMinBoundingBox << " m_nXMaxBoundingBox = " << m_nXMaxBoundingBox << " m_nYMinBoundingBox = " << m_nYMinBoundingBox << " m_nYMaxBoundingBox = " << m_nYMaxBoundingBox << endl;
 }

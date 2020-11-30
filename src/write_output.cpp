@@ -57,7 +57,7 @@ using std::stringstream;
 void CSimulation::WriteStartRunDetails(void)
 {
    // Set the Out file output format to fixed point
-   OutStream << setiosflags(ios::fixed);
+   OutStream << std::fixed;
 
    // Start outputting stuff
    OutStream << PROGRAM_NAME << " for " << PLATFORM << " " << strGetBuild() << " on " << strGetComputerName() << endl << endl;
@@ -131,7 +131,7 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << " Raster GIS files saved                                    \t: " << strListRasterFiles() << endl;
    if (m_bSliceSave)
    {
-      OutStream << setiosflags(ios::fixed) << setprecision(2);
+      OutStream << std::fixed << setprecision(2);
       OutStream << " Elevations for 'slice' raster output files                \t: ";
       for (int i = 0; i < static_cast<int>(m_VdSliceElev.size()); i++)
          OutStream << m_VdSliceElev[i] << " ";
@@ -207,12 +207,12 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << " GDAL basement DEM data type                               \t: " << m_strGDALBasementDEMDataType << endl;
    OutStream << " Grid size (X by Y)                                        \t: " << m_nXGridMax << " by " << m_nYGridMax << endl;
    OutStream << resetiosflags(ios::floatfield);
-   OutStream << setiosflags(ios::fixed) << setprecision(1);
+   OutStream << std::fixed << setprecision(1);
    OutStream << "*Coordinates of NW corner of grid (external CRS)           \t: " << m_dNorthWestXExtCRS << ", " << m_dNorthWestYExtCRS << endl;
    OutStream << "*Coordinates of SE corner of grid (external CRS)           \t: " << m_dSouthEastXExtCRS << ", " << m_dSouthEastYExtCRS << endl;
    OutStream << "*Cell size                                                 \t: " << m_dCellSide << " m" << endl;
    OutStream << "*Grid area                                                 \t: " << m_dExtCRSGridArea << " m^2" << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(2);
+   OutStream << std::fixed << setprecision(2);
    OutStream << "*Grid area                                                 \t: " << m_dExtCRSGridArea * 1e-6 << " km^2" << endl;
 
    if (! m_strInitialLandformFile.empty())
@@ -352,9 +352,9 @@ void CSimulation::WriteStartRunDetails(void)
    else if (m_nWavePropagationModel == WAVE_MODEL_CSHORE)
       OutStream << "CShore";
    OutStream << endl;
-   OutStream << " Density of sea water                                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(0) << m_dSeaWaterDensity << " kg/m^3" << endl;
-   OutStream << " Initial still water level                                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dOrigSWL << " m" << endl;
-   OutStream << " Final still water level                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dFinalSWL << " m" << endl;
+   OutStream << " Density of sea water                                     \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(0) << m_dSeaWaterDensity << " kg/m^3" << endl;
+   OutStream << " Initial still water level                                 \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(1) << m_dOrigSWL << " m" << endl;
+   OutStream << " Final still water level                                   \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(1) << m_dFinalSWL << " m" << endl;
    if (m_bSingleDeepWaterWaveValues)
    {
       OutStream << " Deep water wave height                                    \t: " << m_dAllCellsDeepWaterWaveHeight << " m" << endl;
@@ -368,10 +368,10 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << " Maximum User input Deep waterWave period                  \t: " << m_dMaxUserInputWavePeriod << " s" << endl;
    }
    OutStream << " Start depth for wave calcs (*deep water wave height)      \t: " << m_dWaveDepthRatioForWaveCalcs << endl;
-   OutStream << "*Depth of closure                                          \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dDepthOfClosure << " m" << endl;
+   OutStream << "*Depth of closure                                          \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(3) << m_dDepthOfClosure << " m" << endl;
 //    OutStream << " Tide data file                                            \t: " << m_strTideDataFile << endl;
    OutStream << " Do coast platform erosion?                                \t: " << (m_bDoCoastPlatformErosion ? "Y": "N") << endl;
-   OutStream << " R value                                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(2) << m_dR << endl;
+   OutStream << " R value                                                   \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(2) << m_dR << endl;
    OutStream << " Handling of beach sediment at grid edges                  \t: ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
       OutStream << "closed";
@@ -386,19 +386,19 @@ void CSimulation::WriteStartRunDetails(void)
    else if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_KAMPHUIS)
       OutStream << "Kamphuis";
    OutStream << endl;
-   OutStream << " Median particle size of fine sediment                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dD50Fine << " mm" << endl;
-   OutStream << " Median particle size of sand sediment                     \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dD50Sand << " mm" << endl;
-   OutStream << " Median particle size of coarse sediment                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dD50Coarse << " mm" << endl;
-   OutStream << " Beach sediment density                                    \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dBeachSedimentDensity << " kg/m^3" << endl;
-   OutStream << " Beach sediment porosity                                   \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dBeachSedimentPorosity << endl;
-   OutStream << " Fine-sized sediment relative erodibility                  \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dFineErodibility << endl;
+   OutStream << " Median particle size of fine sediment                     \t: " << resetiosflags(ios::floatfield) << std::fixed << m_dD50Fine << " mm" << endl;
+   OutStream << " Median particle size of sand sediment                     \t: " << resetiosflags(ios::floatfield) << std::fixed << m_dD50Sand << " mm" << endl;
+   OutStream << " Median particle size of coarse sediment                   \t: " << resetiosflags(ios::floatfield) << std::fixed << m_dD50Coarse << " mm" << endl;
+   OutStream << " Beach sediment density                                    \t: " << resetiosflags(ios::floatfield) << std::fixed << m_dBeachSedimentDensity << " kg/m^3" << endl;
+   OutStream << " Beach sediment porosity                                   \t: " << resetiosflags(ios::floatfield) << std::fixed << m_dBeachSedimentPorosity << endl;
+   OutStream << " Fine-sized sediment relative erodibility                  \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(1) << m_dFineErodibility << endl;
    OutStream << " Sand-sized sediment relative erodibility                  \t: " << resetiosflags(ios::floatfield) << m_dSandErodibility << endl;
    OutStream << " Coarse-sized sediment relative erodibility                \t: " << m_dCoarseErodibility << endl;
    if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_CERC)
-      OutStream << " Transport parameter KLS for CERC equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dKLS << endl;
+      OutStream << " Transport parameter KLS for CERC equation                 \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(3) << m_dKLS << endl;
    if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_KAMPHUIS)
-      OutStream << " Transport parameter for Kamphuis equation                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(3) << m_dKamphuis << endl;
-   OutStream << " Height of Dean profile start above SWL                    \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << setprecision(1) << m_dDeanProfileStartAboveSWL  << " m" << endl;
+      OutStream << " Transport parameter for Kamphuis equation                 \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(3) << m_dKamphuis << endl;
+   OutStream << " Height of Dean profile start above SWL                    \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(1) << m_dDeanProfileStartAboveSWL  << " m" << endl;
    OutStream << " Do cliff collapse?                                        \t: " << (m_bDoCliffCollapse ? "Y": "N") << endl;
    OutStream << " Cliff erodibility                                         \t: " << m_dCliffErosionResistance << endl;
    OutStream << " Notch overhang to initiate collapse                       \t: " << m_dNotchOverhangAtCollapse << " m" << endl;
@@ -410,16 +410,16 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << m_dCliffDepositionA << "  m^(1/3)";
    OutStream << endl;
    OutStream << " Planview width of cliff deposition talus                  \t: " << m_nCliffCollapseTalusPlanviewWidth << " cells" << endl;
-   OutStream << " Planview length of cliff deposition talus                 \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dCliffDepositionPlanviewLength << " m" << endl;
+   OutStream << " Planview length of cliff deposition talus                 \t: " << resetiosflags(ios::floatfield) << std::fixed << m_dCliffDepositionPlanviewLength << " m" << endl;
    OutStream << " Height of talus at land end (fraction of cliff elevation) \t: " << m_dCliffDepositionHeightFrac << endl;
-   OutStream << " Gravitational acceleration                                \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dG << " m^2/s" << endl;
-   OutStream << " Minimum spacing of coastline normals                      \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dCoastNormalAvgSpacing << " m" << endl;
-   OutStream << " Random factor for spacing of normals                      \t: " << resetiosflags(ios::floatfield) << setiosflags(ios::fixed) << m_dCoastNormalRandSpaceFact << endl;
+   OutStream << " Gravitational acceleration                                \t: " << resetiosflags(ios::floatfield) << std::fixed << m_dG << " m^2/s" << endl;
+   OutStream << " Minimum spacing of coastline normals                      \t: " << resetiosflags(ios::floatfield) << std::fixed << m_dCoastNormalAvgSpacing << " m" << endl;
+   OutStream << " Random factor for spacing of normals                      \t: " << resetiosflags(ios::floatfield) << std::fixed << m_dCoastNormalRandSpaceFact << endl;
    OutStream << " Length of coastline normals                               \t: " << m_dCoastNormalLength << " m" << endl;
    OutStream << " Maximum number of 'cape' normals                          \t: " << m_nNaturalCapeNormals << endl;
    OutStream << endl;
 /*
-   OutStream << setiosflags(ios::fixed) << setprecision(8);
+   OutStream << std::fixed << setprecision(8);
    OutStream << " Erosion potential shape function:" << endl;
    OutStream << "\tDepth over DB\tErosion potential\tFirst derivative of erosion potential" << endl;
    for (int i = 0; i < m_VdDepthOverDB.size(); i++)
@@ -448,7 +448,7 @@ void CSimulation::WriteStartRunDetails(void)
    OutStream << endl << endl;
 
    // -------------------------------------------------- Per-timestep output ----------------------------------------------------
-   OutStream << setiosflags(ios::fixed) << setprecision(2);
+   OutStream << std::fixed << setprecision(2);
 
    // Write per-timestep headers to .out file
    OutStream << PERITERHEAD << endl;
@@ -472,73 +472,82 @@ void CSimulation::WriteStartRunDetails(void)
 bool CSimulation::bWritePerTimestepResults(void)
 {
    OutStream << resetiosflags(ios::floatfield);
-   OutStream << setiosflags(ios::fixed) << setprecision(0);
+   OutStream << std::fixed << setprecision(0);
 
    // Output timestep and simulated time info ===================================================================================
-   OutStream << setw(5) << m_ulIteration;
+   OutStream << setw(4) << m_ulIteration;
    OutStream << setw(7) << m_dSimElapsed;                            // In hours
    OutStream << resetiosflags(ios::floatfield);
-   OutStream << setiosflags(ios::fixed) << setprecision(0);
-   OutStream << setw(8) << m_dSimElapsed / (24 * 365.25);            // In years
+   OutStream << std::fixed << setprecision(0);
+   OutStream << setw(7) << m_dSimElapsed / (24 * 365.25);            // In years
 
    // Output average sea depth (m) per sea cell =================================================================================
    OutStream << resetiosflags(ios::floatfield);
-   OutStream << setiosflags(ios::fixed) << setprecision(2);
+   OutStream << std::fixed << setprecision(2);
    double dAvgSeaDepth = m_dThisTimestepTotSeaDepth / static_cast<double>(m_ulThisTimestepNumSeaCells);
-   OutStream << setw(7) << dAvgSeaDepth;
+   OutStream << setw(6) << dAvgSeaDepth;
    OutStream << " ";
 
    // Output the this-timestep % of sea cells with potential shore platform erosion =============================================
-   OutStream << setiosflags(ios::fixed) << setprecision(1);
+   OutStream << std::fixed << setprecision(1);
    OutStream << setw(6) << 100 * static_cast<double>(m_ulThisTimestepNumPotentialPlatformErosionCells) / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output per-timestep potential shore platform erosion in mm (average for all sea cells)
-   OutStream << setw(7) << 1000 * m_dThisTimestepPotentialPlatformErosion / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(6) << 1000 * m_dThisTimestepPotentialPlatformErosion / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output per-timestep potential shore platform erosion in mm (average for all cells with potential shore platform erosion)
-   OutStream << setiosflags(ios::fixed) << setprecision(0);
+   OutStream << std::fixed << setprecision(0);
    if (m_ulThisTimestepNumPotentialPlatformErosionCells > 0)
-      OutStream << setw(8) << 1000 * m_dThisTimestepPotentialPlatformErosion / static_cast<double>(m_ulThisTimestepNumPotentialPlatformErosionCells);
+      OutStream << setw(6) << 1000 * m_dThisTimestepPotentialPlatformErosion / static_cast<double>(m_ulThisTimestepNumPotentialPlatformErosionCells);
    else
-      OutStream << setw(8) << SPACE;
+      OutStream << setw(6) << SPACE;
 
    // Output the this-timestep % of sea cells with actual shore platform erosion ================================================
-   OutStream << setiosflags(ios::fixed) << setprecision(1);
-   OutStream << setw(7) << 100 * static_cast<double>(m_ulThisTimestepNumActualPlatformErosionCells) / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << std::fixed << setprecision(1);
+   OutStream << setw(6) << 100 * static_cast<double>(m_ulThisTimestepNumActualPlatformErosionCells) / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output per-timestep actual shore platform erosion in mm (average for all sea cells)
    double dThisTimestepActualPlatformErosion = m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse;
-   OutStream << setw(8) << 1000 * dThisTimestepActualPlatformErosion / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(6) << 1000 * dThisTimestepActualPlatformErosion / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output per-timestep actual shore platform erosion in mm (average for all cells with actual shore platform erosion)
-   OutStream << setiosflags(ios::fixed) << setprecision(0);
+   OutStream << std::fixed << setprecision(0);
    if (m_ulThisTimestepNumActualPlatformErosionCells > 0)
-      OutStream << setw(8) << 1000 * dThisTimestepActualPlatformErosion / static_cast<double>(m_ulThisTimestepNumActualPlatformErosionCells);
+      OutStream << setw(5) << 1000 * dThisTimestepActualPlatformErosion / static_cast<double>(m_ulThisTimestepNumActualPlatformErosionCells);
    else
-      OutStream << setw(8) << SPACE;
+      OutStream << setw(5) << SPACE;
 
    // Output per-timestep actual shore platform erosion in mm (average for all sea cells)
-   OutStream << setiosflags(ios::fixed) << setprecision(1);
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualPlatformErosionFine / static_cast<double>(m_ulThisTimestepNumSeaCells);
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualPlatformErosionSand / static_cast<double>(m_ulThisTimestepNumSeaCells);
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualPlatformErosionCoarse / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << std::fixed << setprecision(1);
+   OutStream << setw(4) << 1000 * m_dThisTimestepActualPlatformErosionFine / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepActualPlatformErosionSand / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepActualPlatformErosionCoarse / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output the this-timestep % of sea cells with potential beach erosion ======================================================
    OutStream << setw(7) << 100 * static_cast<double>(m_ulThisTimestepNumPotentialBeachErosionCells) / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output per-timestep potential beach erosion in mm (average for all sea cells)
-   OutStream << setiosflags(ios::fixed) << setprecision(0);
-   OutStream << setw(5) << 1000 * m_dThisTimestepPotentialBeachErosion / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << std::fixed << setprecision(0);
+   OutStream << setw(7) << 1000 * m_dThisTimestepPotentialBeachErosion / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output per-timestep potential beach erosion in mm (average for all cells with potential beach erosion)
-   OutStream << setiosflags(ios::fixed) << setprecision(0);
+   OutStream << std::fixed << setprecision(0);
    if (m_ulThisTimestepNumPotentialBeachErosionCells > 0)
-      OutStream << setw(8) << 1000 * m_dThisTimestepPotentialBeachErosion / static_cast<double>(m_ulThisTimestepNumPotentialBeachErosionCells);
+   {
+      double dTmp = 1000 * m_dThisTimestepPotentialBeachErosion / static_cast<double>(m_ulThisTimestepNumPotentialBeachErosionCells);
+      if (dTmp > 99999)
+      {
+         OutStream << setw(6) << std::scientific << setprecision(0) << dTmp;
+         OutStream << std::fixed;
+      }
+      else
+         OutStream << setw(6) << dTmp;
+   }
    else
-      OutStream << setw(8) << SPACE;
+      OutStream << setw(6) << SPACE;
 
    // This-timestep % of sea cells with actual beach erosion ====================================================================
-   OutStream << setiosflags(ios::fixed) << setprecision(1);
+   OutStream << std::fixed << setprecision(1);
    OutStream << setw(7) << 100 * static_cast<double>(m_ulThisTimestepNumActualBeachErosionCells) / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output per-timestep actual beach erosion in mm (average for all sea cells)
@@ -546,17 +555,17 @@ bool CSimulation::bWritePerTimestepResults(void)
    OutStream << setw(6) << 1000 * dThisTimestepActualBeachErosion / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Per-timestep actual beach erosion in mm (average for all cells with actual beach erosion)
-   OutStream << setiosflags(ios::fixed) << setprecision(0);
+   OutStream << std::fixed << setprecision(0);
    if (m_ulThisTimestepNumActualBeachErosionCells > 0)
-      OutStream << setw(8) << 1000 * dThisTimestepActualBeachErosion / static_cast<double>(m_ulThisTimestepNumActualBeachErosionCells);
+      OutStream << setw(6) << 1000 * dThisTimestepActualBeachErosion / static_cast<double>(m_ulThisTimestepNumActualBeachErosionCells);
    else
-      OutStream << setw(8) << SPACE;
+      OutStream << setw(6) << SPACE;
 
    // Per-timestep actual beach erosion in mm (average for all sea cells)
-   OutStream << setiosflags(ios::fixed) << setprecision(1);
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualBeachErosionFine / static_cast<double>(m_ulThisTimestepNumSeaCells);
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualBeachErosionSand / static_cast<double>(m_ulThisTimestepNumSeaCells);
-   OutStream << setw(6) << 1000 * m_dThisTimestepActualBeachErosionCoarse / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << std::fixed << setprecision(1);
+   OutStream << setw(4) << 1000 * m_dThisTimestepActualBeachErosionFine / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepActualBeachErosionSand / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepActualBeachErosionCoarse / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output the this-timestep % of sea cells with beach deposition =============================================================
    OutStream << setw(7) << 100 * static_cast<double>(m_ulThisTimestepNumBeachDepositionCells) / static_cast<double>(m_ulThisTimestepNumSeaCells);
@@ -566,28 +575,28 @@ bool CSimulation::bWritePerTimestepResults(void)
    OutStream << setw(6) << 1000 * dThisTimestepBeachDeposition / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Per-timestep beach deposition in mm (average for all cells with beach deposition)
-   OutStream << setiosflags(ios::fixed) << setprecision(0);
+   OutStream << std::fixed << setprecision(0);
    if (m_ulThisTimestepNumBeachDepositionCells > 0)
       OutStream << setw(8) << 1000 * dThisTimestepBeachDeposition / static_cast<double>(m_ulThisTimestepNumBeachDepositionCells);
    else
       OutStream << setw(8) << SPACE;
 
    // Per-timestep beach deposition in mm (average for all sea cells)
-   OutStream << setiosflags(ios::fixed) << setprecision(1);
-   OutStream << setw(6) << 1000 * m_dThisTimestepBeachDepositionSand / static_cast<double>(m_ulThisTimestepNumSeaCells);
-   OutStream << setw(6) << 1000 * m_dThisTimestepBeachDepositionCoarse / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << std::fixed << setprecision(1);
+   OutStream << setw(4) << 1000 * m_dThisTimestepBeachDepositionSand / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepBeachDepositionCoarse / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Per-timestep cliff collapse erosion in mm (average for all coast cells) ===========================================================
-   OutStream << setw(8) << 1000 * m_dThisTimestepCliffCollapseErosionFine / static_cast<double>(m_ulThisTimestepNumCoastCells);
-   OutStream << setw(8) << 1000 * m_dThisTimestepCliffCollapseErosionSand / static_cast<double>(m_ulThisTimestepNumCoastCells);
-   OutStream << setw(8) << 1000 * m_dThisTimestepCliffCollapseErosionCoarse / static_cast<double>(m_ulThisTimestepNumCoastCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepCliffCollapseErosionFine / static_cast<double>(m_ulThisTimestepNumCoastCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepCliffCollapseErosionSand / static_cast<double>(m_ulThisTimestepNumCoastCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepCliffCollapseErosionCoarse / static_cast<double>(m_ulThisTimestepNumCoastCells);
 
    // Per-timestep cliff collapse deposition in mm (average for all sea cells) ==================================================
-   OutStream << setw(5) << 1000 * m_dThisTimestepCliffDepositionSand / static_cast<double>(m_ulThisTimestepNumSeaCells);
-   OutStream << setw(6) << 1000 * m_dThisTimestepCliffDepositionCoarse / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepCliffDepositionSand / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(4) << 1000 * m_dThisTimestepCliffDepositionCoarse / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    // Output per-timestep fine sediment going to suspension, in mm (average for all sea cells) ==================================
-   OutStream << setw(8) << 1000 * m_dThisTimestepFineSedimentToSuspension / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   OutStream << setw(6) << 1000 * m_dThisTimestepFineSedimentToSuspension / static_cast<double>(m_ulThisTimestepNumSeaCells);
 
    OutStream << " ";
 
@@ -931,7 +940,7 @@ int CSimulation::nWriteEndRunDetails(void)
    OutStream << PERITERHEAD4 << endl;
    OutStream << PERITERHEAD5 << endl;
 
-   OutStream << setiosflags(ios::fixed) << setprecision(2);
+   OutStream << std::fixed << setprecision(2);
    OutStream << endl << endl;
 
    // Write out hydrology grand totals etc.
@@ -1016,9 +1025,9 @@ int CSimulation::nWriteEndRunDetails(void)
    long double ldTotalLost = m_ldGTotActualFineSedLostBeachErosion + m_ldGTotActualSandSedLostBeachErosion + m_ldGTotActualCoarseSedLostBeachErosion + m_ldGTotSandSedLostCliffCollapse + m_ldGTotCoarseSedLostCliffCollapse;
    OutStream << "Total sediment lost from grid (all processes) = " << ldTotalLost * m_dCellArea << " m^3" << endl;
    OutStream << "                                              = " << ldTotalLost * m_dCellArea / m_dSimDuration << " m^3/hour" << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(4);
+   OutStream << std::fixed << setprecision(4);
    OutStream << "                                              = " << ldTotalLost * m_dCellArea / (m_dSimDuration * 3600) << " m^3/sec" << endl << endl;
-   OutStream << setiosflags(ios::fixed) << setprecision(2);
+   OutStream << std::fixed << setprecision(2);
 
    OutStream << "NOTE grid edge option is ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
@@ -1061,9 +1070,9 @@ int CSimulation::nWriteEndRunDetails(void)
 
    LogStream << "Total sediment lost from grid (all processes) = " << ldTotalLost * m_dCellArea << " m^3" << endl;
    LogStream << "                                              = " << ldTotalLost * m_dCellArea / m_dSimDuration << " m^3/hour" << endl;
-   LogStream << setiosflags(ios::fixed) << setprecision(4);
+   LogStream << std::fixed << setprecision(4);
    LogStream << "                                              = " << ldTotalLost * m_dCellArea / (m_dSimDuration * 3600) << " m^3/sec" << endl << endl;
-   LogStream << setiosflags(ios::fixed) << setprecision(2);
+   LogStream << std::fixed << setprecision(2);
 
    LogStream << "NOTE grid edge option is ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
@@ -1078,7 +1087,7 @@ int CSimulation::nWriteEndRunDetails(void)
    LogStream << "Deposited + suspension = " << ldRHS * m_dCellArea << " m^3" << endl << endl;
 
    // Output averages for on-profile and between-profile potential shore platform erosion, ideally these are roughly equal
-   LogStream << setiosflags(ios::fixed);
+   LogStream << std::fixed;
    LogStream << endl;
    LogStream << "On-profile average potential shore platform erosion = " << (m_ulTotPotentialPlatformErosionOnProfiles > 0 ? m_dTotPotentialPlatformErosionOnProfiles / static_cast<double>(m_ulTotPotentialPlatformErosionOnProfiles) : 0) << " mm (n = " << m_ulTotPotentialPlatformErosionOnProfiles << ")" << endl;
    LogStream << "Between-profile average potential shore platform erosion = " << (m_ulTotPotentialPlatformErosionBetweenProfiles > 0 ? m_dTotPotentialPlatformErosionBetweenProfiles / static_cast<double>(m_ulTotPotentialPlatformErosionBetweenProfiles) : 0) << " mm (n = " << m_ulTotPotentialPlatformErosionBetweenProfiles << ")" << endl;

@@ -1542,14 +1542,14 @@ void CSimulation::CalcTime(double const dRunLength)
       double dPerTimestep = dDuration / static_cast<double>(m_ulTotTimestep);
 
       // And write CPU time per timestep to OutStream and LogStream
-      OutStream << setiosflags(ios::fixed) << setprecision(4) << " (" << dPerTimestep << " per timestep)" << endl;
-      LogStream << setiosflags(ios::fixed) << setprecision(4) << " (" << dPerTimestep << " per timestep)" << endl;
+      OutStream << std::fixed << setprecision(4) << " (" << dPerTimestep << " per timestep)" << endl;
+      LogStream << std::fixed << setprecision(4) << " (" << dPerTimestep << " per timestep)" << endl;
 
       // Calculate ratio of CPU time to time simulated
       OutStream << resetiosflags(ios::floatfield);
-      OutStream << setiosflags(ios::fixed) << setprecision(0) << "In terms of CPU time, this is ";
+      OutStream << std::fixed << setprecision(0) << "In terms of CPU time, this is ";
       LogStream << resetiosflags(ios::floatfield);
-      LogStream << setiosflags(ios::fixed) << setprecision(0) << "In terms of CPU time, this is ";
+      LogStream << std::fixed << setprecision(0) << "In terms of CPU time, this is ";
       if (dDuration > dRunLength)
       {
          OutStream << dDuration / dRunLength << " x slower than reality" << endl;
@@ -1574,22 +1574,22 @@ void CSimulation::CalcTime(double const dRunLength)
 
    // And write run time per timestep to OutStream and LogStream
    OutStream << resetiosflags(ios::floatfield);
-   OutStream << " (" << setiosflags(ios::fixed) << setprecision(4) << dPerTimestep << " per timestep)" << endl;
+   OutStream << " (" << std::fixed << setprecision(4) << dPerTimestep << " per timestep)" << endl;
    LogStream << resetiosflags(ios::floatfield);
-   LogStream << " (" << setiosflags(ios::fixed) << setprecision(4) << dPerTimestep << " per timestep)" << endl;
+   LogStream << " (" << std::fixed << setprecision(4) << dPerTimestep << " per timestep)" << endl;
 
    // Calculate ratio of run time to time simulated
    OutStream << "In terms of run time, this is ";
    LogStream << "In terms of run time, this is ";
    if (dDuration > dRunLength)
    {
-      OutStream << setiosflags(ios::fixed) << setprecision(3) << dDuration / dRunLength << " x slower than reality" << endl;
-      LogStream << setiosflags(ios::fixed) << setprecision(3) << dDuration / dRunLength << " x slower than reality" << endl;
+      OutStream << std::fixed << setprecision(3) << dDuration / dRunLength << " x slower than reality" << endl;
+      LogStream << std::fixed << setprecision(3) << dDuration / dRunLength << " x slower than reality" << endl;
    }
    else
    {
-      OutStream << setiosflags(ios::fixed) << setprecision(3) << dRunLength / dDuration << " x faster than reality" << endl;
-      LogStream << setiosflags(ios::fixed) << setprecision(3) << dRunLength / dDuration << " x faster than reality" << endl;
+      OutStream << std::fixed << setprecision(3) << dRunLength / dDuration << " x faster than reality" << endl;
+      LogStream << std::fixed << setprecision(3) << dRunLength / dDuration << " x faster than reality" << endl;
    }
 }
 
@@ -1753,7 +1753,7 @@ void CSimulation::AnnounceProgress(void)
 
       // Tell the user about progress (note need to make several separate calls to cout here, or MS VC++ compiler appears to get confused)
       cout << SIMULATING << strDispSimTime(m_dSimElapsed);
-      cout << setiosflags(ios::fixed) << setprecision(3) << setw(9) << 100 * m_dSimElapsed / m_dSimDuration;
+      cout << std::fixed << setprecision(3) << setw(9) << 100 * m_dSimElapsed / m_dSimDuration;
       cout << "%   (elapsed " << strDispTime(sdElapsed, false, false) << " remaining ";
 
       cout << strDispTime(sdToGo, false, false) << ")  ";
