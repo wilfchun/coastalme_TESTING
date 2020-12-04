@@ -187,7 +187,7 @@ CSimulation::CSimulation(void)
    m_lGDALMaxCanWrite                              =
    m_lGDALMinCanWrite                              = 0;
 
-   m_ulIteration                                       =
+   m_lIteration                                       =
    m_ulTotTimestep                                     =
    m_ulNumCells                                        =
    m_ulThisTimestepNumSeaCells                         =
@@ -760,6 +760,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    AnnounceIsRunning();
    while (true)
    {
+      // TEST
+      LogStream << ulGetRand0() << " " << ulGetRand1() << endl;
+
       // Check that we haven't gone on too long: if not then update timestep number etc.
       if (bTimeToQuit())
          break;
@@ -767,7 +770,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Tell the user how the simulation is progressing
       AnnounceProgress();
 
-      LogStream << "TIMESTEP " << m_ulIteration << " ================================================================================================" << endl;
+      LogStream << "TIMESTEP " << m_lIteration << " ================================================================================================" << endl;
 
       // Check to see if there is a new intervention in place: if so, update it on the RasterGrid array
       nRet = nUpdateIntervention();

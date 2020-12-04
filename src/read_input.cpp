@@ -2366,7 +2366,7 @@ bool CSimulation::bReadRunDataFile(void)
                      break;
                   }
 
-                  m_VulProfileTimestep.push_back(ulTmp);
+                  m_VlProfileTimestep.push_back(ulTmp);
                }
             }
             break;

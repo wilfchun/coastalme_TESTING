@@ -1414,7 +1414,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             break;
 
          case (RASTER_PLOT_AVG_SEA_DEPTH):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / static_cast<double>(m_ulIteration);
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / static_cast<double>(m_lIteration);
             break;
 
          case (RASTER_PLOT_WAVE_HEIGHT):
@@ -1425,7 +1425,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             break;
 
          case (RASTER_PLOT_AVG_WAVE_HEIGHT):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_ulIteration);
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_lIteration);
             break;
 
          case (RASTER_PLOT_WAVE_ORIENTATION):
@@ -1436,7 +1436,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             break;
 
          case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIteration);
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_lIteration);
             break;
 
          case (RASTER_PLOT_BEACH_PROTECTION):
@@ -1490,7 +1490,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             break;
 
          case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / static_cast<double>(m_ulIteration);
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / static_cast<double>(m_lIteration);
             break;
 
          case (RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT):

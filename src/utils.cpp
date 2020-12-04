@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-// #include <assert.h>
+#include <assert.h>
 
 #ifdef _WIN32
    #include <windows.h>             // Needed for CalcProcessStats()
@@ -1288,11 +1288,11 @@ bool CSimulation::bTimeToQuit(void)
    }
 
    // Not quitting, so increment the timestep count, and recalc total timesteps
-   m_ulIteration++;
+   m_lIteration++;
    m_ulTotTimestep = static_cast<unsigned long>(dRound(m_dSimDuration / m_dTimeStep));
 
    // Check to see if we have done CLOCK_CHECK_ITERATION timesteps: if so, it is time to reset the CPU time running total in case the clock() function later rolls over
-   if (0 == m_ulIteration % CLOCK_CHECK_ITERATION)
+   if (0 == m_lIteration % CLOCK_CHECK_ITERATION)
       DoCPUClockReset();
 
    // Not yet time to quit
@@ -1307,7 +1307,7 @@ bool CSimulation::bTimeToQuit(void)
 ==============================================================================================================================*/
 void CSimulation::UpdateGrandTotals(void)
 {
-   LogStream << endl << "TOTALS FOR TIMESTEP " << m_ulIteration << " (all m^3)" << endl;
+   LogStream << endl << "TOTALS FOR TIMESTEP " << m_lIteration << " (all m^3)" << endl;
    LogStream << "Potential platform erosion = " << m_dThisTimestepPotentialPlatformErosion * m_dCellArea << endl;
 
    LogStream << "Actual fine platform erosion = " << m_dThisTimestepActualPlatformErosionFine * m_dCellArea << endl;
@@ -1385,6 +1385,7 @@ void CSimulation::UpdateGrandTotals(void)
 
    // Add to grand totals: first platform erosion
    m_ldGTotPotentialPlatformErosion        += m_dThisTimestepPotentialPlatformErosion;
+   assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
 
    m_ldGTotFineActualPlatformErosion       += m_dThisTimestepActualPlatformErosionFine;
    m_ldGTotSandActualPlatformErosion       += m_dThisTimestepActualPlatformErosionSand;
@@ -2235,9 +2236,9 @@ void CSimulation::DoSimulationEnd(int const nRtn)
 
    default:
       // Aborting because of some error
-      cerr << RUN_END_NOTICE << "iteration " << m_ulIteration << ERROR_NOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
+      cerr << RUN_END_NOTICE << "iteration " << m_lIteration << ERROR_NOTICE << nRtn << " (" << strGetErrorText(nRtn) << ") on " << put_time(localtime(&m_tSysEndTime), "%T %A %d %B %Y") << endl;
 
-      if (m_ulIteration > 1)
+      if (m_lIteration > 1)
       {
          // If the run has actually started, then output all GIS files: this is very helpful in tracking down problems
          m_bSaveGISThisTimestep = true;
@@ -2307,7 +2308,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
             strCmd.append(": ");
             strCmd.append(strGetErrorText(nRtn));
             strCmd.append(" at timestep ");
-            strCmd.append(to_string(m_ulIteration));
+            strCmd.append(to_string(m_lIteration));
             strCmd.append(" (");
             strCmd.append(strDispSimTime(m_dSimElapsed));
             strCmd.append(").\n\nThis message sent at ");

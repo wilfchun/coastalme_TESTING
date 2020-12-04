@@ -111,12 +111,8 @@ void CSimulation::InitRand0(unsigned long ulSeed)
       m_ulRState[0].s3 += 16UL;
 
    // Warm it up
-   ulGetRand0();
-   ulGetRand0();
-   ulGetRand0();
-   ulGetRand0();
-   ulGetRand0();
-   ulGetRand0();
+   for (int n = 0; n < 10; n++)
+      ulGetRand0();
 
    return;
 }
@@ -140,12 +136,8 @@ void CSimulation::InitRand1(unsigned long ulSeed)
       m_ulRState[1].s3 += 16UL;
 
    // Warm it up
-   ulGetRand1();
-   ulGetRand1();
-   ulGetRand1();
-   ulGetRand1();
-   ulGetRand1();
-   ulGetRand1();
+   for (int n = 0; n < 10; n++)
+      ulGetRand1();
 
    return;
 }

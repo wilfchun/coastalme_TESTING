@@ -1,0 +1,3779 @@
+ 
+CME iteration =           1  CME coast =           0  CME profile =           0
+ 
+CME iteration =           1  CME coast =           0  CME profile =           1
+ 
+CME iteration =           1  CME coast =           0  CME profile =           2
+ 
+CME iteration =           1  CME coast =           0  CME profile =           3
+ 
+CME iteration =           1  CME coast =           0  CME profile =           4
+ 
+CME iteration =           1  CME coast =           0  CME profile =           5
+ 
+CME iteration =           1  CME coast =           0  CME profile =           6
+ 
+CME iteration =           1  CME coast =           0  CME profile =           7
+ 
+CME iteration =           1  CME coast =           0  CME profile =           8
+ 
+CME iteration =           1  CME coast =           0  CME profile =           9
+ 
+CME iteration =           1  CME coast =           0  CME profile =          10
+ 
+CME iteration =           1  CME coast =           0  CME profile =          11
+ 
+CME iteration =           1  CME coast =           0  CME profile =          12
+ 
+CME iteration =           1  CME coast =           0  CME profile =          13
+ 
+CME iteration =           1  CME coast =           0  CME profile =          14
+ 
+CME iteration =           1  CME coast =           0  CME profile =          15
+ 
+CME iteration =           1  CME coast =           0  CME profile =          16
+ 
+CME iteration =           1  CME coast =           0  CME profile =          17
+ 
+CME iteration =           1  CME coast =           0  CME profile =          18
+ 
+CME iteration =           1  CME coast =           0  CME profile =          19
+ 
+CME iteration =           1  CME coast =           0  CME profile =          20
+ 
+CME iteration =           1  CME coast =           0  CME profile =          21
+ 
+CME iteration =           2  CME coast =           0  CME profile =           0
+ 
+CME iteration =           2  CME coast =           0  CME profile =           1
+ 
+CME iteration =           2  CME coast =           0  CME profile =           2
+ 
+CME iteration =           2  CME coast =           0  CME profile =           3
+ 
+CME iteration =           2  CME coast =           0  CME profile =           4
+ 
+CME iteration =           2  CME coast =           0  CME profile =           5
+ 
+CME iteration =           2  CME coast =           0  CME profile =           6
+ 
+CME iteration =           2  CME coast =           0  CME profile =           7
+ 
+CME iteration =           2  CME coast =           0  CME profile =           8
+ 
+CME iteration =           2  CME coast =           0  CME profile =           9
+ 
+CME iteration =           2  CME coast =           0  CME profile =          10
+ 
+CME iteration =           2  CME coast =           0  CME profile =          11
+ 
+CME iteration =           2  CME coast =           0  CME profile =          12
+ 
+CME iteration =           2  CME coast =           0  CME profile =          13
+ 
+CME iteration =           2  CME coast =           0  CME profile =          14
+ 
+CME iteration =           2  CME coast =           0  CME profile =          15
+ 
+CME iteration =           2  CME coast =           0  CME profile =          16
+ 
+CME iteration =           2  CME coast =           0  CME profile =          17
+ 
+CME iteration =           2  CME coast =           0  CME profile =          18
+ 
+CME iteration =           2  CME coast =           0  CME profile =          19
+ 
+CME iteration =           2  CME coast =           0  CME profile =          20
+ 
+CME iteration =           2  CME coast =           0  CME profile =          21
+ 
+CME iteration =           2  CME coast =           0  CME profile =          22
+ 
+CME iteration =           2  CME coast =           0  CME profile =          23
+ 
+CME iteration =           3  CME coast =           0  CME profile =           0
+ 
+CME iteration =           3  CME coast =           0  CME profile =           1
+ 
+CME iteration =           3  CME coast =           0  CME profile =           2
+ 
+CME iteration =           3  CME coast =           0  CME profile =           3
+ 
+CME iteration =           3  CME coast =           0  CME profile =           4
+ 
+CME iteration =           3  CME coast =           0  CME profile =           5
+ 
+CME iteration =           3  CME coast =           0  CME profile =           6
+ 
+CME iteration =           3  CME coast =           0  CME profile =           7
+ 
+CME iteration =           3  CME coast =           0  CME profile =           8
+ 
+CME iteration =           3  CME coast =           0  CME profile =           9
+ 
+CME iteration =           3  CME coast =           0  CME profile =          10
+ 
+CME iteration =           3  CME coast =           0  CME profile =          11
+ 
+CME iteration =           3  CME coast =           0  CME profile =          12
+ 
+CME iteration =           3  CME coast =           0  CME profile =          13
+ 
+CME iteration =           3  CME coast =           0  CME profile =          14
+ 
+CME iteration =           3  CME coast =           0  CME profile =          15
+ 
+CME iteration =           3  CME coast =           0  CME profile =          16
+ 
+CME iteration =           3  CME coast =           0  CME profile =          17
+ 
+CME iteration =           3  CME coast =           0  CME profile =          18
+ 
+CME iteration =           3  CME coast =           0  CME profile =          19
+ 
+CME iteration =           3  CME coast =           0  CME profile =          20
+ 
+CME iteration =           4  CME coast =           0  CME profile =           0
+ 
+CME iteration =           4  CME coast =           0  CME profile =           1
+ 
+CME iteration =           4  CME coast =           0  CME profile =           2
+ 
+CME iteration =           4  CME coast =           0  CME profile =           3
+ 
+CME iteration =           4  CME coast =           0  CME profile =           4
+ 
+CME iteration =           4  CME coast =           0  CME profile =           5
+ 
+CME iteration =           4  CME coast =           0  CME profile =           6
+ 
+CME iteration =           4  CME coast =           0  CME profile =           7
+ 
+CME iteration =           4  CME coast =           0  CME profile =           8
+ 
+CME iteration =           4  CME coast =           0  CME profile =           9
+ 
+CME iteration =           4  CME coast =           0  CME profile =          10
+ 
+CME iteration =           4  CME coast =           0  CME profile =          11
+ 
+CME iteration =           4  CME coast =           0  CME profile =          12
+ 
+CME iteration =           4  CME coast =           0  CME profile =          13
+ 
+CME iteration =           4  CME coast =           0  CME profile =          14
+ 
+CME iteration =           4  CME coast =           0  CME profile =          15
+ 
+CME iteration =           4  CME coast =           0  CME profile =          16
+ 
+CME iteration =           4  CME coast =           0  CME profile =          17
+ 
+CME iteration =           4  CME coast =           0  CME profile =          18
+ 
+CME iteration =           4  CME coast =           0  CME profile =          19
+ 
+CME iteration =           4  CME coast =           0  CME profile =          20
+ 
+CME iteration =           4  CME coast =           0  CME profile =          21
+ 
+CME iteration =           4  CME coast =           0  CME profile =          22
+ 
+CME iteration =           5  CME coast =           0  CME profile =           0
+ 
+CME iteration =           5  CME coast =           0  CME profile =           1
+ 
+CME iteration =           5  CME coast =           0  CME profile =           2
+ 
+CME iteration =           5  CME coast =           0  CME profile =           3
+ 
+CME iteration =           5  CME coast =           0  CME profile =           4
+ 
+CME iteration =           5  CME coast =           0  CME profile =           5
+ 
+CME iteration =           5  CME coast =           0  CME profile =           6
+ 
+CME iteration =           5  CME coast =           0  CME profile =           7
+ 
+CME iteration =           5  CME coast =           0  CME profile =           8
+ 
+CME iteration =           5  CME coast =           0  CME profile =           9
+ 
+CME iteration =           5  CME coast =           0  CME profile =          10
+ 
+CME iteration =           5  CME coast =           0  CME profile =          11
+ 
+CME iteration =           5  CME coast =           0  CME profile =          12
+ 
+CME iteration =           5  CME coast =           0  CME profile =          13
+ 
+CME iteration =           5  CME coast =           0  CME profile =          14
+ 
+CME iteration =           5  CME coast =           0  CME profile =          15
+ 
+CME iteration =           5  CME coast =           0  CME profile =          16
+ 
+CME iteration =           5  CME coast =           0  CME profile =          17
+ 
+CME iteration =           5  CME coast =           0  CME profile =          18
+ 
+CME iteration =           5  CME coast =           0  CME profile =          19
+ 
+CME iteration =           5  CME coast =           0  CME profile =          20
+ 
+CME iteration =           5  CME coast =           0  CME profile =          21
+ 
+CME iteration =           6  CME coast =           0  CME profile =           0
+ 
+CME iteration =           6  CME coast =           0  CME profile =           1
+ 
+CME iteration =           6  CME coast =           0  CME profile =           2
+ 
+CME iteration =           6  CME coast =           0  CME profile =           3
+ 
+CME iteration =           6  CME coast =           0  CME profile =           4
+ 
+CME iteration =           6  CME coast =           0  CME profile =           5
+ 
+CME iteration =           6  CME coast =           0  CME profile =           6
+ 
+CME iteration =           6  CME coast =           0  CME profile =           7
+ 
+CME iteration =           6  CME coast =           0  CME profile =           8
+ 
+CME iteration =           6  CME coast =           0  CME profile =           9
+ 
+CME iteration =           6  CME coast =           0  CME profile =          10
+ 
+CME iteration =           6  CME coast =           0  CME profile =          11
+ 
+CME iteration =           6  CME coast =           0  CME profile =          12
+ 
+CME iteration =           6  CME coast =           0  CME profile =          13
+ 
+CME iteration =           6  CME coast =           0  CME profile =          14
+ 
+CME iteration =           6  CME coast =           0  CME profile =          15
+ 
+CME iteration =           6  CME coast =           0  CME profile =          16
+ 
+CME iteration =           6  CME coast =           0  CME profile =          17
+ 
+CME iteration =           6  CME coast =           0  CME profile =          18
+ 
+CME iteration =           7  CME coast =           0  CME profile =           0
+ 
+CME iteration =           7  CME coast =           0  CME profile =           1
+ 
+CME iteration =           7  CME coast =           0  CME profile =           2
+ 
+CME iteration =           7  CME coast =           0  CME profile =           3
+ 
+CME iteration =           7  CME coast =           0  CME profile =           4
+ 
+CME iteration =           7  CME coast =           0  CME profile =           5
+ 
+CME iteration =           7  CME coast =           0  CME profile =           6
+ 
+CME iteration =           7  CME coast =           0  CME profile =           7
+ 
+CME iteration =           7  CME coast =           0  CME profile =           8
+ 
+CME iteration =           7  CME coast =           0  CME profile =           9
+ 
+CME iteration =           7  CME coast =           0  CME profile =          10
+ 
+CME iteration =           7  CME coast =           0  CME profile =          11
+ 
+CME iteration =           7  CME coast =           0  CME profile =          12
+ 
+CME iteration =           7  CME coast =           0  CME profile =          13
+ 
+CME iteration =           7  CME coast =           0  CME profile =          14
+ 
+CME iteration =           7  CME coast =           0  CME profile =          15
+ 
+CME iteration =           7  CME coast =           0  CME profile =          16
+ 
+CME iteration =           7  CME coast =           0  CME profile =          17
+ 
+CME iteration =           7  CME coast =           0  CME profile =          18
+ 
+CME iteration =           7  CME coast =           0  CME profile =          19
+ 
+CME iteration =           8  CME coast =           0  CME profile =           0
+ 
+CME iteration =           8  CME coast =           0  CME profile =           1
+ 
+CME iteration =           8  CME coast =           0  CME profile =           2
+ 
+CME iteration =           8  CME coast =           0  CME profile =           3
+ 
+CME iteration =           8  CME coast =           0  CME profile =           4
+ 
+CME iteration =           8  CME coast =           0  CME profile =           5
+ 
+CME iteration =           8  CME coast =           0  CME profile =           6
+ 
+CME iteration =           8  CME coast =           0  CME profile =           7
+ 
+CME iteration =           8  CME coast =           0  CME profile =           8
+ 
+CME iteration =           8  CME coast =           0  CME profile =           9
+ 
+CME iteration =           8  CME coast =           0  CME profile =          10
+ 
+CME iteration =           8  CME coast =           0  CME profile =          11
+ 
+CME iteration =           8  CME coast =           0  CME profile =          12
+ 
+CME iteration =           8  CME coast =           0  CME profile =          13
+ 
+CME iteration =           8  CME coast =           0  CME profile =          14
+ 
+CME iteration =           8  CME coast =           0  CME profile =          15
+ 
+CME iteration =           8  CME coast =           0  CME profile =          16
+ 
+CME iteration =           8  CME coast =           0  CME profile =          17
+ 
+CME iteration =           8  CME coast =           0  CME profile =          18
+ 
+CME iteration =           8  CME coast =           0  CME profile =          19
+ 
+CME iteration =           8  CME coast =           0  CME profile =          20
+ 
+CME iteration =           9  CME coast =           0  CME profile =           0
+ 
+CME iteration =           9  CME coast =           0  CME profile =           1
+ 
+CME iteration =           9  CME coast =           0  CME profile =           2
+ 
+CME iteration =           9  CME coast =           0  CME profile =           3
+ 
+CME iteration =           9  CME coast =           0  CME profile =           4
+ 
+CME iteration =           9  CME coast =           0  CME profile =           5
+ 
+CME iteration =           9  CME coast =           0  CME profile =           6
+ 
+CME iteration =           9  CME coast =           0  CME profile =           7
+ 
+CME iteration =           9  CME coast =           0  CME profile =           8
+ 
+CME iteration =           9  CME coast =           0  CME profile =           9
+ 
+CME iteration =           9  CME coast =           0  CME profile =          10
+ 
+CME iteration =           9  CME coast =           0  CME profile =          11
+ 
+CME iteration =           9  CME coast =           0  CME profile =          12
+ 
+CME iteration =           9  CME coast =           0  CME profile =          13
+ 
+CME iteration =           9  CME coast =           0  CME profile =          14
+ 
+CME iteration =           9  CME coast =           0  CME profile =          15
+ 
+CME iteration =           9  CME coast =           0  CME profile =          16
+ 
+CME iteration =           9  CME coast =           0  CME profile =          17
+ 
+CME iteration =           9  CME coast =           0  CME profile =          18
+ 
+CME iteration =          10  CME coast =           0  CME profile =           0
+ 
+CME iteration =          10  CME coast =           0  CME profile =           1
+ 
+CME iteration =          10  CME coast =           0  CME profile =           2
+ 
+CME iteration =          10  CME coast =           0  CME profile =           3
+ 
+CME iteration =          10  CME coast =           0  CME profile =           4
+ 
+CME iteration =          10  CME coast =           0  CME profile =           5
+ 
+CME iteration =          10  CME coast =           0  CME profile =           6
+ 
+CME iteration =          10  CME coast =           0  CME profile =           7
+ 
+CME iteration =          10  CME coast =           0  CME profile =           8
+ 
+CME iteration =          10  CME coast =           0  CME profile =           9
+ 
+CME iteration =          10  CME coast =           0  CME profile =          10
+ 
+CME iteration =          10  CME coast =           0  CME profile =          11
+ 
+CME iteration =          10  CME coast =           0  CME profile =          12
+ 
+CME iteration =          10  CME coast =           0  CME profile =          13
+ 
+CME iteration =          10  CME coast =           0  CME profile =          14
+ 
+CME iteration =          10  CME coast =           0  CME profile =          15
+ 
+CME iteration =          10  CME coast =           0  CME profile =          16
+ 
+CME iteration =          10  CME coast =           0  CME profile =          17
+ 
+CME iteration =          10  CME coast =           0  CME profile =          18
+ 
+CME iteration =          10  CME coast =           0  CME profile =          19
+ 
+CME iteration =          10  CME coast =           0  CME profile =          20
+ 
+CME iteration =          10  CME coast =           0  CME profile =          21
+ 
+CME iteration =          11  CME coast =           0  CME profile =           0
+ 
+CME iteration =          11  CME coast =           0  CME profile =           1
+ 
+CME iteration =          11  CME coast =           0  CME profile =           2
+ 
+CME iteration =          11  CME coast =           0  CME profile =           3
+ 
+CME iteration =          11  CME coast =           0  CME profile =           4
+ 
+CME iteration =          11  CME coast =           0  CME profile =           5
+ 
+CME iteration =          11  CME coast =           0  CME profile =           6
+ 
+CME iteration =          11  CME coast =           0  CME profile =           7
+ 
+CME iteration =          11  CME coast =           0  CME profile =           8
+ 
+CME iteration =          11  CME coast =           0  CME profile =           9
+ 
+CME iteration =          11  CME coast =           0  CME profile =          10
+ 
+CME iteration =          11  CME coast =           0  CME profile =          11
+ 
+CME iteration =          11  CME coast =           0  CME profile =          12
+ 
+CME iteration =          11  CME coast =           0  CME profile =          13
+ 
+CME iteration =          11  CME coast =           0  CME profile =          14
+ 
+CME iteration =          11  CME coast =           0  CME profile =          15
+ 
+CME iteration =          11  CME coast =           0  CME profile =          16
+ 
+CME iteration =          11  CME coast =           0  CME profile =          17
+ 
+CME iteration =          11  CME coast =           0  CME profile =          18
+ 
+CME iteration =          11  CME coast =           0  CME profile =          19
+ 
+CME iteration =          12  CME coast =           0  CME profile =           0
+ 
+CME iteration =          12  CME coast =           0  CME profile =           1
+ 
+CME iteration =          12  CME coast =           0  CME profile =           2
+ 
+CME iteration =          12  CME coast =           0  CME profile =           3
+ 
+CME iteration =          12  CME coast =           0  CME profile =           4
+ 
+CME iteration =          12  CME coast =           0  CME profile =           5
+ 
+CME iteration =          12  CME coast =           0  CME profile =           6
+ 
+CME iteration =          12  CME coast =           0  CME profile =           7
+ 
+CME iteration =          12  CME coast =           0  CME profile =           8
+ 
+CME iteration =          12  CME coast =           0  CME profile =           9
+ 
+CME iteration =          12  CME coast =           0  CME profile =          10
+ 
+CME iteration =          12  CME coast =           0  CME profile =          11
+ 
+CME iteration =          12  CME coast =           0  CME profile =          12
+ 
+CME iteration =          12  CME coast =           0  CME profile =          13
+ 
+CME iteration =          12  CME coast =           0  CME profile =          14
+ 
+CME iteration =          12  CME coast =           0  CME profile =          15
+ 
+CME iteration =          12  CME coast =           0  CME profile =          16
+ 
+CME iteration =          12  CME coast =           0  CME profile =          17
+ 
+CME iteration =          12  CME coast =           0  CME profile =          18
+ 
+CME iteration =          12  CME coast =           0  CME profile =          19
+ 
+CME iteration =          12  CME coast =           0  CME profile =          20
+ 
+CME iteration =          13  CME coast =           0  CME profile =           0
+ 
+CME iteration =          13  CME coast =           0  CME profile =           1
+ 
+CME iteration =          13  CME coast =           0  CME profile =           2
+ 
+CME iteration =          13  CME coast =           0  CME profile =           4
+ 
+CME iteration =          13  CME coast =           0  CME profile =           5
+ 
+CME iteration =          13  CME coast =           0  CME profile =           6
+ 
+CME iteration =          13  CME coast =           0  CME profile =           7
+ 
+CME iteration =          13  CME coast =           0  CME profile =           8
+ 
+CME iteration =          13  CME coast =           0  CME profile =           9
+ 
+CME iteration =          13  CME coast =           0  CME profile =          10
+ 
+CME iteration =          13  CME coast =           0  CME profile =          11
+ 
+CME iteration =          13  CME coast =           0  CME profile =          12
+ 
+CME iteration =          13  CME coast =           0  CME profile =          13
+ 
+CME iteration =          13  CME coast =           0  CME profile =          14
+ 
+CME iteration =          14  CME coast =           0  CME profile =           0
+ 
+CME iteration =          14  CME coast =           0  CME profile =           1
+ 
+CME iteration =          14  CME coast =           0  CME profile =           2
+ 
+CME iteration =          14  CME coast =           0  CME profile =           3
+ 
+CME iteration =          14  CME coast =           0  CME profile =           4
+ 
+CME iteration =          14  CME coast =           0  CME profile =           5
+ 
+CME iteration =          14  CME coast =           0  CME profile =           6
+ 
+CME iteration =          14  CME coast =           0  CME profile =           7
+ 
+CME iteration =          14  CME coast =           0  CME profile =           8
+ 
+CME iteration =          14  CME coast =           0  CME profile =           9
+ 
+CME iteration =          14  CME coast =           0  CME profile =          10
+ 
+CME iteration =          14  CME coast =           0  CME profile =          11
+ 
+CME iteration =          14  CME coast =           0  CME profile =          12
+ 
+CME iteration =          14  CME coast =           0  CME profile =          13
+ 
+CME iteration =          14  CME coast =           0  CME profile =          14
+ 
+CME iteration =          14  CME coast =           0  CME profile =          15
+ 
+CME iteration =          14  CME coast =           0  CME profile =          16
+ 
+CME iteration =          14  CME coast =           0  CME profile =          17
+ 
+CME iteration =          15  CME coast =           0  CME profile =           0
+ 
+CME iteration =          15  CME coast =           0  CME profile =           1
+ 
+CME iteration =          15  CME coast =           0  CME profile =           2
+ 
+CME iteration =          15  CME coast =           0  CME profile =           3
+ 
+CME iteration =          15  CME coast =           0  CME profile =           4
+ 
+CME iteration =          15  CME coast =           0  CME profile =           5
+ 
+CME iteration =          15  CME coast =           0  CME profile =           6
+ 
+CME iteration =          15  CME coast =           0  CME profile =           7
+ 
+CME iteration =          15  CME coast =           0  CME profile =           8
+ 
+CME iteration =          15  CME coast =           0  CME profile =           9
+ 
+CME iteration =          15  CME coast =           0  CME profile =          10
+ 
+CME iteration =          15  CME coast =           0  CME profile =          11
+ 
+CME iteration =          15  CME coast =           0  CME profile =          12
+ 
+CME iteration =          15  CME coast =           0  CME profile =          13
+ 
+CME iteration =          15  CME coast =           0  CME profile =          14
+ 
+CME iteration =          15  CME coast =           0  CME profile =          15
+ 
+CME iteration =          15  CME coast =           0  CME profile =          16
+ 
+CME iteration =          16  CME coast =           0  CME profile =           0
+ 
+CME iteration =          16  CME coast =           0  CME profile =           1
+ 
+CME iteration =          16  CME coast =           0  CME profile =           3
+ 
+CME iteration =          16  CME coast =           0  CME profile =           4
+ 
+CME iteration =          16  CME coast =           0  CME profile =           5
+ 
+CME iteration =          16  CME coast =           0  CME profile =           6
+ 
+CME iteration =          16  CME coast =           0  CME profile =           7
+ 
+CME iteration =          16  CME coast =           0  CME profile =           8
+ 
+CME iteration =          16  CME coast =           0  CME profile =           9
+ 
+CME iteration =          16  CME coast =           0  CME profile =          10
+ 
+CME iteration =          16  CME coast =           0  CME profile =          11
+ 
+CME iteration =          16  CME coast =           0  CME profile =          12
+ 
+CME iteration =          16  CME coast =           0  CME profile =          13
+ 
+CME iteration =          16  CME coast =           0  CME profile =          14
+ 
+CME iteration =          16  CME coast =           0  CME profile =          15
+ 
+CME iteration =          16  CME coast =           0  CME profile =          16
+ 
+CME iteration =          16  CME coast =           0  CME profile =          17
+ 
+CME iteration =          16  CME coast =           0  CME profile =          18
+ 
+CME iteration =          16  CME coast =           0  CME profile =          19
+ 
+CME iteration =          17  CME coast =           0  CME profile =           0
+ 
+CME iteration =          17  CME coast =           0  CME profile =           1
+ 
+CME iteration =          17  CME coast =           0  CME profile =           3
+ 
+CME iteration =          17  CME coast =           0  CME profile =           4
+ 
+CME iteration =          17  CME coast =           0  CME profile =           5
+ 
+CME iteration =          17  CME coast =           0  CME profile =           6
+ 
+CME iteration =          17  CME coast =           0  CME profile =           7
+ 
+CME iteration =          17  CME coast =           0  CME profile =           8
+ 
+CME iteration =          17  CME coast =           0  CME profile =           9
+ 
+CME iteration =          17  CME coast =           0  CME profile =          10
+ 
+CME iteration =          17  CME coast =           0  CME profile =          11
+ 
+CME iteration =          17  CME coast =           0  CME profile =          12
+ 
+CME iteration =          17  CME coast =           0  CME profile =          13
+ 
+CME iteration =          17  CME coast =           0  CME profile =          14
+ 
+CME iteration =          18  CME coast =           0  CME profile =           0
+ 
+CME iteration =          18  CME coast =           0  CME profile =           1
+ 
+CME iteration =          18  CME coast =           0  CME profile =           3
+ 
+CME iteration =          18  CME coast =           0  CME profile =           4
+ 
+CME iteration =          18  CME coast =           0  CME profile =           5
+ 
+CME iteration =          18  CME coast =           0  CME profile =           6
+ 
+CME iteration =          18  CME coast =           0  CME profile =           7
+ 
+CME iteration =          18  CME coast =           0  CME profile =           8
+ 
+CME iteration =          18  CME coast =           0  CME profile =           9
+ 
+CME iteration =          18  CME coast =           0  CME profile =          10
+ 
+CME iteration =          18  CME coast =           0  CME profile =          11
+ 
+CME iteration =          18  CME coast =           0  CME profile =          12
+ 
+CME iteration =          18  CME coast =           0  CME profile =          13
+ 
+CME iteration =          19  CME coast =           0  CME profile =           0
+ 
+CME iteration =          19  CME coast =           0  CME profile =           1
+ 
+CME iteration =          19  CME coast =           0  CME profile =           3
+ 
+CME iteration =          19  CME coast =           0  CME profile =           4
+ 
+CME iteration =          19  CME coast =           0  CME profile =           5
+ 
+CME iteration =          19  CME coast =           0  CME profile =           7
+ 
+CME iteration =          19  CME coast =           0  CME profile =           8
+ 
+CME iteration =          19  CME coast =           0  CME profile =           9
+ 
+CME iteration =          19  CME coast =           0  CME profile =          10
+ 
+CME iteration =          19  CME coast =           0  CME profile =          11
+ 
+CME iteration =          19  CME coast =           0  CME profile =          12
+ 
+CME iteration =          19  CME coast =           0  CME profile =          13
+ 
+CME iteration =          19  CME coast =           0  CME profile =          14
+ 
+CME iteration =          19  CME coast =           0  CME profile =          15
+ 
+CME iteration =          20  CME coast =           0  CME profile =           0
+ 
+CME iteration =          20  CME coast =           0  CME profile =           1
+ 
+CME iteration =          20  CME coast =           0  CME profile =           3
+ 
+CME iteration =          20  CME coast =           0  CME profile =           4
+ 
+CME iteration =          20  CME coast =           0  CME profile =           5
+ 
+CME iteration =          20  CME coast =           0  CME profile =           7
+ 
+CME iteration =          20  CME coast =           0  CME profile =           8
+ 
+CME iteration =          20  CME coast =           0  CME profile =           9
+ 
+CME iteration =          20  CME coast =           0  CME profile =          10
+ 
+CME iteration =          20  CME coast =           0  CME profile =          11
+ 
+CME iteration =          20  CME coast =           0  CME profile =          12
+ 
+CME iteration =          20  CME coast =           0  CME profile =          13
+ 
+CME iteration =          20  CME coast =           0  CME profile =          14
+ 
+CME iteration =          20  CME coast =           0  CME profile =          15
+ 
+CME iteration =          21  CME coast =           0  CME profile =           0
+ 
+CME iteration =          21  CME coast =           0  CME profile =           1
+ 
+CME iteration =          21  CME coast =           0  CME profile =           3
+ 
+CME iteration =          21  CME coast =           0  CME profile =           4
+ 
+CME iteration =          21  CME coast =           0  CME profile =           5
+ 
+CME iteration =          21  CME coast =           0  CME profile =           7
+ 
+CME iteration =          21  CME coast =           0  CME profile =           8
+ 
+CME iteration =          21  CME coast =           0  CME profile =           9
+ 
+CME iteration =          21  CME coast =           0  CME profile =          10
+ 
+CME iteration =          21  CME coast =           0  CME profile =          11
+ 
+CME iteration =          21  CME coast =           0  CME profile =          12
+ 
+CME iteration =          21  CME coast =           0  CME profile =          13
+ 
+CME iteration =          21  CME coast =           0  CME profile =          14
+ 
+CME iteration =          21  CME coast =           0  CME profile =          15
+ 
+CME iteration =          22  CME coast =           0  CME profile =           0
+ 
+CME iteration =          22  CME coast =           0  CME profile =           1
+ 
+CME iteration =          22  CME coast =           0  CME profile =           3
+ 
+CME iteration =          22  CME coast =           0  CME profile =           4
+ 
+CME iteration =          22  CME coast =           0  CME profile =           5
+ 
+CME iteration =          22  CME coast =           0  CME profile =           7
+ 
+CME iteration =          22  CME coast =           0  CME profile =           8
+ 
+CME iteration =          22  CME coast =           0  CME profile =           9
+ 
+CME iteration =          22  CME coast =           0  CME profile =          10
+ 
+CME iteration =          22  CME coast =           0  CME profile =          11
+ 
+CME iteration =          22  CME coast =           0  CME profile =          12
+ 
+CME iteration =          22  CME coast =           0  CME profile =          13
+ 
+CME iteration =          22  CME coast =           0  CME profile =          14
+ 
+CME iteration =          23  CME coast =           0  CME profile =           0
+ 
+CME iteration =          23  CME coast =           0  CME profile =           1
+ 
+CME iteration =          23  CME coast =           0  CME profile =           3
+ 
+CME iteration =          23  CME coast =           0  CME profile =           4
+ 
+CME iteration =          23  CME coast =           0  CME profile =           5
+ 
+CME iteration =          23  CME coast =           0  CME profile =           7
+ 
+CME iteration =          23  CME coast =           0  CME profile =           8
+ 
+CME iteration =          23  CME coast =           0  CME profile =           9
+ 
+CME iteration =          23  CME coast =           0  CME profile =          10
+ 
+CME iteration =          23  CME coast =           0  CME profile =          11
+ 
+CME iteration =          23  CME coast =           0  CME profile =          12
+ 
+CME iteration =          23  CME coast =           0  CME profile =          13
+ 
+CME iteration =          23  CME coast =           0  CME profile =          14
+ 
+CME iteration =          24  CME coast =           0  CME profile =           0
+ 
+CME iteration =          24  CME coast =           0  CME profile =           1
+ 
+CME iteration =          24  CME coast =           0  CME profile =           3
+ 
+CME iteration =          24  CME coast =           0  CME profile =           4
+ 
+CME iteration =          24  CME coast =           0  CME profile =           5
+ 
+CME iteration =          24  CME coast =           0  CME profile =           7
+ 
+CME iteration =          24  CME coast =           0  CME profile =           8
+ 
+CME iteration =          24  CME coast =           0  CME profile =           9
+ 
+CME iteration =          24  CME coast =           0  CME profile =          10
+ 
+CME iteration =          24  CME coast =           0  CME profile =          11
+ 
+CME iteration =          24  CME coast =           0  CME profile =          12
+ 
+CME iteration =          24  CME coast =           0  CME profile =          13
+ 
+CME iteration =          24  CME coast =           0  CME profile =          14
+ 
+CME iteration =          25  CME coast =           0  CME profile =           0
+ 
+CME iteration =          25  CME coast =           0  CME profile =           1
+ 
+CME iteration =          25  CME coast =           0  CME profile =           2
+ 
+CME iteration =          25  CME coast =           0  CME profile =           3
+ 
+CME iteration =          25  CME coast =           0  CME profile =           4
+ 
+CME iteration =          25  CME coast =           0  CME profile =           5
+ 
+CME iteration =          25  CME coast =           0  CME profile =           6
+ 
+CME iteration =          25  CME coast =           0  CME profile =           8
+ 
+CME iteration =          25  CME coast =           0  CME profile =           9
+ 
+CME iteration =          25  CME coast =           0  CME profile =          10
+ 
+CME iteration =          25  CME coast =           0  CME profile =          11
+ 
+CME iteration =          25  CME coast =           0  CME profile =          12
+ 
+CME iteration =          25  CME coast =           0  CME profile =          13
+ 
+CME iteration =          25  CME coast =           0  CME profile =          14
+ 
+CME iteration =          25  CME coast =           0  CME profile =          15
+ 
+CME iteration =          25  CME coast =           0  CME profile =          16
+ 
+CME iteration =          25  CME coast =           0  CME profile =          17
+ 
+CME iteration =          26  CME coast =           0  CME profile =           0
+ 
+CME iteration =          26  CME coast =           0  CME profile =           1
+ 
+CME iteration =          26  CME coast =           0  CME profile =           2
+ 
+CME iteration =          26  CME coast =           0  CME profile =           3
+ 
+CME iteration =          26  CME coast =           0  CME profile =           5
+ 
+CME iteration =          26  CME coast =           0  CME profile =           6
+ 
+CME iteration =          26  CME coast =           0  CME profile =           7
+ 
+CME iteration =          26  CME coast =           0  CME profile =           8
+ 
+CME iteration =          26  CME coast =           0  CME profile =           9
+ 
+CME iteration =          26  CME coast =           0  CME profile =          10
+ 
+CME iteration =          26  CME coast =           0  CME profile =          11
+ 
+CME iteration =          26  CME coast =           0  CME profile =          12
+ 
+CME iteration =          26  CME coast =           0  CME profile =          13
+ 
+CME iteration =          27  CME coast =           0  CME profile =           1
+ 
+CME iteration =          27  CME coast =           0  CME profile =           2
+ 
+CME iteration =          27  CME coast =           0  CME profile =           3
+ 
+CME iteration =          27  CME coast =           0  CME profile =           4
+ 
+CME iteration =          27  CME coast =           0  CME profile =           5
+ 
+CME iteration =          27  CME coast =           0  CME profile =           6
+ 
+CME iteration =          27  CME coast =           0  CME profile =           7
+ 
+CME iteration =          27  CME coast =           0  CME profile =           8
+ 
+CME iteration =          27  CME coast =           0  CME profile =           9
+ 
+CME iteration =          27  CME coast =           0  CME profile =          10
+ 
+CME iteration =          27  CME coast =           0  CME profile =          11
+ 
+CME iteration =          27  CME coast =           0  CME profile =          12
+ 
+CME iteration =          27  CME coast =           0  CME profile =          13
+ 
+CME iteration =          27  CME coast =           0  CME profile =          14
+ 
+CME iteration =          27  CME coast =           0  CME profile =          15
+ 
+CME iteration =          27  CME coast =           0  CME profile =          16
+ 
+CME iteration =          27  CME coast =           0  CME profile =          17
+ 
+CME iteration =          27  CME coast =           0  CME profile =          18
+ 
+CME iteration =          28  CME coast =           0  CME profile =           2
+ 
+CME iteration =          28  CME coast =           0  CME profile =           3
+ 
+CME iteration =          28  CME coast =           0  CME profile =           4
+ 
+CME iteration =          28  CME coast =           0  CME profile =           5
+ 
+CME iteration =          28  CME coast =           0  CME profile =           6
+ 
+CME iteration =          28  CME coast =           0  CME profile =           7
+ 
+CME iteration =          28  CME coast =           0  CME profile =           8
+ 
+CME iteration =          28  CME coast =           0  CME profile =           9
+ 
+CME iteration =          28  CME coast =           0  CME profile =          10
+ 
+CME iteration =          28  CME coast =           0  CME profile =          11
+ 
+CME iteration =          28  CME coast =           0  CME profile =          12
+ 
+CME iteration =          28  CME coast =           0  CME profile =          13
+ 
+CME iteration =          28  CME coast =           0  CME profile =          14
+ 
+CME iteration =          28  CME coast =           0  CME profile =          15
+ 
+CME iteration =          28  CME coast =           0  CME profile =          16
+ 
+CME iteration =          28  CME coast =           0  CME profile =          17
+ 
+CME iteration =          28  CME coast =           0  CME profile =          18
+ 
+CME iteration =          28  CME coast =           0  CME profile =          19
+ 
+CME iteration =          29  CME coast =           0  CME profile =           1
+ 
+CME iteration =          29  CME coast =           0  CME profile =           2
+ 
+CME iteration =          29  CME coast =           0  CME profile =           3
+ 
+CME iteration =          29  CME coast =           0  CME profile =           4
+ 
+CME iteration =          29  CME coast =           0  CME profile =           6
+ 
+CME iteration =          29  CME coast =           0  CME profile =           7
+ 
+CME iteration =          29  CME coast =           0  CME profile =           8
+ 
+CME iteration =          29  CME coast =           0  CME profile =           9
+ 
+CME iteration =          29  CME coast =           0  CME profile =          10
+ 
+CME iteration =          29  CME coast =           0  CME profile =          11
+ 
+CME iteration =          29  CME coast =           0  CME profile =          12
+ 
+CME iteration =          29  CME coast =           0  CME profile =          13
+ 
+CME iteration =          29  CME coast =           0  CME profile =          14
+ 
+CME iteration =          29  CME coast =           0  CME profile =          15
+ 
+CME iteration =          29  CME coast =           0  CME profile =          16
+ 
+CME iteration =          29  CME coast =           0  CME profile =          17
+ 
+CME iteration =          30  CME coast =           0  CME profile =           1
+ 
+CME iteration =          30  CME coast =           0  CME profile =           2
+ 
+CME iteration =          30  CME coast =           0  CME profile =           3
+ 
+CME iteration =          30  CME coast =           0  CME profile =           5
+ 
+CME iteration =          30  CME coast =           0  CME profile =           6
+ 
+CME iteration =          30  CME coast =           0  CME profile =           7
+ 
+CME iteration =          30  CME coast =           0  CME profile =           8
+ 
+CME iteration =          30  CME coast =           0  CME profile =           9
+ 
+CME iteration =          30  CME coast =           0  CME profile =          10
+ 
+CME iteration =          30  CME coast =           0  CME profile =          11
+ 
+CME iteration =          30  CME coast =           0  CME profile =          12
+ 
+CME iteration =          30  CME coast =           0  CME profile =          13
+ 
+CME iteration =          30  CME coast =           0  CME profile =          14
+ 
+CME iteration =          31  CME coast =           0  CME profile =           1
+ 
+CME iteration =          31  CME coast =           0  CME profile =           2
+ 
+CME iteration =          31  CME coast =           0  CME profile =           3
+CShore WARNING 5: at end of landward marching computation, insufficient water depth HITE < EPS1 at node 107 line  1 time        0.000, HITE =       -0.002 EPS1 =        0.001 ITEQO = 1 QO(L) =  0.000000000
+ 
+CME iteration =          31  CME coast =           0  CME profile =           5
+ 
+CME iteration =          31  CME coast =           0  CME profile =           6
+ 
+CME iteration =          31  CME coast =           0  CME profile =           7
+ 
+CME iteration =          31  CME coast =           0  CME profile =           8
+ 
+CME iteration =          31  CME coast =           0  CME profile =           9
+ 
+CME iteration =          31  CME coast =           0  CME profile =          10
+ 
+CME iteration =          31  CME coast =           0  CME profile =          11
+ 
+CME iteration =          31  CME coast =           0  CME profile =          12
+ 
+CME iteration =          31  CME coast =           0  CME profile =          13
+ 
+CME iteration =          31  CME coast =           0  CME profile =          14
+ 
+CME iteration =          31  CME coast =           0  CME profile =          15
+ 
+CME iteration =          32  CME coast =           0  CME profile =           0
+ 
+CME iteration =          32  CME coast =           0  CME profile =           2
+ 
+CME iteration =          32  CME coast =           0  CME profile =           3
+ 
+CME iteration =          32  CME coast =           0  CME profile =           4
+ 
+CME iteration =          32  CME coast =           0  CME profile =           5
+ 
+CME iteration =          32  CME coast =           0  CME profile =           6
+ 
+CME iteration =          32  CME coast =           0  CME profile =           7
+ 
+CME iteration =          32  CME coast =           0  CME profile =           8
+ 
+CME iteration =          32  CME coast =           0  CME profile =           9
+ 
+CME iteration =          32  CME coast =           0  CME profile =          10
+ 
+CME iteration =          32  CME coast =           0  CME profile =          11
+ 
+CME iteration =          32  CME coast =           0  CME profile =          12
+ 
+CME iteration =          32  CME coast =           0  CME profile =          13
+ 
+CME iteration =          32  CME coast =           0  CME profile =          14
+ 
+CME iteration =          32  CME coast =           0  CME profile =          15
+ 
+CME iteration =          32  CME coast =           0  CME profile =          16
+ 
+CME iteration =          32  CME coast =           0  CME profile =          17
+ 
+CME iteration =          32  CME coast =           0  CME profile =          18
+ 
+CME iteration =          32  CME coast =           0  CME profile =          19
+ 
+CME iteration =          33  CME coast =           0  CME profile =           1
+ 
+CME iteration =          33  CME coast =           0  CME profile =           2
+ 
+CME iteration =          33  CME coast =           0  CME profile =           3
+ 
+CME iteration =          33  CME coast =           0  CME profile =           4
+ 
+CME iteration =          33  CME coast =           0  CME profile =           5
+ 
+CME iteration =          33  CME coast =           0  CME profile =           6
+ 
+CME iteration =          33  CME coast =           0  CME profile =           7
+ 
+CME iteration =          33  CME coast =           0  CME profile =           8
+ 
+CME iteration =          33  CME coast =           0  CME profile =           9
+ 
+CME iteration =          33  CME coast =           0  CME profile =          10
+ 
+CME iteration =          33  CME coast =           0  CME profile =          11
+ 
+CME iteration =          33  CME coast =           0  CME profile =          12
+ 
+CME iteration =          33  CME coast =           0  CME profile =          13
+ 
+CME iteration =          33  CME coast =           0  CME profile =          14
+ 
+CME iteration =          33  CME coast =           0  CME profile =          15
+ 
+CME iteration =          33  CME coast =           0  CME profile =          16
+ 
+CME iteration =          33  CME coast =           0  CME profile =          17
+ 
+CME iteration =          33  CME coast =           0  CME profile =          18
+ 
+CME iteration =          34  CME coast =           0  CME profile =           1
+ 
+CME iteration =          34  CME coast =           0  CME profile =           2
+ 
+CME iteration =          34  CME coast =           0  CME profile =           3
+ 
+CME iteration =          34  CME coast =           0  CME profile =           4
+ 
+CME iteration =          34  CME coast =           0  CME profile =           5
+ 
+CME iteration =          34  CME coast =           0  CME profile =           6
+ 
+CME iteration =          34  CME coast =           0  CME profile =           7
+ 
+CME iteration =          34  CME coast =           0  CME profile =           8
+ 
+CME iteration =          34  CME coast =           0  CME profile =           9
+ 
+CME iteration =          34  CME coast =           0  CME profile =          10
+ 
+CME iteration =          34  CME coast =           0  CME profile =          11
+ 
+CME iteration =          34  CME coast =           0  CME profile =          12
+ 
+CME iteration =          34  CME coast =           0  CME profile =          13
+ 
+CME iteration =          34  CME coast =           0  CME profile =          14
+ 
+CME iteration =          34  CME coast =           0  CME profile =          15
+ 
+CME iteration =          34  CME coast =           0  CME profile =          16
+ 
+CME iteration =          34  CME coast =           0  CME profile =          17
+ 
+CME iteration =          34  CME coast =           0  CME profile =          18
+ 
+CME iteration =          35  CME coast =           0  CME profile =           0
+ 
+CME iteration =          35  CME coast =           0  CME profile =           1
+ 
+CME iteration =          35  CME coast =           0  CME profile =           2
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node  94 line  1 time        0.000 DUM =       -0.099 ITEQO = 1 ITE = 1 QO(L) =  0.000000000
+ 
+CME iteration =          35  CME coast =           0  CME profile =           3
+ 
+CME iteration =          35  CME coast =           0  CME profile =           4
+ 
+CME iteration =          35  CME coast =           0  CME profile =           5
+ 
+CME iteration =          35  CME coast =           0  CME profile =           6
+ 
+CME iteration =          35  CME coast =           0  CME profile =           7
+ 
+CME iteration =          35  CME coast =           0  CME profile =           8
+ 
+CME iteration =          35  CME coast =           0  CME profile =           9
+ 
+CME iteration =          35  CME coast =           0  CME profile =          10
+ 
+CME iteration =          35  CME coast =           0  CME profile =          11
+ 
+CME iteration =          35  CME coast =           0  CME profile =          12
+ 
+CME iteration =          35  CME coast =           0  CME profile =          13
+ 
+CME iteration =          35  CME coast =           0  CME profile =          14
+ 
+CME iteration =          35  CME coast =           0  CME profile =          15
+ 
+CME iteration =          35  CME coast =           0  CME profile =          16
+ 
+CME iteration =          35  CME coast =           0  CME profile =          17
+ 
+CME iteration =          35  CME coast =           0  CME profile =          18
+ 
+CME iteration =          36  CME coast =           0  CME profile =           0
+ 
+CME iteration =          36  CME coast =           0  CME profile =           1
+ 
+CME iteration =          36  CME coast =           0  CME profile =           2
+ 
+CME iteration =          36  CME coast =           0  CME profile =           3
+ 
+CME iteration =          36  CME coast =           0  CME profile =           4
+ 
+CME iteration =          36  CME coast =           0  CME profile =           5
+ 
+CME iteration =          36  CME coast =           0  CME profile =           6
+ 
+CME iteration =          36  CME coast =           0  CME profile =           7
+ 
+CME iteration =          36  CME coast =           0  CME profile =           8
+ 
+CME iteration =          36  CME coast =           0  CME profile =           9
+ 
+CME iteration =          36  CME coast =           0  CME profile =          10
+ 
+CME iteration =          36  CME coast =           0  CME profile =          11
+ 
+CME iteration =          36  CME coast =           0  CME profile =          12
+ 
+CME iteration =          36  CME coast =           0  CME profile =          13
+ 
+CME iteration =          36  CME coast =           0  CME profile =          14
+ 
+CME iteration =          36  CME coast =           0  CME profile =          15
+ 
+CME iteration =          36  CME coast =           0  CME profile =          16
+ 
+CME iteration =          37  CME coast =           0  CME profile =           0
+ 
+CME iteration =          37  CME coast =           0  CME profile =           1
+ 
+CME iteration =          37  CME coast =           0  CME profile =           2
+ 
+CME iteration =          37  CME coast =           0  CME profile =           3
+ 
+CME iteration =          37  CME coast =           0  CME profile =           4
+ 
+CME iteration =          37  CME coast =           0  CME profile =           5
+ 
+CME iteration =          37  CME coast =           0  CME profile =           6
+ 
+CME iteration =          37  CME coast =           0  CME profile =           7
+ 
+CME iteration =          37  CME coast =           0  CME profile =           8
+ 
+CME iteration =          37  CME coast =           0  CME profile =           9
+ 
+CME iteration =          37  CME coast =           0  CME profile =          10
+ 
+CME iteration =          37  CME coast =           0  CME profile =          11
+ 
+CME iteration =          37  CME coast =           0  CME profile =          12
+ 
+CME iteration =          37  CME coast =           0  CME profile =          13
+ 
+CME iteration =          37  CME coast =           0  CME profile =          14
+ 
+CME iteration =          37  CME coast =           0  CME profile =          15
+ 
+CME iteration =          37  CME coast =           0  CME profile =          16
+ 
+CME iteration =          37  CME coast =           0  CME profile =          17
+ 
+CME iteration =          38  CME coast =           0  CME profile =           0
+ 
+CME iteration =          38  CME coast =           0  CME profile =           1
+ 
+CME iteration =          38  CME coast =           0  CME profile =           2
+ 
+CME iteration =          38  CME coast =           0  CME profile =           3
+ 
+CME iteration =          38  CME coast =           0  CME profile =           4
+ 
+CME iteration =          38  CME coast =           0  CME profile =           5
+ 
+CME iteration =          38  CME coast =           0  CME profile =           6
+ 
+CME iteration =          38  CME coast =           0  CME profile =           7
+ 
+CME iteration =          38  CME coast =           0  CME profile =           8
+ 
+CME iteration =          38  CME coast =           0  CME profile =           9
+ 
+CME iteration =          38  CME coast =           0  CME profile =          10
+ 
+CME iteration =          38  CME coast =           0  CME profile =          11
+ 
+CME iteration =          38  CME coast =           0  CME profile =          12
+ 
+CME iteration =          38  CME coast =           0  CME profile =          13
+ 
+CME iteration =          38  CME coast =           0  CME profile =          14
+ 
+CME iteration =          38  CME coast =           0  CME profile =          15
+ 
+CME iteration =          38  CME coast =           0  CME profile =          16
+ 
+CME iteration =          39  CME coast =           0  CME profile =           0
+ 
+CME iteration =          39  CME coast =           0  CME profile =           1
+ 
+CME iteration =          39  CME coast =           0  CME profile =           2
+ 
+CME iteration =          39  CME coast =           0  CME profile =           3
+ 
+CME iteration =          39  CME coast =           0  CME profile =           4
+ 
+CME iteration =          39  CME coast =           0  CME profile =           5
+ 
+CME iteration =          39  CME coast =           0  CME profile =           6
+ 
+CME iteration =          39  CME coast =           0  CME profile =           7
+ 
+CME iteration =          39  CME coast =           0  CME profile =           8
+ 
+CME iteration =          39  CME coast =           0  CME profile =           9
+ 
+CME iteration =          39  CME coast =           0  CME profile =          10
+ 
+CME iteration =          39  CME coast =           0  CME profile =          11
+ 
+CME iteration =          39  CME coast =           0  CME profile =          12
+ 
+CME iteration =          39  CME coast =           0  CME profile =          13
+ 
+CME iteration =          39  CME coast =           0  CME profile =          14
+ 
+CME iteration =          39  CME coast =           0  CME profile =          15
+ 
+CME iteration =          39  CME coast =           0  CME profile =          16
+ 
+CME iteration =          39  CME coast =           0  CME profile =          17
+ 
+CME iteration =          40  CME coast =           0  CME profile =           1
+ 
+CME iteration =          40  CME coast =           0  CME profile =           2
+ 
+CME iteration =          40  CME coast =           0  CME profile =           3
+ 
+CME iteration =          40  CME coast =           0  CME profile =           4
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   4 Line L =  1 TIME =        0.000
+ 
+CME iteration =          40  CME coast =           0  CME profile =           5
+ 
+CME iteration =          40  CME coast =           0  CME profile =           6
+ 
+CME iteration =          40  CME coast =           0  CME profile =           7
+ 
+CME iteration =          40  CME coast =           0  CME profile =           8
+ 
+CME iteration =          40  CME coast =           0  CME profile =           9
+ 
+CME iteration =          40  CME coast =           0  CME profile =          10
+ 
+CME iteration =          40  CME coast =           0  CME profile =          11
+ 
+CME iteration =          40  CME coast =           0  CME profile =          12
+ 
+CME iteration =          40  CME coast =           0  CME profile =          13
+ 
+CME iteration =          40  CME coast =           0  CME profile =          14
+ 
+CME iteration =          40  CME coast =           0  CME profile =          15
+ 
+CME iteration =          40  CME coast =           0  CME profile =          16
+ 
+CME iteration =          41  CME coast =           0  CME profile =           0
+ 
+CME iteration =          41  CME coast =           0  CME profile =           1
+ 
+CME iteration =          41  CME coast =           0  CME profile =           2
+ 
+CME iteration =          41  CME coast =           0  CME profile =           3
+ 
+CME iteration =          41  CME coast =           0  CME profile =           4
+ 
+CME iteration =          41  CME coast =           0  CME profile =           5
+ 
+CME iteration =          41  CME coast =           0  CME profile =           6
+ 
+CME iteration =          41  CME coast =           0  CME profile =           7
+ 
+CME iteration =          41  CME coast =           0  CME profile =           8
+ 
+CME iteration =          41  CME coast =           0  CME profile =           9
+ 
+CME iteration =          41  CME coast =           0  CME profile =          10
+ 
+CME iteration =          41  CME coast =           0  CME profile =          11
+ 
+CME iteration =          41  CME coast =           0  CME profile =          12
+ 
+CME iteration =          41  CME coast =           0  CME profile =          13
+ 
+CME iteration =          41  CME coast =           0  CME profile =          14
+ 
+CME iteration =          41  CME coast =           0  CME profile =          15
+ 
+CME iteration =          42  CME coast =           0  CME profile =           0
+ 
+CME iteration =          42  CME coast =           0  CME profile =           1
+ 
+CME iteration =          42  CME coast =           0  CME profile =           2
+ 
+CME iteration =          42  CME coast =           0  CME profile =           3
+ 
+CME iteration =          42  CME coast =           0  CME profile =           4
+ 
+CME iteration =          42  CME coast =           0  CME profile =           5
+ 
+CME iteration =          42  CME coast =           0  CME profile =           6
+ 
+CME iteration =          42  CME coast =           0  CME profile =           7
+ 
+CME iteration =          42  CME coast =           0  CME profile =           8
+ 
+CME iteration =          42  CME coast =           0  CME profile =           9
+ 
+CME iteration =          42  CME coast =           0  CME profile =          10
+ 
+CME iteration =          42  CME coast =           0  CME profile =          11
+ 
+CME iteration =          42  CME coast =           0  CME profile =          12
+ 
+CME iteration =          42  CME coast =           0  CME profile =          13
+ 
+CME iteration =          43  CME coast =           0  CME profile =           0
+ 
+CME iteration =          43  CME coast =           0  CME profile =           1
+ 
+CME iteration =          43  CME coast =           0  CME profile =           2
+ 
+CME iteration =          43  CME coast =           0  CME profile =           3
+ 
+CME iteration =          43  CME coast =           0  CME profile =           4
+ 
+CME iteration =          43  CME coast =           0  CME profile =           5
+ 
+CME iteration =          43  CME coast =           0  CME profile =           6
+ 
+CME iteration =          43  CME coast =           0  CME profile =           7
+ 
+CME iteration =          43  CME coast =           0  CME profile =           8
+ 
+CME iteration =          43  CME coast =           0  CME profile =           9
+ 
+CME iteration =          43  CME coast =           0  CME profile =          10
+ 
+CME iteration =          43  CME coast =           0  CME profile =          11
+ 
+CME iteration =          43  CME coast =           0  CME profile =          12
+ 
+CME iteration =          44  CME coast =           0  CME profile =           0
+ 
+CME iteration =          44  CME coast =           0  CME profile =           1
+ 
+CME iteration =          44  CME coast =           0  CME profile =           2
+ 
+CME iteration =          44  CME coast =           0  CME profile =           3
+ 
+CME iteration =          44  CME coast =           0  CME profile =           4
+ 
+CME iteration =          44  CME coast =           0  CME profile =           5
+ 
+CME iteration =          44  CME coast =           0  CME profile =           6
+ 
+CME iteration =          44  CME coast =           0  CME profile =           7
+ 
+CME iteration =          44  CME coast =           0  CME profile =           8
+ 
+CME iteration =          44  CME coast =           0  CME profile =           9
+ 
+CME iteration =          44  CME coast =           0  CME profile =          10
+ 
+CME iteration =          44  CME coast =           0  CME profile =          11
+ 
+CME iteration =          44  CME coast =           0  CME profile =          12
+ 
+CME iteration =          44  CME coast =           0  CME profile =          13
+ 
+CME iteration =          45  CME coast =           0  CME profile =           0
+ 
+CME iteration =          45  CME coast =           0  CME profile =           1
+ 
+CME iteration =          45  CME coast =           0  CME profile =           2
+ 
+CME iteration =          45  CME coast =           0  CME profile =           3
+ 
+CME iteration =          45  CME coast =           0  CME profile =           4
+ 
+CME iteration =          45  CME coast =           0  CME profile =           5
+ 
+CME iteration =          45  CME coast =           0  CME profile =           6
+ 
+CME iteration =          45  CME coast =           0  CME profile =           7
+ 
+CME iteration =          45  CME coast =           0  CME profile =           9
+ 
+CME iteration =          45  CME coast =           0  CME profile =          10
+ 
+CME iteration =          45  CME coast =           0  CME profile =          11
+ 
+CME iteration =          45  CME coast =           0  CME profile =          12
+ 
+CME iteration =          45  CME coast =           0  CME profile =          13
+ 
+CME iteration =          45  CME coast =           0  CME profile =          14
+ 
+CME iteration =          45  CME coast =           0  CME profile =          15
+ 
+CME iteration =          45  CME coast =           0  CME profile =          16
+ 
+CME iteration =          45  CME coast =           0  CME profile =          17
+ 
+CME iteration =          46  CME coast =           0  CME profile =           0
+ 
+CME iteration =          46  CME coast =           0  CME profile =           1
+ 
+CME iteration =          46  CME coast =           0  CME profile =           3
+ 
+CME iteration =          46  CME coast =           0  CME profile =           4
+ 
+CME iteration =          46  CME coast =           0  CME profile =           5
+ 
+CME iteration =          46  CME coast =           0  CME profile =           6
+ 
+CME iteration =          46  CME coast =           0  CME profile =           7
+ 
+CME iteration =          46  CME coast =           0  CME profile =           9
+ 
+CME iteration =          46  CME coast =           0  CME profile =          10
+ 
+CME iteration =          46  CME coast =           0  CME profile =          11
+ 
+CME iteration =          46  CME coast =           0  CME profile =          12
+ 
+CME iteration =          46  CME coast =           0  CME profile =          13
+ 
+CME iteration =          46  CME coast =           0  CME profile =          14
+ 
+CME iteration =          46  CME coast =           0  CME profile =          15
+ 
+CME iteration =          46  CME coast =           0  CME profile =          16
+ 
+CME iteration =          47  CME coast =           0  CME profile =           0
+ 
+CME iteration =          47  CME coast =           0  CME profile =           1
+ 
+CME iteration =          47  CME coast =           0  CME profile =           2
+ 
+CME iteration =          47  CME coast =           0  CME profile =           4
+ 
+CME iteration =          47  CME coast =           0  CME profile =           5
+ 
+CME iteration =          47  CME coast =           0  CME profile =           6
+ 
+CME iteration =          47  CME coast =           0  CME profile =           7
+ 
+CME iteration =          47  CME coast =           0  CME profile =           8
+ 
+CME iteration =          47  CME coast =           0  CME profile =           9
+ 
+CME iteration =          47  CME coast =           0  CME profile =          10
+ 
+CME iteration =          47  CME coast =           0  CME profile =          11
+ 
+CME iteration =          47  CME coast =           0  CME profile =          12
+ 
+CME iteration =          47  CME coast =           0  CME profile =          13
+ 
+CME iteration =          47  CME coast =           0  CME profile =          14
+ 
+CME iteration =          48  CME coast =           0  CME profile =           0
+ 
+CME iteration =          48  CME coast =           0  CME profile =           1
+ 
+CME iteration =          48  CME coast =           0  CME profile =           2
+ 
+CME iteration =          48  CME coast =           0  CME profile =           3
+ 
+CME iteration =          48  CME coast =           0  CME profile =           4
+ 
+CME iteration =          48  CME coast =           0  CME profile =           5
+ 
+CME iteration =          48  CME coast =           0  CME profile =           6
+ 
+CME iteration =          48  CME coast =           0  CME profile =           7
+ 
+CME iteration =          48  CME coast =           0  CME profile =           8
+ 
+CME iteration =          48  CME coast =           0  CME profile =           9
+ 
+CME iteration =          48  CME coast =           0  CME profile =          10
+ 
+CME iteration =          48  CME coast =           0  CME profile =          11
+ 
+CME iteration =          48  CME coast =           0  CME profile =          12
+ 
+CME iteration =          48  CME coast =           0  CME profile =          13
+ 
+CME iteration =          49  CME coast =           0  CME profile =           0
+ 
+CME iteration =          49  CME coast =           0  CME profile =           2
+ 
+CME iteration =          49  CME coast =           0  CME profile =           3
+ 
+CME iteration =          49  CME coast =           0  CME profile =           4
+ 
+CME iteration =          49  CME coast =           0  CME profile =           5
+ 
+CME iteration =          49  CME coast =           0  CME profile =           6
+ 
+CME iteration =          49  CME coast =           0  CME profile =           7
+ 
+CME iteration =          49  CME coast =           0  CME profile =           8
+ 
+CME iteration =          49  CME coast =           0  CME profile =           9
+ 
+CME iteration =          49  CME coast =           0  CME profile =          10
+ 
+CME iteration =          49  CME coast =           0  CME profile =          11
+ 
+CME iteration =          49  CME coast =           0  CME profile =          12
+ 
+CME iteration =          49  CME coast =           0  CME profile =          13
+ 
+CME iteration =          49  CME coast =           0  CME profile =          14
+ 
+CME iteration =          49  CME coast =           0  CME profile =          15
+ 
+CME iteration =          50  CME coast =           0  CME profile =           2
+ 
+CME iteration =          50  CME coast =           0  CME profile =           3
+ 
+CME iteration =          50  CME coast =           0  CME profile =           4
+ 
+CME iteration =          50  CME coast =           0  CME profile =           5
+ 
+CME iteration =          50  CME coast =           0  CME profile =           7
+ 
+CME iteration =          50  CME coast =           0  CME profile =           8
+ 
+CME iteration =          50  CME coast =           0  CME profile =           9
+ 
+CME iteration =          50  CME coast =           0  CME profile =          10
+ 
+CME iteration =          50  CME coast =           0  CME profile =          11
+ 
+CME iteration =          50  CME coast =           0  CME profile =          12
+ 
+CME iteration =          51  CME coast =           0  CME profile =           2
+ 
+CME iteration =          51  CME coast =           0  CME profile =           3
+ 
+CME iteration =          51  CME coast =           0  CME profile =           4
+ 
+CME iteration =          51  CME coast =           0  CME profile =           5
+ 
+CME iteration =          51  CME coast =           0  CME profile =           6
+ 
+CME iteration =          51  CME coast =           0  CME profile =           7
+ 
+CME iteration =          51  CME coast =           0  CME profile =           8
+ 
+CME iteration =          51  CME coast =           0  CME profile =           9
+ 
+CME iteration =          51  CME coast =           0  CME profile =          10
+ 
+CME iteration =          51  CME coast =           0  CME profile =          11
+ 
+CME iteration =          51  CME coast =           0  CME profile =          12
+ 
+CME iteration =          51  CME coast =           0  CME profile =          13
+ 
+CME iteration =          52  CME coast =           0  CME profile =           1
+ 
+CME iteration =          52  CME coast =           0  CME profile =           3
+ 
+CME iteration =          52  CME coast =           0  CME profile =           4
+ 
+CME iteration =          52  CME coast =           0  CME profile =           5
+ 
+CME iteration =          52  CME coast =           0  CME profile =           6
+ 
+CME iteration =          52  CME coast =           0  CME profile =           7
+ 
+CME iteration =          52  CME coast =           0  CME profile =           8
+ 
+CME iteration =          52  CME coast =           0  CME profile =           9
+ 
+CME iteration =          52  CME coast =           0  CME profile =          10
+ 
+CME iteration =          52  CME coast =           0  CME profile =          11
+ 
+CME iteration =          52  CME coast =           0  CME profile =          12
+ 
+CME iteration =          52  CME coast =           0  CME profile =          13
+ 
+CME iteration =          52  CME coast =           0  CME profile =          14
+ 
+CME iteration =          52  CME coast =           0  CME profile =          15
+ 
+CME iteration =          52  CME coast =           0  CME profile =          16
+ 
+CME iteration =          52  CME coast =           0  CME profile =          17
+ 
+CME iteration =          53  CME coast =           0  CME profile =           1
+ 
+CME iteration =          53  CME coast =           0  CME profile =           2
+ 
+CME iteration =          53  CME coast =           0  CME profile =           3
+ 
+CME iteration =          53  CME coast =           0  CME profile =           4
+ 
+CME iteration =          53  CME coast =           0  CME profile =           5
+ 
+CME iteration =          53  CME coast =           0  CME profile =           6
+ 
+CME iteration =          53  CME coast =           0  CME profile =           7
+ 
+CME iteration =          53  CME coast =           0  CME profile =           8
+ 
+CME iteration =          53  CME coast =           0  CME profile =           9
+ 
+CME iteration =          53  CME coast =           0  CME profile =          10
+ 
+CME iteration =          53  CME coast =           0  CME profile =          12
+ 
+CME iteration =          53  CME coast =           0  CME profile =          13
+ 
+CME iteration =          53  CME coast =           0  CME profile =          14
+ 
+CME iteration =          53  CME coast =           0  CME profile =          15
+ 
+CME iteration =          53  CME coast =           0  CME profile =          16
+ 
+CME iteration =          53  CME coast =           0  CME profile =          17
+ 
+CME iteration =          53  CME coast =           0  CME profile =          18
+ 
+CME iteration =          54  CME coast =           0  CME profile =           2
+ 
+CME iteration =          54  CME coast =           0  CME profile =           3
+ 
+CME iteration =          54  CME coast =           0  CME profile =           4
+ 
+CME iteration =          54  CME coast =           0  CME profile =           5
+ 
+CME iteration =          54  CME coast =           0  CME profile =           7
+ 
+CME iteration =          54  CME coast =           0  CME profile =           8
+ 
+CME iteration =          54  CME coast =           0  CME profile =           9
+ 
+CME iteration =          54  CME coast =           0  CME profile =          10
+ 
+CME iteration =          54  CME coast =           0  CME profile =          12
+ 
+CME iteration =          54  CME coast =           0  CME profile =          14
+ 
+CME iteration =          54  CME coast =           0  CME profile =          15
+ 
+CME iteration =          54  CME coast =           0  CME profile =          16
+ 
+CME iteration =          54  CME coast =           0  CME profile =          17
+ 
+CME iteration =          55  CME coast =           0  CME profile =           1
+ 
+CME iteration =          55  CME coast =           0  CME profile =           2
+ 
+CME iteration =          55  CME coast =           0  CME profile =           3
+ 
+CME iteration =          55  CME coast =           0  CME profile =           4
+ 
+CME iteration =          55  CME coast =           0  CME profile =           5
+ 
+CME iteration =          55  CME coast =           0  CME profile =           6
+ 
+CME iteration =          55  CME coast =           0  CME profile =           8
+ 
+CME iteration =          55  CME coast =           0  CME profile =           9
+ 
+CME iteration =          55  CME coast =           0  CME profile =          10
+ 
+CME iteration =          55  CME coast =           0  CME profile =          11
+ 
+CME iteration =          55  CME coast =           0  CME profile =          12
+ 
+CME iteration =          56  CME coast =           0  CME profile =           1
+ 
+CME iteration =          56  CME coast =           0  CME profile =           2
+ 
+CME iteration =          56  CME coast =           0  CME profile =           3
+ 
+CME iteration =          56  CME coast =           0  CME profile =           4
+ 
+CME iteration =          56  CME coast =           0  CME profile =           6
+ 
+CME iteration =          56  CME coast =           0  CME profile =           7
+ 
+CME iteration =          56  CME coast =           0  CME profile =           8
+ 
+CME iteration =          56  CME coast =           0  CME profile =           9
+ 
+CME iteration =          56  CME coast =           0  CME profile =          10
+ 
+CME iteration =          56  CME coast =           0  CME profile =          11
+ 
+CME iteration =          56  CME coast =           0  CME profile =          12
+ 
+CME iteration =          56  CME coast =           0  CME profile =          13
+ 
+CME iteration =          56  CME coast =           0  CME profile =          14
+ 
+CME iteration =          56  CME coast =           0  CME profile =          15
+ 
+CME iteration =          56  CME coast =           0  CME profile =          16
+ 
+CME iteration =          56  CME coast =           0  CME profile =          17
+ 
+CME iteration =          56  CME coast =           0  CME profile =          18
+ 
+CME iteration =          57  CME coast =           0  CME profile =           0
+ 
+CME iteration =          57  CME coast =           0  CME profile =           1
+ 
+CME iteration =          57  CME coast =           0  CME profile =           2
+ 
+CME iteration =          57  CME coast =           0  CME profile =           3
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   3 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   4 line  1 time        0.000 DUM =       -0.406 ITEQO = 1 ITE =35 QO(L) =  0.000000000
+ 
+CME iteration =          57  CME coast =           0  CME profile =           5
+ 
+CME iteration =          57  CME coast =           0  CME profile =           6
+ 
+CME iteration =          57  CME coast =           0  CME profile =           7
+ 
+CME iteration =          57  CME coast =           0  CME profile =           8
+ 
+CME iteration =          57  CME coast =           0  CME profile =           9
+ 
+CME iteration =          57  CME coast =           0  CME profile =          10
+ 
+CME iteration =          57  CME coast =           0  CME profile =          11
+ 
+CME iteration =          57  CME coast =           0  CME profile =          12
+ 
+CME iteration =          57  CME coast =           0  CME profile =          13
+ 
+CME iteration =          57  CME coast =           0  CME profile =          14
+ 
+CME iteration =          57  CME coast =           0  CME profile =          15
+ 
+CME iteration =          57  CME coast =           0  CME profile =          16
+ 
+CME iteration =          57  CME coast =           0  CME profile =          17
+ 
+CME iteration =          57  CME coast =           0  CME profile =          18
+ 
+CME iteration =          57  CME coast =           0  CME profile =          19
+ 
+CME iteration =          57  CME coast =           0  CME profile =          20
+ 
+CME iteration =          58  CME coast =           0  CME profile =           0
+ 
+CME iteration =          58  CME coast =           0  CME profile =           1
+ 
+CME iteration =          58  CME coast =           0  CME profile =           2
+ 
+CME iteration =          58  CME coast =           0  CME profile =           4
+ 
+CME iteration =          58  CME coast =           0  CME profile =           5
+ 
+CME iteration =          58  CME coast =           0  CME profile =           6
+ 
+CME iteration =          58  CME coast =           0  CME profile =           7
+ 
+CME iteration =          58  CME coast =           0  CME profile =           8
+ 
+CME iteration =          58  CME coast =           0  CME profile =           9
+ 
+CME iteration =          58  CME coast =           0  CME profile =          10
+ 
+CME iteration =          58  CME coast =           0  CME profile =          11
+ 
+CME iteration =          58  CME coast =           0  CME profile =          12
+ 
+CME iteration =          58  CME coast =           0  CME profile =          13
+ 
+CME iteration =          58  CME coast =           0  CME profile =          14
+ 
+CME iteration =          59  CME coast =           0  CME profile =           0
+ 
+CME iteration =          59  CME coast =           0  CME profile =           1
+ 
+CME iteration =          59  CME coast =           0  CME profile =           2
+ 
+CME iteration =          59  CME coast =           0  CME profile =           4
+ 
+CME iteration =          59  CME coast =           0  CME profile =           6
+ 
+CME iteration =          59  CME coast =           0  CME profile =           7
+ 
+CME iteration =          59  CME coast =           0  CME profile =           8
+ 
+CME iteration =          59  CME coast =           0  CME profile =           9
+ 
+CME iteration =          59  CME coast =           0  CME profile =          10
+ 
+CME iteration =          59  CME coast =           0  CME profile =          11
+ 
+CME iteration =          59  CME coast =           0  CME profile =          12
+ 
+CME iteration =          59  CME coast =           0  CME profile =          13
+ 
+CME iteration =          60  CME coast =           0  CME profile =           0
+ 
+CME iteration =          60  CME coast =           0  CME profile =           2
+ 
+CME iteration =          60  CME coast =           0  CME profile =           3
+ 
+CME iteration =          60  CME coast =           0  CME profile =           4
+ 
+CME iteration =          60  CME coast =           0  CME profile =           5
+ 
+CME iteration =          60  CME coast =           0  CME profile =           6
+ 
+CME iteration =          60  CME coast =           0  CME profile =           7
+ 
+CME iteration =          60  CME coast =           0  CME profile =           8
+ 
+CME iteration =          60  CME coast =           0  CME profile =           9
+ 
+CME iteration =          60  CME coast =           0  CME profile =          10
+ 
+CME iteration =          60  CME coast =           0  CME profile =          11
+ 
+CME iteration =          60  CME coast =           0  CME profile =          12
+ 
+CME iteration =          60  CME coast =           0  CME profile =          13
+ 
+CME iteration =          60  CME coast =           0  CME profile =          14
+ 
+CME iteration =          61  CME coast =           0  CME profile =           0
+ 
+CME iteration =          61  CME coast =           0  CME profile =           1
+ 
+CME iteration =          61  CME coast =           0  CME profile =           2
+ 
+CME iteration =          61  CME coast =           0  CME profile =           4
+ 
+CME iteration =          61  CME coast =           0  CME profile =           5
+ 
+CME iteration =          61  CME coast =           0  CME profile =           6
+ 
+CME iteration =          61  CME coast =           0  CME profile =          10
+ 
+CME iteration =          61  CME coast =           0  CME profile =          11
+ 
+CME iteration =          61  CME coast =           0  CME profile =          12
+ 
+CME iteration =          61  CME coast =           0  CME profile =          13
+ 
+CME iteration =          61  CME coast =           0  CME profile =          14
+ 
+CME iteration =          61  CME coast =           0  CME profile =          15
+ 
+CME iteration =          61  CME coast =           0  CME profile =          16
+ 
+CME iteration =          61  CME coast =           0  CME profile =          17
+ 
+CME iteration =          61  CME coast =           0  CME profile =          18
+ 
+CME iteration =          61  CME coast =           0  CME profile =          19
+ 
+CME iteration =          62  CME coast =           0  CME profile =           0
+ 
+CME iteration =          62  CME coast =           0  CME profile =           1
+ 
+CME iteration =          62  CME coast =           0  CME profile =           2
+ 
+CME iteration =          62  CME coast =           0  CME profile =           3
+ 
+CME iteration =          62  CME coast =           0  CME profile =           5
+ 
+CME iteration =          62  CME coast =           0  CME profile =           8
+ 
+CME iteration =          62  CME coast =           0  CME profile =           9
+ 
+CME iteration =          62  CME coast =           0  CME profile =          10
+ 
+CME iteration =          62  CME coast =           0  CME profile =          11
+ 
+CME iteration =          62  CME coast =           0  CME profile =          12
+ 
+CME iteration =          62  CME coast =           0  CME profile =          13
+ 
+CME iteration =          62  CME coast =           0  CME profile =          14
+ 
+CME iteration =          62  CME coast =           0  CME profile =          15
+ 
+CME iteration =          62  CME coast =           0  CME profile =          16
+ 
+CME iteration =          62  CME coast =           0  CME profile =          17
+ 
+CME iteration =          62  CME coast =           0  CME profile =          18
+ 
+CME iteration =          63  CME coast =           0  CME profile =           0
+ 
+CME iteration =          63  CME coast =           0  CME profile =           1
+ 
+CME iteration =          63  CME coast =           0  CME profile =           2
+ 
+CME iteration =          63  CME coast =           0  CME profile =           4
+ 
+CME iteration =          63  CME coast =           0  CME profile =           5
+ 
+CME iteration =          63  CME coast =           0  CME profile =           6
+ 
+CME iteration =          63  CME coast =           0  CME profile =           7
+ 
+CME iteration =          63  CME coast =           0  CME profile =           8
+ 
+CME iteration =          63  CME coast =           0  CME profile =           9
+ 
+CME iteration =          63  CME coast =           0  CME profile =          10
+ 
+CME iteration =          63  CME coast =           0  CME profile =          11
+ 
+CME iteration =          63  CME coast =           0  CME profile =          12
+ 
+CME iteration =          63  CME coast =           0  CME profile =          13
+ 
+CME iteration =          63  CME coast =           0  CME profile =          14
+ 
+CME iteration =          63  CME coast =           0  CME profile =          15
+ 
+CME iteration =          63  CME coast =           0  CME profile =          16
+ 
+CME iteration =          63  CME coast =           0  CME profile =          17
+ 
+CME iteration =          64  CME coast =           0  CME profile =           0
+ 
+CME iteration =          64  CME coast =           0  CME profile =           1
+ 
+CME iteration =          64  CME coast =           0  CME profile =           2
+ 
+CME iteration =          64  CME coast =           0  CME profile =           4
+ 
+CME iteration =          64  CME coast =           0  CME profile =           5
+ 
+CME iteration =          64  CME coast =           0  CME profile =           6
+ 
+CME iteration =          64  CME coast =           0  CME profile =           7
+ 
+CME iteration =          64  CME coast =           0  CME profile =           8
+ 
+CME iteration =          64  CME coast =           0  CME profile =           9
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   4 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   5 line  1 time        0.000 DUM =       -0.133 ITEQO = 1 ITE =16 QO(L) =  0.000000000
+ 
+CME iteration =          64  CME coast =           0  CME profile =          10
+ 
+CME iteration =          64  CME coast =           0  CME profile =          11
+ 
+CME iteration =          64  CME coast =           0  CME profile =          12
+ 
+CME iteration =          64  CME coast =           0  CME profile =          13
+ 
+CME iteration =          64  CME coast =           0  CME profile =          14
+ 
+CME iteration =          64  CME coast =           0  CME profile =          15
+ 
+CME iteration =          64  CME coast =           0  CME profile =          16
+ 
+CME iteration =          64  CME coast =           0  CME profile =          17
+ 
+CME iteration =          65  CME coast =           0  CME profile =           0
+ 
+CME iteration =          65  CME coast =           0  CME profile =           1
+ 
+CME iteration =          65  CME coast =           0  CME profile =           2
+ 
+CME iteration =          65  CME coast =           0  CME profile =           3
+ 
+CME iteration =          65  CME coast =           0  CME profile =           6
+ 
+CME iteration =          65  CME coast =           0  CME profile =           7
+ 
+CME iteration =          65  CME coast =           0  CME profile =           8
+ 
+CME iteration =          65  CME coast =           0  CME profile =           9
+ 
+CME iteration =          65  CME coast =           0  CME profile =          10
+ 
+CME iteration =          65  CME coast =           0  CME profile =          11
+ 
+CME iteration =          65  CME coast =           0  CME profile =          12
+ 
+CME iteration =          65  CME coast =           0  CME profile =          13
+ 
+CME iteration =          65  CME coast =           0  CME profile =          14
+ 
+CME iteration =          65  CME coast =           0  CME profile =          15
+ 
+CME iteration =          65  CME coast =           0  CME profile =          16
+ 
+CME iteration =          65  CME coast =           0  CME profile =          17
+ 
+CME iteration =          66  CME coast =           0  CME profile =           0
+ 
+CME iteration =          66  CME coast =           0  CME profile =           1
+ 
+CME iteration =          66  CME coast =           0  CME profile =           2
+ 
+CME iteration =          66  CME coast =           0  CME profile =           3
+ 
+CME iteration =          66  CME coast =           0  CME profile =           4
+ 
+CME iteration =          66  CME coast =           0  CME profile =           5
+ 
+CME iteration =          66  CME coast =           0  CME profile =           6
+ 
+CME iteration =          66  CME coast =           0  CME profile =           7
+ 
+CME iteration =          66  CME coast =           0  CME profile =           8
+ 
+CME iteration =          66  CME coast =           0  CME profile =           9
+ 
+CME iteration =          66  CME coast =           0  CME profile =          10
+ 
+CME iteration =          66  CME coast =           0  CME profile =          11
+ 
+CME iteration =          66  CME coast =           0  CME profile =          12
+ 
+CME iteration =          66  CME coast =           0  CME profile =          13
+ 
+CME iteration =          66  CME coast =           0  CME profile =          14
+ 
+CME iteration =          66  CME coast =           0  CME profile =          15
+ 
+CME iteration =          67  CME coast =           0  CME profile =           0
+ 
+CME iteration =          67  CME coast =           0  CME profile =           1
+ 
+CME iteration =          67  CME coast =           0  CME profile =           2
+ 
+CME iteration =          67  CME coast =           0  CME profile =           3
+ 
+CME iteration =          67  CME coast =           0  CME profile =           4
+ 
+CME iteration =          67  CME coast =           0  CME profile =           5
+ 
+CME iteration =          67  CME coast =           0  CME profile =           6
+ 
+CME iteration =          67  CME coast =           0  CME profile =           7
+ 
+CME iteration =          67  CME coast =           0  CME profile =           9
+ 
+CME iteration =          67  CME coast =           0  CME profile =          10
+ 
+CME iteration =          67  CME coast =           0  CME profile =          11
+ 
+CME iteration =          67  CME coast =           0  CME profile =          12
+ 
+CME iteration =          67  CME coast =           0  CME profile =          13
+ 
+CME iteration =          67  CME coast =           0  CME profile =          14
+ 
+CME iteration =          67  CME coast =           0  CME profile =          15
+ 
+CME iteration =          68  CME coast =           0  CME profile =           0
+ 
+CME iteration =          68  CME coast =           0  CME profile =           1
+ 
+CME iteration =          68  CME coast =           0  CME profile =           2
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   3 Line L =  1 TIME =        0.000
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   4 Line L =  1 TIME =        0.000
+CShore WARNING 2: at end of landward marching computation, DUM (the square of sigma SIGTIE) <= 0 at node   5 line  1 time        0.000, DUM =       -0.106 ITEQO = 1 ITE = 0 QO(L) =  0.000000000
+ 
+CME iteration =          68  CME coast =           0  CME profile =           3
+ 
+CME iteration =          68  CME coast =           0  CME profile =           5
+ 
+CME iteration =          68  CME coast =           0  CME profile =           6
+ 
+CME iteration =          68  CME coast =           0  CME profile =           7
+ 
+CME iteration =          68  CME coast =           0  CME profile =           8
+ 
+CME iteration =          68  CME coast =           0  CME profile =           9
+ 
+CME iteration =          68  CME coast =           0  CME profile =          10
+ 
+CME iteration =          68  CME coast =           0  CME profile =          11
+ 
+CME iteration =          68  CME coast =           0  CME profile =          12
+ 
+CME iteration =          68  CME coast =           0  CME profile =          14
+ 
+CME iteration =          68  CME coast =           0  CME profile =          15
+ 
+CME iteration =          68  CME coast =           0  CME profile =          16
+ 
+CME iteration =          68  CME coast =           0  CME profile =          17
+ 
+CME iteration =          68  CME coast =           0  CME profile =          18
+ 
+CME iteration =          68  CME coast =           0  CME profile =          19
+ 
+CME iteration =          68  CME coast =           0  CME profile =          20
+ 
+CME iteration =          68  CME coast =           0  CME profile =          21
+ 
+CME iteration =          69  CME coast =           0  CME profile =           0
+ 
+CME iteration =          69  CME coast =           0  CME profile =           1
+ 
+CME iteration =          69  CME coast =           0  CME profile =           2
+ 
+CME iteration =          69  CME coast =           0  CME profile =           4
+ 
+CME iteration =          69  CME coast =           0  CME profile =           5
+ 
+CME iteration =          69  CME coast =           0  CME profile =           6
+ 
+CME iteration =          69  CME coast =           0  CME profile =           7
+ 
+CME iteration =          69  CME coast =           0  CME profile =           9
+ 
+CME iteration =          69  CME coast =           0  CME profile =          10
+ 
+CME iteration =          69  CME coast =           0  CME profile =          11
+ 
+CME iteration =          69  CME coast =           0  CME profile =          13
+ 
+CME iteration =          69  CME coast =           0  CME profile =          14
+ 
+CME iteration =          69  CME coast =           0  CME profile =          15
+ 
+CME iteration =          69  CME coast =           0  CME profile =          16
+ 
+CME iteration =          69  CME coast =           0  CME profile =          17
+ 
+CME iteration =          69  CME coast =           0  CME profile =          18
+ 
+CME iteration =          69  CME coast =           0  CME profile =          19
+ 
+CME iteration =          70  CME coast =           0  CME profile =           0
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   2 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   3 line  1 time        0.000 DUM =       -0.036 ITEQO = 1 ITE =13 QO(L) =  0.000000000
+ 
+CME iteration =          70  CME coast =           0  CME profile =           1
+ 
+CME iteration =          70  CME coast =           0  CME profile =           2
+ 
+CME iteration =          70  CME coast =           0  CME profile =           3
+ 
+CME iteration =          70  CME coast =           0  CME profile =           4
+ 
+CME iteration =          70  CME coast =           0  CME profile =           6
+ 
+CME iteration =          70  CME coast =           0  CME profile =           7
+ 
+CME iteration =          70  CME coast =           0  CME profile =           8
+ 
+CME iteration =          70  CME coast =           0  CME profile =           9
+ 
+CME iteration =          70  CME coast =           0  CME profile =          10
+ 
+CME iteration =          70  CME coast =           0  CME profile =          11
+ 
+CME iteration =          70  CME coast =           0  CME profile =          12
+ 
+CME iteration =          70  CME coast =           0  CME profile =          13
+ 
+CME iteration =          70  CME coast =           0  CME profile =          14
+ 
+CME iteration =          70  CME coast =           0  CME profile =          15
+ 
+CME iteration =          70  CME coast =           0  CME profile =          16
+ 
+CME iteration =          71  CME coast =           0  CME profile =           2
+ 
+CME iteration =          71  CME coast =           0  CME profile =           3
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   3 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   4 line  1 time        0.000 DUM =       -0.000 ITEQO = 1 ITE =11 QO(L) =  0.000000000
+ 
+CME iteration =          71  CME coast =           0  CME profile =           4
+ 
+CME iteration =          71  CME coast =           0  CME profile =           5
+ 
+CME iteration =          71  CME coast =           0  CME profile =           6
+ 
+CME iteration =          71  CME coast =           0  CME profile =           7
+ 
+CME iteration =          71  CME coast =           0  CME profile =           8
+ 
+CME iteration =          71  CME coast =           0  CME profile =          10
+ 
+CME iteration =          71  CME coast =           0  CME profile =          11
+ 
+CME iteration =          71  CME coast =           0  CME profile =          12
+ 
+CME iteration =          71  CME coast =           0  CME profile =          13
+ 
+CME iteration =          71  CME coast =           0  CME profile =          14
+ 
+CME iteration =          71  CME coast =           0  CME profile =          15
+ 
+CME iteration =          71  CME coast =           0  CME profile =          16
+ 
+CME iteration =          71  CME coast =           0  CME profile =          17
+ 
+CME iteration =          71  CME coast =           0  CME profile =          18
+ 
+CME iteration =          72  CME coast =           0  CME profile =           0
+ 
+CME iteration =          72  CME coast =           0  CME profile =           1
+ 
+CME iteration =          72  CME coast =           0  CME profile =           2
+ 
+CME iteration =          72  CME coast =           0  CME profile =           4
+ 
+CME iteration =          72  CME coast =           0  CME profile =           5
+ 
+CME iteration =          72  CME coast =           0  CME profile =           6
+ 
+CME iteration =          72  CME coast =           0  CME profile =           8
+ 
+CME iteration =          72  CME coast =           0  CME profile =           9
+ 
+CME iteration =          72  CME coast =           0  CME profile =          10
+ 
+CME iteration =          72  CME coast =           0  CME profile =          11
+ 
+CME iteration =          72  CME coast =           0  CME profile =          12
+ 
+CME iteration =          72  CME coast =           0  CME profile =          13
+ 
+CME iteration =          72  CME coast =           0  CME profile =          14
+ 
+CME iteration =          72  CME coast =           0  CME profile =          15
+ 
+CME iteration =          73  CME coast =           0  CME profile =           0
+ 
+CME iteration =          73  CME coast =           0  CME profile =           1
+ 
+CME iteration =          73  CME coast =           0  CME profile =           3
+ 
+CME iteration =          73  CME coast =           0  CME profile =           6
+ 
+CME iteration =          73  CME coast =           0  CME profile =           7
+ 
+CME iteration =          73  CME coast =           0  CME profile =           8
+ 
+CME iteration =          73  CME coast =           0  CME profile =           9
+ 
+CME iteration =          73  CME coast =           0  CME profile =          10
+ 
+CME iteration =          73  CME coast =           0  CME profile =          12
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node 118 line  1 time        0.000 DUM =       -0.001 ITEQO = 1 ITE = 1 QO(L) =  0.000000000
+ 
+CME iteration =          73  CME coast =           0  CME profile =          13
+ 
+CME iteration =          73  CME coast =           0  CME profile =          14
+ 
+CME iteration =          73  CME coast =           0  CME profile =          15
+ 
+CME iteration =          73  CME coast =           0  CME profile =          16
+ 
+CME iteration =          74  CME coast =           0  CME profile =           1
+ 
+CME iteration =          74  CME coast =           0  CME profile =           2
+ 
+CME iteration =          74  CME coast =           0  CME profile =           3
+ 
+CME iteration =          74  CME coast =           0  CME profile =           5
+ 
+CME iteration =          74  CME coast =           0  CME profile =           6
+ 
+CME iteration =          74  CME coast =           0  CME profile =           7
+ 
+CME iteration =          74  CME coast =           0  CME profile =           9
+ 
+CME iteration =          74  CME coast =           0  CME profile =          10
+ 
+CME iteration =          74  CME coast =           0  CME profile =          11
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   3 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   4 line  1 time        0.000 DUM =       -0.198 ITEQO = 1 ITE =22 QO(L) =  0.000000000
+ 
+CME iteration =          74  CME coast =           0  CME profile =          12
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   3 Line L =  1 TIME =        0.000
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   4 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   5 line  1 time        0.000 DUM =       -0.068 ITEQO = 1 ITE =31 QO(L) =  0.000000000
+ 
+CME iteration =          74  CME coast =           0  CME profile =          13
+ 
+CME iteration =          74  CME coast =           0  CME profile =          14
+ 
+CME iteration =          74  CME coast =           0  CME profile =          15
+ 
+CME iteration =          74  CME coast =           0  CME profile =          16
+ 
+CME iteration =          75  CME coast =           0  CME profile =           0
+ 
+CME iteration =          75  CME coast =           0  CME profile =           1
+ 
+CME iteration =          75  CME coast =           0  CME profile =           2
+ 
+CME iteration =          75  CME coast =           0  CME profile =           5
+ 
+CME iteration =          75  CME coast =           0  CME profile =           6
+ 
+CME iteration =          75  CME coast =           0  CME profile =           8
+ 
+CME iteration =          75  CME coast =           0  CME profile =           9
+ 
+CME iteration =          75  CME coast =           0  CME profile =          10
+ 
+CME iteration =          75  CME coast =           0  CME profile =          12
+ 
+CME iteration =          75  CME coast =           0  CME profile =          13
+ 
+CME iteration =          75  CME coast =           0  CME profile =          14
+ 
+CME iteration =          75  CME coast =           0  CME profile =          15
+ 
+CME iteration =          75  CME coast =           0  CME profile =          16
+ 
+CME iteration =          75  CME coast =           0  CME profile =          17
+ 
+CME iteration =          75  CME coast =           0  CME profile =          18
+ 
+CME iteration =          75  CME coast =           0  CME profile =          19
+ 
+CME iteration =          76  CME coast =           0  CME profile =           0
+ 
+CME iteration =          76  CME coast =           0  CME profile =           1
+ 
+CME iteration =          76  CME coast =           0  CME profile =           2
+ 
+CME iteration =          76  CME coast =           0  CME profile =           3
+ 
+CME iteration =          76  CME coast =           0  CME profile =           5
+ 
+CME iteration =          76  CME coast =           0  CME profile =           6
+ 
+CME iteration =          76  CME coast =           0  CME profile =           8
+ 
+CME iteration =          76  CME coast =           0  CME profile =           9
+ 
+CME iteration =          76  CME coast =           0  CME profile =          10
+ 
+CME iteration =          76  CME coast =           0  CME profile =          11
+ 
+CME iteration =          76  CME coast =           0  CME profile =          12
+ 
+CME iteration =          76  CME coast =           0  CME profile =          13
+ 
+CME iteration =          76  CME coast =           0  CME profile =          14
+ 
+CME iteration =          76  CME coast =           0  CME profile =          15
+ 
+CME iteration =          76  CME coast =           0  CME profile =          16
+ 
+CME iteration =          76  CME coast =           0  CME profile =          17
+ 
+CME iteration =          76  CME coast =           0  CME profile =          18
+ 
+CME iteration =          76  CME coast =           0  CME profile =          19
+ 
+CME iteration =          76  CME coast =           0  CME profile =          20
+ 
+CME iteration =          77  CME coast =           0  CME profile =           0
+ 
+CME iteration =          77  CME coast =           0  CME profile =           2
+ 
+CME iteration =          77  CME coast =           0  CME profile =           3
+ 
+CME iteration =          77  CME coast =           0  CME profile =           4
+ 
+CME iteration =          77  CME coast =           0  CME profile =           5
+ 
+CME iteration =          77  CME coast =           0  CME profile =           6
+ 
+CME iteration =          77  CME coast =           0  CME profile =           7
+ 
+CME iteration =          77  CME coast =           0  CME profile =           9
+ 
+CME iteration =          77  CME coast =           0  CME profile =          10
+ 
+CME iteration =          77  CME coast =           0  CME profile =          11
+ 
+CME iteration =          77  CME coast =           0  CME profile =          12
+ 
+CME iteration =          77  CME coast =           0  CME profile =          13
+ 
+CME iteration =          77  CME coast =           0  CME profile =          14
+ 
+CME iteration =          77  CME coast =           0  CME profile =          15
+ 
+CME iteration =          77  CME coast =           0  CME profile =          16
+ 
+CME iteration =          78  CME coast =           0  CME profile =           0
+ 
+CME iteration =          78  CME coast =           0  CME profile =           1
+ 
+CME iteration =          78  CME coast =           0  CME profile =           3
+ 
+CME iteration =          78  CME coast =           0  CME profile =           6
+ 
+CME iteration =          78  CME coast =           0  CME profile =           7
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   4 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   5 line  1 time        0.000 DUM =       -0.173 ITEQO = 1 ITE = 6 QO(L) =  0.000000000
+ 
+CME iteration =          78  CME coast =           0  CME profile =           9
+ 
+CME iteration =          78  CME coast =           0  CME profile =          10
+ 
+CME iteration =          78  CME coast =           0  CME profile =          11
+ 
+CME iteration =          78  CME coast =           0  CME profile =          12
+ 
+CME iteration =          78  CME coast =           0  CME profile =          13
+ 
+CME iteration =          78  CME coast =           0  CME profile =          14
+ 
+CME iteration =          78  CME coast =           0  CME profile =          15
+ 
+CME iteration =          78  CME coast =           0  CME profile =          16
+ 
+CME iteration =          79  CME coast =           0  CME profile =           2
+ 
+CME iteration =          79  CME coast =           0  CME profile =           3
+ 
+CME iteration =          79  CME coast =           0  CME profile =           5
+ 
+CME iteration =          79  CME coast =           0  CME profile =           6
+ 
+CME iteration =          79  CME coast =           0  CME profile =           7
+ 
+CME iteration =          79  CME coast =           0  CME profile =           8
+ 
+CME iteration =          79  CME coast =           0  CME profile =           9
+ 
+CME iteration =          79  CME coast =           0  CME profile =          10
+ 
+CME iteration =          79  CME coast =           0  CME profile =          11
+ 
+CME iteration =          79  CME coast =           0  CME profile =          12
+ 
+CME iteration =          79  CME coast =           0  CME profile =          13
+ 
+CME iteration =          79  CME coast =           0  CME profile =          14
+ 
+CME iteration =          79  CME coast =           0  CME profile =          15
+ 
+CME iteration =          79  CME coast =           0  CME profile =          16
+ 
+CME iteration =          80  CME coast =           0  CME profile =           0
+CShore WARNING 2: at end of landward marching computation, DUM (the square of sigma SIGTIE) <= 0 at node  87 line  1 time        0.000, DUM =       -0.007 ITEQO = 1 ITE = 0 QO(L) =  0.000000000
+ 
+CME iteration =          80  CME coast =           0  CME profile =           3
+ 
+CME iteration =          80  CME coast =           0  CME profile =           4
+ 
+CME iteration =          80  CME coast =           0  CME profile =           5
+ 
+CME iteration =          80  CME coast =           0  CME profile =           6
+ 
+CME iteration =          80  CME coast =           0  CME profile =           7
+ 
+CME iteration =          80  CME coast =           0  CME profile =           8
+ 
+CME iteration =          80  CME coast =           0  CME profile =           9
+ 
+CME iteration =          80  CME coast =           0  CME profile =          10
+ 
+CME iteration =          80  CME coast =           0  CME profile =          11
+ 
+CME iteration =          80  CME coast =           0  CME profile =          12
+ 
+CME iteration =          80  CME coast =           0  CME profile =          13
+ 
+CME iteration =          81  CME coast =           0  CME profile =           0
+ 
+CME iteration =          81  CME coast =           0  CME profile =           1
+ 
+CME iteration =          81  CME coast =           0  CME profile =           2
+ 
+CME iteration =          81  CME coast =           0  CME profile =           4
+ 
+CME iteration =          81  CME coast =           0  CME profile =           5
+ 
+CME iteration =          81  CME coast =           0  CME profile =           6
+ 
+CME iteration =          81  CME coast =           0  CME profile =           7
+ 
+CME iteration =          81  CME coast =           0  CME profile =           9
+ 
+CME iteration =          81  CME coast =           0  CME profile =          10
+ 
+CME iteration =          81  CME coast =           0  CME profile =          11
+ 
+CME iteration =          81  CME coast =           0  CME profile =          12
+ 
+CME iteration =          81  CME coast =           0  CME profile =          13
+ 
+CME iteration =          81  CME coast =           0  CME profile =          14
+ 
+CME iteration =          81  CME coast =           0  CME profile =          15
+ 
+CME iteration =          82  CME coast =           0  CME profile =           0
+ 
+CME iteration =          82  CME coast =           0  CME profile =           2
+ 
+CME iteration =          82  CME coast =           0  CME profile =           3
+ 
+CME iteration =          82  CME coast =           0  CME profile =           4
+ 
+CME iteration =          82  CME coast =           0  CME profile =           5
+ 
+CME iteration =          82  CME coast =           0  CME profile =           6
+ 
+CME iteration =          82  CME coast =           0  CME profile =           7
+ 
+CME iteration =          82  CME coast =           0  CME profile =           9
+ 
+CME iteration =          82  CME coast =           0  CME profile =          10
+ 
+CME iteration =          82  CME coast =           0  CME profile =          11
+ 
+CME iteration =          82  CME coast =           0  CME profile =          12
+ 
+CME iteration =          83  CME coast =           0  CME profile =           0
+ 
+CME iteration =          83  CME coast =           0  CME profile =           1
+ 
+CME iteration =          83  CME coast =           0  CME profile =           3
+ 
+CME iteration =          83  CME coast =           0  CME profile =           4
+ 
+CME iteration =          83  CME coast =           0  CME profile =           5
+ 
+CME iteration =          83  CME coast =           0  CME profile =           6
+ 
+CME iteration =          83  CME coast =           0  CME profile =           7
+ 
+CME iteration =          83  CME coast =           0  CME profile =           9
+ 
+CME iteration =          83  CME coast =           0  CME profile =          10
+ 
+CME iteration =          83  CME coast =           0  CME profile =          11
+ 
+CME iteration =          83  CME coast =           0  CME profile =          12
+ 
+CME iteration =          83  CME coast =           0  CME profile =          13
+ 
+CME iteration =          83  CME coast =           0  CME profile =          14
+ 
+CME iteration =          83  CME coast =           0  CME profile =          15
+ 
+CME iteration =          83  CME coast =           0  CME profile =          16
+ 
+CME iteration =          84  CME coast =           0  CME profile =           0
+ 
+CME iteration =          84  CME coast =           0  CME profile =           2
+ 
+CME iteration =          84  CME coast =           0  CME profile =           3
+ 
+CME iteration =          84  CME coast =           0  CME profile =           4
+ 
+CME iteration =          84  CME coast =           0  CME profile =           5
+ 
+CME iteration =          84  CME coast =           0  CME profile =           7
+ 
+CME iteration =          84  CME coast =           0  CME profile =           8
+ 
+CME iteration =          84  CME coast =           0  CME profile =           9
+ 
+CME iteration =          84  CME coast =           0  CME profile =          11
+ 
+CME iteration =          84  CME coast =           0  CME profile =          12
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node  99 line  1 time        0.000 DUM =       -0.110 ITEQO = 1 ITE = 1 QO(L) =  0.000000000
+ 
+CME iteration =          84  CME coast =           0  CME profile =          13
+ 
+CME iteration =          84  CME coast =           0  CME profile =          14
+ 
+CME iteration =          84  CME coast =           0  CME profile =          15
+ 
+CME iteration =          84  CME coast =           0  CME profile =          16
+ 
+CME iteration =          84  CME coast =           0  CME profile =          17
+ 
+CME iteration =          84  CME coast =           0  CME profile =          18
+ 
+CME iteration =          84  CME coast =           0  CME profile =          19
+ 
+CME iteration =          84  CME coast =           0  CME profile =          20
+ 
+CME iteration =          85  CME coast =           0  CME profile =           1
+ 
+CME iteration =          85  CME coast =           0  CME profile =           3
+ 
+CME iteration =          85  CME coast =           0  CME profile =           4
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node 105 line  1 time        0.000 DUM =       -0.004 ITEQO = 1 ITE = 1 QO(L) =  0.000000000
+ 
+CME iteration =          85  CME coast =           0  CME profile =           7
+ 
+CME iteration =          85  CME coast =           0  CME profile =           8
+CShore WARNING 2: at end of landward marching computation, DUM (the square of sigma SIGTIE) <= 0 at node 107 line  1 time        0.000, DUM =       -0.020 ITEQO = 1 ITE = 0 QO(L) =  0.000000000
+ 
+CME iteration =          85  CME coast =           0  CME profile =          10
+ 
+CME iteration =          85  CME coast =           0  CME profile =          11
+ 
+CME iteration =          85  CME coast =           0  CME profile =          12
+ 
+CME iteration =          85  CME coast =           0  CME profile =          13
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   2 line  1 time        0.000 DUM =       -0.597 ITEQO = 1 ITE =16 QO(L) =  0.000000000
+ 
+CME iteration =          85  CME coast =           0  CME profile =          14
+ 
+CME iteration =          85  CME coast =           0  CME profile =          15
+ 
+CME iteration =          85  CME coast =           0  CME profile =          16
+ 
+CME iteration =          85  CME coast =           0  CME profile =          17
+ 
+CME iteration =          86  CME coast =           0  CME profile =           0
+ 
+CME iteration =          86  CME coast =           0  CME profile =           1
+ 
+CME iteration =          86  CME coast =           0  CME profile =           4
+ 
+CME iteration =          86  CME coast =           0  CME profile =           5
+ 
+CME iteration =          86  CME coast =           0  CME profile =           6
+ 
+CME iteration =          86  CME coast =           0  CME profile =           7
+ 
+CME iteration =          86  CME coast =           0  CME profile =          10
+ 
+CME iteration =          86  CME coast =           0  CME profile =          13
+ 
+CME iteration =          86  CME coast =           0  CME profile =          14
+ 
+CME iteration =          86  CME coast =           0  CME profile =          15
+ 
+CME iteration =          86  CME coast =           0  CME profile =          17
+ 
+CME iteration =          86  CME coast =           0  CME profile =          18
+ 
+CME iteration =          86  CME coast =           0  CME profile =          19
+ 
+CME iteration =          86  CME coast =           0  CME profile =          20
+ 
+CME iteration =          87  CME coast =           0  CME profile =           0
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   3 Line L =  1 TIME =        0.000
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   4 Line L =  1 TIME =        0.000
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   5 Line L =  1 TIME =        0.000
+CShore WARNING 2: at end of landward marching computation, DUM (the square of sigma SIGTIE) <= 0 at node   6 line  1 time        0.000, DUM =       -1.122 ITEQO = 1 ITE = 0 QO(L) =  0.000000000
+ 
+CME iteration =          87  CME coast =           0  CME profile =           1
+ 
+CME iteration =          87  CME coast =           0  CME profile =           2
+ 
+CME iteration =          87  CME coast =           0  CME profile =           3
+ 
+CME iteration =          87  CME coast =           0  CME profile =           5
+ 
+CME iteration =          87  CME coast =           0  CME profile =           6
+ 
+CME iteration =          87  CME coast =           0  CME profile =           8
+ 
+CME iteration =          87  CME coast =           0  CME profile =           9
+ 
+CME iteration =          87  CME coast =           0  CME profile =          11
+ 
+CME iteration =          87  CME coast =           0  CME profile =          12
+ 
+CME iteration =          87  CME coast =           0  CME profile =          13
+ 
+CME iteration =          87  CME coast =           0  CME profile =          14
+ 
+CME iteration =          87  CME coast =           0  CME profile =          15
+ 
+CME iteration =          87  CME coast =           0  CME profile =          16
+ 
+CME iteration =          88  CME coast =           0  CME profile =           0
+ 
+CME iteration =          88  CME coast =           0  CME profile =           2
+ 
+CME iteration =          88  CME coast =           0  CME profile =           3
+ 
+CME iteration =          88  CME coast =           0  CME profile =           4
+ 
+CME iteration =          88  CME coast =           0  CME profile =           5
+ 
+CME iteration =          88  CME coast =           0  CME profile =           6
+ 
+CME iteration =          88  CME coast =           0  CME profile =           8
+ 
+CME iteration =          88  CME coast =           0  CME profile =          10
+ 
+CME iteration =          88  CME coast =           0  CME profile =          11
+ 
+CME iteration =          88  CME coast =           0  CME profile =          12
+ 
+CME iteration =          88  CME coast =           0  CME profile =          13
+ 
+CME iteration =          89  CME coast =           0  CME profile =           0
+ 
+CME iteration =          89  CME coast =           0  CME profile =           1
+ 
+CME iteration =          89  CME coast =           0  CME profile =           2
+ 
+CME iteration =          89  CME coast =           0  CME profile =           4
+ 
+CME iteration =          89  CME coast =           0  CME profile =           5
+ 
+CME iteration =          89  CME coast =           0  CME profile =           8
+ 
+CME iteration =          89  CME coast =           0  CME profile =           9
+ 
+CME iteration =          89  CME coast =           0  CME profile =          10
+ 
+CME iteration =          89  CME coast =           0  CME profile =          11
+ 
+CME iteration =          89  CME coast =           0  CME profile =          12
+ 
+CME iteration =          89  CME coast =           0  CME profile =          13
+ 
+CME iteration =          89  CME coast =           0  CME profile =          14
+ 
+CME iteration =          90  CME coast =           0  CME profile =           0
+ 
+CME iteration =          90  CME coast =           0  CME profile =           1
+ 
+CME iteration =          90  CME coast =           0  CME profile =           2
+ 
+CME iteration =          90  CME coast =           0  CME profile =           3
+ 
+CME iteration =          90  CME coast =           0  CME profile =           4
+ 
+CME iteration =          90  CME coast =           0  CME profile =           5
+ 
+CME iteration =          90  CME coast =           0  CME profile =           6
+ 
+CME iteration =          90  CME coast =           0  CME profile =           7
+ 
+CME iteration =          90  CME coast =           0  CME profile =           8
+ 
+CME iteration =          90  CME coast =           0  CME profile =           9
+ 
+CME iteration =          90  CME coast =           0  CME profile =          10
+ 
+CME iteration =          90  CME coast =           0  CME profile =          11
+ 
+CME iteration =          90  CME coast =           0  CME profile =          12
+ 
+CME iteration =          90  CME coast =           0  CME profile =          13
+ 
+CME iteration =          90  CME coast =           0  CME profile =          14
+ 
+CME iteration =          90  CME coast =           0  CME profile =          15
+ 
+CME iteration =          90  CME coast =           0  CME profile =          16
+ 
+CME iteration =          90  CME coast =           0  CME profile =          17
+ 
+CME iteration =          90  CME coast =           0  CME profile =          18
+ 
+CME iteration =          91  CME coast =           0  CME profile =           0
+ 
+CME iteration =          91  CME coast =           0  CME profile =           1
+ 
+CME iteration =          91  CME coast =           0  CME profile =           2
+ 
+CME iteration =          91  CME coast =           0  CME profile =           3
+ 
+CME iteration =          91  CME coast =           0  CME profile =           4
+ 
+CME iteration =          91  CME coast =           0  CME profile =           5
+ 
+CME iteration =          91  CME coast =           0  CME profile =           6
+ 
+CME iteration =          91  CME coast =           0  CME profile =           7
+ 
+CME iteration =          91  CME coast =           0  CME profile =           8
+ 
+CME iteration =          91  CME coast =           0  CME profile =           9
+ 
+CME iteration =          91  CME coast =           0  CME profile =          10
+ 
+CME iteration =          91  CME coast =           0  CME profile =          12
+ 
+CME iteration =          91  CME coast =           0  CME profile =          13
+ 
+CME iteration =          91  CME coast =           0  CME profile =          14
+ 
+CME iteration =          91  CME coast =           0  CME profile =          16
+ 
+CME iteration =          91  CME coast =           0  CME profile =          17
+ 
+CME iteration =          91  CME coast =           0  CME profile =          18
+ 
+CME iteration =          92  CME coast =           0  CME profile =           0
+ 
+CME iteration =          92  CME coast =           0  CME profile =           2
+ 
+CME iteration =          92  CME coast =           0  CME profile =           4
+ 
+CME iteration =          92  CME coast =           0  CME profile =           5
+ 
+CME iteration =          92  CME coast =           0  CME profile =           6
+ 
+CME iteration =          92  CME coast =           0  CME profile =           7
+ 
+CME iteration =          92  CME coast =           0  CME profile =           8
+ 
+CME iteration =          92  CME coast =           0  CME profile =           9
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   2 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   3 line  1 time        0.000 DUM =       -0.280 ITEQO = 1 ITE =24 QO(L) =  0.000000000
+ 
+CME iteration =          92  CME coast =           0  CME profile =          10
+ 
+CME iteration =          92  CME coast =           0  CME profile =          11
+ 
+CME iteration =          92  CME coast =           0  CME profile =          12
+ 
+CME iteration =          92  CME coast =           0  CME profile =          13
+ 
+CME iteration =          92  CME coast =           0  CME profile =          14
+ 
+CME iteration =          92  CME coast =           0  CME profile =          15
+ 
+CME iteration =          92  CME coast =           0  CME profile =          16
+ 
+CME iteration =          92  CME coast =           0  CME profile =          17
+ 
+CME iteration =          93  CME coast =           0  CME profile =           0
+ 
+CME iteration =          93  CME coast =           0  CME profile =           2
+ 
+CME iteration =          93  CME coast =           0  CME profile =           4
+ 
+CME iteration =          93  CME coast =           0  CME profile =           8
+ 
+CME iteration =          93  CME coast =           0  CME profile =           9
+ 
+CME iteration =          93  CME coast =           0  CME profile =          10
+ 
+CME iteration =          93  CME coast =           0  CME profile =          11
+ 
+CME iteration =          93  CME coast =           0  CME profile =          12
+ 
+CME iteration =          93  CME coast =           0  CME profile =          13
+ 
+CME iteration =          93  CME coast =           0  CME profile =          14
+ 
+CME iteration =          94  CME coast =           0  CME profile =           1
+ 
+CME iteration =          94  CME coast =           0  CME profile =           2
+ 
+CME iteration =          94  CME coast =           0  CME profile =           3
+ 
+CME iteration =          94  CME coast =           0  CME profile =           4
+ 
+CME iteration =          94  CME coast =           0  CME profile =           5
+ 
+CME iteration =          94  CME coast =           0  CME profile =           6
+ 
+CME iteration =          94  CME coast =           0  CME profile =           8
+ 
+CME iteration =          94  CME coast =           0  CME profile =           9
+ 
+CME iteration =          94  CME coast =           0  CME profile =          10
+ 
+CME iteration =          94  CME coast =           0  CME profile =          11
+ 
+CME iteration =          94  CME coast =           0  CME profile =          12
+ 
+CME iteration =          94  CME coast =           0  CME profile =          13
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   2 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   3 line  1 time        0.000 DUM =       -0.169 ITEQO = 1 ITE =10 QO(L) =  0.000000000
+ 
+CME iteration =          94  CME coast =           0  CME profile =          14
+ 
+CME iteration =          94  CME coast =           0  CME profile =          15
+ 
+CME iteration =          94  CME coast =           0  CME profile =          16
+ 
+CME iteration =          95  CME coast =           0  CME profile =           0
+ 
+CME iteration =          95  CME coast =           0  CME profile =           1
+ 
+CME iteration =          95  CME coast =           0  CME profile =           2
+ 
+CME iteration =          95  CME coast =           0  CME profile =           3
+ 
+CME iteration =          95  CME coast =           0  CME profile =           4
+ 
+CME iteration =          95  CME coast =           0  CME profile =           5
+ 
+CME iteration =          95  CME coast =           0  CME profile =           7
+ 
+CME iteration =          95  CME coast =           0  CME profile =           8
+ 
+CME iteration =          95  CME coast =           0  CME profile =           9
+ 
+CME iteration =          95  CME coast =           0  CME profile =          10
+ 
+CME iteration =          95  CME coast =           0  CME profile =          11
+ 
+CME iteration =          95  CME coast =           0  CME profile =          13
+ 
+CME iteration =          95  CME coast =           0  CME profile =          14
+ 
+CME iteration =          95  CME coast =           0  CME profile =          15
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   2 line  1 time        0.000 DUM =       -0.147 ITEQO = 1 ITE =31 QO(L) =  0.000000000
+ 
+CME iteration =          95  CME coast =           0  CME profile =          16
+ 
+CME iteration =          95  CME coast =           0  CME profile =          18
+ 
+CME iteration =          95  CME coast =           0  CME profile =          19
+ 
+CME iteration =          95  CME coast =           0  CME profile =          20
+ 
+CME iteration =          95  CME coast =           0  CME profile =          21
+ 
+CME iteration =          96  CME coast =           0  CME profile =           0
+ 
+CME iteration =          96  CME coast =           0  CME profile =           2
+ 
+CME iteration =          96  CME coast =           0  CME profile =           4
+ 
+CME iteration =          96  CME coast =           0  CME profile =           6
+ 
+CME iteration =          96  CME coast =           0  CME profile =           7
+ 
+CME iteration =          96  CME coast =           0  CME profile =           8
+ 
+CME iteration =          96  CME coast =           0  CME profile =          10
+ 
+CME iteration =          96  CME coast =           0  CME profile =          11
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   3 Line L =  1 TIME =        0.000
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   4 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   5 line  1 time        0.000 DUM =       -0.093 ITEQO = 1 ITE = 3 QO(L) =  0.000000000
+ 
+CME iteration =          96  CME coast =           0  CME profile =          12
+ 
+CME iteration =          96  CME coast =           0  CME profile =          13
+ 
+CME iteration =          96  CME coast =           0  CME profile =          14
+ 
+CME iteration =          96  CME coast =           0  CME profile =          15
+ 
+CME iteration =          96  CME coast =           0  CME profile =          16
+ 
+CME iteration =          96  CME coast =           0  CME profile =          17
+ 
+CME iteration =          96  CME coast =           0  CME profile =          20
+ 
+CME iteration =          96  CME coast =           0  CME profile =          22
+ 
+CME iteration =          96  CME coast =           0  CME profile =          23
+ 
+CME iteration =          97  CME coast =           0  CME profile =           0
+ 
+CME iteration =          97  CME coast =           0  CME profile =           1
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   3 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   4 line  1 time        0.000 DUM =       -0.047 ITEQO = 1 ITE =18 QO(L) =  0.000000000
+ 
+CME iteration =          97  CME coast =           0  CME profile =           2
+ 
+CME iteration =          97  CME coast =           0  CME profile =           7
+ 
+CME iteration =          97  CME coast =           0  CME profile =           8
+ 
+CME iteration =          97  CME coast =           0  CME profile =           9
+ 
+CME iteration =          97  CME coast =           0  CME profile =          12
+ 
+CME iteration =          97  CME coast =           0  CME profile =          13
+ 
+CME iteration =          97  CME coast =           0  CME profile =          14
+ 
+CME iteration =          97  CME coast =           0  CME profile =          15
+ 
+CME iteration =          97  CME coast =           0  CME profile =          18
+ 
+CME iteration =          97  CME coast =           0  CME profile =          19
+ 
+CME iteration =          97  CME coast =           0  CME profile =          20
+ 
+CME iteration =          97  CME coast =           0  CME profile =          21
+ 
+CME iteration =          98  CME coast =           0  CME profile =           0
+ 
+CME iteration =          98  CME coast =           0  CME profile =           1
+ 
+CME iteration =          98  CME coast =           0  CME profile =           2
+ 
+CME iteration =          98  CME coast =           0  CME profile =           3
+ 
+CME iteration =          98  CME coast =           0  CME profile =           5
+ 
+CME iteration =          98  CME coast =           0  CME profile =           6
+ 
+CME iteration =          98  CME coast =           0  CME profile =           8
+ 
+CME iteration =          98  CME coast =           0  CME profile =           9
+ 
+CME iteration =          98  CME coast =           0  CME profile =          10
+ 
+CME iteration =          98  CME coast =           0  CME profile =          11
+ 
+CME iteration =          98  CME coast =           0  CME profile =          12
+ 
+CME iteration =          98  CME coast =           0  CME profile =          15
+ 
+CME iteration =          98  CME coast =           0  CME profile =          16
+ 
+CME iteration =          99  CME coast =           0  CME profile =           2
+ 
+CME iteration =          99  CME coast =           0  CME profile =           3
+ 
+CME iteration =          99  CME coast =           0  CME profile =           4
+ 
+CME iteration =          99  CME coast =           0  CME profile =           6
+ 
+CME iteration =          99  CME coast =           0  CME profile =           9
+ 
+CME iteration =          99  CME coast =           0  CME profile =          10
+ 
+CME iteration =          99  CME coast =           0  CME profile =          11
+ 
+CME iteration =          99  CME coast =           0  CME profile =          12
+ 
+CME iteration =          99  CME coast =           0  CME profile =          15
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   2 line  1 time        0.000 DUM =       -0.260 ITEQO = 1 ITE =21 QO(L) =  0.000000000
+ 
+CME iteration =          99  CME coast =           0  CME profile =          16
+ 
+CME iteration =          99  CME coast =           0  CME profile =          18
+ 
+CME iteration =          99  CME coast =           0  CME profile =          19
+ 
+CME iteration =         100  CME coast =           0  CME profile =           2
+ 
+CME iteration =         100  CME coast =           0  CME profile =           3
+ 
+CME iteration =         100  CME coast =           0  CME profile =           7
+ 
+CME iteration =         100  CME coast =           0  CME profile =           9
+ 
+CME iteration =         100  CME coast =           0  CME profile =          12
+ 
+CME iteration =         100  CME coast =           0  CME profile =          13
+ 
+CME iteration =         100  CME coast =           0  CME profile =          14
+ 
+CME iteration =         100  CME coast =           0  CME profile =          15
+ 
+CME iteration =         100  CME coast =           0  CME profile =          16
+ 
+CME iteration =         100  CME coast =           0  CME profile =          17
+ 
+CME iteration =         101  CME coast =           0  CME profile =           0
+ 
+CME iteration =         101  CME coast =           0  CME profile =           2
+ 
+CME iteration =         101  CME coast =           0  CME profile =           4
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   2 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   3 line  1 time        0.000 DUM =       -0.081 ITEQO = 1 ITE =15 QO(L) =  0.000000000
+ 
+CME iteration =         101  CME coast =           0  CME profile =           5
+ 
+CME iteration =         101  CME coast =           0  CME profile =           7
+ 
+CME iteration =         101  CME coast =           0  CME profile =           8
+ 
+CME iteration =         101  CME coast =           0  CME profile =           9
+ 
+CME iteration =         101  CME coast =           0  CME profile =          11
+ 
+CME iteration =         101  CME coast =           0  CME profile =          14
+ 
+CME iteration =         101  CME coast =           0  CME profile =          15
+ 
+CME iteration =         101  CME coast =           0  CME profile =          17
+ 
+CME iteration =         101  CME coast =           0  CME profile =          18
+ 
+CME iteration =         102  CME coast =           0  CME profile =           1
+ 
+CME iteration =         102  CME coast =           0  CME profile =           4
+ 
+CME iteration =         102  CME coast =           0  CME profile =           8
+ 
+CME iteration =         102  CME coast =           0  CME profile =           9
+ 
+CME iteration =         102  CME coast =           0  CME profile =          10
+ 
+CME iteration =         102  CME coast =           0  CME profile =          13
+ 
+CME iteration =         102  CME coast =           0  CME profile =          14
+ 
+CME iteration =         102  CME coast =           0  CME profile =          15
+ 
+CME iteration =         102  CME coast =           0  CME profile =          17
+ 
+CME iteration =         102  CME coast =           0  CME profile =          18
+ 
+CME iteration =         103  CME coast =           0  CME profile =           2
+ 
+CME iteration =         103  CME coast =           0  CME profile =           3
+ 
+CME iteration =         103  CME coast =           0  CME profile =           5
+ 
+CME iteration =         103  CME coast =           0  CME profile =           6
+ 
+CME iteration =         103  CME coast =           0  CME profile =           7
+ 
+CME iteration =         103  CME coast =           0  CME profile =           8
+ 
+CME iteration =         103  CME coast =           0  CME profile =          11
+ 
+CME iteration =         103  CME coast =           0  CME profile =          12
+ 
+CME iteration =         103  CME coast =           0  CME profile =          13
+ 
+CME iteration =         103  CME coast =           0  CME profile =          14
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   2 line  1 time        0.000 DUM =       -0.532 ITEQO = 1 ITE =30 QO(L) =  0.000000000
+ 
+CME iteration =         103  CME coast =           0  CME profile =          15
+ 
+CME iteration =         103  CME coast =           0  CME profile =          17
+ 
+CME iteration =         103  CME coast =           0  CME profile =          18
+ 
+CME iteration =         104  CME coast =           0  CME profile =           0
+ 
+CME iteration =         104  CME coast =           0  CME profile =           1
+ 
+CME iteration =         104  CME coast =           0  CME profile =           2
+ 
+CME iteration =         104  CME coast =           0  CME profile =           3
+ 
+CME iteration =         104  CME coast =           0  CME profile =           4
+ 
+CME iteration =         104  CME coast =           0  CME profile =           5
+ 
+CME iteration =         104  CME coast =           0  CME profile =           6
+ 
+CME iteration =         104  CME coast =           0  CME profile =           7
+ 
+CME iteration =         104  CME coast =           0  CME profile =           8
+ 
+CME iteration =         104  CME coast =           0  CME profile =          10
+ 
+CME iteration =         104  CME coast =           0  CME profile =          11
+ 
+CME iteration =         104  CME coast =           0  CME profile =          12
+ 
+CME iteration =         104  CME coast =           0  CME profile =          13
+ 
+CME iteration =         105  CME coast =           0  CME profile =           0
+ 
+CME iteration =         105  CME coast =           0  CME profile =           2
+ 
+CME iteration =         105  CME coast =           0  CME profile =           3
+ 
+CME iteration =         105  CME coast =           0  CME profile =           5
+ 
+CME iteration =         105  CME coast =           0  CME profile =           6
+ 
+CME iteration =         105  CME coast =           0  CME profile =           7
+ 
+CME iteration =         105  CME coast =           0  CME profile =           8
+ 
+CME iteration =         105  CME coast =           0  CME profile =           9
+ 
+CME iteration =         105  CME coast =           0  CME profile =          10
+ 
+CME iteration =         105  CME coast =           0  CME profile =          11
+ 
+CME iteration =         105  CME coast =           0  CME profile =          12
+ 
+CME iteration =         105  CME coast =           0  CME profile =          13
+ 
+CME iteration =         105  CME coast =           0  CME profile =          14
+ 
+CME iteration =         106  CME coast =           0  CME profile =           1
+ 
+CME iteration =         106  CME coast =           0  CME profile =           2
+ 
+CME iteration =         106  CME coast =           0  CME profile =           3
+ 
+CME iteration =         106  CME coast =           0  CME profile =           4
+ 
+CME iteration =         106  CME coast =           0  CME profile =           5
+ 
+CME iteration =         106  CME coast =           0  CME profile =           6
+ 
+CME iteration =         106  CME coast =           0  CME profile =           7
+ 
+CME iteration =         106  CME coast =           0  CME profile =           8
+ 
+CME iteration =         106  CME coast =           0  CME profile =           9
+ 
+CME iteration =         106  CME coast =           0  CME profile =          10
+ 
+CME iteration =         106  CME coast =           0  CME profile =          11
+ 
+CME iteration =         106  CME coast =           0  CME profile =          12
+ 
+CME iteration =         106  CME coast =           0  CME profile =          13
+ 
+CME iteration =         106  CME coast =           0  CME profile =          14
+ 
+CME iteration =         106  CME coast =           0  CME profile =          15
+ 
+CME iteration =         107  CME coast =           0  CME profile =           0
+ 
+CME iteration =         107  CME coast =           0  CME profile =           1
+ 
+CME iteration =         107  CME coast =           0  CME profile =           2
+ 
+CME iteration =         107  CME coast =           0  CME profile =           3
+ 
+CME iteration =         107  CME coast =           0  CME profile =           4
+ 
+CME iteration =         107  CME coast =           0  CME profile =           6
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   2 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   3 line  1 time        0.000 DUM =       -0.466 ITEQO = 1 ITE = 8 QO(L) =  0.000000000
+ 
+CME iteration =         107  CME coast =           0  CME profile =           7
+ 
+CME iteration =         107  CME coast =           0  CME profile =           8
+ 
+CME iteration =         107  CME coast =           0  CME profile =           9
+ 
+CME iteration =         107  CME coast =           0  CME profile =          10
+ 
+CME iteration =         107  CME coast =           0  CME profile =          11
+ 
+CME iteration =         107  CME coast =           0  CME profile =          12
+ 
+CME iteration =         107  CME coast =           0  CME profile =          13
+ 
+CME iteration =         107  CME coast =           0  CME profile =          14
+ 
+CME iteration =         107  CME coast =           0  CME profile =          15
+ 
+CME iteration =         107  CME coast =           0  CME profile =          16
+ 
+CME iteration =         107  CME coast =           0  CME profile =          17
+ 
+CME iteration =         108  CME coast =           0  CME profile =           0
+ 
+CME iteration =         108  CME coast =           0  CME profile =           1
+ 
+CME iteration =         108  CME coast =           0  CME profile =           2
+ 
+CME iteration =         108  CME coast =           0  CME profile =           4
+ 
+CME iteration =         108  CME coast =           0  CME profile =           5
+ 
+CME iteration =         108  CME coast =           0  CME profile =           6
+ 
+CME iteration =         108  CME coast =           0  CME profile =           7
+ 
+CME iteration =         108  CME coast =           0  CME profile =           8
+ 
+CME iteration =         108  CME coast =           0  CME profile =           9
+ 
+CME iteration =         108  CME coast =           0  CME profile =          10
+ 
+CME iteration =         108  CME coast =           0  CME profile =          11
+ 
+CME iteration =         108  CME coast =           0  CME profile =          12
+ 
+CME iteration =         108  CME coast =           0  CME profile =          13
+ 
+CME iteration =         108  CME coast =           0  CME profile =          14
+ 
+CME iteration =         108  CME coast =           0  CME profile =          15
+ 
+CME iteration =         108  CME coast =           0  CME profile =          16
+ 
+CME iteration =         109  CME coast =           0  CME profile =           0
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   3 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   4 line  1 time        0.000 DUM =       -0.109 ITEQO = 1 ITE = 7 QO(L) =  0.000000000
+ 
+CME iteration =         109  CME coast =           0  CME profile =           1
+ 
+CME iteration =         109  CME coast =           0  CME profile =           2
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   5 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   6 line  1 time        0.000 DUM =       -0.078 ITEQO = 1 ITE =12 QO(L) =  0.000000000
+ 
+CME iteration =         109  CME coast =           0  CME profile =           3
+ 
+CME iteration =         109  CME coast =           0  CME profile =           4
+ 
+CME iteration =         109  CME coast =           0  CME profile =           5
+ 
+CME iteration =         109  CME coast =           0  CME profile =           6
+ 
+CME iteration =         109  CME coast =           0  CME profile =           7
+ 
+CME iteration =         109  CME coast =           0  CME profile =           8
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   4 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   5 line  1 time        0.000 DUM =       -0.000 ITEQO = 1 ITE =30 QO(L) =  0.000000000
+ 
+CME iteration =         109  CME coast =           0  CME profile =           9
+ 
+CME iteration =         109  CME coast =           0  CME profile =          10
+ 
+CME iteration =         109  CME coast =           0  CME profile =          11
+ 
+CME iteration =         109  CME coast =           0  CME profile =          12
+ 
+CME iteration =         109  CME coast =           0  CME profile =          13
+ 
+CME iteration =         110  CME coast =           0  CME profile =           0
+ 
+CME iteration =         110  CME coast =           0  CME profile =           1
+ 
+CME iteration =         110  CME coast =           0  CME profile =           3
+ 
+CME iteration =         110  CME coast =           0  CME profile =           4
+ 
+CME iteration =         110  CME coast =           0  CME profile =           5
+ 
+CME iteration =         110  CME coast =           0  CME profile =           6
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   6 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   7 line  1 time        0.000 DUM =       -0.175 ITEQO = 1 ITE =21 QO(L) =  0.000000000
+ 
+CME iteration =         110  CME coast =           0  CME profile =           7
+ 
+CME iteration =         110  CME coast =           0  CME profile =           8
+ 
+CME iteration =         110  CME coast =           0  CME profile =          10
+ 
+CME iteration =         110  CME coast =           0  CME profile =          11
+ 
+CME iteration =         110  CME coast =           0  CME profile =          12
+ 
+CME iteration =         110  CME coast =           0  CME profile =          13
+ 
+CME iteration =         110  CME coast =           0  CME profile =          14
+ 
+CME iteration =         110  CME coast =           0  CME profile =          15
+ 
+CME iteration =         111  CME coast =           0  CME profile =           1
+ 
+CME iteration =         111  CME coast =           0  CME profile =           3
+ 
+CME iteration =         111  CME coast =           0  CME profile =           4
+ 
+CME iteration =         111  CME coast =           0  CME profile =           5
+ 
+CME iteration =         111  CME coast =           0  CME profile =           6
+ 
+CME iteration =         111  CME coast =           0  CME profile =           7
+ 
+CME iteration =         111  CME coast =           0  CME profile =           8
+ 
+CME iteration =         111  CME coast =           0  CME profile =           9
+ 
+CME iteration =         111  CME coast =           0  CME profile =          11
+ 
+CME iteration =         111  CME coast =           0  CME profile =          12
+ 
+CME iteration =         111  CME coast =           0  CME profile =          13
+ 
+CME iteration =         111  CME coast =           0  CME profile =          14
+ 
+CME iteration =         111  CME coast =           0  CME profile =          15
+ 
+CME iteration =         112  CME coast =           0  CME profile =           0
+ 
+CME iteration =         112  CME coast =           0  CME profile =           3
+ 
+CME iteration =         112  CME coast =           0  CME profile =           6
+ 
+CME iteration =         112  CME coast =           0  CME profile =           7
+ 
+CME iteration =         112  CME coast =           0  CME profile =           8
+ 
+CME iteration =         112  CME coast =           0  CME profile =           9
+ 
+CME iteration =         112  CME coast =           0  CME profile =          10
+ 
+CME iteration =         112  CME coast =           0  CME profile =          11
+ 
+CME iteration =         112  CME coast =           0  CME profile =          12
+ 
+CME iteration =         112  CME coast =           0  CME profile =          13
+ 
+CME iteration =         112  CME coast =           0  CME profile =          15
+ 
+CME iteration =         112  CME coast =           0  CME profile =          16
+ 
+CME iteration =         112  CME coast =           0  CME profile =          17
+ 
+CME iteration =         113  CME coast =           0  CME profile =           1
+ 
+CME iteration =         113  CME coast =           0  CME profile =           3
+CShore WARNING 2: at end of landward marching computation, DUM (the square of sigma SIGTIE) <= 0 at node 119 line  1 time        0.000, DUM =       -0.005 ITEQO = 1 ITE = 0 QO(L) =  0.000000000
+ 
+CME iteration =         113  CME coast =           0  CME profile =           6
+ 
+CME iteration =         113  CME coast =           0  CME profile =           8
+ 
+CME iteration =         113  CME coast =           0  CME profile =           9
+ 
+CME iteration =         113  CME coast =           0  CME profile =          10
+ 
+CME iteration =         113  CME coast =           0  CME profile =          11
+ 
+CME iteration =         113  CME coast =           0  CME profile =          12
+ 
+CME iteration =         113  CME coast =           0  CME profile =          13
+ 
+CME iteration =         113  CME coast =           0  CME profile =          14
+ 
+CME iteration =         113  CME coast =           0  CME profile =          15
+ 
+CME iteration =         113  CME coast =           0  CME profile =          16
+ 
+CME iteration =         114  CME coast =           0  CME profile =           1
+ 
+CME iteration =         114  CME coast =           0  CME profile =           2
+ 
+CME iteration =         114  CME coast =           0  CME profile =           3
+ 
+CME iteration =         114  CME coast =           0  CME profile =           4
+ 
+CME iteration =         114  CME coast =           0  CME profile =           5
+ 
+CME iteration =         114  CME coast =           0  CME profile =           6
+ 
+CME iteration =         114  CME coast =           0  CME profile =           8
+ 
+CME iteration =         114  CME coast =           0  CME profile =          10
+ 
+CME iteration =         114  CME coast =           0  CME profile =          11
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   4 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   5 line  1 time        0.000 DUM =       -0.260 ITEQO = 1 ITE =39 QO(L) =  0.000000000
+ 
+CME iteration =         114  CME coast =           0  CME profile =          12
+ 
+CME iteration =         114  CME coast =           0  CME profile =          13
+ 
+CME iteration =         114  CME coast =           0  CME profile =          14
+ 
+CME iteration =         114  CME coast =           0  CME profile =          15
+ 
+CME iteration =         115  CME coast =           0  CME profile =           0
+ 
+CME iteration =         115  CME coast =           0  CME profile =           1
+ 
+CME iteration =         115  CME coast =           0  CME profile =           2
+ 
+CME iteration =         115  CME coast =           0  CME profile =           3
+ 
+CME iteration =         115  CME coast =           0  CME profile =           4
+ 
+CME iteration =         115  CME coast =           0  CME profile =           6
+ 
+CME iteration =         115  CME coast =           0  CME profile =           7
+ 
+CME iteration =         115  CME coast =           0  CME profile =           9
+ 
+CME iteration =         115  CME coast =           0  CME profile =          10
+ 
+CME iteration =         115  CME coast =           0  CME profile =          12
+ 
+CME iteration =         115  CME coast =           0  CME profile =          13
+ 
+CME iteration =         115  CME coast =           0  CME profile =          14
+ 
+CME iteration =         115  CME coast =           0  CME profile =          15
+ 
+CME iteration =         115  CME coast =           0  CME profile =          16
+ 
+CME iteration =         115  CME coast =           0  CME profile =          17
+ 
+CME iteration =         115  CME coast =           0  CME profile =          18
+ 
+CME iteration =         115  CME coast =           0  CME profile =          19
+ 
+CME iteration =         116  CME coast =           0  CME profile =           0
+ 
+CME iteration =         116  CME coast =           0  CME profile =           1
+ 
+CME iteration =         116  CME coast =           0  CME profile =           2
+ 
+CME iteration =         116  CME coast =           0  CME profile =           3
+ 
+CME iteration =         116  CME coast =           0  CME profile =           4
+ 
+CME iteration =         116  CME coast =           0  CME profile =           6
+ 
+CME iteration =         116  CME coast =           0  CME profile =           8
+ 
+CME iteration =         116  CME coast =           0  CME profile =           9
+ 
+CME iteration =         116  CME coast =           0  CME profile =          10
+ 
+CME iteration =         116  CME coast =           0  CME profile =          11
+ 
+CME iteration =         116  CME coast =           0  CME profile =          12
+ 
+CME iteration =         116  CME coast =           0  CME profile =          14
+ 
+CME iteration =         116  CME coast =           0  CME profile =          15
+ 
+CME iteration =         117  CME coast =           0  CME profile =           0
+ 
+CME iteration =         117  CME coast =           0  CME profile =           1
+ 
+CME iteration =         117  CME coast =           0  CME profile =           3
+ 
+CME iteration =         117  CME coast =           0  CME profile =           4
+ 
+CME iteration =         117  CME coast =           0  CME profile =           6
+ 
+CME iteration =         117  CME coast =           0  CME profile =           7
+ 
+CME iteration =         117  CME coast =           0  CME profile =           8
+ 
+CME iteration =         117  CME coast =           0  CME profile =           9
+ 
+CME iteration =         117  CME coast =           0  CME profile =          11
+ 
+CME iteration =         117  CME coast =           0  CME profile =          12
+ 
+CME iteration =         117  CME coast =           0  CME profile =          13
+ 
+CME iteration =         117  CME coast =           0  CME profile =          14
+ 
+CME iteration =         118  CME coast =           0  CME profile =           0
+ 
+CME iteration =         118  CME coast =           0  CME profile =           2
+ 
+CME iteration =         118  CME coast =           0  CME profile =           3
+ 
+CME iteration =         118  CME coast =           0  CME profile =           4
+ 
+CME iteration =         118  CME coast =           0  CME profile =           5
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   2 line  1 time        0.000 DUM =       -0.420 ITEQO = 1 ITE =22 QO(L) =  0.000000000
+ 
+CME iteration =         118  CME coast =           0  CME profile =           6
+ 
+CME iteration =         118  CME coast =           0  CME profile =           7
+ 
+CME iteration =         118  CME coast =           0  CME profile =           8
+ 
+CME iteration =         118  CME coast =           0  CME profile =           9
+ 
+CME iteration =         118  CME coast =           0  CME profile =          10
+ 
+CME iteration =         118  CME coast =           0  CME profile =          11
+ 
+CME iteration =         118  CME coast =           0  CME profile =          12
+CShore WARNING 7: did not reach convergence after MAXITE =  40 iterations with relative error EPS1 =      0.10000E-02 at node JP1 =   2 Line L =  1 TIME =        0.000
+
+CShore WARNING 2: at end of landward marching computation, DUM (which is the square of sigma SIGTIE) <= 0 at node   3 line  1 time        0.000 DUM =       -0.397 ITEQO = 1 ITE = 8 QO(L) =  0.000000000
+ 
+CME iteration =         118  CME coast =           0  CME profile =          13
+ 
+CME iteration =         118  CME coast =           0  CME profile =          14
+ 
+CME iteration =         118  CME coast =           0  CME profile =          15
+ 
+CME iteration =         118  CME coast =           0  CME profile =          16
+ 
+CME iteration =         118  CME coast =           0  CME profile =          17
+ 
+CME iteration =         118  CME coast =           0  CME profile =          18
+ 
+CME iteration =         118  CME coast =           0  CME profile =          19
+ 
+CME iteration =         119  CME coast =           0  CME profile =           0
+ 
+CME iteration =         119  CME coast =           0  CME profile =           1
+ 
+CME iteration =         119  CME coast =           0  CME profile =           4
+ 
+CME iteration =         119  CME coast =           0  CME profile =           5
+ 
+CME iteration =         119  CME coast =           0  CME profile =           6
+ 
+CME iteration =         119  CME coast =           0  CME profile =           7
+ 
+CME iteration =         119  CME coast =           0  CME profile =           8
+ 
+CME iteration =         119  CME coast =           0  CME profile =           9
+ 
+CME iteration =         119  CME coast =           0  CME profile =          10
+ 
+CME iteration =         119  CME coast =           0  CME profile =          11
+ 
+CME iteration =         119  CME coast =           0  CME profile =          12
+ 
+CME iteration =         119  CME coast =           0  CME profile =          13
+ 
+CME iteration =         119  CME coast =           0  CME profile =          14

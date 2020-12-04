@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-// #include <assert.h>
+#include <assert.h>
 #include <cmath>
 
 #include <iostream>
@@ -103,8 +103,8 @@ int CSimulation::nDoAllShorePlatFormErosion(void)
       }
    }
 
-   LogStream << endl << m_ulIteration << ": potential shore platform erosion (m^3) = " << m_dThisTimestepPotentialPlatformErosion * m_dCellArea << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles * m_dCellArea << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles * m_dCellArea << ")" << endl;
-   LogStream << m_ulIteration << ": actual shore platform erosion (m^3) = " << (m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepActualPlatformErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepActualPlatformErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepActualPlatformErosionCoarse * m_dCellArea << ")" << endl;
+   LogStream << endl << m_lIteration << ": potential shore platform erosion (m^3) = " << m_dThisTimestepPotentialPlatformErosion * m_dCellArea << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles * m_dCellArea << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles * m_dCellArea << ")" << endl;
+   LogStream << m_lIteration << ": actual shore platform erosion (m^3) = " << (m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepActualPlatformErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepActualPlatformErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepActualPlatformErosionCoarse * m_dCellArea << ")" << endl;
 
    return RTN_OK;
 }
@@ -134,7 +134,7 @@ int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int co
       // This profile is not in the active zone, so no platform erosion here
       return RTN_OK;
 
-//   LogStream << m_ulIteration << ": ON PROFILE nProfile = " << nProfile << " dDepthOfBreaking = " << dDepthOfBreaking << endl;
+//   LogStream << m_lIteration << ": ON PROFILE nProfile = " << nProfile << " dDepthOfBreaking = " << dDepthOfBreaking << endl;
 
    // Get the height of the associated breaking wave from the coast point: this height is used in beach protection calcs
    double const dBreakingWaveHeight =  m_VCoast[nCoast].dGetBreakingWaveHeight(nCoastPoint);
@@ -299,7 +299,7 @@ int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int co
          if (dPrevPotentialErosion < 0)
          {
             // Average the two values
-//               LogStream << m_ulIteration << ": [" << nX << "][" << nY << "] under profile " << nProfile << " has previous potential platform erosion = " << dPrevPotentialErosion << endl;
+//               LogStream << m_lIteration << ": [" << nX << "][" << nY << "] under profile " << nProfile << " has previous potential platform erosion = " << dPrevPotentialErosion << endl;
             dDeltaZ = ((dDeltaZ + dPrevPotentialErosion) / 2);
          }
 
@@ -314,6 +314,7 @@ int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int co
          // Update this-timestep totals
          m_ulThisTimestepNumPotentialPlatformErosionCells++;
          m_dThisTimestepPotentialPlatformErosion -= dDeltaZ;       // Since dDeltaZ is a -ve value
+         assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
 //             assert(m_dThisTimestepPotentialPlatformErosion >= 0);
 
          // Increment the check values
@@ -380,7 +381,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       // Have we reached the beginning of the coast?
       if ((nDirection == DIRECTION_UPCOAST) && (nThisPointOnCoast < 0))
       {
-//         LogStream << m_ulIteration << ": LEAVING LOOP since hit nThisPointOnCoast = " << nThisPointOnCoast << " while doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile = " << nProfile << ", dist from profile = " <<  nDistFromProfile << endl;
+//         LogStream << m_lIteration << ": LEAVING LOOP since hit nThisPointOnCoast = " << nThisPointOnCoast << " while doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile = " << nProfile << ", dist from profile = " <<  nDistFromProfile << endl;
 
          break;
       }
@@ -388,23 +389,23 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       // Have we reached the end of the coast?
       if ((nDirection == DIRECTION_DOWNCOAST) && (nThisPointOnCoast >= nCoastMax))
       {
-//         LogStream << m_ulIteration << ": LEAVING LOOP since hit nThisPointOnCoast = " << nThisPointOnCoast << " while doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile = " << nProfile << ", dist from profile = " <<  nDistFromProfile << endl;
+//         LogStream << m_lIteration << ": LEAVING LOOP since hit nThisPointOnCoast = " << nThisPointOnCoast << " while doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile = " << nProfile << ", dist from profile = " <<  nDistFromProfile << endl;
 
          break;
       }
 
-//       LogStream << m_ulIteration << ": from profile " << nProfile << ", doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast, dist from profile = " <<  nDistFromProfile << endl;
+//       LogStream << m_lIteration << ": from profile " << nProfile << ", doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast, dist from profile = " <<  nDistFromProfile << endl;
 
       double const dDepthOfBreaking = m_VCoast[nCoast].dGetDepthOfBreaking(nThisPointOnCoast);
       if (dDepthOfBreaking == DBL_NODATA)
       {
          // This parallel profile is not in the active zone, so no platform erosion here. Move on to the next point along the coastline in this direction
-         LogStream << m_ulIteration << ": not in active zone at coastline " << nCoast << " coast point " << nThisPointOnCoast << " when constructing parallel profile for potential platform erosion. Working from profile " << nProfile << ", " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast, dist from profile = " <<  nDistFromProfile << endl;
+         LogStream << m_lIteration << ": not in active zone at coastline " << nCoast << " coast point " << nThisPointOnCoast << " when constructing parallel profile for potential platform erosion. Working from profile " << nProfile << ", " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast, dist from profile = " <<  nDistFromProfile << endl;
 
          continue;
       }
 
-///      LogStream << m_ulIteration << ": BETWEEN PROFILES " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile " << nProfile << " nThisPointOnCoast = " << nThisPointOnCoast << " dDepthOfBreaking = " << dDepthOfBreaking << " nParProfSize = " << nParProfSize << endl;
+///      LogStream << m_lIteration << ": BETWEEN PROFILES " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile " << nProfile << " nThisPointOnCoast = " << nThisPointOnCoast << " dDepthOfBreaking = " << dDepthOfBreaking << " nParProfSize = " << nParProfSize << endl;
 
       // All is OK, so get the grid co-ordinates of this point, which is the coastline start point for the parallel profile
       int const
@@ -414,7 +415,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       if ((nParCoastX == nParCoastXLast) && (nParCoastY == nParCoastYLast))
       {
          // Should not happen, but could do due to rounding errors
-         LogStream << WARN << m_ulIteration << ": rounding problem on coast " << nCoast << " profile " << nProfile << " at [" << nParCoastX << "][" << nParCoastY << "]" << endl;
+         LogStream << WARN << m_lIteration << ": rounding problem on coast " << nCoast << " profile " << nProfile << " at [" << nParCoastX << "][" << nParCoastY << "]" << endl;
 
          // So move on to the next point along the coastline in this direction
          continue;
@@ -423,7 +424,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       // Is this coastline start point the start point of an adjacent coastline-normal vector?
       if (m_pRasterGrid->m_Cell[nParCoastX][nParCoastY].bIsProfile())
       {
-         //         LogStream << m_ulIteration << ": coast " << nCoast << ", LEAVING LOOP since hit another profile at nThisPointOnCoast = " << nThisPointOnCoast << " while doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile = " << nProfile << ", dist from profile = " <<  nDistFromProfile << endl;
+         //         LogStream << m_lIteration << ": coast " << nCoast << ", LEAVING LOOP since hit another profile at nThisPointOnCoast = " << nThisPointOnCoast << " while doing potential platform erosion " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile = " << nProfile << ", dist from profile = " <<  nDistFromProfile << endl;
          break;
       }
 
@@ -445,7 +446,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
          // We cannot use this parallel profile, it is too short to calculate along-profile slope, so abandon it and move on to the next parallel profile in this direction
          nParCoastXLast = nParCoastX;
          nParCoastYLast = nParCoastY;
-//         LogStream << m_ulIteration << ": parallel profile abandoned since too short, starts at [" << nParCoastX << "][" << nParCoastY << "] coastline point " << nThisPointOnCoast << ", length = " << nParProfSize << endl;
+//         LogStream << m_lIteration << ": parallel profile abandoned since too short, starts at [" << nParCoastX << "][" << nParCoastY << "] coastline point " << nThisPointOnCoast << ", length = " << nParProfSize << endl;
          continue;
       }
 
@@ -473,7 +474,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
          if (! m_pRasterGrid->m_Cell[nXPar][nYPar].bIsInundated())
          {
             // It isn't so move along, nothing to do here
-//             LogStream << m_ulIteration << " : [" << nXPar << "][" << nYPar << "] is not inundated" << endl;
+//             LogStream << m_lIteration << " : [" << nXPar << "][" << nYPar << "] is not inundated" << endl;
             continue;
          }
 
@@ -482,7 +483,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
          if (nPolyID == INT_NODATA)
          {
             // It isn't. This can happen at the seaward end of polygons TODO Is it a problem?
-//             LogStream << m_ulIteration << " : [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " << dGridCentroidYToExtCRSY(nYPar) << "} is not in a polygon" << endl;
+//             LogStream << m_lIteration << " : [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " << dGridCentroidYToExtCRSY(nYPar) << "} is not in a polygon" << endl;
             continue;
          }
 
@@ -587,7 +588,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
          dVParRecessionXY[i] = tMin(m_VCoast[nCoast].dGetWaveEnergyatBreaking(nThisPointOnCoast) * dVParProfileErosionPotential[i] * dVParConsSlope[i] / m_dR, 0.0);
          dVParSCAPEXY[i] = dVParProfileDistXY[i] - dVParRecessionXY[i];
 
-//         LogStream << m_ulIteration << ": [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " <<  dGridCentroidYToExtCRSY(nYPar) << "} wave energy = " << m_VCoast[nCoast].dGetWaveEnergyatBreaking(nThisPointOnCoast) << " erosion potential = " << dVParProfileErosionPotential[i] << " slope = " << dVParProfileSlope[i] << " dVParZDiff[i] = " << dVParZDiff[i] << " nParProfSize = " << nParProfSize << endl;
+//         LogStream << m_lIteration << ": [" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " <<  dGridCentroidYToExtCRSY(nYPar) << "} wave energy = " << m_VCoast[nCoast].dGetWaveEnergyatBreaking(nThisPointOnCoast) << " erosion potential = " << dVParProfileErosionPotential[i] << " slope = " << dVParProfileSlope[i] << " dVParZDiff[i] = " << dVParZDiff[i] << " nParProfSize = " << nParProfSize << endl;
       }
 
       vector<double> dVParDeltaZ(nParProfSize, 0);
@@ -618,7 +619,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
                // It has
                double const dPrevPotentialErosion = -m_pRasterGrid->m_Cell[nXPar][nYPar].dGetPotentialPlatformErosion();
 
-//                  LogStream << m_ulIteration << ": [" << nXPar << "][" << nYPar << "] parallel profile " << nDistFromProfile << " coast points " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile " << nProfile << " has previous potential platform erosion = " << dPrevPotentialErosion << ", current potential platform erosion = " << dDeltaZ << ", max value = " << tMin(dPrevPotentialErosion, dDeltaZ) << endl;
+//                  LogStream << m_lIteration << ": [" << nXPar << "][" << nYPar << "] parallel profile " << nDistFromProfile << " coast points " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast from profile " << nProfile << " has previous potential platform erosion = " << dPrevPotentialErosion << ", current potential platform erosion = " << dDeltaZ << ", max value = " << tMin(dPrevPotentialErosion, dDeltaZ) << endl;
 
                // Use the larger of the two -ve values
                dDeltaZ = tMin(dPrevPotentialErosion, dDeltaZ);
@@ -626,6 +627,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
                // Adjust this-timestep totals, since this cell has already been eroded
                m_ulThisTimestepNumPotentialPlatformErosionCells--;
                m_dThisTimestepPotentialPlatformErosion += dPrevPotentialErosion;          // Since dPrevPotentialErosion is +ve
+               assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
 //                   assert(m_dThisTimestepPotentialPlatformErosion >= 0);
 
                // And also adjust the check values
@@ -645,6 +647,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
             // Update this-timestep totals
             m_ulThisTimestepNumPotentialPlatformErosionCells++;
             m_dThisTimestepPotentialPlatformErosion -= dDeltaZ;                // Since dDeltaZ is a -ve value
+            assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
 //                assert(m_dThisTimestepPotentialPlatformErosion >= 0);
 
             // Increment the check values
@@ -681,7 +684,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
 ==============================================================================================================================*/
 void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
 {
-//    LogStream << m_ulIteration << ": doing platform erosion on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+//    LogStream << m_lIteration << ": doing platform erosion on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 
    // Get the beach protection factor, which quantifies the extent to which unconsolidated sediment on the shore platform (beach) protects the shore platform
    double const dBeachProtectionFactor = m_pRasterGrid->m_Cell[nX][nY].dGetBeachProtectionFactor();
@@ -922,7 +925,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       else
       {
          // Uh-oh, we have a problem
-         LogStream << m_ulIteration << ": " << WARN << "platform erosion on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} but this is not in a polygon" << endl;
+         LogStream << m_lIteration << ": " << WARN << "platform erosion on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} but this is not in a polygon" << endl;
 
          m_dThisTimestepMassBalanceDepositionError += (dSandEroded + dCoarseEroded);
       }
@@ -1037,7 +1040,7 @@ double CSimulation::dCalcBeachProtectionFactor(int const nX, int const nY, doubl
    if (dMaxPenetrationDepth > 0)
       dFactor = tMax(1 - (dBeachDepth / dMaxPenetrationDepth), 0.0);
 
-//    LogStream << m_ulIteration << ": cell[" << nX << "][" << nY << "] has beach protection factor = " << dFactor << endl;
+//    LogStream << m_lIteration << ": cell[" << nX << "][" << nY << "] has beach protection factor = " << dFactor << endl;
 
    return dFactor;
 }
@@ -1179,6 +1182,7 @@ void CSimulation::FillPotentialPlatformErosionHoles(void)
                // Update this-timestep totals
                m_ulThisTimestepNumPotentialPlatformErosionCells++;
                m_dThisTimestepPotentialPlatformErosion += dThisPotentialPlatformErosion;
+               assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
 
                // Increment the check values
                m_ulTotPotentialPlatformErosionBetweenProfiles++;

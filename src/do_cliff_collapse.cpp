@@ -91,7 +91,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
                // So do the cliff collapse
                nRet = nDoCliffCollapse(pCliff, dNotchExtension, dFineCollapse, dSandCollapse, dCoarseCollapse);
                if (nRet != RTN_OK)
-                  LogStream << m_ulIteration << WARN << " problem with cliff collapse, continuing however" << endl;
+                  LogStream << m_lIteration << WARN << " problem with cliff collapse, continuing however" << endl;
 
                // And put fine sediment into suspension, and deposit sand and/or coarse sediment as unconsolidated sediment
                nRet = nDoCliffCollapseDeposition(pCliff, dFineCollapse, dSandCollapse, dCoarseCollapse);
@@ -102,7 +102,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
       }
    }
 
-   LogStream << endl << m_ulIteration << ": cliff collapse (m^3) = " << (m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepCliffCollapseErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepCliffCollapseErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse * m_dCellArea << "), talus deposition (m^3) = " << (m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse) * m_dCellArea << " (sand = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ")" << endl;
+   LogStream << endl << m_lIteration << ": cliff collapse (m^3) = " << (m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepCliffCollapseErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepCliffCollapseErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse * m_dCellArea << "), talus deposition (m^3) = " << (m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse) * m_dCellArea << " (sand = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ")" << endl;
 
    return RTN_OK;
 }
@@ -127,12 +127,12 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
    int nNotchLayer = m_pRasterGrid->m_Cell[nX][nY].nGetLayerAtElev(dNotchElev);
    if (nNotchLayer == ELEV_ABOVE_SEDIMENT_TOP)
    {
-      LogStream << endl << m_ulIteration << ": " << ERR << " cell [" << nX << "][" << nY << "] has dNotchElev (" << dNotchElev << ") above sediment top elevation (" << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ")" << endl;
+      LogStream << endl << m_lIteration << ": " << ERR << " cell [" << nX << "][" << nY << "] has dNotchElev (" << dNotchElev << ") above sediment top elevation (" << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ")" << endl;
 
       return RTN_ERR_CLIFFNOTCH;
    }
 //    else
-//       LogStream << endl << m_ulIteration << ": for cell [" << nX << "][" << nY << "] dNotchElev = " << dNotchElev << " sediment top elevation = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl;
+//       LogStream << endl << m_lIteration << ": for cell [" << nX << "][" << nY << "] dNotchElev = " << dNotchElev << " sediment top elevation = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl;
 
    // Flag the coastline cliff object as having collapsed
    pCliff->SetCliffCollapse(true);
@@ -158,7 +158,7 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
 
 //      int nX = pCliff->pPtiGetCellMarkedAsLF()->nGetX();
 //      int nY = pCliff->pPtiGetCellMarkedAsLF()->nGetY();
-//      LogStream << m_ulIteration << ": all sediment removed from cliff object after cliff collapse on [" << nX << "][" << nY << "], dNotchElev = " << dNotchElev << endl;
+//      LogStream << m_lIteration << ": all sediment removed from cliff object after cliff collapse on [" << nX << "][" << nY << "], dNotchElev = " << dNotchElev << endl;
    }
 
    // Now calculate the vertical depth of sediment lost in this cliff collapse
@@ -176,7 +176,7 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
       dAvailable = 0,
       dLost = 0;
 
-//   LogStream << m_ulIteration << ": cell [" << nX << "][" << nY << "] before removing sediment, dGetVolEquivSedTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() << ", dGetSedimentTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl;
+//   LogStream << m_lIteration << ": cell [" << nX << "][" << nY << "] before removing sediment, dGetVolEquivSedTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() << ", dGetSedimentTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl;
 
    // Now update the cell's sediment. If there are sediment layers above the notched layer, we must remove sediment from the whole depth of each layer. Again, weight the depth lost by the fraction of the cell's area which is being removed
    for (int n = nTopLayer; n > nNotchLayer; n--)
@@ -298,7 +298,7 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
    // The notch has gone
    pCliff->SetNotchOverhang(0);
 
-//   LogStream << m_ulIteration << ": cell [" << nX << "][" << nY << "] after removing sediment, dGetVolEquivSedTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() << ", dGetSedimentTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl << endl;
+//   LogStream << m_lIteration << ": cell [" << nX << "][" << nY << "] after removing sediment, dGetVolEquivSedTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() << ", dGetSedimentTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl << endl;
 
    // And update the this-timestep totals and the grand totals for collapse
    m_nNThisTimestepCliffCollapse++;
@@ -346,7 +346,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 
 
 //    LogStream << "=====================================================================================================" << endl;
-//    LogStream << m_ulIteration << ": coast = " << nCoast << ", point = " << nStartPoint << endl;
+//    LogStream << m_lIteration << ": coast = " << nCoast << ", point = " << nStartPoint << endl;
 
    // Calculate the proportion per planview collapse profile
    vector<int>
@@ -397,7 +397,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
       // Is this start point valid?
       if ((nThisPoint < 0) || (nThisPoint > (nCoastSize-1)))
       {
-//          LogStream << endl << m_ulIteration << ": ABANDONING PROFILE with nWidthDistSigned = " << nWidthDistSigned << endl;
+//          LogStream << endl << m_lIteration << ": ABANDONING PROFILE with nWidthDistSigned = " << nWidthDistSigned << endl;
 //          LogStream << "START point " << nThisPoint << " of profile would have been outside the grid, so " << dVToDepositPerProfile[nAcross] << " exported from grid" << endl;
 //          LogStream << "dTotSandToDeposit WAS = " << dTotSandToDeposit << " dTotCoarseToDeposit WAS = " << dTotCoarseToDeposit << endl;
 
@@ -446,7 +446,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
          if (nRtn != RTN_OK)
          {
             // Could not find an end point so forget this profile
-//            LogStream << endl << m_ulIteration << ": ABANDONING PROFILE with nWidthDistSigned = " << nWidthDistSigned << endl;
+//            LogStream << endl << m_lIteration << ": ABANDONING PROFILE with nWidthDistSigned = " << nWidthDistSigned << endl;
 
             if (nRtn == RTN_ERR_PROFILE_ENDPOINT_IS_OFFGRID)
             {
@@ -488,7 +488,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
             break;
          }
 
-//         LogStream << m_ulIteration << ": nWidthDistSigned = " << nWidthDistSigned << " cliff collapse profile from " << PtStart.dGetX() << ", " << PtStart.dGetY() << " to " << PtEnd.dGetX() << ", " << PtEnd.dGetY() << " with length (inc. cliff point) = " << dThisProfileLength << endl;
+//         LogStream << m_lIteration << ": nWidthDistSigned = " << nWidthDistSigned << " cliff collapse profile from " << PtStart.dGetX() << ", " << PtStart.dGetY() << " to " << PtEnd.dGetX() << ", " << PtEnd.dGetY() << " with length (inc. cliff point) = " << dThisProfileLength << endl;
 
          vector<CGeom2DPoint> VTmpProfile;
          VTmpProfile.push_back(PtStart);
@@ -498,7 +498,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
          // Now get the raster cells under this profile
          if (nRasterizeCliffCollapseProfile(&VTmpProfile, &VCellsUnderProfile) != RTN_OK)
          {
-            cout << m_ulIteration << ": error when rasterizing cells during cliff collapse" << endl;
+            cout << m_lIteration << ": error when rasterizing cells during cliff collapse" << endl;
             return RTN_ERR_LINETOGRID;
          }
 
@@ -587,8 +587,8 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
             break;
 
          // Yes it does
-//          LogStream << m_ulIteration << ": cliff collapse at [" << VCellsUnderProfile[0].nGetX() << "][" << VCellsUnderProfile[0].nGetY() << "] = {" << dGridCentroidXToExtCRSX(VCellsUnderProfile[0].nGetX()) << ", " << dGridCentroidYToExtCRSY(VCellsUnderProfile[0].nGetY()) << "} offset SUFFICIENT with nSeawardOffset = " << nSeawardOffset << endl;
-//          LogStream << m_ulIteration << ": dTotElevDiff = " << dTotElevDiff << " dVToDepositPerProfile[nAcross] = " << dVToDepositPerProfile[nAcross] << endl;
+//          LogStream << m_lIteration << ": cliff collapse at [" << VCellsUnderProfile[0].nGetX() << "][" << VCellsUnderProfile[0].nGetY() << "] = {" << dGridCentroidXToExtCRSX(VCellsUnderProfile[0].nGetX()) << ", " << dGridCentroidYToExtCRSY(VCellsUnderProfile[0].nGetY()) << "} offset SUFFICIENT with nSeawardOffset = " << nSeawardOffset << endl;
+//          LogStream << m_lIteration << ": dTotElevDiff = " << dTotElevDiff << " dVToDepositPerProfile[nAcross] = " << dVToDepositPerProfile[nAcross] << endl;
 
          double dPropToDeposit = dVToDepositPerProfile[nAcross] / dTotElevDiff;
 //         LogStream << "dPropToDeposit = " << dPropToDeposit << endl;
@@ -786,14 +786,14 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
    // Safety check
    if (! bFPIsEqual(dTotSandToDeposit, 0, TOLERANCE))
    {
-//      LogStream << ERR << m_ulIteration << ": dTotSandToDeposit = " << dTotSandToDeposit << " SET TO ZERO" << endl;
+//      LogStream << ERR << m_lIteration << ": dTotSandToDeposit = " << dTotSandToDeposit << " SET TO ZERO" << endl;
       dTotSandToDeposit = 0;
    }
 
    // Ditto
    if (! bFPIsEqual(dTotCoarseToDeposit, 0, TOLERANCE))
    {
-//      LogStream << ERR << m_ulIteration << ": dTotCoarseToDeposit = " << dTotCoarseToDeposit << " SET TO ZERO" << endl;
+//      LogStream << ERR << m_lIteration << ": dTotCoarseToDeposit = " << dTotCoarseToDeposit << " SET TO ZERO" << endl;
       dTotCoarseToDeposit = 0;
    }
 

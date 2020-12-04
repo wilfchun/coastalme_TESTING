@@ -201,11 +201,11 @@ private:
       m_GDALWriteFloatDataType;
 
    long
+      m_lIteration,
       m_lGDALMaxCanWrite,
       m_lGDALMinCanWrite;
 
    unsigned long
-      m_ulIteration,
       m_ulTotTimestep,
       m_ulRandSeed[NRNG],
       m_ulNumCells,
@@ -447,9 +447,9 @@ private:
       m_VnSedimentInputLocationID,        // ID for sediment input location, this corresponds with the ID in the sediment input time series file
       m_VnSavGolIndexCoast;               // Savitzky-Golay shift index for the coastline vector(s)
 
-   vector<unsigned long>
-      m_VulProfileTimestep,
-      m_VulDeepWaterWaveValuesAtTimestep; // Calculate deep water wave values at these timesteps
+   vector<long>
+      m_VlProfileTimestep,
+      m_VlDeepWaterWaveValuesAtTimestep; // Calculate deep water wave values at these timesteps
 
    vector<double>
       m_VdSliceElev,

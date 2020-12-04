@@ -243,7 +243,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
    if (! bFound)
    {
-      LogStream << m_ulIteration << ": north (top) " << endl;
+      LogStream << m_lIteration << ": north (top) " << endl;
       return RTN_ERR_BOUNDING_BOX;
    }
 
@@ -268,7 +268,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
    if (! bFound)
    {
-      LogStream << m_ulIteration << ": east (right) edge of bounding box not found" << endl;
+      LogStream << m_lIteration << ": east (right) edge of bounding box not found" << endl;
       return RTN_ERR_BOUNDING_BOX;
    }
 
@@ -293,7 +293,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
    if (! bFound)
    {
-      LogStream << m_ulIteration << ": south (bottom) edge of bounding box not found" << endl;
+      LogStream << m_lIteration << ": south (bottom) edge of bounding box not found" << endl;
       return RTN_ERR_BOUNDING_BOX;
    }
 
@@ -318,7 +318,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
    if (! bFound)
    {
-      LogStream << m_ulIteration << ": west (left) edge of bounding box not found" << endl;
+      LogStream << m_lIteration << ": west (left) edge of bounding box not found" << endl;
       return RTN_ERR_BOUNDING_BOX;
    }
 
@@ -346,7 +346,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
       if (! bFound)
       {
-         LogStream << m_ulIteration << ": could not find a bounding box edge cell for grid column " << nX << endl;
+         LogStream << m_lIteration << ": could not find a bounding box edge cell for grid column " << nX << endl;
          return RTN_ERR_BOUNDING_BOX;
       }
    }
@@ -375,7 +375,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
       if (! bFound)
       {
-         LogStream << m_ulIteration << ": could not find a bounding box edge cell for grid row " << nY << endl;
+         LogStream << m_lIteration << ": could not find a bounding box edge cell for grid row " << nY << endl;
          return RTN_ERR_BOUNDING_BOX;
       }
    }
@@ -404,7 +404,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
       if (! bFound)
       {
-         LogStream << m_ulIteration << ": could not find a bounding box edge cell for grid column " << nX << endl;
+         LogStream << m_lIteration << ": could not find a bounding box edge cell for grid column " << nX << endl;
          return RTN_ERR_BOUNDING_BOX;
       }
    }
@@ -433,7 +433,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
       if (! bFound)
       {
-         LogStream << m_ulIteration << ": could not find a bounding box edge cell for grid row " << nY << endl;
+         LogStream << m_lIteration << ": could not find a bounding box edge cell for grid row " << nY << endl;
          return RTN_ERR_BOUNDING_BOX;
       }
    }
@@ -1199,7 +1199,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             break;
 
          case (RASTER_PLOT_AVG_SEA_DEPTH):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / static_cast<double>(m_ulIteration);
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSeaDepth() / static_cast<double>(m_lIteration);
             break;
 
          case (RASTER_PLOT_WAVE_HEIGHT):
@@ -1210,7 +1210,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             break;
 
          case (RASTER_PLOT_AVG_WAVE_HEIGHT):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_ulIteration);
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_lIteration);
             break;
 
          case (RASTER_PLOT_WAVE_ORIENTATION):
@@ -1221,7 +1221,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             break;
 
          case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIteration);
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_lIteration);
             break;
 
          case (RASTER_PLOT_BEACH_PROTECTION):
@@ -1279,7 +1279,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             break;
 
          case (RASTER_PLOT_AVG_SUSPENDED_SEDIMENT):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / static_cast<double>(m_ulIteration);
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotSuspendedSediment() / static_cast<double>(m_lIteration);
             break;
 
          case (RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT):

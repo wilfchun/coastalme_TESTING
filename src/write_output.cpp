@@ -435,8 +435,8 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << m_VnProfileToSave[i] << SPACE;
    OutStream << endl;
    OutStream << " Timesteps when profiles are saved                         \t: ";
-   for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
-      OutStream << m_VulProfileTimestep[i] << SPACE;
+   for (unsigned int i = 0; i < m_VlProfileTimestep.size(); i++)
+      OutStream << m_VlProfileTimestep[i] << SPACE;
    OutStream << endl;
    OutStream << " Output parallel profile data?                             \t: " << (m_bOutputParallelProfileData ? "Y": "N") << endl;
    OutStream << " Output erosion potential look-up data?                    \t: " << (m_bOutputLookUpData ? "Y": "N");
@@ -475,7 +475,7 @@ bool CSimulation::bWritePerTimestepResults(void)
    OutStream << std::fixed << setprecision(0);
 
    // Output timestep and simulated time info ===================================================================================
-   OutStream << setw(4) << m_ulIteration;
+   OutStream << setw(4) << m_lIteration;
    OutStream << setw(7) << m_dSimElapsed;                            // In hours
    OutStream << resetiosflags(ios::floatfield);
    OutStream << std::fixed << setprecision(0);
@@ -772,11 +772,11 @@ void CSimulation::WriteLookUpData(void)
 int CSimulation::nSaveProfile(int const nProfile, int const nCoast, int const nProfSize, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    // TODO make this more efficient, also give warnings if no profiles will be output
-   for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
+   for (unsigned int i = 0; i < m_VlProfileTimestep.size(); i++)
    {
       for (unsigned int j = 0; j < m_VnProfileToSave.size(); j++)
       {
-         if ((m_ulIteration == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
+         if ((m_lIteration == m_VlProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {
             if (! bWriteProfileData(nCoast, nProfile, nProfSize, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVScapeXY))
                return RTN_ERR_PROFILEWRITE;
@@ -805,7 +805,7 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
    strFName.append("_timestep_");
    ststrTmp.clear();
    ststrTmp.str(string());
-   ststrTmp << FillToWidth('0', 4) << m_ulIteration;
+   ststrTmp << FillToWidth('0', 4) << m_lIteration;
    strFName.append(ststrTmp.str());
 
    strFName.append(".csv");
@@ -819,7 +819,7 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
       return false;
    }
 
-   OutProfStream << "\"Dist\", \"X\", \"Y\", \"Z (before erosion)\", \"Depth/DB\", \"Erosion Potential\", \"Slope\", \"Recession XY\", \"Change Elev Z\", \"Grid X\",  \"Grid Y\",  \"Weight\",  \"For profile " << nProfile << " from coastline " << nCoast << " at timestep " << m_ulIteration << "\"" << endl;
+   OutProfStream << "\"Dist\", \"X\", \"Y\", \"Z (before erosion)\", \"Depth/DB\", \"Erosion Potential\", \"Slope\", \"Recession XY\", \"Change Elev Z\", \"Grid X\",  \"Grid Y\",  \"Weight\",  \"For profile " << nProfile << " from coastline " << nCoast << " at timestep " << m_lIteration << "\"" << endl;
    for (int i = 0; i < nProfSize; i++)
    {
       double dX = dGridCentroidXToExtCRSX(pPtVGridProfile->at(i).nGetX());
@@ -842,11 +842,11 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
 int CSimulation::nSaveParProfile(int const nProfile, int const nCoast, int const nParProfSize, int const nDirection, int const nDistFromProfile, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    // TODO make this more efficient, also give warnings if no profiles will be output
-   for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
+   for (unsigned int i = 0; i < m_VlProfileTimestep.size(); i++)
    {
       for (unsigned int j = 0; j < m_VnProfileToSave.size(); j++)
       {
-         if ((m_ulIteration == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
+         if ((m_lIteration == m_VlProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {
             if (! bWriteParProfileData(nCoast, nProfile, nParProfSize, nDirection, nDistFromProfile, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVScapeXY))
                return RTN_ERR_PROFILEWRITE;
@@ -883,7 +883,7 @@ bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int
    strFName.append("_timestep_");
    ststrTmp.clear();
    ststrTmp.str(string());
-   ststrTmp << FillToWidth('0', 4) << m_ulIteration;
+   ststrTmp << FillToWidth('0', 4) << m_lIteration;
    strFName.append(ststrTmp.str());
 
    strFName.append(".csv");
@@ -897,7 +897,7 @@ bool CSimulation::bWriteParProfileData(int const nCoast, int const nProfile, int
       return false;
    }
 
-   OutProfStream << "\"Dist\", \"X\", \"Y\", \"Z (before erosion)\", \"Depth/DB\", \"Erosion Potential\", \"Slope\", \"Recession XY\", \"Change Elev Z\", \"Grid X\",  \"Grid Y\",  \"Weight\",  \"For profile " << nProfile << " from coastline " << nCoast << " at timestep " << m_ulIteration << "\"" << endl;
+   OutProfStream << "\"Dist\", \"X\", \"Y\", \"Z (before erosion)\", \"Depth/DB\", \"Erosion Potential\", \"Slope\", \"Recession XY\", \"Change Elev Z\", \"Grid X\",  \"Grid Y\",  \"Weight\",  \"For profile " << nProfile << " from coastline " << nCoast << " at timestep " << m_lIteration << "\"" << endl;
    for (int i = 0; i < nProfSize; i++)
    {
       double dX = dGridCentroidXToExtCRSX(pPtVGridProfile->at(i).nGetX());
