@@ -1703,7 +1703,6 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
                }
             }
 
-/*
             // Now fill in wave calc holes, start by looking at the cell's N-S and W-E neighbours
             int
                nXTmp,
@@ -1899,7 +1898,6 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
                      m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
                      m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);
                   }
-
                }
 
                // If this sea cell is not marked as in a downdrift zone but has four neighbours which are in a downdrift zone, then it should also be in the downdrift zone: give it the average of its neighbours
@@ -1911,8 +1909,7 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
                   m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dWaveAngle);
                }
             }
-*/
-          }
+         }
       }
    }
 
