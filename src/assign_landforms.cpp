@@ -75,14 +75,14 @@ int CSimulation::nAssignAllCoastalLandforms(void)
          if (nLayer == ELEV_IN_BASEMENT)
          {
             // Should never happen
-            LogStream << m_lIteration << ": SWL (" << m_dThisTimestepSWL << ") is in basement on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, cannot assign coastal landform for coastline " << nCoast << endl;
+            LogStream << m_ulIter << ": SWL (" << m_dThisTimestepSWL << ") is in basement on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, cannot assign coastal landform for coastline " << nCoast << endl;
 
             return RTN_ERR_CANNOT_ASSIGN_COASTAL_LANDFORM;
          }
          else if (nLayer == ELEV_ABOVE_SEDIMENT_TOP)
          {
             // Again, should never happen
-            LogStream << m_lIteration << ": SWL (" << m_dThisTimestepSWL << ") is above sediment-top elevation (" << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ") on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, cannot assign coastal landform for coastline " << nCoast << endl;
+            LogStream << m_ulIter << ": SWL (" << m_dThisTimestepSWL << ") is above sediment-top elevation (" << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ") on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, cannot assign coastal landform for coastline " << nCoast << endl;
 
             return RTN_ERR_CANNOT_ASSIGN_COASTAL_LANDFORM;
          }
@@ -92,7 +92,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
          if (dConsSedTop >= m_dThisTimestepSWL)
             bConsSedAtSWL = true;
 
-         if (m_lIteration == 1)
+         if (m_ulIter == 1)
          {
             // The first timestep: no coastal landforms (other than interventions) already exist, so no grid cells are flagged with coastal landform attributes. So we must update the grid now using the initial values for the coastal landform object's attributes, ready for nLandformToGrid() at the end of the first timestep
             if (bConsSedAtSWL)
@@ -107,7 +107,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
                CACoastLandform* pCliff = new CRWCliff(&m_VCoast[nCoast], nCoast, j, m_dCellSide, m_dThisTimestepSWL, 0, 0);   // APayo March 2018 replaced m_dMinSWL by m_dThisTimestepSWL
                m_VCoast[nCoast].AppendCoastLandform(pCliff);
 
-//                LogStream << m_lIteration << ": CLIFF CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+//                LogStream << m_ulIter << ": CLIFF CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
             }
             else
             {
@@ -119,7 +119,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
                if (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() != LF_CAT_DRIFT)
                   m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFSubCategory(LF_SUBCAT_DRIFT_MIXED);
 
-//                LogStream << m_lIteration << ": DRIFT CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+//                LogStream << m_ulIter << ": DRIFT CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
             }
          }
 
@@ -145,7 +145,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
                   dNotchBaseElev   = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->dGetCliffNotchBaseElev(),
                   dRemaining       = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->dGetCliffRemaining();
 
-//                   LogStream << m_lIteration << ": CLIFF RE-CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+//                   LogStream << m_ulIter << ": CLIFF RE-CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
                }
                else
                {
@@ -156,7 +156,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
                   m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffNotchBaseElev(dNotchBaseElev);
                   m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffRemaining(dRemaining);
 
-//                   LogStream << m_lIteration << ": CLIFF CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+//                   LogStream << m_ulIter << ": CLIFF CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
                }
 
                // Create a cliff object on the vector coastline with these attributes
@@ -173,7 +173,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
                if (m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() != LF_CAT_DRIFT)
                   m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFSubCategory(LF_SUBCAT_DRIFT_MIXED);
 
-//                LogStream << m_lIteration << ": DRIFT CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+//                LogStream << m_ulIter << ": DRIFT CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
             }
          }
       }
@@ -188,7 +188,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
 //             nX = m_VCoast[i].pPtiGetCellMarkedAsCoastline(j)->nGetX(),
 //             nY = m_VCoast[i].pPtiGetCellMarkedAsCoastline(j)->nGetY();
 //
-//          LogStream << m_lIteration << ": coast cell " << j << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} has landform category = ";
+//          LogStream << m_ulIter << ": coast cell " << j << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} has landform category = ";
 //
 //          int
 //             nCat = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory(),
@@ -304,7 +304,7 @@ int CSimulation::nLandformToGrid(int const nCoast, int const nPoint)
 
       if (pCliff->bAllSedimentGone())
       {
-//         cout << m_lIteration << ": cell [" << nX << "][" << nY << "] before removing cliff, dGetVolEquivSedTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() << ", dGetSedimentTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl;
+//         cout << m_ulIter << ": cell [" << nX << "][" << nY << "] before removing cliff, dGetVolEquivSedTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() << ", dGetSedimentTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl;
 
          // All the sediment is gone from this cliff object via cliff collapse, so this cell is no longer a cliff
          m_pRasterGrid->m_Cell[nX][nY].SetInContiguousSea();
@@ -322,7 +322,7 @@ int CSimulation::nLandformToGrid(int const nCoast, int const nPoint)
          if (nY > m_nYMaxBoundingBox)
             m_nYMaxBoundingBox = nY;
 
-//          LogStream << m_lIteration << ": CLIFF REMOVED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} is no longer a cliff landform" << endl;
+//          LogStream << m_ulIter << ": CLIFF REMOVED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} is no longer a cliff landform" << endl;
 
          int nTopLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopLayerAboveBasement();
 
@@ -340,8 +340,8 @@ int CSimulation::nLandformToGrid(int const nCoast, int const nPoint)
          // And update the cell's sea depth
          m_pRasterGrid->m_Cell[nX][nY].SetSeaDepth();
 
-//         cout << m_lIteration << ": cell [" << nX << "][" << nY << "] after removing cliff, dGetVolEquivSedTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() << ", dGetSedimentTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl;
-//         cout << m_lIteration << ": cell [" << nX << "][" << nY << "] is no longer a cliff" << endl << endl;
+//         cout << m_ulIter << ": cell [" << nX << "][" << nY << "] after removing cliff, dGetVolEquivSedTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() << ", dGetSedimentTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl;
+//         cout << m_ulIter << ": cell [" << nX << "][" << nY << "] is no longer a cliff" << endl << endl;
       }
       else
       {
@@ -351,7 +351,7 @@ int CSimulation::nLandformToGrid(int const nCoast, int const nPoint)
          m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffNotchOverhang(dNotchOverhang);
          m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffRemaining(dRemaining);
 
-//          LogStream << m_lIteration << ": STILL CLIFF [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} is still a cliff landform, dRemaining = " << dRemaining << endl;
+//          LogStream << m_ulIter << ": STILL CLIFF [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} is still a cliff landform, dRemaining = " << dRemaining << endl;
       }
 
       // Always accumulate wave energy
@@ -398,7 +398,7 @@ int CSimulation::nAssignNonCoastlineLandforms(void)
                // This was a cliff during the last timestep, but it is no longer on the coastline. So classify it as a former cliff
                pLandform->SetLFSubCategory(LF_SUBCAT_CLIFF_INLAND);
 
-//                LogStream << m_lIteration << ": FORMER CLIFF CREATED from cliff landform [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+//                LogStream << m_ulIter << ": FORMER CLIFF CREATED from cliff landform [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 
                continue;
             }

@@ -125,7 +125,7 @@ $(function() {
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;   <span class="keywordflow">if</span> (! m_bSingleDeepWaterWaveValues)</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;   {</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;      <span class="comment">// We have wave time series data: the number of time steps is total size divided by the number of points</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;      <span class="keywordtype">int</span> nWaveTimeSteps = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(m_VdDeepWaterWavePointHeightTS.size()) / <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(m_VnDeepWaterWavePointID.size());</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;      <span class="keywordtype">int</span> nWaveTimeSteps = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(m_VdDeepWaterWaveStationHeightTS.size()) / <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(m_VnDeepWaterWaveStationID.size());</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;      <span class="keyword">static</span> <span class="keywordtype">int</span> nWaveDataCount = 0;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;       <span class="keywordflow">if</span> (nWaveDataCount &gt; nWaveTimeSteps-1)</div>
@@ -136,14 +136,14 @@ $(function() {
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      <span class="comment">// Update this time step deep water wave values: the order on the vector is determined by the points ID i.e. to ensure that stations match with time series</span></div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      <span class="keywordtype">int</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      nNumberDeepWaterWaveStations = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(m_VnDeepWaterWavePointID.size()),</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      nNumberDeepWaterWaveStations = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(m_VnDeepWaterWaveStationID.size()),</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;         nTot = nNumberDeepWaterWaveStations * nWaveDataCount;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; nNumberDeepWaterWaveStations; j++)</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      {</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;         m_VdDeepWaterWavePointHeight[j] = m_VdDeepWaterWavePointHeightTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;         m_VdDeepWaterWavePointAngle[j]  = m_VdDeepWaterWavePointAngleTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;         m_VdDeepWaterWavePointPeriod[j] = m_VdDeepWaterWavePointPeriodTS[(m_VnDeepWaterWavePointID[j]-1) + nTot];</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;         m_VdDeepWaterWaveStationHeight[j] = m_VdDeepWaterWaveStationHeightTS[(m_VnDeepWaterWaveStationID[j]-1) + nTot];</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;         m_VdDeepWaterWaveStationAngle[j]  = m_VdDeepWaterWaveStationAngleTS[(m_VnDeepWaterWaveStationID[j]-1) + nTot];</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;         m_VdDeepWaterWaveStationPeriod[j] = m_VdDeepWaterWaveStationPeriodTS[(m_VnDeepWaterWaveStationID[j]-1) + nTot];</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      }</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;      nWaveDataCount++;</div>
@@ -152,14 +152,14 @@ $(function() {
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;   <span class="keywordflow">return</span> <a class="code" href="cme_8h.html#a71d8d6db0e41ed2022d0a95b9a70528c">RTN_OK</a>;</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="acme_8h_html_a068017859403c0629d89f8d348f6c224"><div class="ttname"><a href="cme_8h.html#a068017859403c0629d89f8d348f6c224">tMin</a></div><div class="ttdeci">T tMin(T a, T b)</div><div class="ttdef"><b>Definition:</b> <a href="cme_8h_source.html#l00776">cme.h:776</a></div></div>
+<div class="ttc" id="acme_8h_html_a068017859403c0629d89f8d348f6c224"><div class="ttname"><a href="cme_8h.html#a068017859403c0629d89f8d348f6c224">tMin</a></div><div class="ttdeci">T tMin(T a, T b)</div><div class="ttdef"><b>Definition:</b> <a href="cme_8h_source.html#l00783">cme.h:783</a></div></div>
 <div class="ttc" id="acme_8h_html"><div class="ttname"><a href="cme_8h.html">cme.h</a></div><div class="ttdoc">This file contains global definitions for CoastalME.</div></div>
-<div class="ttc" id="acme_8h_html_a7e895b460cef877dec4d12ead0c74f15"><div class="ttname"><a href="cme_8h.html#a7e895b460cef877dec4d12ead0c74f15">tMax</a></div><div class="ttdeci">T tMax(T a, T b)</div><div class="ttdef"><b>Definition:</b> <a href="cme_8h_source.html#l00765">cme.h:765</a></div></div>
-<div class="ttc" id="acme_8h_html_a71d8d6db0e41ed2022d0a95b9a70528c"><div class="ttname"><a href="cme_8h.html#a71d8d6db0e41ed2022d0a95b9a70528c">RTN_OK</a></div><div class="ttdeci">const int RTN_OK</div><div class="ttdef"><b>Definition:</b> <a href="cme_8h_source.html#l00344">cme.h:344</a></div></div>
+<div class="ttc" id="acme_8h_html_a7e895b460cef877dec4d12ead0c74f15"><div class="ttname"><a href="cme_8h.html#a7e895b460cef877dec4d12ead0c74f15">tMax</a></div><div class="ttdeci">T tMax(T a, T b)</div><div class="ttdef"><b>Definition:</b> <a href="cme_8h_source.html#l00772">cme.h:772</a></div></div>
+<div class="ttc" id="acme_8h_html_a71d8d6db0e41ed2022d0a95b9a70528c"><div class="ttname"><a href="cme_8h.html#a71d8d6db0e41ed2022d0a95b9a70528c">RTN_OK</a></div><div class="ttdeci">const int RTN_OK</div><div class="ttdef"><b>Definition:</b> <a href="cme_8h_source.html#l00351">cme.h:351</a></div></div>
 <div class="ttc" id="asimulation_8h_html"><div class="ttname"><a href="simulation_8h.html">simulation.h</a></div><div class="ttdoc">Contains CSimulation definitions.</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Aug 28 2020 16:12:01 for CoastalME (Coastal Modelling Environment) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Dec 9 2020 19:46:12 for CoastalME (Coastal Modelling Environment) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

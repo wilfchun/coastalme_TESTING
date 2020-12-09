@@ -223,7 +223,7 @@ bool CSimulation::bReadRunDataFile(void)
    int
       i = 0,
       nMult = 0;
-      size_t nPos = 0;
+      size_t nPos;
    string strRec, strErr;
 
    while (getline(InStream, strRec))
@@ -2171,21 +2171,19 @@ bool CSimulation::bReadRunDataFile(void)
             break;
 
          case 61:
-            // Planview width of cliff collapse talus (in cells) [must be odd] TODO MAKE THIS A REAL-WORLD MEASUREMENT
+            // Approximate planview width of cliff collapse talus (in m)
             if (m_bDoCliffCollapse)
             {
-               if (! bIsStringValidInt(strRH))
+               // First check that this is a valid double
+               if (! bIsStringValidDouble(strRH))
                {
-                  strErr = "invalid integer for width of cliff collapse talus '" + strRH + "' in " + m_strDataPathName;
+                  strErr = "invalid floating point number for width of cliff collapse talus '" + strRH + "' in " + m_strDataPathName;
                   break;
                }
 
-               m_nCliffCollapseTalusPlanviewWidth = stoi(strRH);
+               double dTmp = strtod(strRH.c_str(), NULL);
 
-               if ((m_nCliffCollapseTalusPlanviewWidth % 2) == 0)
-                  strErr = "planview width of cliff deposition must be odd";
-
-               if (m_nCliffCollapseTalusPlanviewWidth <= 0)
+               if (dTmp <= 0)
                   strErr = "planview width of cliff deposition must be greater than 0";
             }
             break;

@@ -513,7 +513,7 @@ void LUDecomp(Matrix A, int const N, int const np, int nIndexArray[], int* nDCod
 void LULinearSolve(Matrix const A, int const N, int const nIndexArray[], double B[])
 {
    int II = 0;
-   double SUM = 0;
+   double SUM;
 
    for (int I = 1; I <= N; I++)
    {

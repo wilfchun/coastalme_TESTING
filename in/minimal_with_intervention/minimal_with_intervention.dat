@@ -121,7 +121,7 @@ Resistance to erosion of cliff (m^(9/4)s^(3/2))                                 
 Notch overhang to initiate collapse (m)                                    : 0.5
 Notch base below still water level (m)                                     : 0.3
 Scale parameter A for cliff deposition (m^(1/3))                 [0 = auto]: 0         ; For a 0.2 mm D50, will be 0.1
-Planview width of cliff deposition talus (in cells)           [must be odd]: 15        ; WAS 11 5 7
+Approximate planview width of cliff deposition talus (m)                   : 5
 Planview length of cliff deposition talus (m)                              : 70        ; WAS 50 30 15
 Height of landward talus end, as fraction of cliff elevation               : 0.1
 

@@ -26,14 +26,12 @@
 
 int nNearestNeighbourIndex(vector<double> const* pVdX, double const dValue)
 {
-   double
-      dDist = DBL_MAX,
-      dNewDist = dDist;
+   double dDist = DBL_MAX;
    int nIdx = 0;
 
    for (unsigned int i = 0; i < pVdX->size(); ++i)
    {
-      dNewDist = tAbs(dValue - pVdX->at(i));
+      double dNewDist = tAbs(dValue - pVdX->at(i));
       if (dNewDist <= dDist)
       {
          dDist = dNewDist;

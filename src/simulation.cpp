@@ -187,7 +187,7 @@ CSimulation::CSimulation(void)
    m_lGDALMaxCanWrite                              =
    m_lGDALMinCanWrite                              = 0;
 
-   m_lIteration                                       =
+   m_ulIter                                            =
    m_ulTotTimestep                                     =
    m_ulNumCells                                        =
    m_ulThisTimestepNumSeaCells                         =
@@ -290,6 +290,7 @@ CSimulation::CSimulation(void)
    m_dNotchOverhangAtCollapse                       =
    m_dNotchBaseBelowSWL                             =
    m_dCliffDepositionA                              =
+   m_dCliffDepositionPlanviewWidth                  =
    m_dCliffDepositionPlanviewLength                 =
    m_dCliffDepositionHeightFrac                     =
    m_dThisTimestepCliffCollapseErosionFine          =
@@ -755,6 +756,17 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       m_dAccumulatedSeaLevelChange -= m_dDeltaSWLPerTimestep;
    }
 
+   if (m_bDoCliffCollapse)
+   {
+      // Now that we know the cell size, calculate the width of a cliff collapse in cells (must be odd)
+      m_nCliffCollapseTalusPlanviewWidth = m_dCliffDepositionPlanviewWidth / m_dCellSide;
+
+      if ((m_nCliffCollapseTalusPlanviewWidth % 2) == 0)
+         m_nCliffCollapseTalusPlanviewWidth++;
+
+      m_dCliffDepositionPlanviewWidth = m_nCliffCollapseTalusPlanviewWidth * m_dCellSide;
+   }
+
    // ===================================================== The main loop ======================================================
    // Tell the user what is happening
    AnnounceIsRunning();
@@ -770,7 +782,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Tell the user how the simulation is progressing
       AnnounceProgress();
 
-      LogStream << "TIMESTEP " << m_lIteration << " ================================================================================================" << endl;
+      LogStream << "TIMESTEP " << m_ulIter << " ================================================================================================" << endl;
 
       // Check to see if there is a new intervention in place: if so, update it on the RasterGrid array
       nRet = nUpdateIntervention();

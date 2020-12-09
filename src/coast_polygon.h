@@ -146,7 +146,7 @@ public:
    void SetAvgUnconsD50(double const);
    double dGetAvgUnconsD50(void) const;
 
-   void Display(void);
+   void Display(void) override;
 };
 #endif //COASTPOLYGON_H
 

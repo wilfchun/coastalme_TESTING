@@ -45,7 +45,7 @@ public:
    void SetYAt(int const, double const);
 //    bool bIsPresent(CGeom2DPoint*);
 
-   void Display(void);
+   void Display(void) override;
 };
 #endif // LINE_H
 

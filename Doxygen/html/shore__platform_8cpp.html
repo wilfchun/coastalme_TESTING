@@ -73,7 +73,8 @@ $(function() {
 
 <p>Erodes the shore platform, extrapolating from erosion calculated on coastline-normal profiles.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;cmath&gt;</code><br />
+<div class="textblock"><code>#include &lt;assert.h&gt;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;iomanip&gt;</code><br />
 <code>#include &quot;<a class="el" href="cme_8h_source.html">cme.h</a>&quot;</code><br />
@@ -86,40 +87,41 @@ Include dependency graph for shore_platform.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="shore__platform_8cpp__incl.png" border="0" usemap="#shore__platform_8cpp" alt=""/></div>
 <map name="shore__platform_8cpp" id="shore__platform_8cpp">
-<area shape="rect" title="Erodes the shore platform, extrapolating from erosion calculated on coastline&#45;normal profiles." alt="" coords="276,5,409,32"/>
-<area shape="rect" title=" " alt="" coords="5,80,64,107"/>
-<area shape="rect" title=" " alt="" coords="88,80,160,107"/>
-<area shape="rect" title=" " alt="" coords="184,80,251,107"/>
-<area shape="rect" href="cme_8h.html" title="This file contains global definitions for CoastalME." alt="" coords="705,453,764,480"/>
-<area shape="rect" href="simulation_8h.html" title="Contains CSimulation definitions." alt="" coords="525,528,617,555"/>
-<area shape="rect" href="hermite__cubic_8h.html" title="Definitions of some routines from the hermite_cubic library." alt="" coords="408,80,523,107"/>
-<area shape="rect" href="interpolate_8h.html" title="Definitions of Linear interpolation routines." alt="" coords="547,80,640,107"/>
-<area shape="rect" href="coast_8h.html" title="Contains CRWCoast definitions." alt="" coords="751,80,817,107"/>
-<area shape="rect" title=" " alt="" coords="661,528,721,555"/>
-<area shape="rect" title=" " alt="" coords="745,528,815,555"/>
-<area shape="rect" title=" " alt="" coords="789,603,843,629"/>
-<area shape="rect" title=" " alt="" coords="393,603,460,629"/>
-<area shape="rect" title=" " alt="" coords="602,603,657,629"/>
-<area shape="rect" title=" " alt="" coords="239,603,292,629"/>
-<area shape="rect" title=" " alt="" coords="681,603,764,629"/>
-<area shape="rect" href="line_8h.html" title="Contains CGeomLine definitions." alt="" coords="316,603,369,629"/>
-<area shape="rect" href="i__line_8h.html" title="Contains CGeomILine definitions." alt="" coords="867,603,930,629"/>
-<area shape="rect" title=" " alt="" coords="484,603,577,629"/>
-<area shape="rect" href="2d__shape_8h.html" title="Contains CA2DShape definitions." alt="" coords="346,677,435,704"/>
-<area shape="rect" title=" " alt="" coords="643,752,701,779"/>
-<area shape="rect" title=" " alt="" coords="353,752,428,779"/>
-<area shape="rect" href="2d__point_8h.html" title="Contains CGeom2DPoint definitions." alt="" coords="821,752,904,779"/>
-<area shape="rect" href="2di__shape_8h.html" title="Contains CA2DShape definitions." alt="" coords="838,677,930,704"/>
-<area shape="rect" href="2di__point_8h.html" title="Contains CGeom2DIPoint definitions." alt="" coords="976,752,1061,779"/>
-<area shape="rect" href="profile_8h.html" title="Contains CGeomProfile definitions." alt="" coords="750,155,818,181"/>
-<area shape="rect" href="cell_8h.html" title="Contains CGeomCell definitions." alt="" coords="636,304,689,331"/>
-<area shape="rect" href="coast__landform_8h.html" title="Contains CACoastLandform definitions." alt="" coords="1005,229,1128,256"/>
-<area shape="rect" href="coast__polygon_8h.html" title="Contains CGeomCoastPolygon definitions." alt="" coords="264,304,381,331"/>
-<area shape="rect" href="multi__line_8h.html" title="Contains CGeomMultiLine definitions." alt="" coords="299,528,387,555"/>
-<area shape="rect" href="raster__grid_8h.html" title="Contains CGeomRasterGrid definitions." alt="" coords="673,229,767,256"/>
-<area shape="rect" href="cell__landform_8h.html" title="Contains CRWCellLandform definitions." alt="" coords="555,379,666,405"/>
-<area shape="rect" href="cell__layer_8h.html" title="Contains CRWCellLayer definitions." alt="" coords="393,379,479,405"/>
-<area shape="rect" href="cell__sediment_8h.html" title="Contains CRWCellSediment definitions." alt="" coords="393,453,506,480"/>
+<area shape="rect" title="Erodes the shore platform, extrapolating from erosion calculated on coastline&#45;normal profiles." alt="" coords="315,5,448,32"/>
+<area shape="rect" title=" " alt="" coords="5,80,75,107"/>
+<area shape="rect" title=" " alt="" coords="99,80,157,107"/>
+<area shape="rect" title=" " alt="" coords="181,80,253,107"/>
+<area shape="rect" title=" " alt="" coords="277,80,344,107"/>
+<area shape="rect" href="cme_8h.html" title="This file contains global definitions for CoastalME." alt="" coords="797,453,856,480"/>
+<area shape="rect" href="simulation_8h.html" title="Contains CSimulation definitions." alt="" coords="617,528,709,555"/>
+<area shape="rect" href="hermite__cubic_8h.html" title="Definitions of some routines from the hermite_cubic library." alt="" coords="500,80,615,107"/>
+<area shape="rect" href="interpolate_8h.html" title="Definitions of Linear interpolation routines." alt="" coords="639,80,732,107"/>
+<area shape="rect" href="coast_8h.html" title="Contains CRWCoast definitions." alt="" coords="843,80,909,107"/>
+<area shape="rect" title=" " alt="" coords="753,528,813,555"/>
+<area shape="rect" title=" " alt="" coords="837,528,907,555"/>
+<area shape="rect" title=" " alt="" coords="881,603,935,629"/>
+<area shape="rect" title=" " alt="" coords="485,603,552,629"/>
+<area shape="rect" title=" " alt="" coords="694,603,749,629"/>
+<area shape="rect" title=" " alt="" coords="331,603,384,629"/>
+<area shape="rect" title=" " alt="" coords="773,603,856,629"/>
+<area shape="rect" href="line_8h.html" title="Contains CGeomLine definitions." alt="" coords="408,603,461,629"/>
+<area shape="rect" href="i__line_8h.html" title="Contains CGeomILine definitions." alt="" coords="959,603,1022,629"/>
+<area shape="rect" title=" " alt="" coords="576,603,669,629"/>
+<area shape="rect" href="2d__shape_8h.html" title="Contains CA2DShape definitions." alt="" coords="438,677,527,704"/>
+<area shape="rect" title=" " alt="" coords="735,752,793,779"/>
+<area shape="rect" title=" " alt="" coords="445,752,520,779"/>
+<area shape="rect" href="2d__point_8h.html" title="Contains CGeom2DPoint definitions." alt="" coords="913,752,996,779"/>
+<area shape="rect" href="2di__shape_8h.html" title="Contains CA2DShape definitions." alt="" coords="930,677,1022,704"/>
+<area shape="rect" href="2di__point_8h.html" title="Contains CGeom2DIPoint definitions." alt="" coords="1068,752,1153,779"/>
+<area shape="rect" href="profile_8h.html" title="Contains CGeomProfile definitions." alt="" coords="842,155,910,181"/>
+<area shape="rect" href="cell_8h.html" title="Contains CGeomCell definitions." alt="" coords="728,304,781,331"/>
+<area shape="rect" href="coast__landform_8h.html" title="Contains CACoastLandform definitions." alt="" coords="1097,229,1220,256"/>
+<area shape="rect" href="coast__polygon_8h.html" title="Contains CGeomCoastPolygon definitions." alt="" coords="356,304,473,331"/>
+<area shape="rect" href="multi__line_8h.html" title="Contains CGeomMultiLine definitions." alt="" coords="391,528,479,555"/>
+<area shape="rect" href="raster__grid_8h.html" title="Contains CGeomRasterGrid definitions." alt="" coords="765,229,859,256"/>
+<area shape="rect" href="cell__landform_8h.html" title="Contains CRWCellLandform definitions." alt="" coords="647,379,758,405"/>
+<area shape="rect" href="cell__layer_8h.html" title="Contains CRWCellLayer definitions." alt="" coords="485,379,571,405"/>
+<area shape="rect" href="cell__sediment_8h.html" title="Contains CRWCellSediment definitions." alt="" coords="485,453,598,480"/>
 </map>
 </div>
 </div>
@@ -136,7 +138,7 @@ Andres Payo</dd></dl>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Aug 28 2020 16:12:01 for CoastalME (Coastal Modelling Environment) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Dec 9 2020 19:46:13 for CoastalME (Coastal Modelling Environment) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

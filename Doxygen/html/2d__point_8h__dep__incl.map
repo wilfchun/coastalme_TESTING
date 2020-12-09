@@ -1,69 +1,70 @@
 <map id="2d_point.h" name="2d_point.h">
-<area shape="rect" id="node1" title="Contains CGeom2DPoint definitions." alt="" coords="5935,5,6017,32"/>
-<area shape="rect" id="node2" href="$2d__shape_8h.html" title="Contains CA2DShape definitions." alt="" coords="5789,80,5878,107"/>
-<area shape="rect" id="node6" href="$2d__point_8cpp.html" title="Geometry class used to represent 2D point objects with floating&#45;point co&#45;ordinates." alt="" coords="5589,379,5685,405"/>
-<area shape="rect" id="node38" href="$profile_8h.html" title="Contains CGeomProfile definitions." alt="" coords="3635,453,3703,480"/>
-<area shape="rect" id="node3" href="$line_8h.html" title="Contains CGeomLine definitions." alt="" coords="5747,155,5800,181"/>
-<area shape="rect" id="node7" href="$2d__shape_8cpp.html" title="Abstract class, used as a base class for 2D objects (line, area, etc.)" alt="" coords="5462,379,5565,405"/>
-<area shape="rect" id="node67" href="$coast__polygon_8h.html" title="Contains CGeomCoastPolygon definitions." alt="" coords="679,304,796,331"/>
-<area shape="rect" id="node4" href="$simulation_8h.html" title="Contains CSimulation definitions." alt="" coords="4758,229,4850,256"/>
-<area shape="rect" id="node24" href="$coast_8cpp.html" title="CRWCoast routines." alt="" coords="3727,610,3806,637"/>
-<area shape="rect" id="node33" href="$init__grid_8cpp.html" title="Initialises the raster grid and calculates sea depth on each cell." alt="" coords="5079,610,5171,637"/>
-<area shape="rect" id="node34" href="$locate__coast_8cpp.html" title="Finds the coastline on the raster grid." alt="" coords="6017,610,6138,637"/>
-<area shape="rect" id="node57" href="$line_8cpp.html" title="CGeomLine routines." alt="" coords="827,379,893,405"/>
-<area shape="rect" id="node66" href="$multi__line_8h.html" title="Contains CGeomMultiLine definitions." alt="" coords="925,304,1013,331"/>
-<area shape="rect" id="node5" href="$cme_8h.html" title="This file contains global definitions for CoastalME." alt="" coords="3137,304,3196,331"/>
-<area shape="rect" id="node9" href="$assign__landforms_8cpp.html" title="Assigns landform categories to coastlines and coastal cells, and to all other dryland cells." alt="" coords="3009,767,3159,793"/>
-<area shape="rect" id="node14" href="$do__cliff__collapse_8cpp.html" title="Collapses cliffs." alt="" coords="5,767,149,793"/>
-<area shape="rect" id="node15" href="$gis__vector_8cpp.html" title="These functions use GDAL to read and write vector GIS files in several formats. This version will bui..." alt="" coords="291,767,397,793"/>
-<area shape="rect" id="node21" href="$calc__curvature_8cpp.html" title="Calculates curvature of 2D vectors." alt="" coords="1494,610,1626,637"/>
-<area shape="rect" id="node22" href="$calc__shadow__zones_8cpp.html" title="Locates shadow zones, is part of wave propagation calculations." alt="" coords="1651,610,1816,637"/>
-<area shape="rect" id="node23" href="$calc__waves_8cpp.html" title="Simulates wave propagation." alt="" coords="1286,610,1402,637"/>
-<area shape="rect" id="node25" href="$create__polygons_8cpp.html" title="Creates coast polygons for sediment transport calcs." alt="" coords="1841,610,1983,637"/>
-<area shape="rect" id="node26" href="$create__profiles_8cpp.html" title="Creates profiles which are approximately normal to the coastline, these will become inter&#45;polygon bou..." alt="" coords="2007,610,2139,637"/>
-<area shape="rect" id="node27" href="$do__beach__actual__sediment__movement_8cpp.html" title="Does between&#45;polygon actual (supply&#45;limited) redistribution of transported beach sediment." alt="" coords="2163,603,2343,644"/>
-<area shape="rect" id="node28" href="$do__beach__estimate__actual__erosion_8cpp.html" title="Estimates actual (supply&#45;limited) beach erosion on polygons, and constructs a between&#45;polygon budget ..." alt="" coords="2367,603,2545,644"/>
-<area shape="rect" id="node29" href="$do__beach__potential__erosion_8cpp.html" title="Calculates potential (i.e. not constrained by the availability of unconsolidated sediment) beach eros..." alt="" coords="2569,603,2703,644"/>
-<area shape="rect" id="node30" href="$do__beach__within__polygon_8cpp.html" title="Does within&#45;polygon actual erosion and distribution of transported beach sediment." alt="" coords="3230,610,3426,637"/>
-<area shape="rect" id="node31" href="$gis__raster_8cpp.html" title="These functions use GDAL (version 2) to read and write raster GIS files in several formats." alt="" coords="3882,610,3985,637"/>
-<area shape="rect" id="node32" href="$gis__utils_8cpp.html" title="Various GIS&#45;related functions, requires GDAL version 2." alt="" coords="3609,610,3703,637"/>
-<area shape="rect" id="node35" href="$shore__platform_8cpp.html" title="Erodes the shore platform, extrapolating from erosion calculated on coastline&#45;normal profiles." alt="" coords="3451,610,3584,637"/>
-<area shape="rect" id="node36" href="$simulation_8cpp.html" title="The start&#45;of&#45;simulation routine." alt="" coords="4009,610,4116,637"/>
-<area shape="rect" id="node37" href="$update__grid_8cpp.html" title="Updates the raster grid." alt="" coords="4140,610,4255,637"/>
-<area shape="rect" id="node46" href="$calc__external__forcing_8cpp.html" title="Calculates external forcings." alt="" coords="4272,379,4443,405"/>
-<area shape="rect" id="node51" href="$cme_8cpp.html" title="The start&#45;up routine for CoastalME." alt="" coords="4467,379,4539,405"/>
-<area shape="rect" id="node58" href="$locate__estuaries_8cpp.html" title="Finds estuaries on the raster grid." alt="" coords="4563,379,4706,405"/>
-<area shape="rect" id="node60" href="$random__numbers_8cpp.html" title="Random number routines." alt="" coords="4731,379,4877,405"/>
-<area shape="rect" id="node61" href="$read__input_8cpp.html" title="Reads non&#45;GIS input files." alt="" coords="4901,379,5008,405"/>
-<area shape="rect" id="node62" href="$smooth__line_8cpp.html" title="Smoothing routines for CGeomLine objects." alt="" coords="5032,379,5149,405"/>
-<area shape="rect" id="node63" href="$utils_8cpp.html" title="Utility routines." alt="" coords="5173,379,5243,405"/>
-<area shape="rect" id="node65" href="$write__output_8cpp.html" title="Writes non&#45;GIS output files." alt="" coords="5267,379,5386,405"/>
-<area shape="rect" id="node8" href="$2di__point_8cpp.html" title="Geometry class used to represent 2D point objects with integer co&#45;ordinates." alt="" coords="2803,379,2901,405"/>
-<area shape="rect" id="node10" href="$coast_8h.html" title="Contains CRWCoast definitions." alt="" coords="3038,528,3103,555"/>
-<area shape="rect" id="node11" href="$coast__landform_8h.html" title="Contains CACoastLandform definitions." alt="" coords="2779,610,2901,637"/>
-<area shape="rect" id="node12" href="$cliff_8h.html" title="Contains CRWCliff definitions." alt="" coords="339,692,394,719"/>
-<area shape="rect" id="node13" href="$cliff_8cpp.html" title="CRWCliff routines." alt="" coords="186,767,254,793"/>
-<area shape="rect" id="node16" href="$drift_8h.html" title="Contains CRWDrift definitions." alt="" coords="2813,692,2867,719"/>
-<area shape="rect" id="node17" href="$drift_8cpp.html" title="CRWDrift routines." alt="" coords="1613,767,1683,793"/>
-<area shape="rect" id="node18" href="$intervention_8h.html" title="Contains CRWIntervention definitions." alt="" coords="3078,692,3178,719"/>
-<area shape="rect" id="node19" href="$intervention_8cpp.html" title="CRWIntervention routines." alt="" coords="3507,767,3621,793"/>
-<area shape="rect" id="node20" href="$coast__landform_8cpp.html" title="CACoastLandform routines." alt="" coords="2020,692,2156,719"/>
-<area shape="rect" id="node39" href="$profile_8cpp.html" title="CGeomProfile routines." alt="" coords="3653,528,3736,555"/>
-<area shape="rect" id="node40" href="$raster__grid_8h.html" title="Contains CGeomRasterGrid definitions." alt="" coords="3737,379,3831,405"/>
-<area shape="rect" id="node41" href="$cell_8h.html" title="Contains CGeomCell definitions." alt="" coords="4216,453,4269,480"/>
-<area shape="rect" id="node42" href="$cell_8cpp.html" title="CGeomCell routines." alt="" coords="4368,528,4435,555"/>
-<area shape="rect" id="node43" href="$raster__grid_8cpp.html" title="CGeomRasterGrid routines." alt="" coords="4083,453,4191,480"/>
-<area shape="rect" id="node44" href="$cell__layer_8h.html" title="Contains CRWCellLayer definitions." alt="" coords="3958,379,4045,405"/>
-<area shape="rect" id="node45" href="$cell__layer_8cpp.html" title="CRWCellLayer routines." alt="" coords="4293,453,4395,480"/>
-<area shape="rect" id="node47" href="$linearinterp_8h.html" title="Declarations of some routines from the linear interp library." alt="" coords="1400,379,1496,405"/>
-<area shape="rect" id="node49" href="$cell__landform_8cpp.html" title="CRWCellLandform routines." alt="" coords="1825,379,1949,405"/>
-<area shape="rect" id="node50" href="$cell__sediment_8cpp.html" title="CRWCellSediment routines." alt="" coords="1973,379,2099,405"/>
-<area shape="rect" id="node52" href="$coast__polygon_8cpp.html" title="CGeomCoastPolygon routines." alt="" coords="672,379,803,405"/>
-<area shape="rect" id="node53" href="$do__intervention_8cpp.html" title="Checks for new interventions." alt="" coords="2123,379,2258,405"/>
-<area shape="rect" id="node54" href="$hermite__cubic_8cpp.html" title="Some routines from the hermite_cubic library." alt="" coords="2283,379,2411,405"/>
-<area shape="rect" id="node55" href="$i__line_8cpp.html" title="CGeomILine routines." alt="" coords="2435,379,2512,405"/>
-<area shape="rect" id="node56" href="$interpolate_8cpp.html" title="Linear interpolation routines." alt="" coords="2536,379,2643,405"/>
-<area shape="rect" id="node59" href="$multi__line_8cpp.html" title="CGeomMultiLine routines." alt="" coords="918,379,1021,405"/>
-<area shape="rect" id="node64" href="$utils__global_8cpp.html" title="Globally&#45;available utility routines." alt="" coords="2667,379,2779,405"/>
-<area shape="rect" id="node48" href="$linearinterp_8cpp.html" title="Definitions of some routines from the linear interp library." alt="" coords="1385,453,1495,480"/>
+<area shape="rect" id="node1" title="Contains CGeom2DPoint definitions." alt="" coords="6321,5,6404,32"/>
+<area shape="rect" id="node2" href="$2d__shape_8h.html" title="Contains CA2DShape definitions." alt="" coords="3359,80,3449,107"/>
+<area shape="rect" id="node6" href="$2d__point_8cpp.html" title="Geometry class used to represent 2D point objects with floating&#45;point co&#45;ordinates." alt="" coords="6288,379,6384,405"/>
+<area shape="rect" id="node38" href="$profile_8h.html" title="Contains CGeomProfile definitions." alt="" coords="3978,453,4046,480"/>
+<area shape="rect" id="node3" href="$line_8h.html" title="Contains CGeomLine definitions." alt="" coords="5769,155,5823,181"/>
+<area shape="rect" id="node7" href="$2d__shape_8cpp.html" title="Abstract class, used as a base class for 2D objects (line, area, etc.)" alt="" coords="413,379,515,405"/>
+<area shape="rect" id="node68" href="$coast__polygon_8h.html" title="Contains CGeomCoastPolygon definitions." alt="" coords="952,304,1069,331"/>
+<area shape="rect" id="node4" href="$simulation_8h.html" title="Contains CSimulation definitions." alt="" coords="4762,229,4854,256"/>
+<area shape="rect" id="node24" href="$coast_8cpp.html" title="CRWCoast routines." alt="" coords="741,610,819,637"/>
+<area shape="rect" id="node33" href="$init__grid_8cpp.html" title="Initialises the raster grid and calculates sea depth on each cell." alt="" coords="4271,610,4363,637"/>
+<area shape="rect" id="node34" href="$locate__coast_8cpp.html" title="Finds the coastline on the raster grid." alt="" coords="4126,610,4247,637"/>
+<area shape="rect" id="node57" href="$line_8cpp.html" title="CGeomLine routines." alt="" coords="6147,379,6213,405"/>
+<area shape="rect" id="node67" href="$multi__line_8h.html" title="Contains CGeomMultiLine definitions." alt="" coords="5752,304,5840,331"/>
+<area shape="rect" id="node5" href="$cme_8h.html" title="This file contains global definitions for CoastalME." alt="" coords="2991,304,3049,331"/>
+<area shape="rect" id="node9" href="$assign__landforms_8cpp.html" title="Assigns landform categories to coastlines and coastal cells, and to all other dryland cells." alt="" coords="2699,767,2848,793"/>
+<area shape="rect" id="node14" href="$do__cliff__collapse_8cpp.html" title="Collapses cliffs." alt="" coords="6240,767,6384,793"/>
+<area shape="rect" id="node15" href="$gis__vector_8cpp.html" title="These functions use GDAL to read and write vector GIS files in several formats. This version will bui..." alt="" coords="3020,767,3127,793"/>
+<area shape="rect" id="node21" href="$calc__curvature_8cpp.html" title="Calculates curvature of 2D vectors." alt="" coords="1306,610,1438,637"/>
+<area shape="rect" id="node22" href="$calc__shadow__zones_8cpp.html" title="Locates shadow zones, is part of wave propagation calculations." alt="" coords="1463,610,1628,637"/>
+<area shape="rect" id="node23" href="$calc__waves_8cpp.html" title="Simulates wave propagation." alt="" coords="843,610,959,637"/>
+<area shape="rect" id="node25" href="$create__polygons_8cpp.html" title="Creates coast polygons for sediment transport calcs." alt="" coords="1653,610,1795,637"/>
+<area shape="rect" id="node26" href="$create__profiles_8cpp.html" title="Creates profiles which are approximately normal to the coastline, these will become inter&#45;polygon bou..." alt="" coords="1819,610,1951,637"/>
+<area shape="rect" id="node27" href="$do__beach__actual__sediment__movement_8cpp.html" title="Does between&#45;polygon actual (supply&#45;limited) redistribution of transported beach sediment." alt="" coords="1975,603,2155,644"/>
+<area shape="rect" id="node28" href="$do__beach__estimate__actual__erosion_8cpp.html" title="Estimates actual (supply&#45;limited) beach erosion on polygons, and constructs a between&#45;polygon budget ..." alt="" coords="2179,603,2357,644"/>
+<area shape="rect" id="node29" href="$do__beach__potential__erosion_8cpp.html" title="Calculates potential (i.e. not constrained by the availability of unconsolidated sediment) beach eros..." alt="" coords="2381,603,2515,644"/>
+<area shape="rect" id="node30" href="$do__beach__within__polygon_8cpp.html" title="Does within&#45;polygon actual erosion and distribution of transported beach sediment." alt="" coords="1086,610,1282,637"/>
+<area shape="rect" id="node31" href="$gis__raster_8cpp.html" title="These functions use GDAL (version 2) to read and write raster GIS files in several formats." alt="" coords="3867,610,3970,637"/>
+<area shape="rect" id="node32" href="$gis__utils_8cpp.html" title="Various GIS&#45;related functions, requires GDAL version 2." alt="" coords="2591,610,2686,637"/>
+<area shape="rect" id="node35" href="$shore__platform_8cpp.html" title="Erodes the shore platform, extrapolating from erosion calculated on coastline&#45;normal profiles." alt="" coords="3709,610,3843,637"/>
+<area shape="rect" id="node36" href="$simulation_8cpp.html" title="The start&#45;of&#45;simulation routine." alt="" coords="3995,610,4101,637"/>
+<area shape="rect" id="node37" href="$update__grid_8cpp.html" title="Updates the raster grid." alt="" coords="3161,610,3276,637"/>
+<area shape="rect" id="node46" href="$calc__external__forcing_8cpp.html" title="Calculates external forcings." alt="" coords="4577,379,4748,405"/>
+<area shape="rect" id="node51" href="$cme_8cpp.html" title="The start&#45;up routine for CoastalME." alt="" coords="4772,379,4844,405"/>
+<area shape="rect" id="node58" href="$locate__estuaries_8cpp.html" title="Finds estuaries on the raster grid." alt="" coords="4869,379,5011,405"/>
+<area shape="rect" id="node60" href="$random__numbers_8cpp.html" title="Random number routines." alt="" coords="5036,379,5183,405"/>
+<area shape="rect" id="node61" href="$read__input_8cpp.html" title="Reads non&#45;GIS input files." alt="" coords="5207,379,5313,405"/>
+<area shape="rect" id="node63" href="$smooth__line_8cpp.html" title="Smoothing routines for CGeomLine objects." alt="" coords="5337,379,5455,405"/>
+<area shape="rect" id="node64" href="$utils_8cpp.html" title="Utility routines." alt="" coords="5478,379,5549,405"/>
+<area shape="rect" id="node66" href="$write__output_8cpp.html" title="Writes non&#45;GIS output files." alt="" coords="5573,379,5691,405"/>
+<area shape="rect" id="node8" href="$2di__point_8cpp.html" title="Geometry class used to represent 2D point objects with integer co&#45;ordinates." alt="" coords="1689,379,1788,405"/>
+<area shape="rect" id="node10" href="$coast_8h.html" title="Contains CRWCoast definitions." alt="" coords="2642,528,2707,555"/>
+<area shape="rect" id="node11" href="$coast__landform_8h.html" title="Contains CACoastLandform definitions." alt="" coords="2761,610,2884,637"/>
+<area shape="rect" id="node12" href="$cliff_8h.html" title="Contains CRWCliff definitions." alt="" coords="3162,692,3217,719"/>
+<area shape="rect" id="node13" href="$cliff_8cpp.html" title="CRWCliff routines." alt="" coords="5427,767,5495,793"/>
+<area shape="rect" id="node16" href="$drift_8h.html" title="Contains CRWDrift definitions." alt="" coords="2797,692,2851,719"/>
+<area shape="rect" id="node17" href="$drift_8cpp.html" title="CRWDrift routines." alt="" coords="4613,767,4683,793"/>
+<area shape="rect" id="node18" href="$intervention_8h.html" title="Contains CRWIntervention definitions." alt="" coords="2673,692,2773,719"/>
+<area shape="rect" id="node19" href="$intervention_8cpp.html" title="CRWIntervention routines." alt="" coords="1749,767,1864,793"/>
+<area shape="rect" id="node20" href="$coast__landform_8cpp.html" title="CACoastLandform routines." alt="" coords="1825,692,1961,719"/>
+<area shape="rect" id="node39" href="$profile_8cpp.html" title="CGeomProfile routines." alt="" coords="3977,528,4060,555"/>
+<area shape="rect" id="node40" href="$raster__grid_8h.html" title="Contains CGeomRasterGrid definitions." alt="" coords="3058,379,3153,405"/>
+<area shape="rect" id="node41" href="$cell_8h.html" title="Contains CGeomCell definitions." alt="" coords="2879,453,2932,480"/>
+<area shape="rect" id="node42" href="$cell_8cpp.html" title="CGeomCell routines." alt="" coords="2861,528,2928,555"/>
+<area shape="rect" id="node43" href="$raster__grid_8cpp.html" title="CGeomRasterGrid routines." alt="" coords="3007,453,3115,480"/>
+<area shape="rect" id="node44" href="$cell__layer_8h.html" title="Contains CRWCellLayer definitions." alt="" coords="2794,379,2881,405"/>
+<area shape="rect" id="node45" href="$cell__layer_8cpp.html" title="CRWCellLayer routines." alt="" coords="2748,453,2849,480"/>
+<area shape="rect" id="node47" href="$linearinterp_8h.html" title="Declarations of some routines from the linear interp library." alt="" coords="1812,379,1908,405"/>
+<area shape="rect" id="node49" href="$cell__landform_8cpp.html" title="CRWCellLandform routines." alt="" coords="3229,379,3353,405"/>
+<area shape="rect" id="node50" href="$cell__sediment_8cpp.html" title="CRWCellSediment routines." alt="" coords="3377,379,3503,405"/>
+<area shape="rect" id="node52" href="$coast__polygon_8cpp.html" title="CGeomCoastPolygon routines." alt="" coords="945,379,1076,405"/>
+<area shape="rect" id="node53" href="$do__intervention_8cpp.html" title="Checks for new interventions." alt="" coords="3527,379,3662,405"/>
+<area shape="rect" id="node54" href="$hermite__cubic_8cpp.html" title="Some routines from the hermite_cubic library." alt="" coords="3687,379,3815,405"/>
+<area shape="rect" id="node55" href="$i__line_8cpp.html" title="CGeomILine routines." alt="" coords="3839,379,3916,405"/>
+<area shape="rect" id="node56" href="$interpolate_8cpp.html" title="Linear interpolation routines." alt="" coords="3940,379,4047,405"/>
+<area shape="rect" id="node59" href="$multi__line_8cpp.html" title="CGeomMultiLine routines." alt="" coords="5715,379,5818,405"/>
+<area shape="rect" id="node62" href="$sediment__input__event_8cpp.html" title="CSedInputEvent routines." alt="" coords="1354,379,1529,405"/>
+<area shape="rect" id="node65" href="$utils__global_8cpp.html" title="Globally&#45;available utility routines." alt="" coords="1553,379,1665,405"/>
+<area shape="rect" id="node48" href="$linearinterp_8cpp.html" title="Definitions of some routines from the linear interp library." alt="" coords="1797,453,1907,480"/>
 </map>

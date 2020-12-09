@@ -98,7 +98,7 @@ $(function() {
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;   <a class="code" href="class_c_r_w_drift.html#ac9cecb694b03218108c0c93a593a04d8">CRWDrift</a>(<a class="code" href="class_c_r_w_coast.html">CRWCoast</a>*, <span class="keywordtype">int</span> <span class="keyword">const</span>, <span class="keywordtype">int</span> <span class="keyword">const</span>);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;   <a class="code" href="class_c_r_w_drift.html#ab72ffd96e57b686bed1e584ffeb287af">~CRWDrift</a>(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;   <span class="keywordtype">void</span> <a class="code" href="class_c_r_w_drift.html#ab3dd4999b114cf648ab19c0a739c0cf0">Display</a>(<span class="keywordtype">void</span>);           <span class="comment">// Instantiates the pure virtual function in the abstract parent class, so that CRWDrift is not an abstract class. But this instatiation never gets called, which seems like a waste of time. Alternative?</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;   <span class="keywordtype">void</span> <a class="code" href="class_c_r_w_drift.html#ad8d1588fe8b5cb6be37d3e82022847d4">Display</a>(<span class="keywordtype">void</span>) <span class="keyword">override</span>;           <span class="comment">// Instantiates the pure virtual function in the abstract parent class, so that CRWDrift is not an abstract class. But this instatiation never gets called, which seems like a waste of time. Alternative?</span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;};</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#endif // DRIFT_H</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
@@ -111,10 +111,10 @@ $(function() {
 <div class="ttc" id="aclass_c_r_w_drift_html_ac9cecb694b03218108c0c93a593a04d8"><div class="ttname"><a href="class_c_r_w_drift.html#ac9cecb694b03218108c0c93a593a04d8">CRWDrift::CRWDrift</a></div><div class="ttdeci">CRWDrift(CRWCoast *, int const, int const)</div><div class="ttdef"><b>Definition:</b> <a href="drift_8cpp_source.html#l00037">drift.cpp:37</a></div></div>
 <div class="ttc" id="aclass_c_r_w_drift_html"><div class="ttname"><a href="class_c_r_w_drift.html">CRWDrift</a></div><div class="ttdoc">Real-world class used to represent the 'drift' category of coastal landform object.</div><div class="ttdef"><b>Definition:</b> <a href="drift_8h_source.html#l00035">drift.h:35</a></div></div>
 <div class="ttc" id="aclass_c_a_coast_landform_html"><div class="ttname"><a href="class_c_a_coast_landform.html">CACoastLandform</a></div><div class="ttdoc">Abstract class, used as a base class for landform objects on the coastline.</div><div class="ttdef"><b>Definition:</b> <a href="coast__landform_8h_source.html#l00035">coast_landform.h:35</a></div></div>
-<div class="ttc" id="aclass_c_r_w_drift_html_ab3dd4999b114cf648ab19c0a739c0cf0"><div class="ttname"><a href="class_c_r_w_drift.html#ab3dd4999b114cf648ab19c0a739c0cf0">CRWDrift::Display</a></div><div class="ttdeci">void Display(void)</div><div class="ttdef"><b>Definition:</b> <a href="drift_8cpp_source.html#l00053">drift.cpp:53</a></div></div>
+<div class="ttc" id="aclass_c_r_w_drift_html_ad8d1588fe8b5cb6be37d3e82022847d4"><div class="ttname"><a href="class_c_r_w_drift.html#ad8d1588fe8b5cb6be37d3e82022847d4">CRWDrift::Display</a></div><div class="ttdeci">void Display(void) override</div><div class="ttdef"><b>Definition:</b> <a href="drift_8cpp_source.html#l00053">drift.cpp:53</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Aug 28 2020 16:12:01 for CoastalME (Coastal Modelling Environment) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Dec 9 2020 19:46:12 for CoastalME (Coastal Modelling Environment) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

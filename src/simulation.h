@@ -201,7 +201,7 @@ private:
       m_GDALWriteFloatDataType;
 
    long
-      m_lIteration,
+      m_ulIter,
       m_lGDALMaxCanWrite,
       m_lGDALMinCanWrite;
 
@@ -313,6 +313,7 @@ private:
       m_dNotchOverhangAtCollapse,
       m_dNotchBaseBelowSWL,
       m_dCliffDepositionA,
+      m_dCliffDepositionPlanviewWidth,
       m_dCliffDepositionPlanviewLength,
       m_dCliffDepositionHeightFrac,
       m_dThisTimestepCliffCollapseErosionFine,
@@ -682,7 +683,7 @@ private:
    static CGeom2DIPoint PtiAverage(CGeom2DIPoint const*, CGeom2DIPoint const*);
    static CGeom2DIPoint PtiAverage(vector<CGeom2DIPoint>*);
    static CGeom2DIPoint PtiWeightedAverage(CGeom2DIPoint const*, CGeom2DIPoint const*, double const);
-   CGeom2DIPoint PtiPolygonCentroid(vector<CGeom2DIPoint>*);
+   static CGeom2DIPoint PtiPolygonCentroid(vector<CGeom2DIPoint>*);
    static double dAngleSubtended(CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
    static int nGetOppositeDirection(int const);
    static void GetSlopeAndInterceptFromPoints(CGeom2DIPoint const*, CGeom2DIPoint const*, double&, double&);
@@ -718,8 +719,8 @@ private:
    static int nDoTimeUnits(string const*);
    int nDoSimulationTimeMultiplier(string const*);
    static double dGetTimeMultiplier(string const*);
-   bool bParseDate(string const*, int&, int&, int&);
-   bool bParseTime(string const*, int&, int&, int&);
+   static bool bParseDate(string const*, int&, int&, int&);
+   static bool bParseTime(string const*, int&, int&, int&);
    void UpdateGrandTotals(void);
    static string strGetBuild(void);
    static string strGetComputerName(void);
@@ -740,7 +741,7 @@ private:
 //    vector<double> dVCalCGeomProfileSlope(vector<CGeom2DPoint>*, vector<double>*);
    vector<double> dVSmoothProfileSavitzkyGolay(vector<double>*, vector<double>*);
    vector<double> dVSmoothProfileRunningMean(vector<double>*);
-   void CalcSavitzkyGolay(double[], int const, int const, int const, int const, int const);
+   static void CalcSavitzkyGolay(double[], int const, int const, int const, int const, int const);
    static bool bFPIsEqual(double const, double const, double const);
    static string pstrChangeToBackslash(string const*);
    static string pstrChangeToForwardSlash(string const*);

@@ -107,7 +107,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
          // Initialize values for this cell
          m_pRasterGrid->m_Cell[nX][nY].InitCell();
 
-         if (m_lIteration == 1)
+         if (m_ulIter == 1)
          {
             // Check to see that all cells have some sediment on them
             double dSedThickness = m_pRasterGrid->m_Cell[nX][nY].dGetTotAllSedThickness();
@@ -115,7 +115,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
             {
                nZeroThickness++;
 
-               LogStream << m_lIteration << ": " << WARN << "total sediment thickness is " << dSedThickness << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+               LogStream << m_ulIter << ": " << WARN << "total sediment thickness is " << dSedThickness << " at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
             }
 
             // For the first timestep only, calculate the elevation of all this cell's layers. During the rest of the simulation, each cell's elevation is re-calculated just after any change occurs on that cell
@@ -141,7 +141,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
 
       /*for (int n = 0; n < m_VlDeepWaterWaveValuesAtTimestep.size(); n++)
       {
-         if (m_lIteration == m_VlDeepWaterWaveValuesAtTimestep[n])
+         if (m_ulIter == m_VlDeepWaterWaveValuesAtTimestep[n])
          {
             // OK, this timestep we are doing the calculation
             if (m_VlDeepWaterWaveValuesAtTimestep[n] > 1)
@@ -159,8 +159,8 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
 
    if (nZeroThickness > 0)
    {
-      cerr << m_lIteration << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;
-      LogStream << m_lIteration << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;
+      cerr << m_ulIter << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;
+      LogStream << m_ulIter << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;
    }
 
    return RTN_OK;
