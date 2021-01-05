@@ -75,7 +75,7 @@ private:
       m_bAvgSeaDepthSave,
       m_bWaveHeightSave,
       m_bAvgWaveHeightSave,
-      m_bAvgWaveOrientationSave,
+      m_bAvgWaveAngleSave,
       m_bWaveAngleAndHeightSave,
       m_bAvgWaveAngleAndHeightSave,
       m_bDeepWaterWaveAngleAndHeightSave,
@@ -115,7 +115,7 @@ private:
       m_bSeaMaskSave,
       m_bBeachMaskSave,
       m_bShadowZoneCodesSave,
-      m_bDeepWaterWaveOrientationSave,
+      m_bDeepWaterWaveAngleSave,
       m_bDeepWaterWaveHeightSave,
       m_bDeepWaterWavePeriodSave,
       m_bPolygonUnconsSedUpOrDownDrift,
@@ -156,7 +156,8 @@ private:
       m_bGDALCanWriteInt32,
       m_bScaleRasterOutput,
       m_bWorldFile,
-      m_bSingleDeepWaterWaveValues;
+      m_bSingleDeepWaterWaveValues,
+      m_bHaveWaveStationData;
 
    char** m_papszGDALRasterOptions;
    char** m_papszGDALVectorOptions;
@@ -194,7 +195,8 @@ private:
       m_nSimStartHour,
       m_nSimStartDay,
       m_nSimStartMonth,
-      m_nSimStartYear;
+      m_nSimStartYear,
+      m_nDeepWaterWaveDataNTimeSteps;
 
    GDALDataType
       m_GDALWriteIntDataType,
@@ -255,7 +257,7 @@ private:
       m_dWaveDepthRatioForWaveCalcs,
       m_dBreakingWaveHeightDepthRatio,
       m_dAllCellsDeepWaterWaveHeight,
-      m_dAllCellsDeepWaterWaveOrientation,
+      m_dAllCellsDeepWaterWaveAngle,
       m_dAllCellsDeepWaterWavePeriod,
       m_dMaxUserInputWaveHeight,
       m_dMaxUserInputWavePeriod,       // Used to constrain depth of closure
@@ -444,31 +446,31 @@ private:
 
    vector<int>
       m_VnProfileToSave,
-      m_VnDeepWaterWaveStationID,         // ID for deep water wave station, this corresponds with the ID in the wave time series file
-      m_VnSedimentInputLocationID,        // ID for sediment input location, this corresponds with the ID in the sediment input time series file
-      m_VnSavGolIndexCoast;               // Savitzky-Golay shift index for the coastline vector(s)
+      m_VnDeepWaterWaveStationID,               // ID for deep water wave station, this corresponds with the ID in the wave time series file
+      m_VnSedimentInputLocationID,              // ID for sediment input location, this corresponds with the ID in the sediment input time series file
+      m_VnSavGolIndexCoast;                     // Savitzky-Golay shift index for the coastline vector(s)
 
    vector<long>
       m_VlProfileTimestep,
-      m_VlDeepWaterWaveValuesAtTimestep; // Calculate deep water wave values at these timesteps
+      m_VlDeepWaterWaveValuesAtTimestep;        // Calculate deep water wave values at these timesteps
 
    vector<double>
       m_VdSliceElev,
-      m_VdErosionPotential,               // For erosion potential lookup
-      m_VdDepthOverDB,                    // For erosion potential lookup
-      m_VdSavGolFCRWCoast,                // Savitzky-Golay filter coefficients for the coastline vector(s)
-      m_VdSavGolFCGeomProfile,            // Savitzky-Golay filter coefficients for the profile vectors
-      m_VdTideData,                       // Tide data: one record per timestep, is the change (m) from still water level for that timestep
-      m_VdDeepWaterWaveStationX,          // X co-ordinate (grid CRS) for deep water wave station
-      m_VdDeepWaterWaveStationY,          // Y co-ordinate (grid CRS) for deep water wave station
-      m_VdDeepWaterWaveStationHeight,     // This time step: wave height at deep water wave station
-      m_VdDeepWaterWaveStationAngle,      // This time step: wave orientation at deep water wave station
-      m_VdDeepWaterWaveStationPeriod,     // This time step: wave period at deep water wave station
-      m_VdDeepWaterWaveStationHeightTS,   // Time series of wave heights at deep water wave station
-      m_VdDeepWaterWaveStationAngleTS,    // Time series of wave orientation at deep water wave station
-      m_VdDeepWaterWaveStationPeriodTS,   // Time series of wave period at deep water wave station
-      m_VdSedimentInputLocationX,         // X co-ordinate (grid CRS) for sediment input event
-      m_VdSedimentInputLocationY;         // X co-ordinate (grid CRS) for sediment input event
+      m_VdErosionPotential,                     // For erosion potential lookup
+      m_VdDepthOverDB,                          // For erosion potential lookup
+      m_VdSavGolFCRWCoast,                      // Savitzky-Golay filter coefficients for the coastline vector(s)
+      m_VdSavGolFCGeomProfile,                  // Savitzky-Golay filter coefficients for the profile vectors
+      m_VdTideData,                             // Tide data: one record per timestep, is the change (m) from still water level for that timestep
+      m_VdDeepWaterWaveStationX,                // X co-ordinate (grid CRS) for deep water wave station
+      m_VdDeepWaterWaveStationY,                // Y co-ordinate (grid CRS) for deep water wave station
+      m_VdThisIterDeepWaterWaveStationHeight,   // This iteration wave height at deep water wave station
+      m_VdThisIterDeepWaterWaveStationAngle,    // This iteration wave orientation at deep water wave station
+      m_VdThisIterDeepWaterWaveStationPeriod,   // This iteration wave period at deep water wave station
+      m_VdTSDeepWaterWaveStationHeight,         // Time series of wave heights at deep water wave station
+      m_VdTSDeepWaterWaveStationAngle,          // Time series of wave orientation at deep water wave station
+      m_VdTSDeepWaterWaveStationPeriod,         // Time series of wave period at deep water wave station
+      m_VdSedimentInputLocationX,               // X co-ordinate (grid CRS) for sediment input event
+      m_VdSedimentInputLocationY;               // X co-ordinate (grid CRS) for sediment input event
 
    vector<string>
       m_VstrInitialFineUnconsSedimentFile,
@@ -477,27 +479,27 @@ private:
       m_VstrInitialFineConsSedimentFile,
       m_VstrInitialSandConsSedimentFile,
       m_VstrInitialCoarseConsSedimentFile,
-      m_VstrGDALIUFDriverCode,            // Initial Fine Unconsolidated Sediment (raster)
+      m_VstrGDALIUFDriverCode,                  // Initial Fine Unconsolidated Sediment (raster)
       m_VstrGDALIUFDriverDesc,
       m_VstrGDALIUFProjection,
       m_VstrGDALIUFDataType,
-      m_VstrGDALIUSDriverCode,          // Initial Sand Unconsolidated Sediment (raster)
+      m_VstrGDALIUSDriverCode,                  // Initial Sand Unconsolidated Sediment (raster)
       m_VstrGDALIUSDriverDesc,
       m_VstrGDALIUSProjection,
       m_VstrGDALIUSDataType,
-      m_VstrGDALIUCDriverCode,          // Initial Coarse Unconsolidated Sediment (raster)
+      m_VstrGDALIUCDriverCode,                  // Initial Coarse Unconsolidated Sediment (raster)
       m_VstrGDALIUCDriverDesc,
       m_VstrGDALIUCProjection,
       m_VstrGDALIUCDataType,
-      m_VstrGDALICFDriverCode,          // Initial Fine Consolidated Sediment (raster)
+      m_VstrGDALICFDriverCode,                  // Initial Fine Consolidated Sediment (raster)
       m_VstrGDALICFDriverDesc,
       m_VstrGDALICFProjection,
       m_VstrGDALICFDataType,
-      m_VstrGDALICSDriverCode,          // Initial Sand Consolidated Sediment (raster)
+      m_VstrGDALICSDriverCode,                  // Initial Sand Consolidated Sediment (raster)
       m_VstrGDALICSDriverDesc,
       m_VstrGDALICSProjection,
       m_VstrGDALICSDataType,
-      m_VstrGDALICCDriverCode,          // Initial Coarse Consolidated Sediment (raster)
+      m_VstrGDALICCDriverCode,                  // Initial Coarse Consolidated Sediment (raster)
       m_VstrGDALICCDriverDesc,
       m_VstrGDALICCProjection,
       m_VstrGDALICCDataType;
@@ -545,14 +547,11 @@ private:
    int nReadBasementDEMData(void);
    int nReadRasterGISData(int const, int const);
    int nReadVectorGISData(int const);
-   bool bWriteRasterGISFloat(int const, string const*, int const = 0);
-   bool bWriteRasterGISFloatISInt(int const, string const*, double const = 0);
+   bool bWriteRasterGIS(int const, string const*, int const = 0, double const = 0);
    bool bWriteVectorGIS(int const, string const*);
    void GetRasterOutputMinMax(int const, double&, double&, int const, double const);
    void SetRasterFileCreationDefaults(void);
-   int nInterpolateWavePropertiesToWithinPolygonCells(vector<int> const*, vector<int> const*, vector<double> const*, vector<double> const*);
-   int nInterpolateWavePropertiesToActiveZoneCells(vector<int> const*, vector<int> const*, vector<bool> const*);
-   int nInterpolateWavePropertiesToActiveZoneCells(void);
+   int nInterpolateWavePropertiesToWithinPolygonCells(vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*);
 
    // Initialization
    bool bCreateErosionPotentialLookUp(vector<double>*, vector<double>*, vector<double>*);
@@ -607,7 +606,7 @@ private:
    static CGeom2DPoint PtChooseEndPoint(int const, CGeom2DPoint const*, CGeom2DPoint const*, double const, double const, double const, double const);
    int nGetCoastNormalEndPoint(int const, int const, int const, CGeom2DPoint const*, double const, CGeom2DPoint*, CGeom2DIPoint*);
    int nLandformToGrid(int const, int const);
-   int nCalcWavePropertiesOnProfile(int const, int const, int const, vector<int>*, vector<int>*, vector<double>*, vector<double>*, vector<bool>*);
+   int nCalcWavePropertiesOnProfile(int const, int const, int const, vector<double>*, vector<double>*, vector<double>*, vector<double>*, vector<bool>*);
    int nGetThisProfileElevationVectorsForCShore(int const, int const, int const, vector<double>*, vector<double>*, vector<double>*);
    int nCreateCShoreInfile(int const, int const, int const, int const, int const, int const, int const, int const, int const, int const, int const, int const, int const, double const, double const, double const, double const, double const, double const, double const, double const, vector<double> const*, vector<double> const*, vector<double> const*);
    int nReadCShoreOutput(int const, string const*, int const, int const, vector<double> const*, vector<double>*);
@@ -623,7 +622,7 @@ private:
    void CalcD50AndFillWaveCalcHoles(void);
    int nDoAllShadowZones(void);
    static bool bOnOrOffShoreAndUpOrDownCoast(double const, double const, int const, bool&);
-   static CGeom2DIPoint PtiFollowWaveOrientation(CGeom2DIPoint const*, double const, double&);
+   static CGeom2DIPoint PtiFollowWaveAngle(CGeom2DIPoint const*, double const, double&);
    int nFindAllShadowZones(void);
    int nFloodFillShadowZone(int const, CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
    int nDoShadowZoneAndDownDriftZone(int const, int const, int const, int const);

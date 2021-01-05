@@ -56,11 +56,11 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
          // Update accumulated wave energy for the coastal landform object
          double
             dWaveHeightAtCoast = m_VCoast[i].dGetCoastWaveHeight(j),
-            dDeepWaterWavePeriod = m_VCoast[i].dGetDeepWaterWavePeriod(j),
+            dDeepWaterWavePeriod = m_VCoast[i].dGetCoastDeepWaterWavePeriod(j),
             dWaveErosiveForce = pow(dWaveHeightAtCoast, WALKDEN_HALL_PARAM_1) * pow(dDeepWaterWavePeriod, WALKDEN_HALL_PARAM_2),
             dWaveEnergy = dWaveErosiveForce * m_dTimeStep * 3600;
 
-//          assert(bIsFinite(dWaveEnergy));
+//          assert(isfinite(dWaveEnergy));
          pCoastLandform->IncTotAccumWaveEnergy(dWaveEnergy);
 
          // Now simulate how the coastal landform responds to this wave energy
@@ -408,7 +408,6 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
          // Remove this volume from the total still to be deposited
          dTotSandToDeposit -= (dVToDepositPerProfile[nAcross] * dSandProp);
          dTotCoarseToDeposit -= (dVToDepositPerProfile[nAcross] * dCoarseProp);
-//          assert(bIsDoubleNotNaN(dTotSandToDeposit));
 //          LogStream << "dTotSandToDeposit NOW = " << dTotSandToDeposit << " dTotCoarseToDeposit NOW = " << dTotCoarseToDeposit << endl;
 
          continue;

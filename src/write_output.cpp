@@ -22,6 +22,8 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
+#include <assert.h>
+
 #include <ctime>
 using std::localtime;
 
@@ -358,7 +360,7 @@ void CSimulation::WriteStartRunDetails(void)
    if (m_bSingleDeepWaterWaveValues)
    {
       OutStream << " Deep water wave height                                    \t: " << m_dAllCellsDeepWaterWaveHeight << " m" << endl;
-      OutStream << " Deep water wave orientation                               \t: " << m_dAllCellsDeepWaterWaveOrientation << " degrees" << endl;
+      OutStream << " Deep water wave orientation                               \t: " << m_dAllCellsDeepWaterWaveAngle << " degrees" << endl;
       OutStream << " Wave period                                               \t: " << m_dAllCellsDeepWaterWavePeriod << " s" << endl;
 
    }
@@ -528,13 +530,21 @@ bool CSimulation::bWritePerTimestepResults(void)
 
    // Output per-timestep potential beach erosion in mm (average for all sea cells)
    OutStream << std::fixed << setprecision(0);
-   OutStream << setw(7) << 1000 * m_dThisTimestepPotentialBeachErosion / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   assert(m_ulThisTimestepNumSeaCells > 0);
+   double dTmp = 1000 * m_dThisTimestepPotentialBeachErosion / static_cast<double>(m_ulThisTimestepNumSeaCells);
+   if (dTmp  > 99999)
+   {
+      OutStream << setw(6) << std::scientific << setprecision(0) << dTmp;
+      OutStream << std::fixed;
+   }
+   else
+      OutStream << setw(6) << dTmp;
 
    // Output per-timestep potential beach erosion in mm (average for all cells with potential beach erosion)
    OutStream << std::fixed << setprecision(0);
    if (m_ulThisTimestepNumPotentialBeachErosionCells > 0)
    {
-      double dTmp = 1000 * m_dThisTimestepPotentialBeachErosion / static_cast<double>(m_ulThisTimestepNumPotentialBeachErosionCells);
+      dTmp = 1000 * m_dThisTimestepPotentialBeachErosion / static_cast<double>(m_ulThisTimestepNumPotentialBeachErosionCells);
       if (dTmp > 99999)
       {
          OutStream << setw(6) << std::scientific << setprecision(0) << dTmp;

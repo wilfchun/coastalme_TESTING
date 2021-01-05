@@ -66,11 +66,11 @@ private:
       m_VdCurvatureDetailed,        // Detailed curvature at each point on m_LCoastlineExtCRS
       m_VdCurvatureSmooth,          // Smoothed curvature at each point on m_LCoastlineExtCRS
       m_VdDeepWaterWaveHeight,      // The deep water wave height at the end of a normal drawn from each point on m_LCoastlineExtCRS
-      m_VdDeepWaterWaveOrientation, // The deep water wave orientation at the end of a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdDeepWaterWaveAngle, // The deep water wave orientation at the end of a normal drawn from each point on m_LCoastlineExtCRS
       m_VdDeepWaterWavePeriod,      // The deep water wave period at the end of a normal drawn from each point on m_LCoastlineExtCRS
       m_VdBreakingWaveHeight,       // The breaking wave height on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdCoastWaveHeight,          // The wave height at coast point on a normal drawn from each point on m_LCoastlineExtCRS
-      m_VdBreakingWaveOrientation,  // The breaking wave orientation on a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdBreakingWaveAngle,  // The breaking wave orientation on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdDepthOfBreaking,          // The depth of breaking on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdFluxOrientation,          // As in the COVE model, is the orientation alongshore energy/sediment movement; a +ve flux is in direction of increasing indices along coast. At each point on m_LCoastlineExtCRS
       m_VdWaveEnergyAtBreaking;               // Wave energy at each point on m_LCoastlineExtCRS
@@ -149,14 +149,14 @@ public:
    int nGetDownCoastProfileNumber(int const nProfile) const;
 //    int nGetAlongCoastlineIndexOfProfile(int const);
 
-   void SetDeepWaterWaveHeight(int const, double const);
-   double dGetDeepWaterWaveHeight(int const) const;
+   void SetCoastDeepWaterWaveHeight(int const, double const);
+   double dGetCoastDeepWaterWaveHeight(int const) const;
 
-   void SetDeepWaterWaveOrientation(int const, double const);
-   double dGetDeepWaterWaveOrientation(int const) const;
+   void SetCoastDeepWaterWaveAngle(int const, double const);
+   double dGetCoastDeepWaterWaveAngle(int const) const;
 
-   void SetDeepWaterWavePeriod(int const, double const);
-   double dGetDeepWaterWavePeriod(int const) const;
+   void SetCoastDeepWaterWavePeriod(int const, double const);
+   double dGetCoastDeepWaterWavePeriod(int const) const;
 
    void SetBreakingWaveHeight(int const, double const);
    double dGetBreakingWaveHeight(int const) const;
@@ -164,8 +164,8 @@ public:
    void SetCoastWaveHeight(int const, double const);
    double dGetCoastWaveHeight(int const) const;
 
-   void SetBreakingWaveOrientation(int const, double const);
-   double dGetBreakingWaveOrientation(int const) const;
+   void SetBreakingWaveAngle(int const, double const);
+   double dGetBreakingWaveAngle(int const) const;
 
    void SetDepthOfBreaking(int const, double const);
    double dGetDepthOfBreaking(int const) const;
@@ -192,11 +192,11 @@ public:
    double dGetPolygonLength(int const) const;
 
    int nGetNumShadowBoundaries(void);
-   void AppendShadowBoundary(const CGeomLine);
+   void AppendShadowBoundary(CGeomLine const*);
    CGeomLine* pGetShadowBoundary(int const);
 
    int nGetNumShadowDowndriftBoundaries(void);
-   void AppendShadowDowndriftBoundary(const CGeomLine);
+   void AppendShadowDowndriftBoundary(CGeomLine const*);
    CGeomLine* pGetShadowDowndriftBoundary(int const);
 };
 #endif //COAST_H

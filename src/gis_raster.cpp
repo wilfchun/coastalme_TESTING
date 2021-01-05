@@ -22,7 +22,7 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ===============================================================================================================================*/
-//#include <assert.h>
+#include <assert.h>
 
 #include <iostream>
 using std::cout;
@@ -158,7 +158,7 @@ int CSimulation::nReadBasementDEMData(void)
 
    if (dMissingValue != m_dMissingValue)
    {
-      cerr << NOTE << "NODATA value in " << m_strInitialBasementDEMFile << " is " << dMissingValue << "\n      instead using default NODATA value " <<  m_dMissingValue << endl;
+      cerr << "   " << NOTE << "NODATA value in " << m_strInitialBasementDEMFile << " is " << dMissingValue << "\n         instead using CoastalME's default floating-point NODATA value " <<  m_dMissingValue << endl;
    }
 
    // Next allocate memory for a 2D array of raster cell objects: tell the user what is happening
@@ -168,8 +168,8 @@ int CSimulation::nReadBasementDEMData(void)
       return nRet;
 
    // Allocate memory for a 1D floating-point array, to hold the scan line for GDAL
-   float* pfScanline = new float[m_nXGridMax];
-   if (NULL == pfScanline)
+   double* pdScanline = new double[m_nXGridMax];
+   if (NULL == pdScanline)
    {
       // Error, can't allocate memory
       cerr << ERR << "cannot allocate memory for " << m_nXGridMax << " x 1D array" << endl;
@@ -180,7 +180,7 @@ int CSimulation::nReadBasementDEMData(void)
    for (int j = 0; j < m_nYGridMax; j++)
    {
       // Read scanline
-      if (CE_Failure == pGDALBand->RasterIO(GF_Read, 0, j, m_nXGridMax, 1, pfScanline, m_nXGridMax, 1, GDT_Float32, 0, 0, NULL))
+      if (CE_Failure == pGDALBand->RasterIO(GF_Read, 0, j, m_nXGridMax, 1, pdScanline, m_nXGridMax, 1, GDT_Float64, 0, 0, NULL))
       {
          // Error while reading scanline
          cerr << ERR << CPLGetLastErrorMsg() << " in " << m_strInitialBasementDEMFile << endl;
@@ -190,12 +190,9 @@ int CSimulation::nReadBasementDEMData(void)
       // All OK, so read scanline into cell elevations (including any missing values)
       for (int i = 0; i < m_nXGridMax; i++)
       {
-         // Deal with any NaN values
-         double dTmp = pfScanline[i];
-         if (! bIsDoubleNotNaN(dTmp))
-            dTmp = m_dMissingValue;
+         double dTmp = pdScanline[i];
 
-         if (dTmp == dMissingValue)
+         if (! isfinite(dTmp))            // Deal with any NaN values
             dTmp = m_dMissingValue;
 
          m_pRasterGrid->m_Cell[i][j].SetBasementElev(dTmp);
@@ -206,7 +203,7 @@ int CSimulation::nReadBasementDEMData(void)
    GDALClose(pGDALDataset);
 
    // Get rid of memory allocated to this array
-   delete[] pfScanline;
+   delete[] pdScanline;
 
    return RTN_OK;
 }
@@ -699,7 +696,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
          if (nMissingValue != m_nMissingValue)
          {
-            cerr << NOTE << "NODATA value in " << strGISFile << " is " << nMissingValue << "\n      instead using default NODATA value " <<  m_nMissingValue << endl;
+            cerr << "   " << NOTE << "NODATA value in " << strGISFile << " is " << nMissingValue << "\n         instead using CoatalME's default integer NODATA value " <<  m_nMissingValue << endl;
          }
       }
       else
@@ -711,13 +708,13 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
          if (dMissingValue != m_dMissingValue)
          {
-            cerr << NOTE << "NODATA value in " << strGISFile << " is " << dMissingValue << "\n      instead using default NODATA value " <<  m_dMissingValue << endl;
+            cerr << "   " << NOTE << "NODATA value in " << strGISFile << " is " << dMissingValue << "\n         instead using CoastalME's default floating-point NODATA value " <<  m_dMissingValue << endl;
          }
       }
 
       // Allocate memory for a 1D array, to hold the scan line for GDAL
-      float* pfScanline = new float[m_nXGridMax];
-      if (NULL == pfScanline)
+      double* pdScanline = new double[m_nXGridMax];
+      if (NULL == pdScanline)
       {
          // Error, can't allocate memory
          cerr << ERR << "cannot allocate memory for " << m_nXGridMax << " x 1D array" << endl;
@@ -729,7 +726,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       for (int nY = 0; nY < m_nYGridMax; nY++)
       {
          // Read scanline
-         if (CE_Failure == pGDALBand->RasterIO(GF_Read, 0, nY, m_nXGridMax, 1, pfScanline, m_nXGridMax, 1, GDT_Float32, 0, 0, NULL))
+         if (CE_Failure == pGDALBand->RasterIO(GF_Read, 0, nY, m_nXGridMax, 1, pdScanline, m_nXGridMax, 1, GDT_Float64, 0, 0, NULL))
          {
             // Error while reading scanline
             cerr << ERR << CPLGetLastErrorMsg() << " in " << strGISFile << endl;
@@ -744,150 +741,130 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
             {
             case (LANDFORM_RASTER):
                // Initial Landform Class GIS data, is integer TODO Do we also need a landform sub-category input?
-               nTmp = static_cast<int>(pfScanline[nX]);
-               if (! bIsDoubleNotNaN(nTmp))              // Deal with any NaN values
-                  nTmp = m_nMissingValue;
+               nTmp = static_cast<int>(pdScanline[nX]);
 
-               if (nTmp == nMissingValue)
+               if (! isfinite(nTmp))              // Deal with any NaN values
+               {
                   nTmp = m_nMissingValue;
-
-               if (nTmp == m_nMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFCategory(nTmp);
                break;
 
             case (INTERVENTION_CLASS_RASTER):
                // Intervention class, is integer
-               nTmp = static_cast<int>(pfScanline[nX]);
-               if (! bIsDoubleNotNaN(nTmp))              // Deal with any NaN values
-                  nTmp = m_nMissingValue;
+               nTmp = static_cast<int>(pdScanline[nX]);
 
-               if (nTmp == nMissingValue)
+               if (! isfinite(nTmp))              // Deal with any NaN values
+               {
                   nTmp = m_nMissingValue;
-
-               if (nTmp == m_nMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].SetInterventionClass(nTmp);
                break;
 
             case (INTERVENTION_HEIGHT_RASTER):
                // Intervention height
-               dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bIsDoubleNotNaN(dTmp))
-                  dTmp = m_dMissingValue;
+               dTmp = pdScanline[nX];
 
-               if (dTmp == dMissingValue)
+               if (! isfinite(dTmp))              // Deal with any NaN values
+               {
                   dTmp = m_dMissingValue;
-
-               if (dTmp == m_dMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].SetInterventionHeight(dTmp);
                break;
 
             case (SUSP_SED_RASTER):
                // Initial Suspended Sediment GIS data
-               dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bIsDoubleNotNaN(dTmp))
-                  dTmp = m_dMissingValue;
+               dTmp = pdScanline[nX];
 
-               if (dTmp == dMissingValue)
+               if (! isfinite(dTmp))              // Deal with any NaN values
+               {
                   dTmp = m_dMissingValue;
-
-               if (dTmp == m_dMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].SetSuspendedSediment(dTmp);
                break;
 
             case (FINE_UNCONS_RASTER):
                // Initial Unconsolidated Fine Sediment GIS data
-               dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bIsDoubleNotNaN(dTmp))
-                  dTmp = m_dMissingValue;
+               dTmp = pdScanline[nX];
 
-               if (dTmp == dMissingValue)
+               if (! isfinite(dTmp))              // Deal with any NaN values
+               {
                   dTmp = m_dMissingValue;
-
-               if (dTmp == m_dMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetFine(dTmp);
                break;
 
             case (SAND_UNCONS_RASTER):
                // Initial Unconsolidated Sand Sediment GIS data
-               dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bIsDoubleNotNaN(dTmp))
-                  dTmp = m_dMissingValue;
+               dTmp = pdScanline[nX];
 
-               if (dTmp == dMissingValue)
+               if (! isfinite(dTmp))              // Deal with any NaN values
+               {
                   dTmp = m_dMissingValue;
-
-               if (dTmp == m_dMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetSand(dTmp);
                break;
 
             case (COARSE_UNCONS_RASTER):
                // Initial Unconsolidated Coarse Sediment GIS data
-               dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bIsDoubleNotNaN(dTmp))
-                  dTmp = m_dMissingValue;
+               dTmp = pdScanline[nX];
 
-               if (dTmp == dMissingValue)
+               if (! isfinite(dTmp))              // Deal with any NaN values
+               {
                   dTmp = m_dMissingValue;
-
-               if (dTmp == m_dMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetUnconsolidatedSediment()->SetCoarse(dTmp);
                break;
 
             case (FINE_CONS_RASTER):
                // Initial Consolidated Fine Sediment GIS data
-               dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bIsDoubleNotNaN(dTmp))
-                  dTmp = m_dMissingValue;
+               dTmp = pdScanline[nX];
 
-               if (dTmp == dMissingValue)
+               if (! isfinite(dTmp))              // Deal with any NaN values
+               {
                   dTmp = m_dMissingValue;
-
-               if (dTmp == m_dMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetFine(dTmp);
                break;
 
             case (SAND_CONS_RASTER):
                // Initial Consolidated Sand Sediment GIS data
-               dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bIsDoubleNotNaN(dTmp))
-                  dTmp = m_dMissingValue;
+               dTmp = pdScanline[nX];
 
-               if (dTmp == dMissingValue)
+               if (! isfinite(dTmp))              // Deal with any NaN values
+               {
                   dTmp = m_dMissingValue;
-
-               if (dTmp == m_dMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetSand(dTmp);
                break;
 
             case (COARSE_CONS_RASTER):
                // Initial Consolidated Coarse Sediment GIS data
-               dTmp = pfScanline[nX];       // Deal with any NaN values
-               if (! bIsDoubleNotNaN(dTmp))
-                  dTmp = m_dMissingValue;
+               dTmp = pdScanline[nX];
 
-               if (dTmp == dMissingValue)
+               if (! isfinite(dTmp))              // Deal with any NaN values
+               {
                   dTmp = m_dMissingValue;
-
-               if (dTmp == m_dMissingValue)
                   nMissing++;
+               }
 
                m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nLayer)->pGetConsolidatedSediment()->SetCoarse(dTmp);
                break;
@@ -899,7 +876,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
       GDALClose(pGDALDataset);
 
       // Get rid of memory allocated to this array
-      delete[] pfScanline;
+      delete[] pdScanline;
 
       if (nMissing > 0)
       {
@@ -914,15 +891,20 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
 
 /*==============================================================================================================================
 
- Writes floating point GIS raster files using GDAL, using data from the RasterGrid array
+ Writes GIS raster files using GDAL, using data from the RasterGrid array
 
 ===============================================================================================================================*/
-bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlotTitle, int const nLayer)
+bool CSimulation::bWriteRasterGIS(int const nDataItem, string const* strPlotTitle, int const nLayer, double const dElev)
 {
-   // Begin constructing the file name for this save
-   string strFilePathName(m_strOutPath);
+   bool bIsInteger = false;
 
-   string strLayer = "_layer_";
+   // Begin constructing the file name for this save
+   string
+      strFilePathName(m_strOutPath),
+      strLayer = "_layer_";
+
+   stringstream ststrTmp;
+
    strLayer.append(to_string(nLayer+1));
 
    switch (nDataItem)
@@ -1084,11 +1066,84 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
    case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
       strFilePathName.append(RASTER_WAVE_PERIOD_NAME);
       break;
+
+   case (RASTER_PLOT_BEACH_MASK):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_BEACH_MASK_NAME);
+      break;
+
+   case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_NAME);
+      break;
+
+   case (RASTER_PLOT_INUNDATION_MASK):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_INUNDATION_MASK_NAME);
+      break;
+
+   case (RASTER_PLOT_SLICE):
+      bIsInteger = true;
+      ststrTmp.str("");
+      ststrTmp.clear();
+
+      // TODO get working for multiple slices
+      strFilePathName.append(RASTER_SLICE_NAME);
+      ststrTmp << "_" << dElev << "_";
+      strFilePathName.append(ststrTmp.str());
+      break;
+
+   case (RASTER_PLOT_LANDFORM):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_LANDFORM_NAME);
+      break;
+
+   case (RASTER_PLOT_INTERVENTION_CLASS):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_INTERVENTION_CLASS_NAME);
+      break;
+
+   case (RASTER_PLOT_COAST):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_COAST_NAME);
+      break;
+
+   case (RASTER_PLOT_NORMAL):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_COAST_NORMAL_NAME);
+      break;
+
+   case (RASTER_PLOT_ACTIVE_ZONE):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_ACTIVE_ZONE_NAME);
+      break;
+
+   case (RASTER_PLOT_POLYGON):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_POLYGON_NAME);
+      break;
+
+   case (RASTER_PLOT_SHADOW_ZONE):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_SHADOW_ZONE_NAME);
+      break;
+
+   case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_SHADOW_DOWNDRIFT_ZONE_NAME);
+      break;
+
+   case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+      bIsInteger = true;
+      strFilePathName.append(RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME);
+      break;
    }
 
    // Append the 'save number' to the filename, and prepend zeros to the save number
+   ststrTmp.str("");
+   ststrTmp.clear();
+
    strFilePathName.append("_");
-   stringstream ststrTmp;
    ststrTmp << FillToWidth('0', MAX_SAVE_DIGITS) << m_nGISSave;
    strFilePathName.append(ststrTmp.str());
 
@@ -1136,9 +1191,8 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
       LogStream << WARN << "cannot write geotransformation information to " << m_strRasterGISOutFormat << " file named " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
 
    // Allocate memory for a 1D array, to hold the floating point raster band data for GDAL
-   float* pfRaster;
-   pfRaster = new float[m_ulNumCells];
-   if (NULL == pfRaster)
+   double* pdRaster = new double[m_ulNumCells];
+   if (NULL == pdRaster)
    {
       // Error, can't allocate memory
       cerr << ERR << "cannot allocate memory for " << m_ulNumCells << " x 1D floating-point array for " << m_strRasterGISOutFormat << " file named " << strFilePathName << endl;
@@ -1170,7 +1224,10 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
    }
 
    // Fill the array
-   int n = 0;
+   int
+      n = 0,
+      nPoly = 0,
+      nTopLayer = 0;
    double dTmp = 0;
    for (int nY = 0; nY < m_nYGridMax; nY++)
    {
@@ -1203,25 +1260,31 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             break;
 
          case (RASTER_PLOT_WAVE_HEIGHT):
-            if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
-               dTmp = m_dMissingValue;
-            else
+            if (m_pRasterGrid->m_Cell[nX][nY].bIsInundated())
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
+            else
+               dTmp = 0;
             break;
 
          case (RASTER_PLOT_AVG_WAVE_HEIGHT):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_ulIter);
+            if (m_pRasterGrid->m_Cell[nX][nY].bIsInundated())
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveHeight() / static_cast<double>(m_ulIter);
+            else
+               dTmp = 0;
             break;
 
          case (RASTER_PLOT_WAVE_ORIENTATION):
-            if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
-               dTmp = m_dMissingValue;
+            if (m_pRasterGrid->m_Cell[nX][nY].bIsInundated())
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle();
             else
-               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
+               dTmp = 0;
             break;
 
          case (RASTER_PLOT_AVG_WAVE_ORIENTATION):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIter);
+            if (m_pRasterGrid->m_Cell[nX][nY].bIsInundated())
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveAngle() / static_cast<double>(m_ulIter);
+            else
+               dTmp = 0;
             break;
 
          case (RASTER_PLOT_BEACH_PROTECTION):
@@ -1327,19 +1390,28 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             break;
 
          case (RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveOrientation();
+            if (m_pRasterGrid->m_Cell[nX][nY].bIsInundated())
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveAngle();
+            else
+               dTmp = 0;
             break;
 
          case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight();
+            if (m_pRasterGrid->m_Cell[nX][nY].bIsInundated())
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight();
+            else
+               dTmp = 0;
             break;
 
          case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
-            dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWavePeriod();
+            if (m_pRasterGrid->m_Cell[nX][nY].bIsInundated())
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWavePeriod();
+            else
+               dTmp = 0;
             break;
 
          case (RASTER_PLOT_POLYGON_GAIN_OR_LOSS):
-            int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+            nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
 
             if (nPoly == INT_NODATA)
                dTmp = m_dMissingValue;
@@ -1353,6 +1425,75 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
             }
 
             break;
+
+         case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].bPotentialPlatformErosion();
+            break;
+
+         case (RASTER_PLOT_INUNDATION_MASK):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea();
+            break;
+
+         case (RASTER_PLOT_BEACH_MASK):
+            dTmp = 0;
+            nTopLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopNonZeroLayerAboveBasement();
+            if ((nTopLayer == INT_NODATA) || (nTopLayer == NO_NONZERO_THICKNESS_LAYERS))
+               break;
+
+            if ((m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->dGetUnconsolidatedThickness() > 0) && (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL))
+               dTmp = 1;
+            break;
+
+         case (RASTER_PLOT_SLICE):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetLayerAtElev(dElev);
+            break;
+
+         case (RASTER_PLOT_LANDFORM):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory();
+            if ((dTmp == LF_CAT_DRIFT) || (dTmp == LF_CAT_CLIFF))
+               dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFSubCategory();
+            break;
+
+         case (RASTER_PLOT_INTERVENTION_CLASS):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetInterventionClass();
+            break;
+
+         case (RASTER_PLOT_COAST):
+            dTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsCoastline() ? 1 : 0);
+            break;
+
+         case (RASTER_PLOT_NORMAL):
+            dTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsProfile() ? 1 : 0);
+            break;
+
+         case (RASTER_PLOT_ACTIVE_ZONE):
+            dTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsInActiveZone() ? 1 : 0);
+            break;
+
+         case (RASTER_PLOT_POLYGON):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+            break;
+
+         case (RASTER_PLOT_SHADOW_ZONE):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneNumber();
+            break;
+
+         case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
+            break;
+
+         case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+            nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+            if (nPoly == INT_NODATA)
+               dTmp = m_nMissingValue;
+            else
+            {
+               if (m_pVCoastPolygon[nPoly]->bDownCoastThisTimestep())
+                  dTmp = 1;
+               else
+                  dTmp = 0;
+            }
+            break;
          }
 
          // If necessary, scale this value
@@ -1365,12 +1506,18 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
          }
 
          // Write this value to the array
-         pfRaster[n++] = static_cast<float>(dTmp);
+         pdRaster[n++] = dTmp;
       }
    }
 
    // Create a single raster band
    GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+
+   // And fill it with the NODATA value
+   if (bIsInteger)
+      pBand->Fill(m_nMissingValue);
+   else
+      pBand->Fill(m_dMissingValue);
 
    // Set value units for this band
    string strUnits;
@@ -1425,31 +1572,137 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
    case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
       strUnits = "secs";
       break;
+
+   case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
+   case (RASTER_PLOT_INUNDATION_MASK):
+   case (RASTER_PLOT_BEACH_MASK):
+   case (RASTER_PLOT_SLICE):
+   case (RASTER_PLOT_LANDFORM):
+   case (RASTER_PLOT_INTERVENTION_CLASS):
+   case (RASTER_PLOT_COAST):
+   case (RASTER_PLOT_NORMAL):
+   case (RASTER_PLOT_ACTIVE_ZONE):
+   case (RASTER_PLOT_POLYGON):
+   case (RASTER_PLOT_SHADOW_ZONE):
+   case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+   case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+      strUnits = "none";
+      break;
    }
 
    CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails
-   pBand->SetUnitType(strUnits.c_str());                                // Not supported for some GIS formats
+   pBand->SetUnitType(strUnits.c_str());                       // Not supported for some GIS formats
    CPLPopErrorHandler();
 
    // Tell the output dataset about NODATA (missing values)
    CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails
-   pBand->SetNoDataValue(m_dMissingValue);                     // Will fail for some formats
+   if (bIsInteger)
+      pBand->SetNoDataValue(m_nMissingValue);                     // Will fail for some formats
+   else
+      pBand->SetNoDataValue(m_dMissingValue);                     // Will fail for some formats
    CPLPopErrorHandler();
 
    // Construct the description
    string strDesc(*strPlotTitle);
+   if (nDataItem == RASTER_PLOT_SLICE)
+   {
+      ststrTmp.clear();
+      ststrTmp << dElev << "m, ";
+      strDesc.append(ststrTmp.str());
+   }
    strDesc.append(" at ");
    strDesc.append(strDispTime (m_dSimElapsed, false, false));
 
    // Set the GDAL description
    pBand->SetDescription(strDesc.c_str());
 
+   // Set raster category names
+   char** papszCategoryNames = NULL;
+   switch (nDataItem)
+   {
+      case (RASTER_PLOT_SLICE):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Basement");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 0");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 1");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 2");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 3");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 4");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 5");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 6");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 7");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 8");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 9");
+         break;
+
+      case (RASTER_PLOT_LANDFORM):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "None");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Hinterland");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Sea");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Drift");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Intervention");
+
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff on Coastline");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Inland Cliff");
+
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Mixed Drift");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Talus");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Beach");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Dunes");
+         break;
+
+      case (RASTER_PLOT_INTERVENTION_CLASS):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "None");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Structural");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Non-Structural");
+         break;
+
+      case (RASTER_PLOT_COAST):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Not coastline");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Coastline");
+         break;
+
+      case (RASTER_PLOT_NORMAL):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Not coastline-normal profile");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Coastline-normal profile");
+         break;
+
+      case (RASTER_PLOT_ACTIVE_ZONE):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Not in active zone");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "In active zone");
+         break;
+
+      case (RASTER_PLOT_POLYGON):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Not polygon");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "In polygon");
+         break;
+
+      case (RASTER_PLOT_SHADOW_ZONE):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow zone");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow zone");
+         break;
+
+      case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow downdrift zone");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow downdrift zone");
+         break;
+
+      case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Updrift movement of unconsolidated sediment ");
+         papszCategoryNames = CSLAddString(papszCategoryNames, "Downdrift movement of unconsolidated sediment");
+         break;
+   }
+
+   CPLPushErrorHandler(CPLQuietErrorHandler);        // Needed to get next line to fail silently, if it fails
+   pBand->SetCategoryNames(papszCategoryNames);      // Not supported for some GIS formats
+   CPLPopErrorHandler();
+
    // Now write the data
-   if (CE_Failure == pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pfRaster, m_nXGridMax, m_nYGridMax, GDT_Float32, 0, 0, NULL))
+   if (CE_Failure == pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL))
    {
       // Write error, better error message
       cerr << ERR << "cannot write data for " << m_strRasterGISOutFormat << " file named " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
-      delete[] pfRaster;
+      delete[] pdRaster;
       return false;
    }
 
@@ -1484,423 +1737,7 @@ bool CSimulation::bWriteRasterGISFloat(int const nDataItem, string const* strPlo
    GDALClose(pDataSet);
 
    // Also get rid of memory allocated to this array
-   delete[] pfRaster;
-
-   return true;
-}
-
-
-/*==============================================================================================================================
-
- Writes integer GIS raster files using GDAL, using data from the RasterGrid array
-
-===============================================================================================================================*/
-bool CSimulation::bWriteRasterGISFloatISInt(int const nDataItem, string const* strPlotTitle, double const dElev)
-{
-   // Begin constructing the file name for this save
-   string strFilePathName(m_strOutPath);
-   stringstream ststrTmp;
-
-   switch (nDataItem)
-   {
-   case (RASTER_PLOT_BEACH_MASK):
-      strFilePathName.append(RASTER_BEACH_MASK_NAME);
-      break;
-
-   case (RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
-      strFilePathName.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_NAME);
-      break;
-
-   case (RASTER_PLOT_INUNDATION_MASK):
-      strFilePathName.append(RASTER_INUNDATION_MASK_NAME);
-      break;
-
-   case (RASTER_PLOT_SLICE):
-      // TODO get working for multiple slices
-      strFilePathName.append(RASTER_SLICE_NAME);
-      ststrTmp << "_" << dElev << "_";
-      strFilePathName.append(ststrTmp.str());
-      break;
-
-   case (RASTER_PLOT_LANDFORM):
-      strFilePathName.append(RASTER_LANDFORM_NAME);
-      break;
-
-   case (RASTER_PLOT_INTERVENTION_CLASS):
-      strFilePathName.append(RASTER_INTERVENTION_CLASS_NAME);
-      break;
-
-   case (RASTER_PLOT_COAST):
-      strFilePathName.append(RASTER_COAST_NAME);
-      break;
-
-   case (RASTER_PLOT_NORMAL):
-      strFilePathName.append(RASTER_COAST_NORMAL_NAME);
-      break;
-
-   case (RASTER_PLOT_ACTIVE_ZONE):
-      strFilePathName.append(RASTER_ACTIVE_ZONE_NAME);
-      break;
-
-   case (RASTER_PLOT_POLYGON):
-      strFilePathName.append(RASTER_POLYGON_NAME);
-      break;
-
-   case (RASTER_PLOT_SHADOW_ZONE):
-      strFilePathName.append(RASTER_SHADOW_ZONE_NAME);
-      break;
-
-   case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
-      strFilePathName.append(RASTER_SHADOW_DOWNDRIFT_ZONE_NAME);
-      break;
-
-   case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
-      strFilePathName.append(RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME);
-      break;
-   }
-
-   // Append the 'save number' to the filename, and prepend zeros to the save number
-   strFilePathName.append("_");
-   ststrTmp.clear();
-   ststrTmp.str(string());
-   ststrTmp << FillToWidth('0', MAX_SAVE_DIGITS) << m_nGISSave;
-   strFilePathName.append(ststrTmp.str());
-
-   // Finally, maybe append the extension
-   if (! m_strGDALRasterOutputDriverExtension.empty())
-   {
-      strFilePathName.append(".");
-      strFilePathName.append(m_strGDALRasterOutputDriverExtension);
-   }
-
-   GDALDriver* pDriver;
-   GDALDataset* pDataSet;
-   if (m_bGDALCanCreate)
-   {
-      // The user-requested raster driver supports the Create() method
-      pDriver = GetGDALDriverManager()->GetDriverByName(m_strRasterGISOutFormat.c_str());
-      pDataSet = pDriver->Create(strFilePathName.c_str(), m_nXGridMax, m_nYGridMax, 1, m_GDALWriteIntDataType, m_papszGDALRasterOptions);
-      if (NULL == pDataSet)
-      {
-         // Couldn't create file
-         cerr << ERR << "cannot create " << m_strRasterGISOutFormat << " file named " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
-         return false;
-      }
-   }
-   else
-   {
-      // The user-requested raster driver does not support the Create() method, so we must first create a memory-file dataset
-      pDriver = GetGDALDriverManager()->GetDriverByName("MEM");
-      pDataSet = pDriver->Create("", m_nXGridMax, m_nYGridMax, 1, m_GDALWriteIntDataType, NULL);
-      if (NULL == pDataSet)
-      {
-         // Couldn't create in-memory file dataset
-         cerr << ERR << "cannot create in-memory file for " << m_strRasterGISOutFormat << " file named " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
-         return false;
-      }
-   }
-
-   // Set projection info for output dataset (will be same as was read in from DEM)
-   CPLPushErrorHandler(CPLQuietErrorHandler);                              // Needed to get next line to fail silently, if it fails
-   pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());        // Will fail for some formats
-   CPLPopErrorHandler();
-
-   // Set geotransformation info for output dataset (will be same as was read in from DEM)
-   if (CE_Failure == pDataSet->SetGeoTransform(m_dGeoTransform))
-      LogStream << WARN << "cannot write geotransformation information to " << m_strRasterGISOutFormat << " file named " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
-
-   // Allocate memory for a 1D array, to hold the integer raster band data for GDAL
-   int* pnRaster;
-   pnRaster = new int[m_ulNumCells];
-   if (NULL == pnRaster)
-   {
-      // Error, can't allocate memory
-      cerr << ERR << "cannot allocate memory for " << m_ulNumCells << " x 1D integer array for " << m_strRasterGISOutFormat << " file named " << strFilePathName << endl;
-      return (RTN_ERR_MEMALLOC);
-   }
-
-   bool bScaleOutput = false;
-   double
-      dRangeScale = 0,
-      dDataMin = 0;
-
-   if (! m_bGDALCanWriteInt32)
-   {
-      double dDataMax = 0;
-
-      // The output file format cannot handle 32-bit integers, so we may have to scale the output
-      GetRasterOutputMinMax(nDataItem, dDataMin, dDataMax, 0, dElev);
-
-      double
-         dDataRange = dDataMax - dDataMin,
-         dWriteRange = static_cast<double>(m_lGDALMaxCanWrite - m_lGDALMinCanWrite);
-
-      if (dDataRange > 0)
-         dRangeScale = dWriteRange / dDataRange;
-
-      // If we are attempting to write values which are outside this format's allowable range, and the user has set the option, then scale the output
-      if (((dDataMin < static_cast<double>(m_lGDALMinCanWrite)) || (dDataMax > static_cast<double>(m_lGDALMaxCanWrite))) && m_bScaleRasterOutput)
-         bScaleOutput = true;
-   }
-
-   // Fill the array
-   int nTmp  = 0,
-      n = 0,
-      nTopLayer = 0;
-   for (int nY = 0; nY < m_nYGridMax; nY++)
-   {
-      for (int nX = 0; nX < m_nXGridMax; nX++)
-      {
-         switch (nDataItem)
-         {
-         case (RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
-            nTmp = m_pRasterGrid->m_Cell[nX][nY].bPotentialPlatformErosion();
-            break;
-
-         case (RASTER_PLOT_INUNDATION_MASK):
-            nTmp = m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea();
-            break;
-
-         case (RASTER_PLOT_BEACH_MASK):
-            nTmp = 0;
-            nTopLayer = m_pRasterGrid->m_Cell[nX][nY].nGetTopNonZeroLayerAboveBasement();
-            if ((nTopLayer == INT_NODATA) || (nTopLayer == NO_NONZERO_THICKNESS_LAYERS))
-               break;
-
-            if ((m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->dGetUnconsolidatedThickness() > 0) && (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL))
-               nTmp = 1;
-            break;
-
-         case (RASTER_PLOT_SLICE):
-            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetLayerAtElev(dElev);
-            break;
-
-         case (RASTER_PLOT_LANDFORM):
-            nTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory();
-            if ((nTmp == LF_CAT_DRIFT) || (nTmp == LF_CAT_CLIFF))
-               nTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFSubCategory();
-            break;
-
-         case (RASTER_PLOT_INTERVENTION_CLASS):
-            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetInterventionClass();
-            break;
-
-         case (RASTER_PLOT_COAST):
-            nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsCoastline() ? 1 : 0);
-            break;
-
-         case (RASTER_PLOT_NORMAL):
-            nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsProfile() ? 1 : 0);
-            break;
-
-         case (RASTER_PLOT_ACTIVE_ZONE):
-            nTmp = (m_pRasterGrid->m_Cell[nX][nY].bIsInActiveZone() ? 1 : 0);
-            break;
-
-         case (RASTER_PLOT_POLYGON):
-            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
-            break;
-
-         case (RASTER_PLOT_SHADOW_ZONE):
-            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneNumber();
-            break;
-
-         case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
-            nTmp = m_pRasterGrid->m_Cell[nX][nY].nGetDownDriftZoneNumber();
-            break;
-
-         case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
-            int nPoly = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
-            if (nPoly == INT_NODATA)
-               nTmp = m_nMissingValue;
-            else
-            {
-               if (m_pVCoastPolygon[nPoly]->bDownCoastThisTimestep())
-                  nTmp = 1;
-               else
-                  nTmp = 0;
-            }
-            break;
-         }
-
-         // If necessary, scale this value
-         if (bScaleOutput)
-            nTmp = nRound(static_cast<double>(m_lGDALMinCanWrite) + (dRangeScale * (nTmp - dDataMin)));
-
-         // Write it to the array
-         pnRaster[n++] = nTmp;
-      }
-   }
-
-   // Create a single raster band
-   GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
-
-   // Set value units for this band
-   string strUnits;
-   switch (nDataItem)
-   {
-   case (RASTER_RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
-   case (RASTER_PLOT_INUNDATION_MASK):
-   case (RASTER_PLOT_BEACH_MASK):
-   case (RASTER_PLOT_SLICE):
-   case (RASTER_PLOT_LANDFORM):
-   case (RASTER_PLOT_INTERVENTION_CLASS):
-   case (RASTER_PLOT_COAST):
-   case (RASTER_PLOT_NORMAL):
-   case (RASTER_PLOT_ACTIVE_ZONE):
-   case (RASTER_PLOT_POLYGON):
-   case (RASTER_PLOT_SHADOW_ZONE):
-   case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
-   case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
-      strUnits = "none";
-      break;
-   }
-
-   CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails
-   pBand->SetUnitType(strUnits.c_str());                       // Not supported for some GIS formats
-   CPLPopErrorHandler();
-
-   // Tell the output dataset about NODATA (missing values)
-   CPLPushErrorHandler(CPLQuietErrorHandler);                  // Needed to get next line to fail silently, if it fails
-   pBand->SetNoDataValue(m_nMissingValue);                     // Will fail for some formats
-   CPLPopErrorHandler();
-
-   // Construct the description
-   string strDesc(*strPlotTitle);
-   if (nDataItem == RASTER_PLOT_SLICE)
-   {
-      ststrTmp.clear();
-      ststrTmp << dElev << "m, ";
-      strDesc.append(ststrTmp.str());
-   }
-   strDesc.append(" at ");
-   strDesc.append(strDispTime(m_dSimElapsed, false, false));
-
-   // Set the GDAL description
-   pBand->SetDescription(strDesc.c_str());
-
-   // Set raster category names
-   char** papszCategoryNames = NULL;
-   switch (nDataItem)
-   {
-   case (RASTER_PLOT_SLICE):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Basement");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 0");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 1");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 2");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 3");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 4");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 5");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 6");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 7");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 8");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Layer 9");
-      break;
-
-   case (RASTER_PLOT_LANDFORM):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "None");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Hinterland");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Sea");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Drift");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Intervention");
-
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Cliff on Coastline");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Inland Cliff");
-
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Mixed Drift");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Talus");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Beach");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Dunes");
-      break;
-
-   case (RASTER_PLOT_INTERVENTION_CLASS):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "None");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Structural");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Non-Structural");
-      break;
-
-   case (RASTER_PLOT_COAST):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Not coastline");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Coastline");
-      break;
-
-   case (RASTER_PLOT_NORMAL):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Not coastline-normal profile");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Coastline-normal profile");
-      break;
-
-   case (RASTER_PLOT_ACTIVE_ZONE):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Not in active zone");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "In active zone");
-      break;
-
-   case (RASTER_PLOT_POLYGON):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Not polygon");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "In polygon");
-      break;
-
-   case (RASTER_PLOT_SHADOW_ZONE):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow zone");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow zone");
-      break;
-
-   case (RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Not in shadow downdrift zone");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "In shadow downdrift zone");
-      break;
-
-   case (RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT):
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Updrift movement of unconsolidated sediment ");
-      papszCategoryNames = CSLAddString(papszCategoryNames, "Downdrift movement of unconsolidated sediment");
-      break;
-   }
-
-   CPLPushErrorHandler(CPLQuietErrorHandler);        // Needed to get next line to fail silently, if it fails
-   pBand->SetCategoryNames(papszCategoryNames);      // Not supported for some GIS formats
-   CPLPopErrorHandler();
-
-   // Now write the data
-   if (CE_Failure == pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pnRaster, m_nXGridMax, m_nYGridMax, GDT_Int32, 0, 0, NULL))
-   {
-      // Write error
-      cerr << ERR << "cannot write data for " << m_strRasterGISOutFormat << " file named " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
-      delete[] pnRaster;
-      return false;
-   }
-
-   // Calculate statistics for this band
-   double dMin, dMax, dMean, dStdDev;
-   CPLPushErrorHandler(CPLQuietErrorHandler);        // Needed to get next line to fail silently, if it fails
-   pBand->ComputeStatistics(false, &dMin, &dMax, &dMean, &dStdDev, NULL, NULL);
-   CPLPopErrorHandler();
-
-   // And then write the statistics
-   CPLPushErrorHandler(CPLQuietErrorHandler);        // Needed to get next line to fail silently, if it fails
-   pBand->SetStatistics(dMin, dMax, dMean, dStdDev);
-   CPLPopErrorHandler();
-
-   if (! m_bGDALCanCreate)
-   {
-      // Since the user-selected raster driver cannot use the Create() method, we have been writing to a dataset created by the in-memory driver. So now we need to use CreateCopy() to copy this in-memory dataset to a file in the user-specified raster driver format
-      GDALDriver* pOutDriver = GetGDALDriverManager()->GetDriverByName(m_strRasterGISOutFormat.c_str());
-      GDALDataset* pOutDataSet = pOutDriver->CreateCopy(strFilePathName.c_str(), pDataSet, FALSE, m_papszGDALRasterOptions, NULL, NULL);
-      if (NULL == pOutDataSet)
-      {
-         // Couldn't create file
-         cerr << ERR << "cannot create " << m_strRasterGISOutFormat << " file named " << strFilePathName << "\n" << CPLGetLastErrorMsg() << endl;
-         return false;
-      }
-
-      // Get rid of this user-selected dataset object
-      GDALClose(pOutDataSet);
-   }
-
-   // Get rid of dataset object
-   GDALClose(pDataSet);
-
-   // Get rid of memory allocated to this array
-   delete[] pnRaster;
+   delete[] pdRaster;
 
    return true;
 }
@@ -1911,334 +1748,223 @@ bool CSimulation::bWriteRasterGISFloatISInt(int const nDataItem, string const* s
  Interpolates wave properties from all profiles to all within-polygon sea cells. We use GDALGridCreate(), the library version of external utility gdal_grid, to do this
 
 ===============================================================================================================================*/
-int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<double> const* pVdHeightX, vector<double> const* pVdHeightY)
+int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<double> const* pVdX, vector<double> const* pVdY, vector<double> const* pVdHeightX, vector<double> const* pVdHeightY)
 {
    int
       nXSize = 0,
       nYSize = 0;
 
+   double
+      dXAvg = 0,
+      dYAvg = 0;
+
+   nXSize = m_nXMaxBoundingBox - m_nXMinBoundingBox + 1;
+   nYSize = m_nYMaxBoundingBox - m_nYMinBoundingBox + 1;
+   int nGridSize = nXSize * nYSize;
+
+   unsigned int nPoints = static_cast<unsigned int>(pVdX->size());
+
+//    // DEBUG CODE
+//    for (int nn = 0; nn < nPoints; nn++)
+//    {
+//       LogStream << nn << " " << dX[nn] << " " << dY[nn] << " " << dZ[nn] << endl;
+//    }
+//
+//    m_nXMaxBoundingBox = m_nXGridMax-1;
+//    m_nYMaxBoundingBox = m_nYGridMax-1;
+//    m_nXMinBoundingBox = 0;
+//    m_nYMinBoundingBox = 0;
+//    // DEBUG CODE
+
    vector<double>
-      VdOutX,
-      VdOutY;
+      VdOutX(nGridSize, 0),
+      VdOutY(nGridSize, 0);
 
-   unsigned int nPoints = static_cast<unsigned int>(pVnX->size());
-
+   // Do first for X, then for Y
    for (int nDirection = 0; nDirection < 2; nDirection++)
    {
-      // It is necessary to transfer the data from the pVnX, pVnY, pVdHeightX and pVdHeightY vectors into c-style arrays of doubles, because this is what GDALGridCreate() wants TODO try doing this earlier, for speed
-      double* dX = new double[nPoints];
-      double* dY = new double[nPoints];
-      double* dZ = new double[nPoints];
-
-      for (unsigned int n = 0; n < nPoints; n++)
-      {
-         dX[n] = pVnX->at(n);
-         dY[n] = pVnY->at(n);
-         if (nDirection == 0)
-            dZ[n] = pVdHeightY->at(n);
-         else
-            dZ[n] = pVdHeightX->at(n);
-      }
-
-//          // TEST
-//       for (int nn = 0; nn < nPoints; nn++)
-//       {
-//          LogStream << nn << " " << dX[nn] << " " << dY[nn] << " " << dZ[nn] << endl;
-//       }
-
-//          m_nXMaxBoundingBox = m_nXGridMax-1;
-//          m_nYMaxBoundingBox = m_nYGridMax-1;
-//          m_nXMinBoundingBox = 0;
-//          m_nYMinBoundingBox = 0;
-//          // TEST
-
-      nXSize = m_nXMaxBoundingBox - m_nXMinBoundingBox + 1;
-      nYSize = m_nYMaxBoundingBox - m_nYMinBoundingBox + 1;
-      int nGridSize = nXSize * nYSize;
-
-//          LogStream << "nDirection = " << nDirection << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl;
-
       // Use the GDALGridCreate() linear interpolation algorithm: this computes a Delaunay triangulation of the point cloud, finding in which triangle of the triangulation the point is, and by doing linear interpolation from its barycentric coordinates within the triangle. If the point is not in any triangle, depending on the radius, the algorithm will use the value of the nearest point or the nodata value. Only available in GDAL 2.1 and later
-      GDALGridLinearOptions options;
-      memset(&options, 0, sizeof(options));
-      options.dfNoDataValue = m_dMissingValue;     // No data marker to fill empty points
-      options.dfRadius = -1;                       // Set the search radius to infinite
-
-      // For the gridded output, must be a c-style array
-      double* dOut = new double[nGridSize];
+      GDALGridLinearOptions *pOptions = new GDALGridLinearOptions();
+      pOptions->dfNoDataValue = m_dMissingValue;     // Set the no-data marker to fill empty points
+      pOptions->dfRadius = -1;                       // Set the search radius to infinite
+//      pOptions.dfRadius = static_cast<double>(nXSize + nYSize) / 2.0;                       // Set the search radius
 
       // Call GDALGridCreate()
-      int nRet = GDALGridCreate(GGA_Linear, &options, nPoints, dX, dY, dZ, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Float64, dOut, NULL, NULL);
+      int nRet;
+      if (nDirection == 0)
+      {
+         nRet = GDALGridCreate(GGA_Linear, pOptions, nPoints, pVdX->data(), pVdY->data(), pVdHeightX->data(), m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Float64, VdOutX.data(), NULL, NULL);
+      }
+      else
+      {
+         nRet = GDALGridCreate(GGA_Linear, pOptions, nPoints, pVdX->data(), pVdY->data(), pVdHeightY->data(), m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Float64, VdOutY.data(), NULL, NULL);
+      }
+
+      delete pOptions;
+
       if (nRet == CE_Failure)
       {
          cerr << CPLGetLastErrorMsg() << endl;
-
-         delete[] dX;
-         delete[] dY;
-         delete[] dZ;
-
          return RTN_ERR_GRIDCREATE;
       }
 
-      // Tidy
-      delete[] dX;
-      delete[] dY;
-      delete[] dZ;
-
-      // The output from GDALGridCreate() is in dOut but must be reversed
-      int n = 0;
-      for (int nY = nYSize-1; nY >= 0; nY--)
+      if (nDirection == 0)
       {
-         for (int nX = 0; nX < nXSize; nX++)
-         {
-            if (nDirection == 1)
-               VdOutX.push_back(dOut[n]);
-            else
-               VdOutY.push_back(dOut[n]);
+         int nXValid = 0;
 
-//                LogStream << "nDirection = " << nDirection << " nX = " << nX << " nY = " << nY << " n = "  << n << " n+nX = " << n+nX << " dOut[n + nX] = " << dOut[n + nX] << endl;
-            n++;
+         // Unfortunately, GDALGridCreate(() outputs NaNs when the polygon are far from regular. So check for these
+         for (unsigned int n = 0; n < VdOutX.size(); n++)
+         {
+            if (! isfinite(VdOutX[n]))
+               VdOutX[n] = m_dMissingValue;
+            else
+            {
+               dXAvg += VdOutX[n];
+               nXValid++;
+            }
          }
+
+         dXAvg /= nXValid;
+      }
+      else
+      {
+         int nYValid = 0;
+
+         // Unfortunately, GDALGridCreate(() outputs NaNs when the polygon are far from regular. So check for these
+         for (unsigned int n = 0; n < VdOutY.size(); n++)
+         {
+            if (! isfinite(VdOutY[n]))
+               VdOutY[n] = m_dMissingValue;
+            else
+            {
+               dYAvg += VdOutY[n];
+               nYValid++;
+            }
+         }
+
+         dYAvg /= nYValid;
       }
 
-      delete[] dOut;
-
-//          // TEST ===========================================
-//          string strOutFile;
-//          if (nDirection == 1)
-//             strOutFile = "testX.tif";
-//          else
-//             strOutFile = "testY.tif";
+//       // DEBUG CODE ===========================================
+//       string strOutFile = m_strOutPath;
+//       strOutFile += "sea_wave_interpolation_";
+//       if (nDirection == 0)
+//          strOutFile += "X_";
+//       else
+//          strOutFile += "Y_";
+//       strOutFile += to_string(m_ulIter);
+//       strOutFile += ".tif";
 //
-//          GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
-//          GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), nXSize, nYSize, 1, GDT_Float64, m_papszGDALRasterOptions);
-//          pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
-//          pDataSet->SetGeoTransform(m_dGeoTransform);
-//          double* pdRaster = new double[nGridSize];
-//          n = 0;
-//          for (int nY = 0; nY < nYSize; nY++)
+//       GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//       GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//       pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//       pDataSet->SetGeoTransform(m_dGeoTransform);
+//       double* pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//       int m = 0;
+//       int n = 0;
+//       for (int nY = 0; nY < m_nYGridMax; nY++)
+//       {
+//          for (int nX = 0; nX < m_nXGridMax; nX++)
 //          {
-//             for (int nX = 0; nX < nXSize; nX++)
+//             if ((nX < m_nXMinBoundingBox) || (nY < m_nYMinBoundingBox))
+//             {
+//                pdRaster[n++] = DBL_NODATA;
+//             }
+//             else
 //             {
 //                // Write this value to the array
-//                if (nDirection == 1)
+//                if (nDirection == 0)
 //                {
-//                   pdRaster[n] = VdOutX[n];
-// //                   LogStream << "nDirection = " << nDirection << " [" << nX << "][" << nY << "] = " << VdOutX[n] << endl;
+//                   pdRaster[n++] = VdOutX[m++];
+//    //                LogStream << "nDirection = " << nDirection << " [" << nX << "][" << nY << "] = " << VpdOutX[n] << endl;
 //                }
 //                else
 //                {
-//                   pdRaster[n] = VdOutY[n];
-// //                   LogStream << "nDirection = " << nDirection << " [" << nX << "][" << nY << "] = " << VdOutY[n] << endl;
+//                   pdRaster[n++] = VdOutY[m++];
+//    //                LogStream << "nDirection = " << nDirection << " [" << nX << "][" << nY << "] = " << VpdOutY[n] << endl;
 //                }
-//
-//                n++;
 //             }
-//          }
-//
-//          GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
-//          pBand->SetNoDataValue(m_dMissingValue);
-//          nRet = pBand->RasterIO(GF_Write, 0, 0, nXSize, nYSize, pdRaster, nXSize, nYSize, GDT_Float64, 0, 0, NULL);
-//
-//          if (nRet == CE_Failure)
-//             return RTN_ERR_GRIDCREATE;
-//
-//          GDALClose(pDataSet);
-//          delete[] pdRaster;
-//          // TEST ===========================================
-   }
-
-   // Now put the x and y directions together and update the raster cells
-   int n = 0;
-   for (int nY = 0; nY < nYSize; nY++)
-   {
-      for (int nX = 0; nX < nXSize; nX++)
-      {
-         int
-            nActualX = nX + m_nXMinBoundingBox,
-            nActualY = nY + m_nYMinBoundingBox;
-
-         // Only update cells that are in the contiguous sea and inside a polygon
-         if ((m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea()) && (m_pRasterGrid->m_Cell[nActualX][nActualY].nGetPolygonID() != INT_NODATA))
-         {
-            // Calculate the wave height and direction
-            double
-               dWaveHeightX = VdOutX[n],
-               dWaveHeightY = VdOutY[n],
-               dWaveHeight = sqrt((dWaveHeightX * dWaveHeightX) + (dWaveHeightY * dWaveHeightY)),
-               dWaveDir = atan2(dWaveHeightX, dWaveHeightY) * (180/PI);
-
-            // Update the cell's wave attributes
-            m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveHeight(dWaveHeight);
-            m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveOrientation(dKeepWithin360(dWaveDir));
-
-//             LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] waveheight = " << dWaveHeight << " dWaveDir = " << dWaveDir << " dKeepWithin360(dWaveDir) = " << dKeepWithin360(dWaveDir) << endl;
-         }
-         n++;
-      }
-   }
-
-   return RTN_OK;
-}
-
-/*===============================================================================================================================
-
- Locate active cells as cells where wave height to depth ratio is larger than breaking limit
-
-===============================================================================================================================*/
-int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(void)
-{
-   int
-      nXSize = m_nXMaxBoundingBox - m_nXMinBoundingBox + 1,
-      nYSize = m_nYMaxBoundingBox - m_nYMinBoundingBox + 1;
-//       nGridSize = nXSize * nYSize;
-//       LogStream << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl;
-
-   // Calculate the wave height-to-depth ratio for each cell
-//    int n = 0;
-   for (int nY = 0; nY < nYSize; nY++)
-   {
-      for (int nX = 0; nX < nXSize; nX++)
-      {
-         int
-            nActualX = nX + m_nXMinBoundingBox,
-            nActualY = nY + m_nYMinBoundingBox;
-
-         double
-            dWaveHeight = m_pRasterGrid->m_Cell[nActualX][nActualY].dGetWaveHeight(),
-            dSeaDepth = m_pRasterGrid->m_Cell[nActualX][nActualY].dGetSeaDepth();
-
-         if (m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea())
-         {
-//                LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] active zone  = " << (VbOut[n] ? "true" : "false") << endl;
-            m_pRasterGrid->m_Cell[nActualX][nActualY].SetInActiveZone((dWaveHeight / dSeaDepth) >= m_dBreakingWaveHeightDepthRatio);
-         }
-//          n++;
-      }
-   }
-
-   return RTN_OK;
-}
-
-
-/*===============================================================================================================================
-
- Interpolates wave properties from all profiles to all active zone sea cells using GDALGridCreate(), the library version of external utility gdal_grid
-
-===============================================================================================================================*/
-int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* pVnX, vector<int> const* pVnY, vector<bool> const* pVbBreaking)
-{
-   unsigned int nPoints = static_cast<unsigned int>(pVnX->size());
-
-   // It is necessary to transfer the data from the pVnX, pVnY and pVbBreaking vectors into c-style arrays of doubles, because this is what GDALGridCreate wants TODO try doing this earlier, for speed
-   double* dX = new double[nPoints];
-   double* dY = new double[nPoints];
-   double* dZ = new double[nPoints];
-
-   for (unsigned int n = 0; n < nPoints; n++)
-   {
-      dX[n] = pVnX->at(n);
-      dY[n] = pVnY->at(n);
-      dZ[n] = pVbBreaking->at(n);
-   }
-
-//       // TEST
-//       m_nXMaxBoundingBox = m_nXGridMax-1;
-//       m_nYMaxBoundingBox = m_nYGridMax-1;
-//       m_nXMinBoundingBox = 0;
-//       m_nYMinBoundingBox = 0;
-//       // TEST
-
-   int
-      nXSize = m_nXMaxBoundingBox - m_nXMinBoundingBox + 1,
-      nYSize = m_nYMaxBoundingBox - m_nYMinBoundingBox + 1,
-      nGridSize = nXSize * nYSize;
-//       LogStream << " nXSize = " << nXSize << " nYSize = " << nYSize << " nGridSize = " << nGridSize << endl;
-
-   // Call GDALGridCreate() with the nearest neighbour interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0).
-   GDALGridNearestNeighborOptions options;
-   memset(&options, 0, sizeof(options));
-   options.dfNoDataValue = m_nMissingValue;
-
-   // For the gridded output, must be a c-style array
-   int* nOut = new int[nGridSize];
-
-   // OK, now create a gridded version of the active zone: first create the GDAL context
-   GDALGridContext* pContext = GDALGridContextCreate(GGA_NearestNeighbor, &options, nPoints, dX, dY, dZ, true);
-   if (pContext == NULL)
-   {
-      delete[] dX;
-      delete[] dY;
-      delete[] dZ;
-      delete[] nOut;
-
-      return RTN_ERR_GRIDCREATE;
-   }
-
-   delete[] dX;
-   delete[] dY;
-   delete[] dZ;
-
-   // Now process the context
-   int nRet = GDALGridContextProcess(pContext, m_nXMinBoundingBox, m_nXMaxBoundingBox, m_nYMinBoundingBox, m_nYMaxBoundingBox, nXSize, nYSize, GDT_Int32, nOut, NULL, NULL);
-   if (nRet == CE_Failure)
-   {
-      delete[] nOut;
-
-      return RTN_ERR_GRIDCREATE;
-   }
-
-   // And finally, get rid of the context
-   GDALGridContextFree(pContext);
-
-
-   // The output from GDALGridCreate() is in nOut but must be reversed
-   vector<bool> VbOut;
-   int n = 0;
-   for (int nY = nYSize-1; nY >= 0; nY--)
-   {
-      for (int nX = 0; nX < nXSize; nX++)
-      {
-         VbOut.push_back(nOut[n]);
-//             LogStream << " nX = " << nX << " nY = " << nY << " n = " << n << " nOut[n] = " << nOut[n] << endl;
-         n++;
-      }
-   }
-
-   delete[] nOut;
-
-//       // TEST ===========================================
-//       string strOutFile = "./testactive.tif";
-//       GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
-//       GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), nXSize, nYSize, 1, GDT_Int32, m_papszGDALRasterOptions);
-//       pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
-//       pDataSet->SetGeoTransform(m_dGeoTransform);
-//       int* pnRaster = new int[nGridSize];
-//       n = 0;
-//       for (int nY = 0; nY < nYSize; nY++)
-//       {
-//          for (int nX = 0; nX < nXSize; nX++)
-//          {
-//             // Write this value to the array
-//             pnRaster[n] = VbOut[n];
-//
-//             n++;
 //          }
 //       }
 //
 //       GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
-//       pBand->SetNoDataValue(m_nMissingValue);
-//       nRet = pBand->RasterIO(GF_Write, 0, 0, nXSize, nYSize, pnRaster, nXSize, nYSize, GDT_Int32, 0, 0, NULL);
+//       pBand->SetNoDataValue(m_dMissingValue);
+//       nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
 //
 //       if (nRet == CE_Failure)
 //          return RTN_ERR_GRIDCREATE;
 //
 //       GDALClose(pDataSet);
-//       delete[] pnRaster;
-//       // TEST ===========================================
+//       delete[] pdRaster;
+//       // DEBUG CODE ===========================================
+   }
 
-   // Now update the raster cells
-   n = 0;
+//    // DEBUG CODE ===========================================
+//    string strOutFile = m_strOutPath;
+//    strOutFile += "sea_wave_height_before_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//
+//    GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//    GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//
+//    int nn = 0;
+//    double* pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          pdRaster[nn++] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
+//       }
+//    }
+//
+//    GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_dMissingValue);
+//    int nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+//    delete[] pdRaster;
+//    // DEBUG CODE ===========================================
+
+//    // DEBUG CODE ===========================================
+//    strOutFile = m_strOutPath;
+//    strOutFile += "sea_wave_angle_before_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//
+//    pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//    pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//
+//    nn = 0;
+//    pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          pdRaster[nn++] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle();
+//       }
+//    }
+//
+//    pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_dMissingValue);
+//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+//    delete[] pdRaster;
+//    // DEBUG CODE ===========================================
+
+   // Now put the X and Y directions together and update the raster cells
+   int n = 0;
    for (int nY = 0; nY < nYSize; nY++)
    {
       for (int nX = 0; nX < nXSize; nX++)
@@ -2249,13 +1975,120 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
 
          if (m_pRasterGrid->m_Cell[nActualX][nActualY].bIsInContiguousSea())
          {
-//                LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] active zone  = " << (VbOut[n] ? "true" : "false") << endl;
-            m_pRasterGrid->m_Cell[nActualX][nActualY].SetInActiveZone(VbOut[n]);
-         }
+            // Only update sea cells
+            if (m_pRasterGrid->m_Cell[nActualX][nActualY].nGetPolygonID() == INT_NODATA)
+            {
+               // This is a deep water sea cell (not in a polygon)
+               double dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[nActualX][nActualY].dGetCellDeepWaterWaveHeight();
+               m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveHeight(dDeepWaterWaveHeight);
 
+               double dDeepWaterWaveAngle = m_pRasterGrid->m_Cell[nActualX][nActualY].dGetCellDeepWaterWaveAngle();
+               m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveAngle(dDeepWaterWaveAngle);
+            }
+            else
+            {
+               // This is in a polygon so is not a deep water sea cell
+               double
+                  dWaveHeightX,
+                  dWaveHeightY;
+
+               if (bFPIsEqual(VdOutX[n], m_dMissingValue, TOLERANCE))
+                  dWaveHeightX = dXAvg;
+               else
+                  dWaveHeightX = VdOutX[n];
+
+               if (bFPIsEqual(VdOutY[n], m_dMissingValue, TOLERANCE))
+                  dWaveHeightY = dYAvg;
+               else
+                  dWaveHeightY = VdOutY[n];
+
+               // Now calculate wave direction
+               double
+                  dWaveHeight = sqrt((dWaveHeightX * dWaveHeightX) + (dWaveHeightY * dWaveHeightY)),
+                  dWaveDir = atan2(dWaveHeightX, dWaveHeightY) * (180/PI);
+
+//                assert(isfinite(dWaveHeight));
+//                assert(isfinite(dWaveDir));
+
+               // Update the cell's wave attributes
+               m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveHeight(dWaveHeight);
+               m_pRasterGrid->m_Cell[nActualX][nActualY].SetWaveAngle(dKeepWithin360(dWaveDir));
+
+               // Calculate the wave height-to-depth ratio for this cell, then update the cell's active zone status
+               double dSeaDepth = m_pRasterGrid->m_Cell[nActualX][nActualY].dGetSeaDepth();
+               if ((dWaveHeight / dSeaDepth) >= m_dBreakingWaveHeightDepthRatio)
+                  m_pRasterGrid->m_Cell[nActualX][nActualY].SetInActiveZone(true);
+
+   //             LogStream << " nX = " << nX << " nY = " << nY << " [" << nActualX << "][" << nActualY << "] waveheight = " << dWaveHeight << " dWaveDir = " << dWaveDir << " dKeepWithin360(dWaveDir) = " << dKeepWithin360(dWaveDir) << endl;
+            }
+         }
          n++;
       }
    }
+
+//    // DEBUG CODE ===========================================
+//    strOutFile = m_strOutPath;
+//    strOutFile += "sea_wave_height_after_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//
+//    pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//    pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//
+//    nn = 0;
+//    pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          pdRaster[nn++] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
+//       }
+//    }
+//
+//    pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_dMissingValue);
+//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+//    delete[] pdRaster;
+//    // DEBUG CODE ===========================================
+
+//    // DEBUG CODE ===========================================
+//    strOutFile = m_strOutPath;
+//    strOutFile += "sea_wave_angle_after_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//
+//    pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//    pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//
+//    nn = 0;
+//    pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          pdRaster[nn++] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle();
+//       }
+//    }
+//
+//    pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_dMissingValue);
+//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+//    delete[] pdRaster;
+//    // DEBUG CODE ===========================================
 
    return RTN_OK;
 }
@@ -2263,7 +2096,7 @@ int CSimulation::nInterpolateWavePropertiesToActiveZoneCells(vector<int> const* 
 
 /*===============================================================================================================================
 
- Interpolates multiple user-supplied deep water wave height and angle values to all cells (does not matter if it is a sea cell)
+ If the user supplies multiple deep water wave height and angle values, this routine interplates these to all cells (including dry land cells)
 
 ===============================================================================================================================*/
 int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
@@ -2271,27 +2104,29 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    // Interpolate deep water height and orientation from multiple user-supplied values
    unsigned int nUserPoints = static_cast<unsigned int>(m_VdDeepWaterWaveStationX.size());
 
-   // Call GDALGridCreate() with the GGA_InverseDistanceToAPower interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0).
-   GDALGridInverseDistanceToAPowerOptions options;
-   memset(&options, 0, sizeof(options));
-   options.dfAngle = 0;
-   options.dfAnisotropyAngle = 0;
-   options.dfAnisotropyRatio = 0;
-   options.dfPower = 3;
-   options.dfSmoothing = 100;
-   options.dfRadius1 = 0;
-   options.dfRadius2 = 0;
-   options.nMaxPoints = 0;
-   options.nMinPoints = 0;
-   options.dfNoDataValue = m_nMissingValue;
+   // Call GDALGridCreate() with the GGA_InverseDistanceToAPower interpolation algorithm. It has following parameters: radius1 is the first radius (X axis if rotation angle is 0) of the search ellipse, set this to zero (the default) to use the whole point array; radius2 is the second radius (Y axis if rotation angle is 0) of the search ellipse, again set this parameter to zero (the default) to use the whole point array; angle is the angle of the search ellipse rotation in degrees (counter clockwise, default 0.0); nodata is the NODATA marker to fill empty points (default 0.0)
+   GDALGridInverseDistanceToAPowerOptions* pOptions = new GDALGridInverseDistanceToAPowerOptions();
+   pOptions->dfAngle = 0;
+   pOptions->dfAnisotropyAngle = 0;
+   pOptions->dfAnisotropyRatio = 0;
+   pOptions->dfPower = 3;
+   pOptions->dfSmoothing = 100;
+   pOptions->dfRadius1 = 0;
+   pOptions->dfRadius2 = 0;
+   pOptions->nMaxPoints = 0;
+   pOptions->nMinPoints = 0;
+   pOptions->dfNoDataValue = m_nMissingValue;
 
 //    CPLSetConfigOption("CPL_DEBUG", "ON");
 //    CPLSetConfigOption("GDAL_NUM_THREADS", "1");
 
    // OK, now create a gridded version of wave height: first create the GDAL context
-   GDALGridContext* pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints, &m_VdDeepWaterWaveStationX[0], &m_VdDeepWaterWaveStationY[0], &m_VdDeepWaterWaveStationHeight[0], true);
+//    GDALGridContext* pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, pOptions, nUserPoints, &m_VdDeepWaterWaveStationX[0], &m_VdDeepWaterWaveStationY[0], &m_VdThisIterDeepWaterWaveStationHeight[0], true);
+   GDALGridContext* pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, pOptions, nUserPoints, m_VdDeepWaterWaveStationX.data(), m_VdDeepWaterWaveStationY.data(), m_VdThisIterDeepWaterWaveStationHeight.data(), true);
+
    if (pContext == NULL)
    {
+      delete pOptions;
       return RTN_ERR_GRIDCREATE;
    }
 
@@ -2301,19 +2136,20 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    if (nRet == CE_Failure)
    {
       delete[] dHeightOut;
-
+      delete pOptions;
       return RTN_ERR_GRIDCREATE;
    }
 
-   // And finally, get rid of the context
+   // Get rid of the context
    GDALGridContextFree(pContext);
 
    // Next create a gridded version of wave orientation: first create the GDAL context
-   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints,  &(m_VdDeepWaterWaveStationX[0]), &(m_VdDeepWaterWaveStationY[0]), (&m_VdDeepWaterWaveStationAngle[0]), true);
+//    pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, pOptions, nUserPoints,  &(m_VdDeepWaterWaveStationX[0]), &(m_VdDeepWaterWaveStationY[0]), (&m_VdThisIterDeepWaterWaveStationAngle[0]), true);
+   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, pOptions, nUserPoints,  m_VdDeepWaterWaveStationX.data(), m_VdDeepWaterWaveStationY.data(), m_VdThisIterDeepWaterWaveStationAngle.data(), true);
    if (pContext == NULL)
    {
       delete[] dHeightOut;
-
+      delete pOptions;
       return RTN_ERR_GRIDCREATE;
    }
 
@@ -2324,110 +2160,107 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    {
       delete[] dHeightOut;
       delete[] dAngleOut;
-
+      delete pOptions;
       return RTN_ERR_GRIDCREATE;
    }
 
-   // And finally, get rid of the context
+   // Get rid of the context
    GDALGridContextFree(pContext);
 
     // OK, now create a gridded version of wave period: first create the GDAL context
-   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, &options, nUserPoints, &m_VdDeepWaterWaveStationX[0], &m_VdDeepWaterWaveStationY[0], &m_VdDeepWaterWaveStationPeriod[0], true);
+//    pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, pOptions, nUserPoints, &m_VdDeepWaterWaveStationX[0], &m_VdDeepWaterWaveStationY[0], &m_VdThisIterDeepWaterWaveStationPeriod[0], true);
+   pContext = GDALGridContextCreate(GGA_InverseDistanceToAPower, pOptions, nUserPoints, m_VdDeepWaterWaveStationX.data(), m_VdDeepWaterWaveStationY.data(), m_VdThisIterDeepWaterWaveStationPeriod.data(), true);
    if (pContext == NULL)
    {
+      delete pOptions;
       return RTN_ERR_GRIDCREATE;
    }
 
    // Now process the context
-   double* dPeriodOut = new double[m_ulNumCells];
-   nRet = GDALGridContextProcess(pContext, 0, m_nXGridMax-1, 0, m_nYGridMax-1, m_nXGridMax, m_nYGridMax, GDT_Float64, dPeriodOut, NULL, NULL);
+   double* dPeriopdOut = new double[m_ulNumCells];
+   nRet = GDALGridContextProcess(pContext, 0, m_nXGridMax-1, 0, m_nYGridMax-1, m_nXGridMax, m_nYGridMax, GDT_Float64, dPeriopdOut, NULL, NULL);
    if (nRet == CE_Failure)
    {
-      delete[] dPeriodOut;
-
+      delete[] dPeriopdOut;
+      delete pOptions;
       return RTN_ERR_GRIDCREATE;
    }
 
-   // And finally, get rid of the context
+   // Get rid of the context
    GDALGridContextFree(pContext);
 
-
-   // The output from GDALGridCreate() is in dHeightOut, dAngleOut and dPeriodOut but must be reversed
+   // The output from GDALGridCreate() is in dHeightOut, dAngleOut and dPeriopdOut but must be reversed
    vector<double>
       VdHeight,
       VdAngle,
       VdPeriod;
 
-   int n = 0;
+   int
+      n = 0,
+      nValidHeight = 0,
+      nValidAngle = 0,
+      nValidPeriod = 0;
+
+   double
+      dAvgHeight = 0,
+      dAvgAngle = 0,
+      dAvgPeriod = 0;
+
    for (int nY = m_nYGridMax-1; nY >= 0; nY--)
    {
       for (int nX = 0; nX < m_nXGridMax; nX++)
       {
-         VdHeight.push_back(dHeightOut[n]);
-         VdAngle.push_back(dAngleOut[n]);
-	 VdPeriod.push_back(dPeriodOut[n]);
+         if (isfinite(dHeightOut[n]))
+         {
+            VdHeight.push_back(dHeightOut[n]);
+
+            dAvgHeight += dHeightOut[n];
+            nValidHeight++;
+         }
+         else
+         {
+            VdHeight.push_back(m_dMissingValue);
+         }
+
+         if (isfinite(dAngleOut[n]))
+         {
+            VdAngle.push_back(dAngleOut[n]);
+
+            dAvgAngle += dAngleOut[n];
+            nValidAngle++;
+         }
+         else
+         {
+            VdAngle.push_back(m_dMissingValue);
+         }
+
+         if (isfinite(dPeriopdOut[n]))
+         {
+            VdPeriod.push_back(dPeriopdOut[n]);
+
+            dAvgPeriod += dPeriopdOut[n];
+            nValidPeriod++;
+         }
+         else
+         {
+            VdPeriod.push_back(m_dMissingValue);
+         }
+
 //          LogStream << " nX = " << nX << " nY = " << nY << " n = " << n << " dHeightOut[n] = " << dHeightOut[n] << " dAngleOut[n] = " << dAngleOut[n] << endl;
          n++;
       }
    }
 
+   // Calculate averages
+   dAvgHeight /= nValidHeight;
+   dAvgAngle /= nValidAngle;
+   dAvgPeriod /= nValidPeriod;
+
+   // Tidy
+   delete pOptions;
    delete[] dHeightOut;
    delete[] dAngleOut;
-   delete[] dPeriodOut;
-
-//    // TEST ===========================================
-//    string strOutFile = "./testHeight.tif";
-//    GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
-//    GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
-//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
-//    pDataSet->SetGeoTransform(m_dGeoTransform);
-//    double* pdRaster = new double[m_ulNumCells];
-//    int nn = 0;
-//    for (int nY = 0; nY < m_nYGridMax; nY++)
-//    {
-//       for (int nX = 0; nX < m_nXGridMax; nX++)
-//       {
-//          // Write this value to the array
-//          pdRaster[nn] = VdHeight[nn];
-//          nn++;
-//       }
-//    }
-//
-//    GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
-//    pBand->SetNoDataValue(m_nMissingValue);
-//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
-//
-//    if (nRet == CE_Failure)
-//       return RTN_ERR_GRIDCREATE;
-//
-//    GDALClose(pDataSet);
-//
-//
-//    strOutFile = "./testAngle.tif";
-//    pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
-//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
-//    pDataSet->SetGeoTransform(m_dGeoTransform);
-//    nn = 0;
-//    for (int nY = 0; nY < m_nYGridMax; nY++)
-//    {
-//       for (int nX = 0; nX < m_nXGridMax; nX++)
-//       {
-//          // Write this value to the array
-//          pdRaster[nn] = VdAngle[nn];
-//          nn++;
-//       }
-//    }
-//
-//    pBand = pDataSet->GetRasterBand(1);
-//    pBand->SetNoDataValue(m_nMissingValue);
-//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
-//
-//    if (nRet == CE_Failure)
-//       return RTN_ERR_GRIDCREATE;
-//
-//    GDALClose(pDataSet);
-//    delete[] pdRaster;
-//    // TEST ===========================================
+   delete[] dPeriopdOut;
 
    // Now update all raster cells
    n = 0;
@@ -2435,14 +2268,86 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
    {
       for (int nX = 0; nX < m_nXGridMax; nX++)
       {
-         m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveHeight(VdHeight[n]);
-         m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveOrientation(VdAngle[n]);
-	 m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWavePeriod(VdPeriod[n]);
+         if (bFPIsEqual(VdHeight[n], m_dMissingValue, TOLERANCE))
+            m_pRasterGrid->m_Cell[nX][nY].SetCellDeepWaterWaveHeight(dAvgHeight);
+         else
+            m_pRasterGrid->m_Cell[nX][nY].SetCellDeepWaterWaveHeight(VdHeight[n]);
 
-//          LogStream << " [" << nX << "][" << nY << "] deep water wave height = " << m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight() << " deep water wave angle = " << m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveOrientation() << endl;
+         if (bFPIsEqual(VdAngle[n], m_dMissingValue, TOLERANCE))
+            m_pRasterGrid->m_Cell[nX][nY].SetCellDeepWaterWaveHeight(dAvgAngle);
+         else
+            m_pRasterGrid->m_Cell[nX][nY].SetCellDeepWaterWaveAngle(VdAngle[n]);
+
+         if (bFPIsEqual(VdPeriod[n], m_dMissingValue, TOLERANCE))
+            m_pRasterGrid->m_Cell[nX][nY].SetCellDeepWaterWaveHeight(dAvgPeriod);
+         else
+            m_pRasterGrid->m_Cell[nX][nY].SetCellDeepWaterWavePeriod(VdPeriod[n]);
+
+         //          LogStream << " [" << nX << "][" << nY << "] deep water wave height = " << m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight() << " deep water wave angle = " << m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveAngle() << endl;
          n++;
       }
    }
+
+// DEBUG CODE ===========================================
+   string strOutFile = m_strOutPath;
+   strOutFile += "init_deep_water_wave_height_";
+   strOutFile += to_string(m_ulIter);
+   strOutFile += ".tif";
+   GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+   GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+   pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+   pDataSet->SetGeoTransform(m_dGeoTransform);
+   double* pdRaster = new double[m_ulNumCells];
+   int nn = 0;
+   for (int nY = 0; nY < m_nYGridMax; nY++)
+   {
+      for (int nX = 0; nX < m_nXGridMax; nX++)
+      {
+         // Write this value to the array
+         pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight();
+         nn++;
+      }
+   }
+
+   GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+   pBand->SetNoDataValue(m_nMissingValue);
+   nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+
+   if (nRet == CE_Failure)
+      return RTN_ERR_GRIDCREATE;
+
+   GDALClose(pDataSet);
+// DEBUG CODE ===========================================
+
+// DEBUG CODE ===========================================
+   strOutFile = m_strOutPath;
+   strOutFile += "init_deep_water_wave_angle_";
+   strOutFile += to_string(m_ulIter);
+   strOutFile += ".tif";
+   pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+   pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+   pDataSet->SetGeoTransform(m_dGeoTransform);
+   nn = 0;
+   for (int nY = 0; nY < m_nYGridMax; nY++)
+   {
+      for (int nX = 0; nX < m_nXGridMax; nX++)
+      {
+         // Write this value to the array
+         pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveAngle();
+         nn++;
+      }
+   }
+
+   pBand = pDataSet->GetRasterBand(1);
+   pBand->SetNoDataValue(m_nMissingValue);
+   nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+
+   if (nRet == CE_Failure)
+      return RTN_ERR_GRIDCREATE;
+
+   GDALClose(pDataSet);
+   delete[] pdRaster;
+// DEBUG CODE ===========================================
 
    return RTN_OK;
 }

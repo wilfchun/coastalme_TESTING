@@ -253,7 +253,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
          nVVPolyAndAdjacent.push_back(nVPolyAndAdj);
       }
 
-      // DEBUG CODE ======================================================
+//       // DEBUG CODE ======================================================
 //       LogStream << "UNSORTED SEQUENCE OF POLYGON PROCESSING" << endl;
 //       for (int n = 0; n < nVVPolyAndAdjacent.size(); n++)
 //       {
@@ -262,12 +262,12 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
 //          LogStream << endl;
 //       }
 //       LogStream << endl;
-      // DEBUG CODE ======================================================
+//       // DEBUG CODE ======================================================
 
       // Sort the array using bPolygonAndAdjCompare(), so that 'target' polygons are processed after 'source' polygons
       stable_sort(nVVPolyAndAdjacent.begin(), nVVPolyAndAdjacent.end(), bPolygonAndAdjCompare);
 
-      // DEBUG CODE ======================================================
+//       // DEBUG CODE ======================================================
 //       LogStream << "SORTED SEQUENCE OF POLYGON PROCESSING" << endl;
 //       for (int n = 0; n < nVVPolyAndAdjacent.size(); n++)
 //       {
@@ -276,7 +276,7 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
 //          LogStream << endl;
 //       }
 //       LogStream << endl;
-      // DEBUG CODE ======================================================
+//       // DEBUG CODE ======================================================
 
       // Now go through the polygons in the sorted sequence
       LogStream << endl << m_ulIter << ": unconsolidated sediment transport. Polygon-to-polygon routing (m^3)" << endl;
@@ -776,7 +776,7 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
             }
             else if (nPoly == nNumPolygons-1)
             {
-               // TEST DFM  Could make this a user option: add in uncons sediment at end of coastline, however need to make further changes to keep maintain mass balance
+               // TODO Make this a user option: add in uncons sediment at end of coastline, however need to make further changes to keep maintain mass balance
 //                pPolygon->AddDeltaActualUnconsSand(1);
 
                // This is the polygon at the down-coast end of the coastline, and uncons sediment movement is down-coast. Decide what to do based on the user setting m_nUnconsSedimentHandlingAtGridEdges
@@ -867,7 +867,7 @@ int CSimulation::nRouteActualBeachErosionToAdjacentPolygons(int const nCoast, in
             }
             else if (nPoly == 0)
             {
-               // TEST DFM Could make this a user option: add in uncons sediment at beginning of coastline, however need to make further changes to keep maintain mass balance
+               // TODO Make this a user option: add in uncons sediment at beginning of coastline, however need to make further changes to keep maintain mass balance
 //                pPolygon->AddDeltaActualUnconsSand(1);
 
                // This is the polygon at the up-coast end of the coastline, and uncons sediment movement is up-coast. Decide what to do based on the user setting m_nUnconsSedimentHandlingAtGridEdges

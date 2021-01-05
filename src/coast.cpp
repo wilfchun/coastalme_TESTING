@@ -100,11 +100,11 @@ void CRWCoast::SetCoastlineExtCRS(CGeomLine const* pLCoast)
    m_VdCurvatureDetailed = vector<double>(nLen, DBL_NODATA);
    m_VdCurvatureSmooth = vector<double>(nLen, DBL_NODATA);
    m_VdDeepWaterWaveHeight = vector<double>(nLen, DBL_NODATA);
-   m_VdDeepWaterWaveOrientation = vector<double>(nLen, DBL_NODATA);
+   m_VdDeepWaterWaveAngle = vector<double>(nLen, DBL_NODATA);
    m_VdDeepWaterWavePeriod = vector<double>(nLen, DBL_NODATA);
    m_VdBreakingWaveHeight = vector<double>(nLen, DBL_NODATA);
    m_VdCoastWaveHeight = vector<double>(nLen, DBL_NODATA);
-   m_VdBreakingWaveOrientation = vector<double>(nLen, DBL_NODATA);
+   m_VdBreakingWaveAngle = vector<double>(nLen, DBL_NODATA);
    m_VdDepthOfBreaking = vector<double>(nLen, DBL_NODATA);
    m_VdFluxOrientation = vector<double>(nLen, DBL_NODATA);
    m_VdWaveEnergyAtBreaking = vector<double>(nLen, 0);
@@ -123,9 +123,9 @@ void CRWCoast::AppendPointToCoastlineExtCRS(double const dX, double const dY)
    m_VdCurvatureDetailed.push_back(DBL_NODATA);
    m_VdCurvatureSmooth.push_back(DBL_NODATA);
    m_VdDeepWaterWaveHeight.push_back(DBL_NODATA);
-   m_VdDeepWaterWaveOrientation.push_back(DBL_NODATA);
+   m_VdDeepWaterWaveAngle.push_back(DBL_NODATA);
    m_VdBreakingWaveHeight.push_back(DBL_NODATA);
-   m_VdBreakingWaveOrientation.push_back(DBL_NODATA);
+   m_VdBreakingWaveAngle.push_back(DBL_NODATA);
    m_VdDepthOfBreaking.push_back(DBL_NODATA);
    m_VdFluxOrientation.push_back(DBL_NODATA);
    m_VdWaveEnergyAtBreaking.push_back(0);
@@ -425,36 +425,36 @@ int CRWCoast::nGetDownCoastProfileNumber(int const nProfile) const
 // }
 
 
-void CRWCoast::SetDeepWaterWaveHeight(int const nCoastPoint, double const dHeight)
+void CRWCoast::SetCoastDeepWaterWaveHeight(int const nCoastPoint, double const dHeight)
 {
    // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveHeight.size()
    m_VdDeepWaterWaveHeight[nCoastPoint] = dHeight;
 }
 
-double CRWCoast::dGetDeepWaterWaveHeight(int const nCoastPoint) const
+double CRWCoast::dGetCoastDeepWaterWaveHeight(int const nCoastPoint) const
 {
    // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveHeight.size()
    return m_VdDeepWaterWaveHeight[nCoastPoint];
 }
 
-void CRWCoast::SetDeepWaterWaveOrientation(int const nCoastPoint, double const dOrientation)
+void CRWCoast::SetCoastDeepWaterWaveAngle(int const nCoastPoint, double const dOrientation)
 {
-   // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveOrientation.size()
-   m_VdDeepWaterWaveOrientation[nCoastPoint] = dOrientation;
+   // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveAngle.size()
+   m_VdDeepWaterWaveAngle[nCoastPoint] = dOrientation;
 }
 
-double CRWCoast::dGetDeepWaterWaveOrientation(int const nCoastPoint) const
+double CRWCoast::dGetCoastDeepWaterWaveAngle(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveOrientation.size()
-   return m_VdDeepWaterWaveOrientation[nCoastPoint];
+   // NOTE no check to see if nCoastPoint < m_VdDeepWaterWaveAngle.size()
+   return m_VdDeepWaterWaveAngle[nCoastPoint];
 }
 
-void CRWCoast::SetDeepWaterWavePeriod(int const nCoastPoint, double const dPeriod)
+void CRWCoast::SetCoastDeepWaterWavePeriod(int const nCoastPoint, double const dPeriod)
 {
    m_VdDeepWaterWavePeriod[nCoastPoint] = dPeriod;
 }
 
-double CRWCoast::dGetDeepWaterWavePeriod(int const nCoastPoint) const
+double CRWCoast::dGetCoastDeepWaterWavePeriod(int const nCoastPoint) const
 {
    return m_VdDeepWaterWavePeriod[nCoastPoint];
 }
@@ -483,16 +483,16 @@ double CRWCoast::dGetCoastWaveHeight(int const nCoastPoint) const
    return m_VdCoastWaveHeight[nCoastPoint];
 }
 
-void CRWCoast::SetBreakingWaveOrientation(int const nCoastPoint, double const dOrientation)
+void CRWCoast::SetBreakingWaveAngle(int const nCoastPoint, double const dOrientation)
 {
-   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveOrientation.size()
-   m_VdBreakingWaveOrientation[nCoastPoint] = dOrientation;
+   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveAngle.size()
+   m_VdBreakingWaveAngle[nCoastPoint] = dOrientation;
 }
 
-double CRWCoast::dGetBreakingWaveOrientation(int const nCoastPoint) const
+double CRWCoast::dGetBreakingWaveAngle(int const nCoastPoint) const
 {
-   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveOrientation.size()
-   return m_VdBreakingWaveOrientation[nCoastPoint];
+   // NOTE no check to see if nCoastPoint < m_VdBreakingWaveAngle.size()
+   return m_VdBreakingWaveAngle[nCoastPoint];
 }
 
 
@@ -538,14 +538,14 @@ double CRWCoast::dGetFluxOrientation(int const nCoastPoint) const
 void CRWCoast::SetWaveEnergyAtBreaking(int const nCoastPoint, double const dEnergy)
 {
    // NOTE no check to see if nCoastPoint < m_VdWaveEnergyAtBreaking.size()
-//    assert(bIsFinite(dEnergy));
+//    assert(isfinite(dEnergy));
    m_VdWaveEnergyAtBreaking[nCoastPoint] = dEnergy;
 }
 
 double CRWCoast::dGetWaveEnergyatBreaking(int const nCoastPoint) const
 {
    // NOTE no check to see if nCoastPoint < m_VdWaveEnergyAtBreaking.size()
-//    assert(bIsFinite(m_VdWaveEnergyAtBreaking[nCoastPoint]));
+//    assert(isfinite(m_VdWaveEnergyAtBreaking[nCoastPoint]));
    return m_VdWaveEnergyAtBreaking[nCoastPoint];
 }
 
@@ -612,9 +612,9 @@ int CRWCoast::nGetNumShadowBoundaries(void)
    return static_cast<int>(m_LShadowBoundary.size());
 }
 
-void CRWCoast::AppendShadowBoundary(const CGeomLine LBoundary)
+void CRWCoast::AppendShadowBoundary(CGeomLine const* pLBoundary)
 {
-   m_LShadowBoundary.push_back(LBoundary);
+   m_LShadowBoundary.push_back(*pLBoundary);
 }
 
 CGeomLine* CRWCoast::pGetShadowBoundary(int const n)
@@ -629,9 +629,9 @@ int CRWCoast::nGetNumShadowDowndriftBoundaries(void)
    return static_cast<int>(m_LShadowDowndriftBoundary.size());
 }
 
-void CRWCoast::AppendShadowDowndriftBoundary(const CGeomLine LBoundary)
+void CRWCoast::AppendShadowDowndriftBoundary(CGeomLine const* pLBoundary)
 {
-   m_LShadowDowndriftBoundary.push_back(LBoundary);
+   m_LShadowDowndriftBoundary.push_back(*pLBoundary);
 }
 
 CGeomLine* CRWCoast::pGetShadowDowndriftBoundary(int const n)

@@ -93,7 +93,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
 
          double
             dAvgBreakingWaveHeight = 0,
-            dAvgBreakingWaveOrientation = 0,
+            dAvgBreakingWaveAngle = 0,
 	    dAvgDeepWaterWavePeriod = 0,
             dAvgFluxOrientation = 0,
             dAvgBreakingDepth = 0,
@@ -113,10 +113,10 @@ void CSimulation::DoAllPotentialBeachErosion(void)
                nActiveZonePoints++;
                dAvgBreakingWaveHeight += dThisBreakingWaveHeight;
 
-               double dThisBreakingWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nCoastPoint);
-	       double dThisDeepWaterWavePeriod = m_VCoast[nCoast].dGetDeepWaterWavePeriod(nCoastPoint);
+               double dThisBreakingWaveAngle = m_VCoast[nCoast].dGetBreakingWaveAngle(nCoastPoint);
+	       double dThisDeepWaterWavePeriod = m_VCoast[nCoast].dGetCoastDeepWaterWavePeriod(nCoastPoint);
 
-               dAvgBreakingWaveOrientation += dThisBreakingWaveOrientation;
+               dAvgBreakingWaveAngle += dThisBreakingWaveAngle;
 	       dAvgDeepWaterWavePeriod     += dThisDeepWaterWavePeriod;
 
                dAvgBreakingDepth += m_VCoast[nCoast].dGetDepthOfBreaking(nCoastPoint);
@@ -132,7 +132,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
          {
             // Only calculate sediment movement if the polygon has at least one coast point in its coastline segment which is in the active zone
             dAvgBreakingWaveHeight /= nActiveZonePoints;
-            dAvgBreakingWaveOrientation /= nActiveZonePoints;
+            dAvgBreakingWaveAngle /= nActiveZonePoints;
 	    dAvgDeepWaterWavePeriod /= nActiveZonePoints;
             dAvgBreakingDepth /= nActiveZonePoints;
             dAvgBreakingDist /= nActiveZonePoints;
@@ -146,7 +146,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
                dNormalOrientation = dKeepWithin360(dAvgFluxOrientation + 90);
 
             // Determine dThetaBr, the angle between the coastline-normal orientation and the breaking wave orientation (the direction FROM which the waves move). This tells us whether the sediment movement is up-coast (-ve) or down-coast (+ve)
-            double dThetaBr = dNormalOrientation - dAvgBreakingWaveOrientation;
+            double dThetaBr = dNormalOrientation - dAvgBreakingWaveAngle;
 
             bool bDownCoast = true;
             if (dThetaBr < 0)
@@ -212,7 +212,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
             if (dSedimentDepth < SEDIMENT_ELEV_TOLERANCE)
                dSedimentDepth = 0;
 
-//            LogStream << m_ulIter << ": polygon = " << nThisPoly << " nActiveZonePoints = " << nActiveZonePoints << " dAvgBreakingWaveHeight = " << dAvgBreakingWaveHeight << " dAvgFluxOrientation = " << dAvgFluxOrientation << " dNormalOrientation = " << dNormalOrientation << " dAvgBreakingWaveOrientation = " << dAvgBreakingWaveOrientation <<  " potential sediment transport this timestep = " << dSedimentDepth << " m " << (bDownCoast ? "DOWN" : "UP") << " coast" << endl;
+//            LogStream << m_ulIter << ": polygon = " << nThisPoly << " nActiveZonePoints = " << nActiveZonePoints << " dAvgBreakingWaveHeight = " << dAvgBreakingWaveHeight << " dAvgFluxOrientation = " << dAvgFluxOrientation << " dNormalOrientation = " << dNormalOrientation << " dAvgBreakingWaveAngle = " << dAvgBreakingWaveAngle <<  " potential sediment transport this timestep = " << dSedimentDepth << " m " << (bDownCoast ? "DOWN" : "UP") << " coast" << endl;
 
 
             // Store the potential erosion value for this polygon

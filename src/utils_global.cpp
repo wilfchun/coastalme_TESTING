@@ -57,6 +57,7 @@ int nRound(double const d)
    return static_cast<int>((d < 0.0) ? ceil(d - 0.5) : floor(d + 0.5));
 }
 
+
 // bool bIsWhole(double d)
 // {
 //    // From http://answers.yahoo.com/question/index?qid=20110320132617AAMdb7u
@@ -66,19 +67,7 @@ int nRound(double const d)
 
 /*==============================================================================================================================
 
- Checks a double to see if it is NaN. From http://www.johndcook.com/blog/IEEE_exceptions_in_cpp/
-
-==============================================================================================================================*/
-bool bIsDoubleNotNaN(double const dX)
-{
-   // This looks like it should always be true, but it is false if dX is a NaN
-   return (dX == dX);
-}
-
-
-/*==============================================================================================================================
-
-Checks to see if a string can be read as a valid double number. Does not find trailing (i.e.post-number) rubbish, but then neither does strtod(). From https://stackoverflow.com/questions/392981/how-can-i-convert-string-to-double-in-c
+ Checks to see if a string can be read as a valid double number. Does not find trailing (i.e.post-number) rubbish, but then neither does strtod(). From https://stackoverflow.com/questions/392981/how-can-i-convert-string-to-double-in-c
 
 ==============================================================================================================================*/
 bool bIsStringValidDouble(string& str)
@@ -95,7 +84,7 @@ bool bIsStringValidDouble(string& str)
 
 /*==============================================================================================================================
 
-Checks to see if a string can be read as a valid integer, from https://stackoverflow.com/questions/2844817/how-do-i-check-if-a-c-string-is-an-int
+ Checks to see if a string can be read as a valid integer, from https://stackoverflow.com/questions/2844817/how-do-i-check-if-a-c-string-is-an-int
 
 ==============================================================================================================================*/
 bool bIsStringValidInt(string& str)
@@ -112,17 +101,6 @@ bool bIsStringValidInt(string& str)
    // Now check that the string contains only numbers
    return (str.find_first_not_of("0123456789") == string::npos);
 }
-
-
-/*==============================================================================================================================
-
- Checks a double to see if it is finite. From http://www.johndcook.com/blog/IEEE_exceptions_in_cpp/
-
-==============================================================================================================================*/
-// bool bIsFinite(double const dX)
-// {
-//    return (dX <= DBL_MAX && dX >= -DBL_MAX);
-// }
 
 
 /*==============================================================================================================================

@@ -314,8 +314,8 @@ int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int co
          // Update this-timestep totals
          m_ulThisTimestepNumPotentialPlatformErosionCells++;
          m_dThisTimestepPotentialPlatformErosion -= dDeltaZ;       // Since dDeltaZ is a -ve value
-         assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
-//             assert(m_dThisTimestepPotentialPlatformErosion >= 0);
+//          assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
+//          assert(m_dThisTimestepPotentialPlatformErosion >= 0);
 
          // Increment the check values
          m_ulTotPotentialPlatformErosionOnProfiles++;
@@ -627,8 +627,8 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
                // Adjust this-timestep totals, since this cell has already been eroded
                m_ulThisTimestepNumPotentialPlatformErosionCells--;
                m_dThisTimestepPotentialPlatformErosion += dPrevPotentialErosion;          // Since dPrevPotentialErosion is +ve
-               assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
-//                   assert(m_dThisTimestepPotentialPlatformErosion >= 0);
+//                assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
+//                assert(m_dThisTimestepPotentialPlatformErosion >= 0);
 
                // And also adjust the check values
                m_ulTotPotentialPlatformErosionBetweenProfiles--;
@@ -647,8 +647,8 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
             // Update this-timestep totals
             m_ulThisTimestepNumPotentialPlatformErosionCells++;
             m_dThisTimestepPotentialPlatformErosion -= dDeltaZ;                // Since dDeltaZ is a -ve value
-            assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
-//                assert(m_dThisTimestepPotentialPlatformErosion >= 0);
+//             assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
+//             assert(m_dThisTimestepPotentialPlatformErosion >= 0);
 
             // Increment the check values
             m_ulTotPotentialPlatformErosionBetweenProfiles++;
@@ -1182,7 +1182,7 @@ void CSimulation::FillPotentialPlatformErosionHoles(void)
                // Update this-timestep totals
                m_ulThisTimestepNumPotentialPlatformErosionCells++;
                m_dThisTimestepPotentialPlatformErosion += dThisPotentialPlatformErosion;
-               assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
+//                assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
 
                // Increment the check values
                m_ulTotPotentialPlatformErosionBetweenProfiles++;

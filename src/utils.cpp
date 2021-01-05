@@ -1385,7 +1385,7 @@ void CSimulation::UpdateGrandTotals(void)
 
    // Add to grand totals: first platform erosion
    m_ldGTotPotentialPlatformErosion        += m_dThisTimestepPotentialPlatformErosion;
-   assert(bIsDoubleNotNaN(m_dThisTimestepPotentialPlatformErosion));
+//    assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
 
    m_ldGTotFineActualPlatformErosion       += m_dThisTimestepActualPlatformErosionFine;
    m_ldGTotSandActualPlatformErosion       += m_dThisTimestepActualPlatformErosionSand;
@@ -2730,7 +2730,7 @@ bool CSimulation::bIsNumeric(string const* strIn)
 
 /*==============================================================================================================================
 
-  Real (floating point) fields in ESRI shapefiles are treated as width 24 with 15 decimal places of precision (unless an explicit width is given). If fields exced this, then a "not successfully written. Possibly due to too larger number with respect to field width" error message is shown. This routine tests the input to see if it exceeds this limit, if so it rounds up. Modified from https://stackoverflow.com/questions/13094224/a-c-routine-to-round-a-float-to-n-significant-digits
+  Real (floating point) fields in ESRI shapefiles are treated as width 24 with 15 decimal places of precision (unless an explicit width is given). If fields exceed this, then a "not successfully written. Possibly due to too larger number with respect to field width" error message is shown. This routine tests the input to see if it exceeds this limit, if so it rounds up. Modified from https://stackoverflow.com/questions/13094224/a-c-routine-to-round-a-float-to-n-significant-digits
 
 ==============================================================================================================================*/
 double CSimulation::dConstrainFieldWidthForShapefile(double const dInField)
@@ -2738,7 +2738,7 @@ double CSimulation::dConstrainFieldWidthForShapefile(double const dInField)
    int const SHAPEFILE_MAX_WIDTH = 24;
    // int const SHAPEFILE_MAX_PRECISION = 15
 
-   // Avoid returning 'nan' due to the log10() of zero
+   // Avoid returning NaN due to the log10() of zero
    if (dInField == 0.0)
       return 0.0;
 

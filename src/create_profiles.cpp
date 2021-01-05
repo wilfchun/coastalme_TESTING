@@ -119,7 +119,7 @@ int CSimulation::nCreateAllProfiles(void)
          CreateNaturalCapeNormals(nCoast, nProfile, nProfileToNodeSpacing, &bVCoastPointSearched, &prVCurvature);
       }
 
-      // TEST Try just one SD below the mean
+      // TODO Try just one SD below the mean
       // Calculate a convexity threshold, which is two standard deviations below the mean: will not create non-cape profiles on coast points with smoothed convexity which exceeds this (i.e. with smoothed curvature values which are less than this threshold)
       double
          dStdCurvature = m_VCoast[nCoast].dGetSmoothCurvatureSTD(),
@@ -761,14 +761,14 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
       nEndY = VPtiNormalPoints.back().nGetY();
 
    double
-      dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetDeepWaterWaveHeight(),
-      dDeepWaterWaveOrientation = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetDeepWaterWaveOrientation(),
-      dDeepWaterWavePeriod = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetDeepWaterWavePeriod();
+      dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetCellDeepWaterWaveHeight(),
+      dDeepWaterWaveAngle = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetCellDeepWaterWaveAngle(),
+      dDeepWaterWavePeriod = m_pRasterGrid->m_Cell[nEndX][nEndY].dGetCellDeepWaterWavePeriod();
 
    // And store them for this profile
-   pProfile->SetDeepWaterWaveHeight(dDeepWaterWaveHeight);
-   pProfile->SetDeepWaterWaveOrientation(dDeepWaterWaveOrientation);
-   pProfile->SetDeepWaterWavePeriod(dDeepWaterWavePeriod);
+   pProfile->SetProfileDeepWaterWaveHeight(dDeepWaterWaveHeight);
+   pProfile->SetProfileDeepWaterWaveAngle(dDeepWaterWaveAngle);
+   pProfile->SetProfileDeepWaterWavePeriod(dDeepWaterWavePeriod);
 
    // Create the profile's CGeomMultiLine then set nProfile as the only co-incident profile of the only line segment
    pProfile->AppendLineSegment();
@@ -1342,14 +1342,14 @@ int CSimulation::nPutAllProfilesOntoGrid(void)
 
          // Get the deep water wave height and orientation values at the end of the profile
          double
-            dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetDeepWaterWaveHeight(),
-            dDeepWaterWaveOrientation = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetDeepWaterWaveOrientation(),
-            dDeepWaterWavePeriod = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetDeepWaterWavePeriod();
+            dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetCellDeepWaterWaveHeight(),
+            dDeepWaterWaveAngle = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetCellDeepWaterWaveAngle(),
+            dDeepWaterWavePeriod = m_pRasterGrid->m_Cell[VCellsToMark.back().nGetX()][VCellsToMark.back().nGetY()].dGetCellDeepWaterWavePeriod();
 
          // And store them for this profile
-         pProfile->SetDeepWaterWaveHeight(dDeepWaterWaveHeight);
-         pProfile->SetDeepWaterWaveOrientation(dDeepWaterWaveOrientation);
-	 pProfile->SetDeepWaterWavePeriod(dDeepWaterWavePeriod);
+         pProfile->SetProfileDeepWaterWaveHeight(dDeepWaterWaveHeight);
+         pProfile->SetProfileDeepWaterWaveAngle(dDeepWaterWaveAngle);
+	 pProfile->SetProfileDeepWaterWavePeriod(dDeepWaterWavePeriod);
       }
    }
 
@@ -1509,7 +1509,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                   }
 
                   // Only set the flag if this isn't a coincident normal to one or other of the profiles
-// DEBUG CODE ==============================
+// // DEBUG CODE ==============================
 //                   bool
 //                      bOtherConcidentToThis = pProfile->bFindProfileInCoincidentProfiles(nHitProfile),
 //                      bThisCoincidentToOther = m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile);
@@ -1521,7 +1521,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
 //                      LogStream << "Profile " << nProfile << " is coincident with " << nHitProfile << endl;
 //
 //                   if ((! bOtherConcidentToThis) && (! bThisCoincidentToOther))
-                  // DEBUG CODE ==============================
+//                   // DEBUG CODE ==============================
 
                   // Note only need to test whether the 'other' profile is concident with his since the concidence relationship is mutual
                   // if ((! pProfile->bFindProfileInCoincidentProfiles(nHitProfile)) && (! m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile)))
@@ -1566,7 +1566,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                   }
 
                   // Only set the flag if this isn't a coincident normal to one or other of the profiles
-                  // DEBUG CODE ==============================
+//                   // DEBUG CODE ==============================
 //                   bool
 //                      bOtherConcidentToThis = pProfile->bFindProfileInCoincidentProfiles(nHitProfile),
 //                      bThisCoincidentToOther = m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile);
@@ -1578,7 +1578,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
 //                      LogStream << "Profile " << nProfile << " is coincident with " << nHitProfile << endl;
 //
 //                   if ((! bOtherConcidentToThis) && (! bThisCoincidentToOther))
-                  // DEBUG CODE ==============================
+//                   // DEBUG CODE ==============================
 
                   // Note only need to test whether the 'other' profile is concident with his since the concidence relationship is mutual
                   // if ((! pProfile->bFindProfileInCoincidentProfiles(nHitProfile)) && (! m_VCoast[nCoast].pGetProfile(nHitProfile)->bFindProfileInCoincidentProfiles(nProfile)))

@@ -49,7 +49,7 @@ private:
       m_nNumCoastPoint;             // The coastline point at which this profile hits the coast (not necessarily coincident wih the profile start cell)
    double
       m_dDeepWaterWaveHeight,       // The wave height at the end of the profile
-      m_dDeepWaterWaveOrientation,  // The wave orientation at the end of the profile
+      m_dDeepWaterWaveAngle,  // The wave orientation at the end of the profile
       m_dDeepWaterWavePeriod;       // The wave period at the end of the profile
 
    vector<CGeom2DIPoint>
@@ -133,14 +133,14 @@ public:
 
    int nGetCellGivenDepth(CGeomRasterGrid const*, double const);
 
-   void SetDeepWaterWaveHeight(double const);
-   double dGetDeepWaterWaveHeight(void) const;
+   void SetProfileDeepWaterWaveHeight(double const);
+   double dGetProfileDeepWaterWaveHeight(void) const;
 
-   void SetDeepWaterWaveOrientation(double const);
-   double dGetDeepWaterWaveOrientation(void) const;
+   void SetProfileDeepWaterWaveAngle(double const);
+   double dGetProfileDeepWaterWaveAngle(void) const;
 
-   void SetDeepWaterWavePeriod(double const);
-   double dGetDeepWaterWavePeriod(void) const;
+   void SetProfileDeepWaterWavePeriod(double const);
+   double dGetProfileDeepWaterWavePeriod(void) const;
 };
 #endif //PROFILE_H
 

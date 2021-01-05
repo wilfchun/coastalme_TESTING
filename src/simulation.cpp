@@ -57,7 +57,7 @@ CSimulation::CSimulation(void)
    m_bAvgSeaDepthSave                              =
    m_bWaveHeightSave                               =
    m_bAvgWaveHeightSave                            =
-   m_bAvgWaveOrientationSave                       =
+   m_bAvgWaveAngleSave                       =
    m_bWaveAngleAndHeightSave                       =
    m_bAvgWaveAngleAndHeightSave                    =
    m_bDeepWaterWaveAngleAndHeightSave              =
@@ -107,7 +107,7 @@ CSimulation::CSimulation(void)
    m_bCliffNotchSave                               =
    m_bShadowBoundarySave                           =
    m_bShadowDowndriftBoundarySave                  =
-   m_bDeepWaterWaveOrientationSave                 =
+   m_bDeepWaterWaveAngleSave                 =
    m_bDeepWaterWaveHeightSave                      =
    m_bDeepWaterWavePeriodSave                      =
    m_bPolygonUnconsSedUpOrDownDrift                =
@@ -137,7 +137,8 @@ CSimulation::CSimulation(void)
    m_bGDALCanWriteInt32                            =
    m_bScaleRasterOutput                            =
    m_bWorldFile                                    =
-   m_bSingleDeepWaterWaveValues                    = false;
+   m_bSingleDeepWaterWaveValues                    =
+   m_bHaveWaveStationData                          = false;
 
    m_bGDALCanCreate                                = true;
 
@@ -161,7 +162,7 @@ CSimulation::CSimulation(void)
    m_nCoastMin                                     =
    m_nNThisTimestepCliffCollapse                   =
    m_nNTotCliffCollapse                            =
-   m_nCliffCollapseTalusPlanviewWidth                 =
+   m_nCliffCollapseTalusPlanviewWidth              =
    m_nGlobalPolygonID                              =
    m_nUnconsSedimentHandlingAtGridEdges            =
    m_nBeachErosionDepositionEquation               =
@@ -171,7 +172,8 @@ CSimulation::CSimulation(void)
    m_nSimStartHour                                 =
    m_nSimStartDay                                  =
    m_nSimStartMonth                                =
-   m_nSimStartYear                                 = 0;
+   m_nSimStartYear                                 =
+   m_nDeepWaterWaveDataNTimeSteps                  = 0;
 
    // NOTE May wish to make this a user-supplied value
    m_nMissingValue                                 = INT_NODATA;
@@ -235,7 +237,7 @@ CSimulation::CSimulation(void)
    m_dL_0                                       =
    m_dWaveDepthRatioForWaveCalcs                =
    m_dAllCellsDeepWaterWaveHeight               =
-   m_dAllCellsDeepWaterWaveOrientation          =
+   m_dAllCellsDeepWaterWaveAngle          =
    m_dAllCellsDeepWaterWavePeriod               =
    m_dMaxUserInputWaveHeight                    =
    m_dMaxUserInputWavePeriod                    =
@@ -673,12 +675,12 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    if (m_bOutputLookUpData)
       WriteLookUpData();
 
-   // OK, now read in tthe vector files (if any)
-   if ((! m_bSingleDeepWaterWaveValues) || (! m_strSedimentInputEventShapefile.empty()))
+   // OK, now read in the vector files (if any)
+   if ((m_bHaveWaveStationData) || (! m_strSedimentInputEventShapefile.empty()))
       AnnounceReadVectorFiles();
 
-   // Maybe read in deep water wave data
-   if (! m_bSingleDeepWaterWaveValues)
+   // Maybe read in deep water wave station data
+   if (m_bHaveWaveStationData)
    {
       // We are reading deep water wave height, orientation and period from a file of vector points and file time series
       AnnounceReadDeepWaterWaveValuesGIS();
@@ -688,8 +690,12 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return (nRet);
 
+      int nWaveStations = static_cast<int>(m_VnDeepWaterWaveStationID.size());
+      if (nWaveStations == 1)
+         m_bSingleDeepWaterWaveValues = true;
+
       // Read in time series values, and initialize the vector which stores each timestep's deep water wave height, orientation and period
-      nRet = nReadWaveStationTimeSeriesFile(static_cast<int>(m_VnDeepWaterWaveStationID.size()));
+      nRet = nReadWaveStationTimeSeriesFile(nWaveStations);
       if (nRet != RTN_OK)
          return (nRet);
    }
@@ -750,16 +756,13 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    if (m_dFinalSWL != m_dOrigSWL)
    {
       m_dDeltaSWLPerTimestep = (m_dTimeStep * (m_dFinalSWL - m_dOrigSWL)) / m_dSimDuration;
-
-      // nCalcExternalForcing() is called at the start of every timestep, so we need to pre-remove the first increment in order to start with m_dThisTimestepSWL == m_dOrigSWL
-     // m_dThisTimestepSWL -= m_dDeltaSWLPerTimestep;
       m_dAccumulatedSeaLevelChange -= m_dDeltaSWLPerTimestep;
    }
 
    if (m_bDoCliffCollapse)
    {
       // Now that we know the cell size, calculate the width of a cliff collapse in cells (must be odd)
-      m_nCliffCollapseTalusPlanviewWidth = m_dCliffDepositionPlanviewWidth / m_dCellSide;
+      m_nCliffCollapseTalusPlanviewWidth = nRound(m_dCliffDepositionPlanviewWidth / m_dCellSide);
 
       if ((m_nCliffCollapseTalusPlanviewWidth % 2) == 0)
          m_nCliffCollapseTalusPlanviewWidth++;
@@ -772,8 +775,8 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    AnnounceIsRunning();
    while (true)
    {
-      // TEST
-      LogStream << ulGetRand0() << " " << ulGetRand1() << endl;
+//       // DEBUG CODE
+//       LogStream << ulGetRand0() << " " << ulGetRand1() << endl;
 
       // Check that we haven't gone on too long: if not then update timestep number etc.
       if (bTimeToQuit())
@@ -789,17 +792,17 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
-      // Calculate changes due to external forcing (at present, just tidal change to still water level)
+      // Calculate changes due to external forcing
       nRet = nCalcExternalForcing();
       if (nRet != RTN_OK)
          return nRet;
 
-      // Do per-timestep intialization: set up the grid cells ready for this timestep, also initialize per-timestep totals
+      // Do per-timestep intialization: set up the grid cells ready for this timestep, also initialize per-timestep totals. Note that in the first timestep, all cells -- including hinterland cells -- are given the deep water wave values TODO re. changing deep water wave values
       nRet = nInitGridAndCalcStillWaterLevel();
       if (nRet != RTN_OK)
          return nRet;
 
-      // Next find out which cells are inundated and locate the coastline(s)
+      // Next find out which cells are inundated and locate the coastline(s). This also gives to all sea cells, wave values which are the same as the deep water values. For shallow water sea cells, these wave values will be changed later, in nDoAllPropagateWaves()
       nRet = nLocateSeaAndCoasts();
       if (nRet != RTN_OK)
          return nRet;
@@ -833,7 +836,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
-//       // TEST
+//       // DEBUG CODE
 //       int nNODATA = 0;
 //       int nPoly0 = 0;
 //       for (int nX = 0; nX < m_nXGridMax; nX++)
@@ -860,7 +863,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 
       LogStream << endl;
 
-//       // TEST
+//       // DEBUG CODE
 //       nNODATA = 0;
 //       nPoly0 = 0;
 //       for (int nX = 0; nX < m_nXGridMax; nX++)
@@ -884,12 +887,77 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
-      // Propagate waves and define the active zone, also locate wave shadow zones
+      // Change the wave properties in all shallow water sea cells: propagate waves and define the active zone, also locate wave shadow zones
       nRet = nDoAllPropagateWaves();
       if (nRet != RTN_OK)
          return nRet;
 
       LogStream << endl;
+
+//       // DEBUG CODE ===========================================
+//       string strOutFile = m_strOutPath;
+//       strOutFile += "sea_wave_height_CHECKPOINT_";
+//       strOutFile += std::to_string(m_ulIter);
+//       strOutFile += ".tif";
+//
+//       GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//       GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//       pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//       pDataSet->SetGeoTransform(m_dGeoTransform);
+//
+//       int nn = 0;
+//       double* pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//       for (int nY = 0; nY < m_nYGridMax; nY++)
+//       {
+//          for (int nX = 0; nX < m_nXGridMax; nX++)
+//          {
+//             pdRaster[nn++] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
+//          }
+//       }
+//
+//       GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+//       pBand->SetNoDataValue(m_dMissingValue);
+//       int nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//       if (nRet == CE_Failure)
+//          return RTN_ERR_GRIDCREATE;
+//
+//       GDALClose(pDataSet);
+//       delete[] pdRaster;
+//       // DEBUG CODE ===========================================
+//
+//       // DEBUG CODE ===========================================
+//       strOutFile = m_strOutPath;
+//       strOutFile += "sea_wave_angle_CHECKPOINT_";
+//       strOutFile += std::to_string(m_ulIter);
+//       strOutFile += ".tif";
+//
+//       pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//       pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//       pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//       pDataSet->SetGeoTransform(m_dGeoTransform);
+//
+//       nn = 0;
+//       pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//       for (int nY = 0; nY < m_nYGridMax; nY++)
+//       {
+//          for (int nX = 0; nX < m_nXGridMax; nX++)
+//          {
+//             pdRaster[nn++] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle();
+//          }
+//       }
+//
+//       pBand = pDataSet->GetRasterBand(1);
+//       pBand->SetNoDataValue(m_dMissingValue);
+//       nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//       if (nRet == CE_Failure)
+//          return RTN_ERR_GRIDCREATE;
+//
+//       GDALClose(pDataSet);
+//       delete[] pdRaster;
+//       // DEBUG CODE ===========================================
+
 
       if (m_bDoCoastPlatformErosion)
       {
@@ -918,6 +986,72 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Add the fine sediment that was eroded this timestep (from the shore platform, from beach erosion, and cliff collapse talus deposition, minus the fine that went off-grid) to the suspended sediment load
       double dFineThisTimestep = m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualBeachErosionFine + m_dThisTimestepCliffErosionFine - m_dThisTimestepActualFineSedLostBeachErosion;
       m_dThisTimestepFineSedimentToSuspension += dFineThisTimestep;
+
+//       // DEBUG CODE ===========================================
+//       string strOutFile = m_strOutPath;
+//       strOutFile += "sea_wave_height_CHECKPOINT_";
+//       strOutFile += std::to_string(m_ulIter);
+//       strOutFile += ".tif";
+//
+//       GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//       GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//       pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//       pDataSet->SetGeoTransform(m_dGeoTransform);
+//
+//       int nn = 0;
+//       double* pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//       for (int nY = 0; nY < m_nYGridMax; nY++)
+//       {
+//          for (int nX = 0; nX < m_nXGridMax; nX++)
+//          {
+//             pdRaster[nn++] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
+//          }
+//       }
+//
+//       GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+//       pBand->SetNoDataValue(m_dMissingValue);
+//       int nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//       if (nRet == CE_Failure)
+//          return RTN_ERR_GRIDCREATE;
+//
+//       GDALClose(pDataSet);
+//       delete[] pdRaster;
+//       // DEBUG CODE ===========================================
+//
+//       // DEBUG CODE ===========================================
+//       strOutFile = m_strOutPath;
+//       strOutFile += "sea_wave_angle_CHECKPOINT_";
+//       strOutFile += std::to_string(m_ulIter);
+//       strOutFile += ".tif";
+//
+//       pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//       pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//       pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//       pDataSet->SetGeoTransform(m_dGeoTransform);
+//
+//       nn = 0;
+//       pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//       for (int nY = 0; nY < m_nYGridMax; nY++)
+//       {
+//          for (int nX = 0; nX < m_nXGridMax; nX++)
+//          {
+//             pdRaster[nn++] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle();
+//          }
+//       }
+//
+//       pBand = pDataSet->GetRasterBand(1);
+//       pBand->SetNoDataValue(m_dMissingValue);
+//       nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//       if (nRet == CE_Failure)
+//          return RTN_ERR_GRIDCREATE;
+//
+//       GDALClose(pDataSet);
+//       delete[] pdRaster;
+//       // DEBUG CODE ===========================================
+
+
 
       // Do some end-of-timestep updates to the raster grid, also update per-timestep and running totals
       nRet = nUpdateGrid();

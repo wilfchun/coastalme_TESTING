@@ -50,10 +50,10 @@ using std::accumulate;
  Determines whether the wave orientation at this point on a coast is onshore or offshore, and up-coast or down-coast
 
 ===============================================================================================================================*/
-bool CSimulation::bOnOrOffShoreAndUpOrDownCoast(double const dCoastAngle, double const dWaveOrientation, int const nSeaHand, bool& bDownCoast)
+bool CSimulation::bOnOrOffShoreAndUpOrDownCoast(double const dCoastAngle, double const dWaveAngle, int const nSeaHand, bool& bDownCoast)
 {
    bool bOnShore;
-   double dWaveToCoastAngle = fmod((dWaveOrientation - dCoastAngle + 360), 360);
+   double dWaveToCoastAngle = fmod((dWaveAngle - dCoastAngle + 360), 360);
 
    bDownCoast = ((dWaveToCoastAngle > 270) || (dWaveToCoastAngle < 90)) ? true : false;
 
@@ -77,7 +77,7 @@ bool CSimulation::bOnOrOffShoreAndUpOrDownCoast(double const dCoastAngle, double
  Given a cell and a wave orientation, finds the 'upwave' cell
 
 ===============================================================================================================================*/
-CGeom2DIPoint CSimulation::PtiFollowWaveOrientation(CGeom2DIPoint const* pPtiLast, double const dWaveOrientationIn, double& dCorrection)
+CGeom2DIPoint CSimulation::PtiFollowWaveAngle(CGeom2DIPoint const* pPtiLast, double const dWaveAngleIn, double& dCorrection)
 {
    int
       nXLast = pPtiLast->nGetX(),
@@ -85,56 +85,56 @@ CGeom2DIPoint CSimulation::PtiFollowWaveOrientation(CGeom2DIPoint const* pPtiLas
       nXNext = nXLast,
       nYNext = nYLast;
 
-   double dWaveOrientation = dWaveOrientationIn - dCorrection;
+   double dWaveAngle = dWaveAngleIn - dCorrection;
 
-   if (dWaveOrientation < 22.5)
+   if (dWaveAngle < 22.5)
    {
       nYNext--;
-      dCorrection = 22.5 - dWaveOrientation;
+      dCorrection = 22.5 - dWaveAngle;
    }
-   else if (dWaveOrientation < 67.5)
+   else if (dWaveAngle < 67.5)
    {
       nYNext--;
       nXNext++;
-      dCorrection = 67.5 - dWaveOrientation;
+      dCorrection = 67.5 - dWaveAngle;
    }
-   else if (dWaveOrientation < 112.5)
+   else if (dWaveAngle < 112.5)
    {
       nXNext++;
-      dCorrection = 112.5 - dWaveOrientation;
+      dCorrection = 112.5 - dWaveAngle;
    }
-   else if (dWaveOrientation < 157.5)
+   else if (dWaveAngle < 157.5)
    {
       nXNext++;
       nYNext++;
-      dCorrection = 157.5 - dWaveOrientation;
+      dCorrection = 157.5 - dWaveAngle;
    }
-   else if (dWaveOrientation < 202.5)
+   else if (dWaveAngle < 202.5)
    {
       nYNext++;
-      dCorrection = 202.5 - dWaveOrientation;
+      dCorrection = 202.5 - dWaveAngle;
    }
-   else if (dWaveOrientation < 247.5)
+   else if (dWaveAngle < 247.5)
    {
       nXNext--;
       nYNext++;
-      dCorrection = 247.5 - dWaveOrientation;
+      dCorrection = 247.5 - dWaveAngle;
    }
-   else if (dWaveOrientation < 292.5)
+   else if (dWaveAngle < 292.5)
    {
       nXNext--;
-      dCorrection = 292.5 - dWaveOrientation;
+      dCorrection = 292.5 - dWaveAngle;
    }
-   else if (dWaveOrientation < 337.5)
+   else if (dWaveAngle < 337.5)
    {
       nXNext--;
       nYNext--;
-      dCorrection = 337.5 - dWaveOrientation;
+      dCorrection = 337.5 - dWaveAngle;
    }
    else
    {
       nYNext--;
-      dCorrection = 22.5 - dWaveOrientation;
+      dCorrection = 22.5 - dWaveAngle;
    }
 
    dCorrection = dKeepWithin360(dCorrection);
@@ -178,20 +178,20 @@ int CSimulation::nDoAllShadowZones(void)
                   double dFluxOrientation = m_VCoast[nCoast].dGetFluxOrientation(nShadowZoneBoundaryEndPoint);
 
                   // If this coast point is in the active zone, use the breaking wave orientation, otherwise use the deep water wave orientation
-                  double dWaveOrientation;
+                  double dWaveAngle;
                   if (m_VCoast[nCoast].dGetDepthOfBreaking(nShadowZoneBoundaryEndPoint) == DBL_NODATA)
                      // Not in active zone
-                     dWaveOrientation = m_VCoast[nCoast].dGetDeepWaterWaveOrientation(nShadowZoneBoundaryEndPoint);
+                     dWaveAngle = m_VCoast[nCoast].dGetCoastDeepWaterWaveAngle(nShadowZoneBoundaryEndPoint);
                   else
                      // In active zone
-                     dWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nShadowZoneBoundaryEndPoint);
+                     dWaveAngle = m_VCoast[nCoast].dGetBreakingWaveAngle(nShadowZoneBoundaryEndPoint);
 
                   // At this point on the coast, are waves on- or off-shore, and up- or down-coast?
                   bDownCoast = false;
-                  bool bOnShore = bOnOrOffShoreAndUpOrDownCoast(dFluxOrientation, dWaveOrientation, nSeaHand, bDownCoast);
+                  bool bOnShore = bOnOrOffShoreAndUpOrDownCoast(dFluxOrientation, dWaveAngle, nSeaHand, bDownCoast);
 
 //                   CGeom2DPoint PtTmp1 = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nShadowZoneBoundaryEndPoint);
-//                   LogStream << m_ulIter << ": going down-coast, coast point (" << nShadowZoneBoundaryEndPoint << ") at {" << PtTmp1.dGetX() << ", " << PtTmp1.dGetY() << "} has " << (bDownCoast ? "down-coast " : "up-coast ") << (bOnShore ? "on-shore" : "off-shore") << " waves, dWaveOrientation = " << dWaveOrientation << " dFluxOrientation = " << dFluxOrientation << endl;
+//                   LogStream << m_ulIter << ": going down-coast, coast point (" << nShadowZoneBoundaryEndPoint << ") at {" << PtTmp1.dGetX() << ", " << PtTmp1.dGetY() << "} has " << (bDownCoast ? "down-coast " : "up-coast ") << (bOnShore ? "on-shore" : "off-shore") << " waves, dWaveAngle = " << dWaveAngle << " dFluxOrientation = " << dFluxOrientation << endl;
 
                   if (bDownCoast && (! bOnShore))
                   {
@@ -237,20 +237,20 @@ int CSimulation::nDoAllShadowZones(void)
                   double dFluxOrientation = m_VCoast[nCoast].dGetFluxOrientation(nShadowZoneBoundaryEndPoint);
 
                   // If this coast point is in the active zone, use the breaking wave orientation, otherwise use the deep water wave orientation
-                  double dWaveOrientation;
+                  double dWaveAngle;
                   if (m_VCoast[nCoast].dGetDepthOfBreaking(nShadowZoneBoundaryEndPoint) == DBL_NODATA)
                      // Not in active zone
-                     dWaveOrientation = m_VCoast[nCoast].dGetDeepWaterWaveOrientation(nShadowZoneBoundaryEndPoint);
+                     dWaveAngle = m_VCoast[nCoast].dGetCoastDeepWaterWaveAngle(nShadowZoneBoundaryEndPoint);
                   else
                      // In active zone
-                     dWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nShadowZoneBoundaryEndPoint);
+                     dWaveAngle = m_VCoast[nCoast].dGetBreakingWaveAngle(nShadowZoneBoundaryEndPoint);
 
                   // At this point on the coast, are waves on- or off-shore, and up- or down-coast?
                   bDownCoast = false;
-                  bool bOnShore = bOnOrOffShoreAndUpOrDownCoast(dFluxOrientation, dWaveOrientation, nSeaHand, bDownCoast);
+                  bool bOnShore = bOnOrOffShoreAndUpOrDownCoast(dFluxOrientation, dWaveAngle, nSeaHand, bDownCoast);
 
 //                   CGeom2DPoint PtTmp1 = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nShadowZoneBoundaryEndPoint);
-//                   LogStream << m_ulIter << ": going up-coast, coast point (" << nShadowZoneBoundaryEndPoint << ") at {" << PtTmp1.dGetX() << ", " << PtTmp1.dGetY() << "} has " << (bDownCoast ? "down-coast " : "up-coast ") << (bOnShore ? "on-shore" : "off-shore") << " waves, dWaveOrientation = " << dWaveOrientation << " dFluxOrientation = " << dFluxOrientation << endl;
+//                   LogStream << m_ulIter << ": going up-coast, coast point (" << nShadowZoneBoundaryEndPoint << ") at {" << PtTmp1.dGetX() << ", " << PtTmp1.dGetY() << "} has " << (bDownCoast ? "down-coast " : "up-coast ") << (bOnShore ? "on-shore" : "off-shore") << " waves, dWaveAngle = " << dWaveAngle << " dFluxOrientation = " << dFluxOrientation << endl;
 
                   if ((! bDownCoast) && (! bOnShore))
                   {
@@ -309,16 +309,16 @@ int CSimulation::nDoAllShadowZones(void)
          CGeomILine ILShadowBoundary;
 
          // If this coast point is in the active zone, start with the breaking wave orientation, otherwise use the deep water wave orientation
-         double dPrevWaveOrientation;
+         double dPrevWaveAngle;
          if (m_VCoast[nCoast].dGetDepthOfBreaking(nStartPoint) == DBL_NODATA)
          {
             // Not in active zone
-            dPrevWaveOrientation = m_VCoast[nCoast].dGetDeepWaterWaveOrientation(nStartPoint);
+            dPrevWaveAngle = m_VCoast[nCoast].dGetCoastDeepWaterWaveAngle(nStartPoint);
          }
          else
          {
             // In active zone
-            dPrevWaveOrientation = m_VCoast[nCoast].dGetBreakingWaveOrientation(nStartPoint);
+            dPrevWaveAngle = m_VCoast[nCoast].dGetBreakingWaveAngle(nStartPoint);
          }
 
          CGeom2DIPoint PtiPrev = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(VnPossibleShadowBoundaryCoastPoint[nStartPoint]);
@@ -341,7 +341,7 @@ int CSimulation::nDoAllShadowZones(void)
                if (! m_pRasterGrid->m_Cell[nXPrev][nYPrev].bIsInActiveZone())
                {
                   // The previous cell was outside the active zone, so use its wave orientation value
-                  dPrevWaveOrientation = m_pRasterGrid->m_Cell[nXPrev][nYPrev].dGetWaveOrientation();
+                  dPrevWaveAngle = m_pRasterGrid->m_Cell[nXPrev][nYPrev].dGetWaveAngle();
                }
                else
                {
@@ -351,42 +351,42 @@ int CSimulation::nDoAllShadowZones(void)
                      // If this shadow boundary has already hit sea, then we must be getting near a coast: use the average-so-far wave orientation
                      double dAvgOrientationSoFar = accumulate(DQdPrevOrientations.begin(), DQdPrevOrientations.end(), 0.0) / static_cast<double>(DQdPrevOrientations.size());
 
-                     dPrevWaveOrientation = dAvgOrientationSoFar;
+                     dPrevWaveAngle = dAvgOrientationSoFar;
                   }
                   else
                   {
                      // This shadow boundary has not already hit sea, just use the wave orientation from the previous cell
-                     dPrevWaveOrientation = m_pRasterGrid->m_Cell[nXPrev][nYPrev].dGetWaveOrientation();
+                     dPrevWaveAngle = m_pRasterGrid->m_Cell[nXPrev][nYPrev].dGetWaveAngle();
 
 //                      LogStream << m_ulIter << ": not already hit sea, using previous cell's wave orientation for cell [" << nXPrev << "][" << nYPrev << "] = {" << dGridCentroidXToExtCRSX(nXPrev) << ", " << dGridCentroidYToExtCRSY(nYPrev) << "}" << endl;
                   }
                }
 
-               if (dPrevWaveOrientation == DBL_NODATA)
+               if (dPrevWaveAngle == DBL_NODATA)
                {
-//                   LogStream << m_ulIter << ": dPrevWaveOrientation == DBL_NODATA for cell [" << nXPrev << "][" << nYPrev << "] = {" << dGridCentroidXToExtCRSX(nXPrev) << ", " << dGridCentroidYToExtCRSY(nYPrev) << "}" << endl;
+//                   LogStream << m_ulIter << ": dPrevWaveAngle == DBL_NODATA for cell [" << nXPrev << "][" << nYPrev << "] = {" << dGridCentroidXToExtCRSX(nXPrev) << ", " << dGridCentroidYToExtCRSY(nYPrev) << "}" << endl;
 
                   if (! m_pRasterGrid->m_Cell[nXPrev][nYPrev].bIsInContiguousSea())
                   {
                      // The previous cell was an inland cell, so use the deep water wave orientation
-                     dPrevWaveOrientation = m_pRasterGrid->m_Cell[nXPrev][nYPrev].dGetDeepWaterWaveOrientation();
+                     dPrevWaveAngle = m_pRasterGrid->m_Cell[nXPrev][nYPrev].dGetCellDeepWaterWaveAngle();
                   }
                   else
                   {
                      double dAvgOrientationSoFar = accumulate(DQdPrevOrientations.begin(), DQdPrevOrientations.end(), 0.0) / static_cast<double>(DQdPrevOrientations.size());
 
-                     dPrevWaveOrientation = dAvgOrientationSoFar;
+                     dPrevWaveAngle = dAvgOrientationSoFar;
                   }
                }
 
                if (DQdPrevOrientations.size() == MAX_NUM_PREV_ORIENTATION_VALUES)
                   DQdPrevOrientations.pop_front();
 
-               DQdPrevOrientations.push_back(dPrevWaveOrientation);
+               DQdPrevOrientations.push_back(dPrevWaveAngle);
             }
 
             // Go upwave along the previous cell's wave orientation to find the new boundary cell
-            CGeom2DIPoint PtiNew = PtiFollowWaveOrientation(&PtiPrev, dPrevWaveOrientation, dCorrection);
+            CGeom2DIPoint PtiNew = PtiFollowWaveAngle(&PtiPrev, dPrevWaveAngle, dCorrection);
 
             // Get the co-ordinates of 'this' cell
             int
@@ -571,7 +571,7 @@ int CSimulation::nDoAllShadowZones(void)
          LBoundary.Reverse();
 
          // Store the reversed ext CRS shadow zone boundary
-         m_VCoast[nCoast].AppendShadowBoundary(LBoundary);
+         m_VCoast[nCoast].AppendShadowBoundary(&LBoundary);
 
          int
             nStartX = VILShadowBoundary[nZone][0].nGetX(),
@@ -943,7 +943,7 @@ int CSimulation::nDoShadowZoneAndDownDriftZone(int const nCoast, int const nZone
    }
 
    // Store the downdrift boundary (external CRS), with the start point first
-   m_VCoast[nCoast].AppendShadowDowndriftBoundary(LDownDriftBoundary);
+   m_VCoast[nCoast].AppendShadowDowndriftBoundary(&LDownDriftBoundary);
 
    // Compare the lengths of the along-coast and the along-downdrift boundaries. The increment will be 1 for the smaller of the two, will be > 1 for the larger of the two
    int nMaxDistance;
@@ -1245,7 +1245,7 @@ void CSimulation::ProcessDownDriftCell(int const nX, int const nY, int const nTr
    // Set the modified wave height
    m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dKp * dWaveHeight);
 
-//    LogStream << m_ulIter << ": [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, nTraversed = " << nTraversed << " dTotalToTraverse = " << dTotalToTraverse << " fraction traversed = " << nTraversed / dTotalToTraverse << endl << "m_pRasterGrid->m_Cell[" << nX << "][" << nY << "].dGetDeepWaterWaveHeight() = " << m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight() << " m, original dWaveHeight = " << dWaveHeight << " m, dKp = " << dKp << ", modified wave height = " << dKp * dWaveHeight << " m" << endl << endl;
+//    LogStream << m_ulIter << ": [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, nTraversed = " << nTraversed << " dTotalToTraverse = " << dTotalToTraverse << " fraction traversed = " << nTraversed / dTotalToTraverse << endl << "m_pRasterGrid->m_Cell[" << nX << "][" << nY << "].dGetCellDeepWaterWaveHeight() = " << m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight() << " m, original dWaveHeight = " << dWaveHeight << " m, dKp = " << dKp << ", modified wave height = " << dKp * dWaveHeight << " m" << endl << endl;
 }
 
 
@@ -1271,10 +1271,10 @@ void CSimulation::ProcessShadowZoneCell(int const nX, int const nY, int const nS
       // If dOmega is 90 degrees or more in either direction, set both wave angle and wave height to zero
       if (tAbs(dOmega) >= 90)
       {
-         m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(0);
+         m_pRasterGrid->m_Cell[nX][nY].SetWaveAngle(0);
          m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(0);
 
-//          LogStream << m_ulIter << ": on shadow linking line with coast end [" << pPtiCoast->nGetX() << "][" << pPtiCoast->nGetY() << "] = {" << dGridCentroidXToExtCRSX(pPtiCoast->nGetX()) << ", " << dGridCentroidYToExtCRSY(pPtiCoast->nGetY()) << "} and shadow boundary end [" << PtiShadowBoundary.nGetX() << "][" << PtiShadowBoundary.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiShadowBoundary.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiShadowBoundary.nGetY()) << "}, this point [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl << "angle subtended = " << dOmega << " degrees, m_pRasterGrid->m_Cell[" << nX << "][" << nY << "].dGetDeepWaterWaveHeight() = " << m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight() << " degrees, wave orientation = 0 degrees, wave height = 0 m" << endl;
+//          LogStream << m_ulIter << ": on shadow linking line with coast end [" << pPtiCoast->nGetX() << "][" << pPtiCoast->nGetY() << "] = {" << dGridCentroidXToExtCRSX(pPtiCoast->nGetX()) << ", " << dGridCentroidYToExtCRSY(pPtiCoast->nGetY()) << "} and shadow boundary end [" << PtiShadowBoundary.nGetX() << "][" << PtiShadowBoundary.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiShadowBoundary.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiShadowBoundary.nGetY()) << "}, this point [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl << "angle subtended = " << dOmega << " degrees, m_pRasterGrid->m_Cell[" << nX << "][" << nY << "].dGetCellDeepWaterWaveHeight() = " << m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight() << " degrees, wave orientation = 0 degrees, wave height = 0 m" << endl;
       }
       else
       {
@@ -1282,16 +1282,16 @@ void CSimulation::ProcessShadowZoneCell(int const nX, int const nY, int const nS
          double dDeltaShadowWaveAngle = 1.5 * dOmega;
 
          // Get the pre-existing (i.e. shore-parallel) wave orientation
-         double dWaveOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation();
+         double dWaveAngle = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle();
 
-         double dShadowWaveOrientation;
+         double dShadowWaveAngle;
          if (nShadowZoneCoastToCapeSeaHand == LEFT_HANDED)
-            dShadowWaveOrientation = dWaveOrientation + dDeltaShadowWaveAngle;
+            dShadowWaveAngle = dWaveAngle + dDeltaShadowWaveAngle;
          else
-            dShadowWaveOrientation = dWaveOrientation - dDeltaShadowWaveAngle;
+            dShadowWaveAngle = dWaveAngle - dDeltaShadowWaveAngle;
 
          // Set the shadow zone wave orientation
-         m_pRasterGrid->m_Cell[nX][nY].SetWaveOrientation(dKeepWithin360(dShadowWaveOrientation));
+         m_pRasterGrid->m_Cell[nX][nY].SetWaveAngle(dKeepWithin360(dShadowWaveAngle));
 
          // Now calculate wave height within the shadow zone, use equation 13 from Hurst et al.
          double dKp = 0.5 * cos(dOmega * PI / 180);
@@ -1302,7 +1302,7 @@ void CSimulation::ProcessShadowZoneCell(int const nX, int const nY, int const nS
          // Set the shadow zone wave height
          m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dKp * dWaveHeight);
 
-//          LogStream << m_ulIter << ": on shadow linking line with coast end [" << pPtiCoast->nGetX() << "][" << pPtiCoast->nGetY() << "] = {" << dGridCentroidXToExtCRSX(pPtiCoast->nGetX()) << ", " << dGridCentroidYToExtCRSY(pPtiCoast->nGetY()) << "} and shadow boundary end [" << PtiShadowBoundary.nGetX() << "][" << PtiShadowBoundary.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiShadowBoundary.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiShadowBoundary.nGetY()) << "}, this point [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, angle subtended = " << dOmega << " degrees, m_pRasterGrid->m_Cell[" << nX << "][" << nY << "].dGetDeepWaterWaveHeight() = " << m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight() << " m, dDeltaShadowWaveAngle = " << dDeltaShadowWaveAngle << " degrees, dWaveOrientation = " << dWaveOrientation << " degrees, dShadowWaveOrientation = " << dShadowWaveOrientation << " degrees, dWaveHeight = " << dWaveHeight << " m, dKp = " << dKp << ", shadow zone wave height = " << dKp * dWaveHeight << " m" << endl;
+//          LogStream << m_ulIter << ": on shadow linking line with coast end [" << pPtiCoast->nGetX() << "][" << pPtiCoast->nGetY() << "] = {" << dGridCentroidXToExtCRSX(pPtiCoast->nGetX()) << ", " << dGridCentroidYToExtCRSY(pPtiCoast->nGetY()) << "} and shadow boundary end [" << PtiShadowBoundary.nGetX() << "][" << PtiShadowBoundary.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiShadowBoundary.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiShadowBoundary.nGetY()) << "}, this point [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, angle subtended = " << dOmega << " degrees, m_pRasterGrid->m_Cell[" << nX << "][" << nY << "].dGetCellDeepWaterWaveHeight() = " << m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight() << " m, dDeltaShadowWaveAngle = " << dDeltaShadowWaveAngle << " degrees, dWaveAngle = " << dWaveAngle << " degrees, dShadowWaveAngle = " << dShadowWaveAngle << " degrees, dWaveHeight = " << dWaveHeight << " m, dKp = " << dKp << ", shadow zone wave height = " << dKp * dWaveHeight << " m" << endl;
       }
    }
 }

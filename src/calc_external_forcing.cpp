@@ -45,16 +45,16 @@ int CSimulation::nCalcExternalForcing(void)
    if (nSize != 0)
    {
       // We have tide data
-      static int nTideDataCount = 0;
+      static int snTideDataCount = 0;
 
       // Wrap the tide data, i.e. start again with the first record if we do not have enough
-      if (nTideDataCount > nSize-1)
-         nTideDataCount = 0;
+      if (snTideDataCount > nSize-1)
+         snTideDataCount = 0;
 
-      m_dThisTimestepSWL = m_dOrigSWL + m_VdTideData[nTideDataCount] + m_dAccumulatedSeaLevelChange;
+      m_dThisTimestepSWL = m_dOrigSWL + m_VdTideData[snTideDataCount] + m_dAccumulatedSeaLevelChange;
 
       // cout << m_dThisTimestepSWL << endl;
-      nTideDataCount++;
+      snTideDataCount++;
    }
 
    // Update min and max still water levels
@@ -62,31 +62,40 @@ int CSimulation::nCalcExternalForcing(void)
    m_dMinSWL = tMin(m_dThisTimestepSWL, m_dMinSWL);
 
    // Update the wave height, orientation and period for this time step and start again with the first record if we do not have enough
-   if (! m_bSingleDeepWaterWaveValues)
+   if (m_bHaveWaveStationData)
    {
-      // We have wave time series data: the number of time steps is total size divided by the number of points
-      int nWaveTimeSteps = static_cast<int>(m_VdDeepWaterWaveStationHeightTS.size()) / static_cast<int>(m_VnDeepWaterWaveStationID.size());
-      static int nWaveDataCount = 0;
+      static int snWaveStationDataCount = 0;
 
-       if (nWaveDataCount > nWaveTimeSteps-1)
-       {
-          // Wrap the tide data, i.e. start again with the first record if we do not have enough
-          nWaveDataCount = 0;
-       }
-
-      // Update this time step deep water wave values: the order on the vector is determined by the points ID i.e. to ensure that stations match with time series
-      int
-      nNumberDeepWaterWaveStations = static_cast<int>(m_VnDeepWaterWaveStationID.size()),
-         nTot = nNumberDeepWaterWaveStations * nWaveDataCount;
-
-      for (int j = 0; j < nNumberDeepWaterWaveStations; j++)
+      if (snWaveStationDataCount > m_nDeepWaterWaveDataNTimeSteps-1)
       {
-         m_VdDeepWaterWaveStationHeight[j] = m_VdDeepWaterWaveStationHeightTS[(m_VnDeepWaterWaveStationID[j]-1) + nTot];
-         m_VdDeepWaterWaveStationAngle[j]  = m_VdDeepWaterWaveStationAngleTS[(m_VnDeepWaterWaveStationID[j]-1) + nTot];
-         m_VdDeepWaterWaveStationPeriod[j] = m_VdDeepWaterWaveStationPeriodTS[(m_VnDeepWaterWaveStationID[j]-1) + nTot];
+         // Wrap the tide data, i.e. start again with the first record if we do not have enough
+         snWaveStationDataCount = 0;
       }
 
-      nWaveDataCount++;
+      // Do we have just a single wave station?
+      if (m_bSingleDeepWaterWaveValues)
+      {
+         // Yes, just a single wave station
+         m_dAllCellsDeepWaterWaveHeight = m_VdTSDeepWaterWaveStationHeight[snWaveStationDataCount];
+         m_dAllCellsDeepWaterWaveAngle = m_VdTSDeepWaterWaveStationAngle[snWaveStationDataCount];
+         m_dAllCellsDeepWaterWavePeriod = m_VdTSDeepWaterWaveStationPeriod[snWaveStationDataCount];
+      }
+      else
+      {
+         // More than one wave station, so update this time step's deep water wave values for use in the nInterpolateAllDeepWaterWaveValues() routine. Note that the order on the vector is determined by the points ID i.e. to ensure that stations match with time series
+         int
+            nNumberDeepWaterWaveStations = static_cast<int>(m_VnDeepWaterWaveStationID.size()),
+            nTot = nNumberDeepWaterWaveStations * snWaveStationDataCount;
+
+         for (int j = 0; j < nNumberDeepWaterWaveStations; j++)
+         {
+            m_VdThisIterDeepWaterWaveStationHeight[j] = m_VdTSDeepWaterWaveStationHeight[(m_VnDeepWaterWaveStationID[j]-1) + nTot];
+            m_VdThisIterDeepWaterWaveStationAngle[j]  = m_VdTSDeepWaterWaveStationAngle[(m_VnDeepWaterWaveStationID[j]-1) + nTot];
+            m_VdThisIterDeepWaterWaveStationPeriod[j] = m_VdTSDeepWaterWaveStationPeriod[(m_VnDeepWaterWaveStationID[j]-1) + nTot];
+         }
+      }
+
+      snWaveStationDataCount++;
    }
 
    return RTN_OK;

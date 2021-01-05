@@ -26,6 +26,9 @@
 #include <iostream>
 using std::endl;
 
+#include <string>
+using std::to_string;
+
 #include <stack>
 using std::stack;
 
@@ -325,7 +328,7 @@ void CSimulation::MarkPolygonCells(void)
             PtStart = PtFindPointInPolygon(&PtVInnerBuffer, pPolygon->nGetPointInPolygonSearchStartPoint());
          }
 
-         // Safety check
+         // Safety check (PtFindPointInPolygon() returns CGeom2DPoint(DBL_NODATA, DBL_NODATA) if it cannot find a valid start point)
          if (PtStart.dGetX() == DBL_NODATA)
          {
             LogStream << m_ulIter << ": " << ERR << "could not find a flood fill start point for coast " << nCoast << ", polygon " << nPoly << endl;
@@ -367,13 +370,13 @@ void CSimulation::MarkPolygonCells(void)
 //                nCellsInPolygon++;
 //                dTotDepth += m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
 
-               if ((! bSpanAbove) && (nY > 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() == INT_NODATA))
+               if ((! bSpanAbove) && (nY >= 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() == INT_NODATA))
                {
                   PtiStack.push(CGeom2DIPoint(nX, nY-1));
                   bSpanAbove = true;
                }
 
-               else if (bSpanAbove && (nY > 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() != INT_NODATA))
+               else if (bSpanAbove && (nY >= 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() != INT_NODATA))
                {
                   bSpanAbove = false;
                }
@@ -402,6 +405,48 @@ void CSimulation::MarkPolygonCells(void)
 //          pPolygon->SetSeawaterVolume(dSeaVolume);
       }
    }
+
+//    // DEBUG CODE ===========================================
+//    string strOutFile = m_strOutPath + "polygon_test_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//
+//    GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//    GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//    double* pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//    int
+//       n = 0,
+//       nInPoly = 0,
+//       nNotInPoly = 0;
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          int nID = m_pRasterGrid->m_Cell[nX][nY].nGetPolygonID();
+//          if (nID == INT_NODATA)
+//             nNotInPoly++;
+//          else
+//             nInPoly++;
+//
+//          pdRaster[n++] = nID;
+//       }
+//    }
+//
+//    GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_dMissingValue);
+//    int nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//    if (nRet == CE_Failure)
+//       return;
+//
+//    GDALClose(pDataSet);
+//    delete[] pdRaster;
+//
+//    LogStream << m_ulIter << " Number of cells in a polygon = " << nInPoly << endl;
+//    LogStream << m_ulIter << " Number of cells not in any polygon = " << nNotInPoly << endl;
+//
+//    // DEBUG CODE ===========================================
 }
 
 
@@ -572,35 +617,35 @@ int CSimulation::nDoPolygonSharedBoundaries(void)
          // And store it
          m_VCoast[nCoast].AppendPolygonLength(dPolygonSeawardLen);
 
-         // DEBUG CODE ======================================================
-         assert(dVUpCoastBoundaryShare.size() == nVUpCoastAdjacentPolygon.size());
-         assert(dVDownCoastBoundaryShare.size() == nVDownCoastAdjacentPolygon.size());
-
-         //             LogStream << m_ulIter << ": polygon = " << nPoly << (pPolygon->bIsPointed() ? " IS TRIANGULAR" : "") << endl;
-         LogStream << m_ulIter << ": coast " << nCoast << " polygon " << nPoly << endl;
-
-         LogStream << "\tThere are " << nVUpCoastAdjacentPolygon.size() << " UP-COAST adjacent polygon(s) = ";
-         for (unsigned int n = 0; n < nVUpCoastAdjacentPolygon.size(); n++)
-            LogStream << nVUpCoastAdjacentPolygon[n] << " ";
-         LogStream << endl;
-
-         LogStream << "\tThere are " << nVDownCoastAdjacentPolygon.size() << " DOWN-COAST adjacent polygon(s) = ";
-         for (unsigned int n = 0; n < nVDownCoastAdjacentPolygon.size(); n++)
-            LogStream << nVDownCoastAdjacentPolygon[n] << " ";
-         LogStream << endl;
-
-         LogStream << "\tUP-COAST boundary share(s) = ";
-         for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
-            LogStream << dVUpCoastBoundaryShare[n] << " ";
-         LogStream << endl;
-//          LogStream << "\tTotal UP-COAST boundary length = " << dUpCoastTotBoundaryLen << endl;
-
-         LogStream << "\tDOWN-COAST boundary share(s) = ";
-         for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
-            LogStream << dVDownCoastBoundaryShare[n] << " ";
-         LogStream << endl;
-//          LogStream << "\tTotal DOWN-COAST boundary length = " << dDownCoastTotBoundaryLen << endl;
-         // DEBUG CODE ======================================================
+//          // DEBUG CODE ======================================================
+//          assert(dVUpCoastBoundaryShare.size() == nVUpCoastAdjacentPolygon.size());
+//          assert(dVDownCoastBoundaryShare.size() == nVDownCoastAdjacentPolygon.size());
+//
+//          //             LogStream << m_ulIter << ": polygon = " << nPoly << (pPolygon->bIsPointed() ? " IS TRIANGULAR" : "") << endl;
+//          LogStream << m_ulIter << ": coast " << nCoast << " polygon " << nPoly << endl;
+//
+//          LogStream << "\tThere are " << nVUpCoastAdjacentPolygon.size() << " UP-COAST adjacent polygon(s) = ";
+//          for (unsigned int n = 0; n < nVUpCoastAdjacentPolygon.size(); n++)
+//             LogStream << nVUpCoastAdjacentPolygon[n] << " ";
+//          LogStream << endl;
+//
+//          LogStream << "\tThere are " << nVDownCoastAdjacentPolygon.size() << " DOWN-COAST adjacent polygon(s) = ";
+//          for (unsigned int n = 0; n < nVDownCoastAdjacentPolygon.size(); n++)
+//             LogStream << nVDownCoastAdjacentPolygon[n] << " ";
+//          LogStream << endl;
+//
+//          LogStream << "\tUP-COAST boundary share(s) = ";
+//          for (unsigned int n = 0; n < dVUpCoastBoundaryShare.size(); n++)
+//             LogStream << dVUpCoastBoundaryShare[n] << " ";
+//          LogStream << endl;
+// //          LogStream << "\tTotal UP-COAST boundary length = " << dUpCoastTotBoundaryLen << endl;
+//
+//          LogStream << "\tDOWN-COAST boundary share(s) = ";
+//          for (unsigned int n = 0; n < dVDownCoastBoundaryShare.size(); n++)
+//             LogStream << dVDownCoastBoundaryShare[n] << " ";
+//          LogStream << endl;
+// //          LogStream << "\tTotal DOWN-COAST boundary length = " << dDownCoastTotBoundaryLen << endl;
+//          // DEBUG CODE ======================================================
       }
    }
 

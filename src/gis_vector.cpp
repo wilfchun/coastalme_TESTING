@@ -52,12 +52,10 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
    int
       nMaxLayer = 0,
       nNeedGeometry = 0;
+
    string
       strGISFile,
-      strDriverCode,
-      strGeometry,
-      strDataType,
-      strDataValue;
+      strGeometry;
 
    // Set up file name and constraints
    switch (nDataItem)
@@ -117,6 +115,7 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
          int
             nGeometry = wkbFlatten(pOGRGeometry->getGeometryType()),
             nThisGeometry = 0;
+
          switch (nGeometry)
          {
          case wkbPoint:
@@ -188,7 +187,7 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
             // Point data
             pOGRPoint = (OGRPoint *) pOGRGeometry;
 
-            // Convert the co-ords to grid CRS and store them TOHERE
+            // Convert the co-ords to grid CRS and store them
             m_VdSedimentInputLocationX.push_back(dExtCRSXToGridX(pOGRPoint->getX()));
             m_VdSedimentInputLocationY.push_back(dExtCRSYToGridY(pOGRPoint->getY()));
             break;
@@ -200,6 +199,7 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
          int
             nFieldIndex = -1,
             nID = -1;
+
          switch (nDataItem)
          {
          case (DEEP_WATER_WAVE_STATIONS_VEC):
@@ -718,7 +718,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                   pOGRFeature->SetGeometry(&OGRPt);
 
                   double
-                     dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation(),
+                     dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle(),
                      dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
 
                   if ((dHeight == DBL_NODATA) || (dOrientation == DBL_NODATA))
@@ -788,7 +788,7 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                pOGRFeature->SetGeometry(&OGRPt);
 
                double
-                  dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveOrientation() / static_cast<double>(m_ulIter),
+                  dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetTotWaveAngle() / static_cast<double>(m_ulIter),
                   dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() / static_cast<double>(m_ulIter);
 
                if ((dHeight == DBL_NODATA) || (dOrientation == DBL_NODATA))
@@ -1056,8 +1056,8 @@ bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitl
                pOGRFeature->SetGeometry(&OGRPt);
 
                double
-                  dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveOrientation(),
-                  dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetDeepWaterWaveHeight();
+                  dOrientation = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveAngle(),
+                  dHeight = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight();
 
                if ((dHeight == DBL_NODATA) || (dOrientation == DBL_NODATA) || (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea()))
                   continue;

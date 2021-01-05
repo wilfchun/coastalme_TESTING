@@ -22,10 +22,17 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-//#include <assert.h>
+#include <assert.h>
+
+#include <string>
+using std::to_string;
+
 #include <iostream>
 using std::cerr;
 using std::endl;
+
+#include <gdal_priv.h>
+#include <gdal_alg.h>
 
 #include "cme.h"
 #include "line.h"
@@ -109,7 +116,7 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
 
          if (m_ulIter == 1)
          {
-            // Check to see that all cells have some sediment on them
+            // For the first timestep only, check to see that all cells have some sediment on them
             double dSedThickness = m_pRasterGrid->m_Cell[nX][nY].dGetTotAllSedThickness();
             if (dSedThickness <= 0)
             {
@@ -120,19 +127,19 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
 
             // For the first timestep only, calculate the elevation of all this cell's layers. During the rest of the simulation, each cell's elevation is re-calculated just after any change occurs on that cell
             m_pRasterGrid->m_Cell[nX][nY].CalcAllLayerElevsAndD50();
+         }
 
-            if (m_bSingleDeepWaterWaveValues)
-            {
-               // All cells have same value for deep water wave height, deep water wave orientation, and deep water period and these values are unchanged throughout the simulation
-               m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveHeight(m_dAllCellsDeepWaterWaveHeight);
-               m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWaveOrientation(m_dAllCellsDeepWaterWaveOrientation);
-               m_pRasterGrid->m_Cell[nX][nY].SetDeepWaterWavePeriod(m_dAllCellsDeepWaterWavePeriod);
-            }
+         if (m_bSingleDeepWaterWaveValues)
+         {
+            // If we have just a single measurement for deep water waves (either given by the user, or from a single wave station) then set all cells, even dry land cells, to the same value for deep water wave height, deep water wave orientation, and deep water period
+            m_pRasterGrid->m_Cell[nX][nY].SetCellDeepWaterWaveHeight(m_dAllCellsDeepWaterWaveHeight);
+            m_pRasterGrid->m_Cell[nX][nY].SetCellDeepWaterWaveAngle(m_dAllCellsDeepWaterWaveAngle);
+            m_pRasterGrid->m_Cell[nX][nY].SetCellDeepWaterWavePeriod(m_dAllCellsDeepWaterWavePeriod);
          }
       }
    }
 
-   if (! m_bSingleDeepWaterWaveValues)
+   if (m_bHaveWaveStationData && (! m_bSingleDeepWaterWaveValues))
    {
       // Each cell's value for deep water wave height and deep water wave orientation is interpolated from multiple user-supplied values
       int nRet = nInterpolateAllDeepWaterWaveValues();
@@ -162,6 +169,125 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
       cerr << m_ulIter << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;
       LogStream << m_ulIter << ": " << WARN << nZeroThickness << " cells have no sediment, is this correct?" << endl;
    }
+
+//    // DEBUG CODE ===========================================
+//    string strOutFile = m_strOutPath;
+//    strOutFile += "init_deep_water_wave_height_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//    GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//    GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//    double* pdRaster = new double[m_ulNumCells];
+//    int nn = 0;
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          // Write this value to the array
+//          pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight();
+//          nn++;
+//       }
+//    }
+//
+//    GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_nMissingValue);
+//    int nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+//    // DEBUG CODE ===========================================
+
+//    // DEBUG CODE ===========================================
+//    strOutFile = m_strOutPath;
+//    strOutFile += "init_deep_water_wave_angle_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//    pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//    nn = 0;
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          // Write this value to the array
+//          pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveAngle();
+//          nn++;
+//       }
+//    }
+//
+//    pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_nMissingValue);
+//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+//    // DEBUG CODE ===========================================
+
+//    // DEBUG CODE ===========================================
+//    strOutFile = m_strOutPath;
+//    strOutFile += "init_water_wave_angle_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//    pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//    nn = 0;
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          // Write this value to the array
+//          pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle();
+//          nn++;
+//       }
+//    }
+//
+//    pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_nMissingValue);
+//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+//    // DEBUG CODE ===========================================
+
+//    // DEBUG CODE ===========================================
+//    strOutFile = m_strOutPath;
+//    strOutFile += "init_water_wave_height_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//    pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//    nn = 0;
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          // Write this value to the array
+//          pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
+//          nn++;
+//       }
+//    }
+//
+//    pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_nMissingValue);
+//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+//    delete[] pdRaster;
+//    // DEBUG CODE ===========================================
 
    return RTN_OK;
 }

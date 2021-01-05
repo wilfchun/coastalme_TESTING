@@ -59,11 +59,11 @@ private:
       m_dTotSeaDepth,                        // Total depth of still water (m) since beginning of simulation (used to calc average)
       m_dWaveHeight,                         // Wave height
       m_dTotWaveHeight,                      // Total wave height (m) (used to calc average)
-      m_dWaveOrientation,                    // Wave orientation
+      m_dWaveAngle,                    // Wave orientation
       m_dWavePeriod,                         // Wave period (s)
-      m_dTotWaveOrientation,                 // Total wave orientation  (used to calc average)
+      m_dTotWaveAngle,                 // Total wave orientation  (used to calc average)
       m_dDeepWaterWaveHeight,                // Wave height if this is a deep water cell
-      m_dDeepWaterWaveOrientation,           // Wave orientation if this is a deep water cell
+      m_dDeepWaterWaveAngle,           // Wave orientation if this is a deep water cell
       m_dDeepWaterWavePeriod,		     // Wave period if this is a deep water cell
       m_dBeachProtectionFactor,              // Only meaningful if in zone of platform erosion. 0 is fully protected, 1 = no protection
       m_dSuspendedSediment,                  // Suspended sediment as depth equivalent (m)
@@ -152,19 +152,16 @@ public:
    void SetWaveHeight(double const);
    double dGetWaveHeight(void) const;
    double dGetTotWaveHeight(void) const;
-   void SetWaveOrientation(double const);
-   double dGetWaveOrientation(void) const;
-   double dGetTotWaveOrientation(void) const;
-   void SetWavePeriod(double const);
-   double dGetWavePeriod(void) const;
+   void SetWaveAngle(double const);
+   double dGetWaveAngle(void) const;
+   double dGetTotWaveAngle(void) const;
 
-
-   void SetDeepWaterWaveHeight(double const);
-   double dGetDeepWaterWaveHeight(void) const;
-   void SetDeepWaterWaveOrientation(double const);
-   double dGetDeepWaterWaveOrientation(void) const;
-   void SetDeepWaterWavePeriod(double const);
-   double dGetDeepWaterWavePeriod(void) const;
+   void SetCellDeepWaterWaveHeight(double const);
+   double dGetCellDeepWaterWaveHeight(void) const;
+   void SetCellDeepWaterWaveAngle(double const);
+   double dGetCellDeepWaterWaveAngle(void) const;
+   void SetCellDeepWaterWavePeriod(double const);
+   double dGetCellDeepWaterWavePeriod(void) const;
 
    void SetWaveValuesToDeepWaterWaveValues(void);
 

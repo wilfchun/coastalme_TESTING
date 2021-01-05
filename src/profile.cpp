@@ -44,7 +44,7 @@ CGeomProfile::CGeomProfile(int const nCoastPoint)
    m_bHitAnotherProfile(false),
    m_nNumCoastPoint(nCoastPoint),
    m_dDeepWaterWaveHeight(0),
-   m_dDeepWaterWaveOrientation(0),
+   m_dDeepWaterWaveAngle(0),
    m_dDeepWaterWavePeriod(0)
 {
 }
@@ -448,37 +448,37 @@ int CGeomProfile::nGetCellGivenDepth(CGeomRasterGrid const* pGrid, double const 
 
 
 //! Set the deep-water wave height for this profile
-void CGeomProfile::SetDeepWaterWaveHeight(double const dWaveHeight)
+void CGeomProfile::SetProfileDeepWaterWaveHeight(double const dWaveHeight)
 {
    m_dDeepWaterWaveHeight = dWaveHeight;
 }
 
 //! Returns the deep-water wave height for this profile
-double CGeomProfile::dGetDeepWaterWaveHeight(void) const
+double CGeomProfile::dGetProfileDeepWaterWaveHeight(void) const
 {
    return m_dDeepWaterWaveHeight;
 }
 
 //! Set the deep-water wave orientation for this profile
-void CGeomProfile::SetDeepWaterWaveOrientation(double const dWaveOrientation)
+void CGeomProfile::SetProfileDeepWaterWaveAngle(double const dWaveAngle)
 {
-   m_dDeepWaterWaveOrientation = dWaveOrientation;
+   m_dDeepWaterWaveAngle = dWaveAngle;
 }
 
 //! Returns the deep-water wave orientation for this profile
-double CGeomProfile::dGetDeepWaterWaveOrientation(void) const
+double CGeomProfile::dGetProfileDeepWaterWaveAngle(void) const
 {
-   return m_dDeepWaterWaveOrientation;
+   return m_dDeepWaterWaveAngle;
 }
 
 //! Set the deep-water wave Period for this profile
-void CGeomProfile::SetDeepWaterWavePeriod(double const dWavePeriod)
+void CGeomProfile::SetProfileDeepWaterWavePeriod(double const dWavePeriod)
 {
    m_dDeepWaterWavePeriod = dWavePeriod;
 }
 
 //! Returns the deep-water wave Period for this profile
-double CGeomProfile::dGetDeepWaterWavePeriod(void) const
+double CGeomProfile::dGetProfileDeepWaterWavePeriod(void) const
 {
    return m_dDeepWaterWavePeriod;
 }

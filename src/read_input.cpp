@@ -569,7 +569,7 @@ bool CSimulation::bReadRunDataFile(void)
             {
                m_bAvgSeaDepthSave                  =
                m_bAvgWaveHeightSave                =
-               m_bAvgWaveOrientationSave           =
+               m_bAvgWaveAngleSave                 =
                m_bBeachProtectionSave              =
                m_bBasementElevSave                 =
                m_bSuspSedSave                      =
@@ -595,7 +595,7 @@ bool CSimulation::bReadRunDataFile(void)
                m_bInterventionClassSave            =
                m_bInterventionHeightSave           =
                m_bShadowZoneCodesSave              =
-               m_bDeepWaterWaveOrientationSave     =
+               m_bDeepWaterWaveAngleSave           =
                m_bDeepWaterWaveHeightSave          =
                m_bDeepWaterWavePeriodSave          =
                m_bPolygonUnconsSedUpOrDownDrift    =
@@ -618,7 +618,7 @@ bool CSimulation::bReadRunDataFile(void)
 
                if (strRH.find(RASTER_AVG_WAVE_ORIENTATION_NAME) != string::npos)
                {
-                  m_bAvgWaveOrientationSave = true;
+                  m_bAvgWaveAngleSave = true;
                   strRH = strRemoveSubstr(&strRH, &RASTER_AVG_WAVE_ORIENTATION_NAME);
                }
 
@@ -768,7 +768,7 @@ bool CSimulation::bReadRunDataFile(void)
 
                if (strRH.find(RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME) != string::npos)
                {
-                  m_bDeepWaterWaveOrientationSave = true;
+                  m_bDeepWaterWaveAngleSave = true;
                   strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME);
                }
 
@@ -1624,6 +1624,8 @@ bool CSimulation::bReadRunDataFile(void)
                }
 
                m_bSingleDeepWaterWaveValues = true;
+               m_bHaveWaveStationData = false;
+
                m_dAllCellsDeepWaterWaveHeight = strtod(strRH.c_str(), NULL);
 
                if (m_dAllCellsDeepWaterWaveHeight <= 0)
@@ -1632,7 +1634,7 @@ bool CSimulation::bReadRunDataFile(void)
             else
             {
                // We are reading deep water wave height and deep water wave orientation from two files. This first file is a point shape file with the location of the buoys and integer ID for each one
-               m_bSingleDeepWaterWaveValues = false;
+               m_bHaveWaveStationData = true;
 
                if (strRH.empty())
                {
@@ -1662,7 +1664,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 34:
             // Deep water wave height time series file
-            if (! m_bSingleDeepWaterWaveValues)
+            if (m_bHaveWaveStationData)
             {
                // Only read this if we have a file for wave height points. Each point in m_strDeepWaterWavesTimeSeriesFile is a triad of wave height, orientation and period for each time step
                if (strRH.empty())
@@ -1693,7 +1695,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 35:
             // Deep water wave orientation in input CRS: this is the oceanographic convention i.e. direction TOWARDS which the waves move (in degrees clockwise from north)
-            if (m_bSingleDeepWaterWaveValues)
+            if (! m_bHaveWaveStationData)
             {
                // Only read this if we have just a single value of wave height for all deep water cells. Check that this is a valid double
                if (! bIsStringValidDouble(strRH))
@@ -1702,18 +1704,18 @@ bool CSimulation::bReadRunDataFile(void)
                   break;
                }
 
-               m_dAllCellsDeepWaterWaveOrientation = strtod(strRH.c_str(), NULL);
+               m_dAllCellsDeepWaterWaveAngle = strtod(strRH.c_str(), NULL);
 
-               if (m_dAllCellsDeepWaterWaveOrientation < 0)
+               if (m_dAllCellsDeepWaterWaveAngle < 0)
                   strErr = "deep water wave orientation must be zero degrees or more";
-               else if (m_dAllCellsDeepWaterWaveOrientation >= 360)
+               else if (m_dAllCellsDeepWaterWaveAngle >= 360)
                   strErr = "deep water wave orientation must be less than 360 degrees";
             }
             break;
 
          case 36:
             // Wave period (sec)
-            if (m_bSingleDeepWaterWaveValues)
+            if (! m_bHaveWaveStationData)
             {
                // Only read this if we also have just a single value of wave height for all deep water cells. Check that this is a valid double
                if (! bIsStringValidDouble(strRH))
@@ -2599,7 +2601,7 @@ int CSimulation::nReadShapeFunctionFile()
  Reads the deep water wave station time series data
 
 ==============================================================================================================================*/
-int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
+int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
 {
    // Create an ifstream object
    ifstream InStream;
@@ -2618,7 +2620,6 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
    // Opened OK
    int
       nExpectedStations = 0,
-      nExpectedTimeSteps = 0,
       nRead = 0,
       nTimeStepsRead = 0;
    string strRec, strErr;
@@ -2778,10 +2779,10 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
                nExpectedStations = stoi(strRH);
 
                // Check that the number of expected stations is equal to the number of stations on the point shape file
-               if (nExpectedStations != nNumberStations)
+               if (nExpectedStations != nWaveStations)
                {
                   // Error: number of points on shape file does not match the number of stations on the wave time series file
-                  strErr = "number of wave stations in " + m_strDeepWaterWaveStationsShapefile + " is " + to_string(nNumberStations) + " but we have " + to_string(nExpectedStations) + " stations";
+                  strErr = "number of wave stations in " + m_strDeepWaterWaveStationsShapefile + " is " + to_string(nWaveStations) + " but we have " + to_string(nExpectedStations) + " stations";
 
                   break;
                }
@@ -2796,9 +2797,9 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
                   break;
                }
 
-               nExpectedTimeSteps = stoi(strRH);
+               m_nDeepWaterWaveDataNTimeSteps = stoi(strRH);
 
-               if (nExpectedTimeSteps < 1)
+               if (m_nDeepWaterWaveDataNTimeSteps < 1)
                {
                   // Error: must have value(s) for at least one timestep
                   strErr = "must have values for at least one timestep";
@@ -2832,16 +2833,18 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
             int n = 0;
             for (int i = 0; i < nExpectedStations; i++)
             {
-               m_VdDeepWaterWaveStationHeightTS.push_back(strtod(VstrTmp[n++].c_str(), NULL));
-               m_VdDeepWaterWaveStationAngleTS.push_back(strtod(VstrTmp[n++].c_str(), NULL));
-               m_VdDeepWaterWaveStationPeriodTS.push_back(strtod(VstrTmp[n++].c_str(), NULL));
+               m_VdTSDeepWaterWaveStationHeight.push_back(strtod(VstrTmp[n+0].c_str(), NULL));
+               m_VdTSDeepWaterWaveStationAngle.push_back(strtod(VstrTmp[n+1].c_str(), NULL));
+               m_VdTSDeepWaterWaveStationPeriod.push_back(strtod(VstrTmp[n+2].c_str(), NULL));
 
                // Check some simple wave input stats
-               if (m_VdDeepWaterWaveStationHeightTS.back() > m_dMaxUserInputWaveHeight)
-                  m_dMaxUserInputWaveHeight = m_VdDeepWaterWaveStationHeightTS.back();
+               if (m_VdTSDeepWaterWaveStationHeight.back() > m_dMaxUserInputWaveHeight)
+                  m_dMaxUserInputWaveHeight = m_VdTSDeepWaterWaveStationHeight.back();
 
-               if (m_VdDeepWaterWaveStationPeriodTS.back() > m_dMaxUserInputWavePeriod)
-                  m_dMaxUserInputWavePeriod = m_VdDeepWaterWaveStationPeriodTS.back();
+               if (m_VdTSDeepWaterWaveStationPeriod.back() > m_dMaxUserInputWavePeriod)
+                  m_dMaxUserInputWavePeriod = m_VdTSDeepWaterWaveStationPeriod.back();
+
+               n += 3;
             }
          }
       }
@@ -2857,10 +2860,10 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
       }
    }
 
-   if (nTimeStepsRead != nExpectedTimeSteps)
+   if (nTimeStepsRead != m_nDeepWaterWaveDataNTimeSteps)
    {
       // Error: number of timesteps read does not match the number given in the file's header
-      cerr << ERR << "in " << m_strDeepWaterWavesTimeSeriesFile << ", data for " << nTimeStepsRead << " timesteps was read, but " << nExpectedTimeSteps << " timesteps were specified in the file's header" << endl;
+      cerr << ERR << "in " << m_strDeepWaterWavesTimeSeriesFile << ", data for " << nTimeStepsRead << " timesteps was read, but " << m_nDeepWaterWaveDataNTimeSteps << " timesteps were specified in the file's header" << endl;
 
       return  RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
@@ -2869,42 +2872,42 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nNumberStations)
    InStream.close();
 
    // Did we read in what we expected?
-   unsigned int nTotExpected = nExpectedStations * nExpectedTimeSteps;
-   if (m_VdDeepWaterWaveStationHeightTS.size() != nTotExpected)
+   unsigned int nTotExpected = nExpectedStations * m_nDeepWaterWaveDataNTimeSteps;
+   if (m_VdTSDeepWaterWaveStationHeight.size() != nTotExpected)
    {
-      cout << ERR << "read in " << m_VdDeepWaterWaveStationHeightTS.size() << " lines from " << m_strDeepWaterWavesTimeSeriesFile << " but " << nTotExpected << " values expected" << endl;
+      cout << ERR << "read in " << m_VdTSDeepWaterWaveStationHeight.size() << " lines from " << m_strDeepWaterWavesTimeSeriesFile << " but " << nTotExpected << " values expected" << endl;
 
       return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
 
-   if (m_VdDeepWaterWaveStationAngleTS.size() != nTotExpected)
+   if (m_VdTSDeepWaterWaveStationAngle.size() != nTotExpected)
    {
-      cout << ERR << "read in " << m_VdDeepWaterWaveStationAngleTS.size() << " lines from " << m_strDeepWaterWavesTimeSeriesFile << " but " << nTotExpected << " values expected" << endl;
+      cout << ERR << "read in " << m_VdTSDeepWaterWaveStationAngle.size() << " lines from " << m_strDeepWaterWavesTimeSeriesFile << " but " << nTotExpected << " values expected" << endl;
 
       return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
 
-   if (m_VdDeepWaterWaveStationPeriodTS.size() != nTotExpected)
+   if (m_VdTSDeepWaterWaveStationPeriod.size() != nTotExpected)
    {
-      cout << ERR << "read in " << m_VdDeepWaterWaveStationPeriodTS.size() << " lines from " << m_strDeepWaterWavesTimeSeriesFile << " but " << nTotExpected << " values expected" << endl;
+      cout << ERR << "read in " << m_VdTSDeepWaterWaveStationPeriod.size() << " lines from " << m_strDeepWaterWavesTimeSeriesFile << " but " << nTotExpected << " values expected" << endl;
 
       return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
 
-   // All is OK, so we can now initialize the vectors that will store this time step deep water wave values
+   // All is OK, so we can now initialize the vectors that will store this timestep's deep water wave values
    for (int j = 0; j < nExpectedStations; j++)
    {
-      m_VdDeepWaterWaveStationHeight.push_back(DBL_NODATA);
-      m_VdDeepWaterWaveStationAngle.push_back(DBL_NODATA);
-      m_VdDeepWaterWaveStationPeriod.push_back(DBL_NODATA);
+      m_VdThisIterDeepWaterWaveStationHeight.push_back(DBL_NODATA);
+      m_VdThisIterDeepWaterWaveStationAngle.push_back(DBL_NODATA);
+      m_VdThisIterDeepWaterWaveStationPeriod.push_back(DBL_NODATA);
    }
 
    // Finally, check whether the wave data will 'wrap' i.e. whether the number of timesteps is less than the total number of timesteps in the simulation
    int nSimulationTimeSteps = static_cast<int>(floor(m_dSimDuration / m_dTimeStep));
-   if (nExpectedTimeSteps < nSimulationTimeSteps)
+   if (m_nDeepWaterWaveDataNTimeSteps < nSimulationTimeSteps)
    {
-      m_dWaveDataWrapHours = nExpectedTimeSteps * m_dTimeStep;
-      string strTmp = "Deep water wave data will wrap every " + (nExpectedTimeSteps > 1 ? to_string(nExpectedTimeSteps) + " " : "") + "time step" + (nExpectedTimeSteps > 1 ? "s" : "") + " (every " + to_string(m_dWaveDataWrapHours) + " hours)\n";
+      m_dWaveDataWrapHours = m_nDeepWaterWaveDataNTimeSteps * m_dTimeStep;
+      string strTmp = "Deep water wave data will wrap every " + (m_nDeepWaterWaveDataNTimeSteps > 1 ? to_string(m_nDeepWaterWaveDataNTimeSteps) + " " : "") + "time step" + (m_nDeepWaterWaveDataNTimeSteps > 1 ? "s" : "") + " (every " + to_string(m_dWaveDataWrapHours) + " hours)\n";
 
       cout << NOTE << strTmp;
    }

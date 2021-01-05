@@ -37,6 +37,9 @@ using std::resetiosflags;
 using std::setprecision;
 using std::setw;
 
+#include <string>
+using std::to_string;
+
 #include <stack>
 using std::stack;
 
@@ -150,7 +153,7 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
          // Set this sea cell to have deep water (off-shore) wave orientation and height, will change this later for cells closer to the shoreline if we have on-shore waves
          m_pRasterGrid->m_Cell[nX][nY].SetWaveValuesToDeepWaterWaveValues();
 
-//          LogStream << " [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} wave height = " << m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() << " wave angle = " << m_pRasterGrid->m_Cell[nX][nY].dGetWaveOrientation() << endl;
+//          LogStream << m_ulIter << ": [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} wave height = " << m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() << " wave angle = " << m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle() << endl;
 
          // Now sort out the x-y extremities of the contiguous sea for the bounding box (used later in wave propagation)
          if (nX < m_nXMinBoundingBox)
@@ -191,6 +194,36 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
          nX++;
       }
    }
+
+//    // DEBUG CODE ===========================================
+//    string strOutFile = m_strOutPath + "sea_wave_values_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//
+//    GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//    GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//    double* pdRaster = new double[m_nXGridMax * m_nYGridMax];
+//    int n = 0;
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          pdRaster[n++] = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle();
+//       }
+//    }
+//
+//    GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_dMissingValue);
+//    int nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//    if (nRet == CE_Failure)
+//       return;
+//
+//    GDALClose(pDataSet);
+//    delete[] pdRaster;
+//    // DEBUG CODE ===========================================
+
 
 //    LogStream << m_ulIter << ": flood fill of sea from [" << nXStart << "][" << nYStart << "] = {" << dGridCentroidXToExtCRSX(nXStart) << ", " << dGridCentroidYToExtCRSY(nYStart) << "} with SWL = " << m_dThisTimestepSWL << ", " << m_ulThisTimestepNumSeaCells << " of " << m_ulNumCells << " cells now marked as sea (" <<  std::fixed << setprecision(2) << 100.0 * m_ulThisTimestepNumSeaCells / m_ulNumCells << " %)" << endl;
 
@@ -336,13 +369,13 @@ int CSimulation::nTraceCoastLine(unsigned int const nTraceFromStartCellIndex, in
    // Start at this grid-edge point and trace the rest of the coastline using the 'wall follower' rule for maze traversal, trying to keep next to cells flagged as sea
    do
    {
-      // DEBUG CODE ==============================================
+//       // DEBUG CODE ==============================================
 //       LogStream << "Now at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 //       LogStream << "ILTempGridCRS is now:" << endl;
 //       for (int n = 0; n < ILTempGridCRS.nGetSize(); n++)
 //          LogStream << "[" << ILTempGridCRS[n].nGetX() << "][" << ILTempGridCRS[n].nGetY() << "] = {" << dGridCentroidXToExtCRSX(ILTempGridCRS[n].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[n].nGetY()) << "}" << endl;
 //       LogStream <<  "=================" << endl;
-      // DEBUG CODE ==============================================
+//       // DEBUG CODE ==============================================
 
       // Safety check
       if (++nRoundLoop > m_nCoastMax)
@@ -852,14 +885,14 @@ int CSimulation::nTraceCoastLine(unsigned int const nTraceFromStartCellIndex, in
    else if (m_nCoastSmooth == SMOOTH_SAVITZKY_GOLAY)
       LTempExtCRS = LSmoothCoastSavitzkyGolay(&LTempExtCRS, nStartEdge, nEndEdge);
 
-   // DEBUG CODE ==================================
+//    // DEBUG CODE ==================================
 //    LogStream << "==================================" << endl;
 //    for (int j = 0; j < nCoastSize; j++)
 //    {
 //       LogStream << "{" << dGridCentroidXToExtCRSX(ILTempGridCRS[j].nGetX()) << ", " << dGridCentroidYToExtCRSY(ILTempGridCRS[j].nGetY()) << "}" << "\t{" << LTempExtCRS.dGetXAt(j) << ", " << LTempExtCRS.dGetYAt(j) << "}" << endl;
 //    }
 //    LogStream << "==================================" << endl;
-   // DEBUG CODE ==================================
+//    // DEBUG CODE ==================================
 
    // Create a new coastline object and append to it the vector of coastline objects
    CRWCoast CoastTmp;
