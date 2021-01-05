@@ -2152,19 +2152,19 @@ void CSimulation::CalcD50AndFillWaveCalcHoles(void)
                   m_pRasterGrid->m_Cell[nX][nY].SetWaveAngle(dWaveAngle);
                }
 
-//                // If this sea cell has a wave height which is the same as its deep-water wave height, but its neighbours have a different average wave height, then give it the average of its neighbours
-//                double dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight();
-//                if ((m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() == dDeepWaterWaveHeight) && (! bFPIsEqual(dDeepWaterWaveHeight, dWaveHeight, TOLERANCE)))
-//                {
-//                   m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
-//                }
-//
-//                // If this sea cell has a wave orientation which is the same as its deep-water wave orientation, but its neighbours have a different average wave orientation, then give it the average of its neighbours
-//                double dDeepWaterWaveAngle = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveAngle();
-//                if ((m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle() == dDeepWaterWaveAngle) && (! bFPIsEqual(dDeepWaterWaveAngle, dWaveAngle, TOLERANCE)))
-//                {
-//                   m_pRasterGrid->m_Cell[nX][nY].SetWaveAngle(dWaveAngle);
-//                }
+               // If this sea cell has a wave height which is the same as its deep-water wave height, but its neighbours have a different average wave height, then give it the average of its neighbours
+               double dDeepWaterWaveHeight = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight();
+               if ((m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight() == dDeepWaterWaveHeight) && (! bFPIsEqual(dDeepWaterWaveHeight, dWaveHeight, TOLERANCE)))
+               {
+                  m_pRasterGrid->m_Cell[nX][nY].SetWaveHeight(dWaveHeight);
+               }
+
+               // If this sea cell has a wave orientation which is the same as its deep-water wave orientation, but its neighbours have a different average wave orientation, then give it the average of its neighbours
+               double dDeepWaterWaveAngle = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveAngle();
+               if ((m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle() == dDeepWaterWaveAngle) && (! bFPIsEqual(dDeepWaterWaveAngle, dWaveAngle, TOLERANCE)))
+               {
+                  m_pRasterGrid->m_Cell[nX][nY].SetWaveAngle(dWaveAngle);
+               }
 
                // Is this sea cell is not already marked as in a shadow zone (note could be marked as in a shadow zone but not yet processed: a -ve number)?
                int nShadowZoneCode = m_pRasterGrid->m_Cell[nX][nY].nGetShadowZoneNumber();
