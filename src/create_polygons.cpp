@@ -370,13 +370,13 @@ void CSimulation::MarkPolygonCells(void)
 //                nCellsInPolygon++;
 //                dTotDepth += m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
 
-               if ((! bSpanAbove) && (nY >= 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() == INT_NODATA))
+               if ((! bSpanAbove) && (nY > 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() == INT_NODATA))
                {
                   PtiStack.push(CGeom2DIPoint(nX, nY-1));
                   bSpanAbove = true;
                }
 
-               else if (bSpanAbove && (nY >= 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() != INT_NODATA))
+               else if (bSpanAbove && (nY > 0) && (m_pRasterGrid->m_Cell[nX][nY-1].nGetPolygonID() != INT_NODATA))
                {
                   bSpanAbove = false;
                }
