@@ -30,14 +30,14 @@ Save times                                                       [hours, days, m
 
 Random number seed(s)                                                                        : 280764
 
-GIS raster files to output                                                    [see codes.txt]: all
+GIS raster files to output                                                    [see codes.txt]: sea_depth beach_mask ; all
 GIS raster output format                                          [blank = same as DEM input]: gtiff                    ; gdal-config --formats for others
    If needed, also output GIS raster world file?                                        [y/n]: y
    If needed, scale GIS raster output values?                                           [y/n]: y
 GIS raster 'slice' elevation(s) (m)                                                          :
-GIS vector files to output                                                    [see codes.txt]: all
+GIS vector files to output                                                    [see codes.txt]: normals  ;all
 GIS vector output format                                                                     : ESRI Shapefile           ; ogrinfo --formats for others
-Time series files to output                                                   [see codes.txt]: all
+Time series files to output                                                   [see codes.txt]: sea_area ; all
 
 Coastline smoothing                          [0 = none, 1 = running mean, 2 = Savitsky-Golay]: 2
 Coastline smoothing window size                                                 [must be odd]: 7
@@ -137,7 +137,7 @@ Maximum number of 'cape' normals                                                
 Start depth for wave calcs (ratio to deep water wave height)                                 : 30         ; was 10 30 15
 
 ; For testing only -----------------------------------------------------------------------------------------------------
-Save profile data?                                                                           : y
+Save profile data?                                                                           : n
 Profile number(s) to save                                                                    : 8 9 10 11
 Timesteps to save profile(s)                                                                 : 1 6 12 24 36 48 60 72 84 96 108 120 144 156 168 180 192 204 216 228 240 252 264 276 288 300
 Save parallel profiles?                                                                      : n

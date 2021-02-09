@@ -1059,7 +1059,7 @@ int CSimulation::nWriteEndRunDetails(void)
    // Finally calculate performance details
    OutStream << PERFORMHEAD << endl;
 
-   // Get the time that the run dended
+   // Get the time that the run ended
    m_tSysEndTime = time(nullptr);
 
    OutStream << "Run ended at " << put_time(localtime(&m_tSysEndTime), "%T on %A %d %B %Y") << endl;

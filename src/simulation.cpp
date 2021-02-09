@@ -49,6 +49,7 @@ CSimulation::CSimulation(void)
    m_bHaveFineSediment                             =
    m_bHaveSandSediment                             =
    m_bHaveCoarseSediment                           =
+   m_bRasterGISSaveAll                             =
    m_bBasementElevSave                             =
    m_bSedimentTopSurfSave                          =
    m_bTopSurfSave                                  =
@@ -57,7 +58,7 @@ CSimulation::CSimulation(void)
    m_bAvgSeaDepthSave                              =
    m_bWaveHeightSave                               =
    m_bAvgWaveHeightSave                            =
-   m_bAvgWaveAngleSave                       =
+   m_bAvgWaveAngleSave                             =
    m_bWaveAngleAndHeightSave                       =
    m_bAvgWaveAngleAndHeightSave                    =
    m_bDeepWaterWaveAngleAndHeightSave              =
@@ -73,7 +74,10 @@ CSimulation::CSimulation(void)
    m_bActualBeachErosionSave                       =
    m_bTotalPotentialBeachErosionSave               =
    m_bTotalActualBeachErosionSave                  =
+   m_bBeachDepositionSave                          =
+   m_bTotalBeachDepositionSave                     =
    m_bLandformSave                                 =
+   m_bLocalSlopeSave                               =
    m_bInterventionClassSave                        =
    m_bInterventionHeightSave                       =
    m_bSuspSedSave                                  =
@@ -107,7 +111,7 @@ CSimulation::CSimulation(void)
    m_bCliffNotchSave                               =
    m_bShadowBoundarySave                           =
    m_bShadowDowndriftBoundarySave                  =
-   m_bDeepWaterWaveAngleSave                 =
+   m_bDeepWaterWaveAngleSave                       =
    m_bDeepWaterWaveHeightSave                      =
    m_bDeepWaterWavePeriodSave                      =
    m_bPolygonUnconsSedUpOrDownDrift                =
@@ -237,7 +241,7 @@ CSimulation::CSimulation(void)
    m_dL_0                                       =
    m_dWaveDepthRatioForWaveCalcs                =
    m_dAllCellsDeepWaterWaveHeight               =
-   m_dAllCellsDeepWaterWaveAngle          =
+   m_dAllCellsDeepWaterWaveAngle                =
    m_dAllCellsDeepWaterWavePeriod               =
    m_dMaxUserInputWaveHeight                    =
    m_dMaxUserInputWavePeriod                    =
@@ -809,6 +813,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 
       LogStream << endl;
 
+      // Tell the user how the simulation is progressing
+      AnnounceProgress();
+
       // Locate estuaries
       nRet = nLocateAllEstuaries();
       if (nRet != RTN_OK)
@@ -830,6 +837,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          return nRet;
 
       LogStream << endl;
+
+      // Tell the user how the simulation is progressing
+      AnnounceProgress();
 
       // Create the coast polygons
       nRet = nCreateAllPolygons();
@@ -863,6 +873,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 
       LogStream << endl;
 
+      // Tell the user how the simulation is progressing
+      AnnounceProgress();
+
 //       // DEBUG CODE
 //       nNODATA = 0;
 //       nPoly0 = 0;
@@ -893,6 +906,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          return nRet;
 
       LogStream << endl;
+
+      // Tell the user how the simulation is progressing
+      AnnounceProgress();
 
 //       // DEBUG CODE ===========================================
 //       string strOutFile = m_strOutPath;
@@ -958,7 +974,6 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //       delete[] pdRaster;
 //       // DEBUG CODE ===========================================
 
-
       if (m_bDoCoastPlatformErosion)
       {
          // Calculate elevation change on the consolidated sediment which comprises the coastal platform
@@ -975,6 +990,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
             return nRet;
       }
 
+      // Tell the user how the simulation is progressing
+      AnnounceProgress();
+
       // Next simulate beach erosion and deposition i.e. simulate alongshore transport of unconsolidated sediment (longshore drift) between polygons. First calculate potential sediment movement between polygons
       DoAllPotentialBeachErosion();
 
@@ -986,6 +1004,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Add the fine sediment that was eroded this timestep (from the shore platform, from beach erosion, and cliff collapse talus deposition, minus the fine that went off-grid) to the suspended sediment load
       double dFineThisTimestep = m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualBeachErosionFine + m_dThisTimestepCliffErosionFine - m_dThisTimestepActualFineSedLostBeachErosion;
       m_dThisTimestepFineSedimentToSuspension += dFineThisTimestep;
+
+      // Tell the user how the simulation is progressing
+      AnnounceProgress();
 
 //       // DEBUG CODE ===========================================
 //       string strOutFile = m_strOutPath;

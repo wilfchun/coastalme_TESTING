@@ -277,8 +277,8 @@ bool CSimulation::bReadRunDataFile(void)
          }
 
 #ifdef _WIN32
-            // For Windows, make sure has backslashes, not Unix-style slashes
-            strRH = pstrChangeToBackslash(&strRH);
+         // For Windows, make sure has backslashes, not Unix-style slashes
+         strRH = pstrChangeToBackslash(&strRH);
 #endif
          bool bFirst = true;
          int
@@ -547,259 +547,382 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 7:
             // Raster GIS files to output
-            strRH = strToLower(&strRH);
-
-            // These are always saved
-            m_bSedimentTopSurfSave                 =
-            m_bTopSurfSave                         =
-            m_bSeaDepthSave                        =
-            m_bWaveHeightSave                      =
-            m_bPotentialPlatformErosionSave        =
-            m_bActualPlatformErosionSave           =
-            m_bTotalPotentialPlatformErosionSave   =
-            m_bTotalActualPlatformErosionSave      =
-            m_bPotentialBeachErosionSave           =
-            m_bActualBeachErosionSave              =
-            m_bTotalPotentialBeachErosionSave      =
-            m_bTotalActualBeachErosionSave         =
-            m_bLandformSave                        = true;
-
-            // Now look for "all"
-            if (strRH.find(RASTER_ALL_OUTPUT_CODE) != string::npos)
-            {
-               m_bAvgSeaDepthSave                  =
-               m_bAvgWaveHeightSave                =
-               m_bAvgWaveAngleSave                 =
-               m_bBeachProtectionSave              =
-               m_bBasementElevSave                 =
-               m_bSuspSedSave                      =
-               m_bAvgSuspSedSave                   =
-               m_bFineUnconsSedSave                =
-               m_bSandUnconsSedSave                =
-               m_bCoarseUnconsSedSave              =
-               m_bFineConsSedSave                  =
-               m_bSandConsSedSave                  =
-               m_bCoarseConsSedSave                =
-               m_bRasterCoastlineSave              =
-               m_bRasterNormalSave                 =
-               m_bDistWeightSave                   =
-               m_bActiveZoneSave                   =
-               m_bCliffCollapseSave                =
-               m_bTotCliffCollapseSave             =
-               m_bCliffCollapseDepositionSave      =
-               m_bTotCliffCollapseDepositionSave   =
-               m_bRasterPolygonSave                =
-               m_bPotentialPlatformErosionMaskSave =
-               m_bSeaMaskSave                      =
-               m_bBeachMaskSave                    =
-               m_bInterventionClassSave            =
-               m_bInterventionHeightSave           =
-               m_bShadowZoneCodesSave              =
-               m_bDeepWaterWaveAngleSave           =
-               m_bDeepWaterWaveHeightSave          =
-               m_bDeepWaterWavePeriodSave          =
-               m_bPolygonUnconsSedUpOrDownDrift    =
-               m_bPolygonUnconssedGainOrLoss       = true;
-            }
+            if (strRH.empty())
+               strErr = "must have at least one raster GIS output file";
             else
             {
-               // These are only saved if the user specified the code
-               if (strRH.find(RASTER_AVG_SEA_DEPTH_NAME) != string::npos)
-               {
-                  m_bAvgSeaDepthSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_AVG_SEA_DEPTH_NAME);
-               }
+               // Convert to lower case
+               strRH = strToLower(&strRH);
 
-               if (strRH.find(RASTER_AVG_WAVE_HEIGHT_NAME) != string::npos)
+               // First look for "all"
+               if (strRH.find(RASTER_ALL_OUTPUT_CODE) != string::npos)
                {
-                  m_bAvgWaveHeightSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_AVG_WAVE_HEIGHT_NAME);
+                  // Set switches for all output
+                  m_bRasterGISSaveAll                    =
+                  m_bSedimentTopSurfSave                 =
+                  m_bTopSurfSave                         =
+                  m_bSeaDepthSave                        =
+                  m_bWaveHeightSave                      =
+                  m_bWaveAngleSave                       =
+                  m_bPotentialPlatformErosionSave        =
+                  m_bActualPlatformErosionSave           =
+                  m_bTotalPotentialPlatformErosionSave   =
+                  m_bTotalActualPlatformErosionSave      =
+                  m_bPotentialBeachErosionSave           =
+                  m_bActualBeachErosionSave              =
+                  m_bTotalPotentialBeachErosionSave      =
+                  m_bTotalActualBeachErosionSave         =
+                  m_bBeachDepositionSave                 =
+                  m_bTotalBeachDepositionSave            =
+                  m_bLandformSave                        =
+                  m_bLocalSlopeSave                      =
+                  m_bAvgSeaDepthSave                     =
+                  m_bAvgWaveHeightSave                   =
+                  m_bAvgWaveAngleSave                    =
+                  m_bBeachProtectionSave                 =
+                  m_bBasementElevSave                    =
+                  m_bSuspSedSave                         =
+                  m_bAvgSuspSedSave                      =
+                  m_bFineUnconsSedSave                   =
+                  m_bSandUnconsSedSave                   =
+                  m_bCoarseUnconsSedSave                 =
+                  m_bFineConsSedSave                     =
+                  m_bSandConsSedSave                     =
+                  m_bCoarseConsSedSave                   =
+                  m_bRasterCoastlineSave                 =
+                  m_bRasterNormalSave                    =
+                  m_bDistWeightSave                      =
+                  m_bActiveZoneSave                      =
+                  m_bCliffCollapseSave                   =
+                  m_bTotCliffCollapseSave                =
+                  m_bCliffCollapseDepositionSave         =
+                  m_bTotCliffCollapseDepositionSave      =
+                  m_bRasterPolygonSave                   =
+                  m_bPotentialPlatformErosionMaskSave    =
+                  m_bSeaMaskSave                         =
+                  m_bBeachMaskSave                       =
+                  m_bInterventionClassSave               =
+                  m_bInterventionHeightSave              =
+                  m_bShadowZoneCodesSave                 =
+                  m_bDeepWaterWaveAngleSave              =
+                  m_bDeepWaterWaveHeightSave             =
+                  m_bDeepWaterWavePeriodSave             =
+                  m_bPolygonUnconsSedUpOrDownDrift       =
+                  m_bPolygonUnconssedGainOrLoss          = true;
                }
-
-               if (strRH.find(RASTER_AVG_WAVE_ORIENTATION_NAME) != string::npos)
+               else
                {
-                  m_bAvgWaveAngleSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_AVG_WAVE_ORIENTATION_NAME);
-               }
+                  // We are not outputting all raster GIS files, so set switches (and remove strings) for those optional files for which the user specified the code
+                  if (strRH.find(RASTER_SEDIMENT_TOP_CODE) != string::npos)
+                  {
+                     m_bSedimentTopSurfSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_SEDIMENT_TOP_CODE);
+                  }
 
-               if (strRH.find(RASTER_BEACH_PROTECTION_NAME) != string::npos)
-               {
-                  m_bBeachProtectionSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_BEACH_PROTECTION_NAME);
-               }
+                  if (strRH.find(RASTER_TOP_CODE) != string::npos)
+                  {
+                     m_bTopSurfSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_TOP_CODE);
+                  }
 
-               if (strRH.find(RASTER_BASEMENT_ELEVATION_NAME) != string::npos)
-               {
-                  m_bBasementElevSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_BASEMENT_ELEVATION_NAME);
-               }
+                  if (strRH.find(RASTER_SEA_DEPTH_CODE) != string::npos)
+                  {
+                     m_bSeaDepthSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_SEA_DEPTH_CODE);
+                  }
 
-               if (strRH.find(RASTER_SUSP_SED_NAME) != string::npos)
-               {
-                  m_bSuspSedSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_SUSP_SED_NAME);
-               }
+                  if (strRH.find(RASTER_WAVE_HEIGHT_CODE) != string::npos)
+                  {
+                     m_bWaveHeightSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_WAVE_HEIGHT_CODE);
+                  }
 
-               if (strRH.find(RASTER_AVG_SUSP_SED_NAME) != string::npos)
-               {
-                  m_bAvgSuspSedSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_AVG_SUSP_SED_NAME);
-               }
+                  if (strRH.find(RASTER_WAVE_ORIENTATION_CODE) != string::npos)
+                  {
+                     m_bWaveAngleSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_WAVE_ORIENTATION_CODE);
+                  }
 
-               if (strRH.find(RASTER_FINE_UNCONS_NAME) != string::npos)
-               {
-                  m_bFineUnconsSedSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_FINE_UNCONS_NAME);
-               }
+                  if (strRH.find(RASTER_WAVE_PERIOD_CODE) != string::npos)
+                  {
+                     m_bDeepWaterWavePeriodSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_WAVE_PERIOD_CODE);
+                  }
 
-               if (strRH.find(RASTER_SAND_UNCONS_NAME) != string::npos)
-               {
-                  m_bSandUnconsSedSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_SAND_UNCONS_NAME);
-               }
+                  if (strRH.find(RASTER_POTENTIAL_PLATFORM_EROSION_CODE) != string::npos)
+                  {
+                     m_bPotentialPlatformErosionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_POTENTIAL_PLATFORM_EROSION_CODE);
+                  }
 
-               if (strRH.find(RASTER_COARSE_UNCONS_NAME) != string::npos)
-               {
-                  m_bCoarseUnconsSedSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_COARSE_UNCONS_NAME);
-               }
+                  if (strRH.find(RASTER_ACTUAL_PLATFORM_EROSION_CODE) != string::npos)
+                  {
+                     m_bActualPlatformErosionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_ACTUAL_PLATFORM_EROSION_CODE);
+                  }
 
-               if (strRH.find(RASTER_FINE_CONS_NAME) != string::npos)
-               {
-                  m_bFineConsSedSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_FINE_CONS_NAME);
-               }
+                  if (strRH.find(RASTER_TOTAL_POTENTIAL_PLATFORM_EROSION_CODE) != string::npos)
+                  {
+                     m_bTotalPotentialPlatformErosionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_POTENTIAL_PLATFORM_EROSION_CODE);
+                  }
 
-               if (strRH.find(RASTER_SAND_CONS_NAME) != string::npos)
-               {
-                  m_bSandConsSedSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_SAND_CONS_NAME);
-               }
+                  if (strRH.find(RASTER_TOTAL_ACTUAL_PLATFORM_EROSION_CODE) != string::npos)
+                  {
+                     m_bTotalActualPlatformErosionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_ACTUAL_PLATFORM_EROSION_CODE);
+                  }
 
-               if (strRH.find(RASTER_COARSE_CONS_NAME) != string::npos)
-               {
-                  m_bCoarseConsSedSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_COARSE_CONS_NAME);
-               }
+                  if (strRH.find(RASTER_POTENTIAL_BEACH_EROSION_CODE) != string::npos)
+                  {
+                     m_bPotentialBeachErosionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_POTENTIAL_BEACH_EROSION_CODE);
+                  }
 
-               if (strRH.find(RASTER_COAST_NAME) != string::npos)
-               {
-                  m_bRasterCoastlineSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_COAST_NAME);
-               }
+                  if (strRH.find(RASTER_ACTUAL_BEACH_EROSION_CODE) != string::npos)
+                  {
+                     m_bActualBeachErosionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_ACTUAL_BEACH_EROSION_CODE);
+                  }
 
-               if (strRH.find(RASTER_COAST_NORMAL_NAME) != string::npos)
-               {
-                  m_bRasterNormalSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_COAST_NORMAL_NAME);
-               }
+                  if (strRH.find(RASTER_TOTAL_POTENTIAL_BEACH_EROSION_CODE) != string::npos)
+                  {
+                     m_bTotalPotentialBeachErosionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_POTENTIAL_BEACH_EROSION_CODE);
+                  }
 
-               if (strRH.find(RASTER_ACTIVE_ZONE_NAME) != string::npos)
-               {
-                  m_bActiveZoneSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_ACTIVE_ZONE_NAME);
-               }
+                  if (strRH.find(RASTER_TOTAL_ACTUAL_BEACH_EROSION_CODE) != string::npos)
+                  {
+                     m_bTotalActualBeachErosionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_ACTUAL_BEACH_EROSION_CODE);
+                  }
 
-               if (strRH.find(RASTER_CLIFF_COLLAPSE_NAME) != string::npos)
-               {
-                  m_bCliffCollapseSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_CLIFF_COLLAPSE_NAME);
-               }
+                  if (strRH.find(RASTER_LANDFORM_CODE) != string::npos)
+                  {
+                     m_bLandformSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_LANDFORM_CODE);
+                  }
 
-               if (strRH.find(RASTER_TOTAL_CLIFF_COLLAPSE_NAME) != string::npos)
-               {
-                  m_bTotCliffCollapseSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_CLIFF_COLLAPSE_NAME);
-               }
+                  if (strRH.find(RASTER_LOCAL_SLOPE_CODE) != string::npos)
+                  {
+                     m_bLocalSlopeSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_LOCAL_SLOPE_CODE);
+                  }
 
-               if (strRH.find(RASTER_CLIFF_COLLAPSE_DEPOSITION_NAME) != string::npos)
-               {
-                  m_bCliffCollapseDepositionSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_CLIFF_COLLAPSE_DEPOSITION_NAME);
-               }
+                  if (strRH.find(RASTER_AVG_SEA_DEPTH_CODE) != string::npos)
+                  {
+                     m_bAvgSeaDepthSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_AVG_SEA_DEPTH_CODE);
+                  }
 
-               if (strRH.find(RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_NAME) != string::npos)
-               {
-                  m_bTotCliffCollapseDepositionSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_NAME);
-               }
+                  if (strRH.find(RASTER_AVG_WAVE_HEIGHT_CODE) != string::npos)
+                  {
+                     m_bAvgWaveHeightSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_AVG_WAVE_HEIGHT_CODE);
+                  }
 
-               if (strRH.find(RASTER_POLYGON_NAME) != string::npos)
-               {
-                  m_bRasterPolygonSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_POLYGON_NAME);
-               }
+                  if (strRH.find(RASTER_AVG_WAVE_ORIENTATION_CODE) != string::npos)
+                  {
+                     m_bAvgWaveAngleSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_AVG_WAVE_ORIENTATION_CODE);
+                  }
 
-               if (strRH.find(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_NAME) != string::npos)
-               {
-                  m_bPotentialPlatformErosionMaskSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_POTENTIAL_PLATFORM_EROSION_MASK_NAME);
-               }
+                  if (strRH.find(RASTER_BEACH_PROTECTION_CODE) != string::npos)
+                  {
+                     m_bBeachProtectionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_BEACH_PROTECTION_CODE);
+                  }
 
-               if (strRH.find(RASTER_INUNDATION_MASK_NAME) != string::npos)
-               {
-                  m_bSeaMaskSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_INUNDATION_MASK_NAME);
-               }
+                  if (strRH.find(RASTER_BASEMENT_ELEVATION_CODE) != string::npos)
+                  {
+                     m_bBasementElevSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_BASEMENT_ELEVATION_CODE);
+                  }
 
-               if (strRH.find(RASTER_BEACH_MASK_NAME) != string::npos)
-               {
-                  m_bBeachMaskSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_BEACH_MASK_NAME);
-               }
+                  if (strRH.find(RASTER_SUSP_SED_CODE) != string::npos)
+                  {
+                     m_bSuspSedSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_SUSP_SED_CODE);
+                  }
 
-               if (strRH.find(RASTER_INTERVENTION_CLASS_NAME) != string::npos)
-               {
-                  m_bInterventionClassSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_INTERVENTION_CLASS_NAME);
-               }
+                  if (strRH.find(RASTER_AVG_SUSP_SED_CODE) != string::npos)
+                  {
+                     m_bAvgSuspSedSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_AVG_SUSP_SED_CODE);
+                  }
 
-               if (strRH.find(RASTER_INTERVENTION_HEIGHT_NAME) != string::npos)
-               {
-                  m_bInterventionHeightSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_INTERVENTION_HEIGHT_NAME);
-               }
+                  if (strRH.find(RASTER_FINE_UNCONS_CODE) != string::npos)
+                  {
+                     m_bFineUnconsSedSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_FINE_UNCONS_CODE);
+                  }
 
-               if (strRH.find(RASTER_SHADOW_ZONE_NAME) != string::npos)
-               {
-                  m_bShadowZoneCodesSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_SHADOW_ZONE_NAME);
-               }
+                  if (strRH.find(RASTER_SAND_UNCONS_CODE) != string::npos)
+                  {
+                     m_bSandUnconsSedSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_SAND_UNCONS_CODE);
+                  }
 
-               if (strRH.find(RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME) != string::npos)
-               {
-                  m_bDeepWaterWaveAngleSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_ORIENTATION_NAME);
-               }
+                  if (strRH.find(RASTER_COARSE_UNCONS_CODE) != string::npos)
+                  {
+                     m_bCoarseUnconsSedSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_COARSE_UNCONS_CODE);
+                  }
 
-               if (strRH.find(RASTER_DEEP_WATER_WAVE_HEIGHT_NAME) != string::npos)
-               {
-                  m_bDeepWaterWaveHeightSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_HEIGHT_NAME);
-               }
+                  if (strRH.find(RASTER_FINE_CONS_CODE) != string::npos)
+                  {
+                     m_bFineConsSedSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_FINE_CONS_CODE);
+                  }
 
-               if (strRH.find(RASTER_DEEP_WATER_WAVE_PERIOD_NAME) != string::npos)
-               {
-                  m_bDeepWaterWavePeriodSave = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_PERIOD_NAME);
-               }
+                  if (strRH.find(RASTER_SAND_CONS_CODE) != string::npos)
+                  {
+                     m_bSandConsSedSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_SAND_CONS_CODE);
+                  }
 
-               if (strRH.find(RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME) != string::npos)
-               {
-                  m_bPolygonUnconsSedUpOrDownDrift = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME);
-               }
+                  if (strRH.find(RASTER_COARSE_CONS_CODE) != string::npos)
+                  {
+                     m_bCoarseConsSedSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_COARSE_CONS_CODE);
+                  }
 
-               if (strRH.find(RASTER_POLYGON_GAIN_OR_LOSS_NAME) != string::npos)
-               {
-                  m_bPolygonUnconssedGainOrLoss = true;
-                  strRH = strRemoveSubstr(&strRH, &RASTER_POLYGON_GAIN_OR_LOSS_NAME);
-               }
+                  if (strRH.find(RASTER_COAST_CODE) != string::npos)
+                  {
+                     m_bRasterCoastlineSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_COAST_CODE);
+                  }
 
-               // Check to see if all codes have been removed
-               strRH = strTrimLeft(&strRH);
-               if (! strRH.empty())
-                  strErr = "raster GIS output file list";
+                  if (strRH.find(RASTER_COAST_NORMAL_CODE) != string::npos)
+                  {
+                     m_bRasterNormalSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_COAST_NORMAL_CODE);
+                  }
+
+                  if (strRH.find(RASTER_ACTIVE_ZONE_CODE) != string::npos)
+                  {
+                     m_bActiveZoneSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_ACTIVE_ZONE_CODE);
+                  }
+
+                  if (strRH.find(RASTER_CLIFF_COLLAPSE_CODE) != string::npos)
+                  {
+                     m_bCliffCollapseSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_CLIFF_COLLAPSE_CODE);
+                  }
+
+                  if (strRH.find(RASTER_TOTAL_CLIFF_COLLAPSE_CODE) != string::npos)
+                  {
+                     m_bTotCliffCollapseSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_CLIFF_COLLAPSE_CODE);
+                  }
+
+                  if (strRH.find(RASTER_CLIFF_COLLAPSE_DEPOSITION_CODE) != string::npos)
+                  {
+                     m_bCliffCollapseDepositionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_CLIFF_COLLAPSE_DEPOSITION_CODE);
+                  }
+
+                  if (strRH.find(RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_CODE) != string::npos)
+                  {
+                     m_bTotCliffCollapseDepositionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_CLIFF_COLLAPSE_DEPOSITION_CODE);
+                  }
+
+                  if (strRH.find(RASTER_POLYGON_CODE) != string::npos)
+                  {
+                     m_bRasterPolygonSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_POLYGON_CODE);
+                  }
+
+                  if (strRH.find(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_CODE) != string::npos)
+                  {
+                     m_bPotentialPlatformErosionMaskSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_POTENTIAL_PLATFORM_EROSION_MASK_CODE);
+                  }
+
+                  if (strRH.find(RASTER_INUNDATION_MASK_CODE) != string::npos)
+                  {
+                     m_bSeaMaskSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_INUNDATION_MASK_CODE);
+                  }
+
+                  if (strRH.find(RASTER_BEACH_MASK_CODE) != string::npos)
+                  {
+                     m_bBeachMaskSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_BEACH_MASK_CODE);
+                  }
+
+                  if (strRH.find(RASTER_INTERVENTION_CLASS_CODE) != string::npos)
+                  {
+                     m_bInterventionClassSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_INTERVENTION_CLASS_CODE);
+                  }
+
+                  if (strRH.find(RASTER_INTERVENTION_HEIGHT_CODE) != string::npos)
+                  {
+                     m_bInterventionHeightSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_INTERVENTION_HEIGHT_CODE);
+                  }
+
+                  if (strRH.find(RASTER_SHADOW_ZONE_CODE) != string::npos)
+                  {
+                     m_bShadowZoneCodesSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_SHADOW_ZONE_CODE);
+                  }
+
+                  if (strRH.find(RASTER_DEEP_WATER_WAVE_ORIENTATION_CODE) != string::npos)
+                  {
+                     m_bDeepWaterWaveAngleSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_ORIENTATION_CODE);
+                  }
+
+                  if (strRH.find(RASTER_DEEP_WATER_WAVE_HEIGHT_CODE) != string::npos)
+                  {
+                     m_bDeepWaterWaveHeightSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_HEIGHT_CODE);
+                  }
+
+                  if (strRH.find(RASTER_DEEP_WATER_WAVE_PERIOD_CODE) != string::npos)
+                  {
+                     m_bDeepWaterWavePeriodSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_DEEP_WATER_WAVE_PERIOD_CODE);
+                  }
+
+                  if (strRH.find(RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_CODE) != string::npos)
+                  {
+                     m_bPolygonUnconsSedUpOrDownDrift = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_CODE);
+                  }
+
+                  if (strRH.find(RASTER_POLYGON_GAIN_OR_LOSS_CODE) != string::npos)
+                  {
+                     m_bPolygonUnconssedGainOrLoss = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_POLYGON_GAIN_OR_LOSS_CODE);
+                  }
+
+                  if (strRH.find(RASTER_BEACH_DEPOSITION_CODE) != string::npos)
+                  {
+                     m_bBeachDepositionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_BEACH_DEPOSITION_CODE);
+                  }
+
+                  if (strRH.find(RASTER_TOTAL_BEACH_DEPOSITION_CODE) != string::npos)
+                  {
+                     m_bTotalBeachDepositionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_BEACH_DEPOSITION_CODE);
+                  }
+
+                  if (strRH.find(RASTER_LOCAL_SLOPE_CODE) != string::npos)
+                  {
+//                     m_bTotalBeachDepositionSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_LOCAL_SLOPE_CODE);
+                  }
+
+                  // Check to see if all codes have been removed
+                  if (! strRH.empty())
+                     strErr = "unknown code '" + strRH + "' in list of raster GIS output files";
+               }
             }
             break;
 

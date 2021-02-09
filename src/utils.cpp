@@ -681,21 +681,28 @@ string CSimulation::strListRasterFiles(void) const
 {
    string strTmp;
 
+   if (m_bRasterGISSaveAll)
+   {
+      strTmp.append("all raster GIS files");
+      return strTmp;
+   }
+
+   // Not saving all raster GIS files
    if (m_bBasementElevSave)
    {
-      strTmp.append(RASTER_BASEMENT_ELEVATION_NAME);
+      strTmp.append(RASTER_BASEMENT_ELEVATION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bSedimentTopSurfSave)
    {
-      strTmp.append(RASTER_SEDIMENT_TOP_NAME);
+      strTmp.append(RASTER_SEDIMENT_TOP_CODE);
       strTmp.append(", ");
    }
 
    if (m_bTopSurfSave)
    {
-      strTmp.append(RASTER_TOP_NAME);
+      strTmp.append(RASTER_TOP_CODE);
       strTmp.append(", ");
    }
 
@@ -707,193 +714,210 @@ string CSimulation::strListRasterFiles(void) const
 
    if (m_bAvgSeaDepthSave)
    {
-      strTmp.append(RASTER_AVG_SEA_DEPTH_NAME);
+      strTmp.append(RASTER_AVG_SEA_DEPTH_CODE);
       strTmp.append(", ");
    }
 
    if (m_bSeaMaskSave)
    {
-      strTmp.append(RASTER_INUNDATION_MASK_NAME);
+      strTmp.append(RASTER_INUNDATION_MASK_CODE);
       strTmp.append(", ");
    }
 
    if (m_bWaveHeightSave)
    {
-      strTmp.append(RASTER_WAVE_HEIGHT_NAME);
+      strTmp.append(RASTER_WAVE_HEIGHT_CODE);
+      strTmp.append(", ");
+   }
+
+   if (m_bWaveAngleSave)
+   {
+      strTmp.append(RASTER_WAVE_ORIENTATION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bAvgWaveHeightSave)
    {
-      strTmp.append(RASTER_AVG_WAVE_HEIGHT_NAME);
+      strTmp.append(RASTER_AVG_WAVE_HEIGHT_CODE);
       strTmp.append(", ");
    }
 
    if (m_bBeachProtectionSave)
    {
-      strTmp.append(RASTER_BEACH_PROTECTION_NAME);
+      strTmp.append(RASTER_BEACH_PROTECTION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bPotentialPlatformErosionSave)
    {
-      strTmp.append(RASTER_POTENTIAL_PLATFORM_EROSION_NAME);
+      strTmp.append(RASTER_POTENTIAL_PLATFORM_EROSION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bPotentialPlatformErosionMaskSave)
    {
-      strTmp.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_NAME);
+      strTmp.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_CODE);
+      strTmp.append(", ");
+   }
+
+   if (m_bBeachDepositionSave)
+   {
+      strTmp.append(RASTER_BEACH_DEPOSITION_CODE);
+      strTmp.append(", ");
+   }
+
+   if (m_bTotalBeachDepositionSave)
+   {
+      strTmp.append(RASTER_TOTAL_BEACH_DEPOSITION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bBeachMaskSave)
    {
-      strTmp.append(RASTER_BEACH_MASK_NAME);
+      strTmp.append(RASTER_BEACH_MASK_CODE);
       strTmp.append(", ");
    }
 
    if (m_bActualPlatformErosionSave)
    {
-      strTmp.append(RASTER_ACTUAL_PLATFORM_EROSION_NAME);
+      strTmp.append(RASTER_ACTUAL_PLATFORM_EROSION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bTotalPotentialPlatformErosionSave)
    {
-      strTmp.append(RASTER_TOTAL_POTENTIAL_PLATFORM_EROSION_NAME);
+      strTmp.append(RASTER_TOTAL_POTENTIAL_PLATFORM_EROSION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bTotalActualPlatformErosionSave)
    {
-      strTmp.append(RASTER_TOTAL_ACTUAL_PLATFORM_EROSION_NAME);
+      strTmp.append(RASTER_TOTAL_ACTUAL_PLATFORM_EROSION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bPotentialBeachErosionSave)
    {
-      strTmp.append(RASTER_POTENTIAL_BEACH_EROSION_NAME);
+      strTmp.append(RASTER_POTENTIAL_BEACH_EROSION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bActualBeachErosionSave)
    {
-      strTmp.append(RASTER_ACTUAL_BEACH_EROSION_NAME);
+      strTmp.append(RASTER_ACTUAL_BEACH_EROSION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bTotalPotentialBeachErosionSave)
    {
-      strTmp.append(RASTER_TOTAL_POTENTIAL_BEACH_EROSION_NAME);
+      strTmp.append(RASTER_TOTAL_POTENTIAL_BEACH_EROSION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bTotalActualBeachErosionSave)
    {
-      strTmp.append(RASTER_TOTAL_ACTUAL_BEACH_EROSION_NAME);
+      strTmp.append(RASTER_TOTAL_ACTUAL_BEACH_EROSION_CODE);
       strTmp.append(", ");
    }
 
    if (m_bLandformSave)
    {
-      strTmp.append(RASTER_LANDFORM_NAME);
+      strTmp.append(RASTER_LANDFORM_CODE);
+      strTmp.append(", ");
+   }
+   if (m_bLocalSlopeSave)
+   {
+      strTmp.append(RASTER_LOCAL_SLOPE_CODE);
       strTmp.append(", ");
    }
 
    if (m_bInterventionClassSave)
    {
-      strTmp.append(RASTER_INTERVENTION_CLASS_NAME);
+      strTmp.append(RASTER_INTERVENTION_CLASS_CODE);
       strTmp.append(", ");
    }
 
    if (m_bInterventionHeightSave)
    {
-      strTmp.append(RASTER_INTERVENTION_HEIGHT_NAME);
+      strTmp.append(RASTER_INTERVENTION_HEIGHT_CODE);
       strTmp.append(", ");
    }
 
    if (m_bHaveFineSediment && m_bSuspSedSave)
    {
-      strTmp.append(RASTER_SUSP_SED_NAME);
+      strTmp.append(RASTER_SUSP_SED_CODE);
       strTmp.append(", ");
    }
 
    if (m_bHaveFineSediment && m_bAvgSuspSedSave)
    {
-      strTmp.append(RASTER_AVG_SUSP_SED_NAME);
+      strTmp.append(RASTER_AVG_SUSP_SED_CODE);
       strTmp.append(", ");
    }
 
    if (m_bHaveFineSediment && m_bFineUnconsSedSave)
    {
-      strTmp.append(RASTER_FINE_UNCONS_NAME);
+      strTmp.append(RASTER_FINE_UNCONS_CODE);
       strTmp.append(", ");
    }
 
    if (m_bHaveSandSediment && m_bSandUnconsSedSave)
    {
-      strTmp.append(RASTER_SAND_UNCONS_NAME);
+      strTmp.append(RASTER_SAND_UNCONS_CODE);
       strTmp.append(", ");
    }
 
    if (m_bHaveCoarseSediment && m_bCoarseUnconsSedSave)
    {
-      strTmp.append(RASTER_COARSE_UNCONS_NAME);
+      strTmp.append(RASTER_COARSE_UNCONS_CODE);
       strTmp.append(", ");
    }
 
    if (m_bHaveFineSediment && m_bFineConsSedSave)
    {
-      strTmp.append(RASTER_FINE_CONS_NAME);
+      strTmp.append(RASTER_FINE_CONS_CODE);
       strTmp.append(", ");
    }
 
    if (m_bHaveSandSediment && m_bSandConsSedSave)
    {
-      strTmp.append(RASTER_SAND_CONS_NAME);
+      strTmp.append(RASTER_SAND_CONS_CODE);
       strTmp.append(", ");
    }
 
    if (m_bHaveCoarseSediment && m_bCoarseConsSedSave)
    {
-      strTmp.append(RASTER_COARSE_CONS_NAME);
+      strTmp.append(RASTER_COARSE_CONS_CODE);
       strTmp.append(", ");
    }
 
    if (m_bRasterCoastlineSave)
    {
-      strTmp.append(RASTER_COAST_NAME);
+      strTmp.append(RASTER_COAST_CODE);
       strTmp.append(", ");
    }
 
    if (m_bRasterNormalSave)
    {
-      strTmp.append(RASTER_COAST_NORMAL_NAME);
+      strTmp.append(RASTER_COAST_NORMAL_CODE);
       strTmp.append(", ");
    }
 
    if (m_bActiveZoneSave)
    {
-      strTmp.append(RASTER_ACTIVE_ZONE_NAME);
+      strTmp.append(RASTER_ACTIVE_ZONE_CODE);
       strTmp.append(", ");
    }
 
    if (m_bRasterPolygonSave)
    {
-      strTmp.append(RASTER_POLYGON_NAME);
+      strTmp.append(RASTER_POLYGON_CODE);
       strTmp.append(", ");
    }
 
    if (m_bPotentialPlatformErosionMaskSave)
    {
-      strTmp.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_NAME );
-      strTmp.append(", ");
-   }
-
-   if (m_bBeachMaskSave)
-   {
-      strTmp.append(RASTER_BEACH_MASK_NAME );
+      strTmp.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_CODE );
       strTmp.append(", ");
    }
 
@@ -1626,7 +1650,7 @@ string CSimulation::strDispSimTime(const double dTimeIn)
    // Display Julian days
    if (dTmpTime >= dHoursInDay)
    {
-      double dJDays = dTmpTime / dHoursInDay;
+      double dJDays = floor(dTmpTime / dHoursInDay);
       dTmpTime -= (dJDays * dHoursInDay);
 
       stringstream ststrTmp;
@@ -1744,8 +1768,6 @@ void CSimulation::AnnounceProgress(void)
       // Stdout is connected to a tty, so not running as a background job
       static double sdElapsed = 0;
       static double sdToGo = 0;
-
-      // Update time elapsed and time remaining every nInterval timesteps
       time_t tNow = time(nullptr);
 
       // Calculate time elapsed and remaining
@@ -2463,18 +2485,24 @@ string CSimulation::strToLower(string const* strIn)
 
 /*==============================================================================================================================
 
- Returns a string with a substring removed
+ Returns a string with a substring removed, and with whitespace trimmed
 
 ==============================================================================================================================*/
-string CSimulation::strRemoveSubstr(string* strIn, string const* strSub)
+string CSimulation::strRemoveSubstr(string* pStrIn, string const* pStrSub)
 {
-   size_t nPos = strIn->find(*strSub);
+   size_t nPos = pStrIn->find(*pStrSub);
 
-   // If not found, return the string unchanged
    if (nPos != string::npos)
-      strIn->replace(nPos, strSub->size(), "");
-
-   return *strIn;
+   {
+      // OK, found the substring
+      pStrIn->replace(nPos, pStrSub->size(), "");
+      return strTrim(pStrIn);
+   }
+   else
+   {
+      // If not found, return the string unchanged
+      return *pStrIn;
+   }
 }
 
 

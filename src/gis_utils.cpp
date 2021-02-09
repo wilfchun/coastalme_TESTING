@@ -987,63 +987,78 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
    else
       m_nThisSave = tMin(++m_nThisSave, m_nUSave);
 
-   // These are always written
-   if (! bWriteRasterGIS(RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV, &RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV_TITLE))
-      return false;
+   if (m_bSedimentTopSurfSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV, &RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV_TITLE))
+         return false;
 
-   // These are always written
-   if (! bWriteRasterGIS(RASTER_PLOT_OVERALL_TOP_ELEVATION, &RASTER_PLOT_OVERALL_TOP_ELEVATION_TITLE))
-      return false;
+   if (m_bTopSurfSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_OVERALL_TOP_ELEVATION, &RASTER_PLOT_OVERALL_TOP_ELEVATION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT_TITLE))
-      return false;
+   if (m_bLocalSlopeSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_SEA_DEPTH, &RASTER_PLOT_SEA_DEPTH_TITLE))
-      return false;
+   if (m_bSeaDepthSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_SEA_DEPTH, &RASTER_PLOT_SEA_DEPTH_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_WAVE_HEIGHT, &RASTER_PLOT_WAVE_HEIGHT_TITLE))
-      return false;
+   if (m_bWaveHeightSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_WAVE_HEIGHT, &RASTER_PLOT_WAVE_HEIGHT_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_WAVE_ORIENTATION, &RASTER_PLOT_WAVE_ORIENTATION_TITLE))
-      return false;
+   if (m_bWaveAngleSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_WAVE_ORIENTATION, &RASTER_PLOT_WAVE_ORIENTATION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_BEACH_PROTECTION, &RASTER_PLOT_BEACH_PROTECTION_TITLE))
-      return false;
+   if (m_bBeachProtectionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_BEACH_PROTECTION, &RASTER_PLOT_BEACH_PROTECTION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_TITLE))
-      return false;
+   if (m_bPotentialPlatformErosionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_ACTUAL_PLATFORM_EROSION_TITLE))
-      return false;
+   if (m_bActualPlatformErosionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_ACTUAL_PLATFORM_EROSION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION_TITLE))
-      return false;
+   if (m_bTotalPotentialPlatformErosionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION_TITLE))
-      return false;
+   if (m_bTotalActualPlatformErosionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_POTENTIAL_BEACH_EROSION_TITLE))
-      return false;
+   if (m_bPotentialBeachErosionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_POTENTIAL_BEACH_EROSION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_ACTUAL_BEACH_EROSION, &RASTER_PLOT_ACTUAL_BEACH_EROSION_TITLE))
-      return false;
+   if (m_bActualBeachErosionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_ACTUAL_BEACH_EROSION, &RASTER_PLOT_ACTUAL_BEACH_EROSION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION_TITLE))
-      return false;
+   if (m_bTotalPotentialBeachErosionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION_TITLE))
-      return false;
+   if (m_bTotalActualBeachErosionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_BEACH_DEPOSITION, &RASTER_PLOT_BEACH_DEPOSITION_TITLE))
-      return false;
+   if (m_bBeachDepositionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_BEACH_DEPOSITION, &RASTER_PLOT_BEACH_DEPOSITION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_BEACH_DEPOSITION, &RASTER_PLOT_TOTAL_BEACH_DEPOSITION_TITLE))
-      return false;
+   if (m_bTotalBeachDepositionSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_TOTAL_BEACH_DEPOSITION, &RASTER_PLOT_TOTAL_BEACH_DEPOSITION_TITLE))
+         return false;
 
-   if (! bWriteRasterGIS(RASTER_PLOT_LANDFORM, &RASTER_PLOT_LANDFORM_TITLE))
-      return false;
+   if (m_bLandformSave)
+      if (! bWriteRasterGIS(RASTER_PLOT_LANDFORM, &RASTER_PLOT_LANDFORM_TITLE))
+         return false;
 
-   // These are optional
    if (m_bAvgWaveHeightSave)
       if (! bWriteRasterGIS(RASTER_PLOT_AVG_WAVE_HEIGHT, &RASTER_PLOT_AVG_WAVE_HEIGHT_TITLE))
          return false;
