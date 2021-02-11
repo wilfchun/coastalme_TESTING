@@ -89,6 +89,50 @@ void CSimulation::WriteStartRunDetails(void)
       << m_strDataPathName << endl;
 #endif
 
+   OutStream << " Main output file (this file)                              \t: "
+#ifdef _WIN32
+      << pstrChangeToForwardSlash(&m_strOutFile) << OUTEXT << endl;
+#else
+      << m_strOutFile << OUTEXT << endl;
+#endif
+
+   LogStream << "Main output file                                          \t: "
+#ifdef _WIN32
+      << pstrChangeToForwardSlash(&m_strOutFile) << OUTEXT << endl;
+#else
+      << m_strOutFile << OUTEXT << endl;
+#endif
+
+   OutStream << " Log file                                                  \t: "
+#ifdef _WIN32
+   << pstrChangeToForwardSlash(&m_strOutFile) << LOGEXT << endl;
+#else
+   << m_strOutFile << LOGEXT << endl;
+#endif
+
+   LogStream << "Log file (this file)                                      \t: "
+#ifdef _WIN32
+   << pstrChangeToForwardSlash(&m_strOutFile) << LOGEXT << endl;
+#else
+   << m_strOutFile << LOGEXT << endl;
+#endif
+
+   OutStream << " Level of Log detail                                       \t: ";
+   if (m_nLogFileDetail == LOG_FILE_LEAST_DETAIL)
+      OutStream << "1 (least detail)" << endl;
+   else if (m_nLogFileDetail == LOG_FILE_MIDDLE_DETAIL)
+      OutStream << "1 (medium detail)" << endl;
+   else if (m_nLogFileDetail == LOG_FILE_MOST_DETAIL)
+      OutStream << "1 (most detail)" << endl;
+
+   LogStream << "Level of Log detail                                       \t: ";
+   if (m_nLogFileDetail == LOG_FILE_LEAST_DETAIL)
+      LogStream << "1 (least detail)" << endl;
+   else if (m_nLogFileDetail == LOG_FILE_MIDDLE_DETAIL)
+      LogStream << "1 (medium detail)" << endl;
+   else if (m_nLogFileDetail == LOG_FILE_MOST_DETAIL)
+      LogStream << "1 (most detail)" << endl << endl;
+
    OutStream << " Simulation start date/time                                \t: ";
    // hh:mm:ss dd/mm/yyyy
    char cPrev = OutStream.fill('0');
@@ -631,7 +675,7 @@ bool CSimulation::bWritePerTimestepResults(void)
 bool CSimulation::bWriteTSFiles(void)
 {
    // Sea area
-   if (m_bSeaAreaTS)
+   if (m_bSeaAreaTSSave)
    {
       // Output in external CRS units
       SeaAreaTSStream << m_dSimElapsed << "\t,\t" << m_dExtCRSGridArea * static_cast<double>(m_ulThisTimestepNumSeaCells) / static_cast<double>(m_ulNumCells) << endl;
@@ -642,7 +686,7 @@ bool CSimulation::bWriteTSFiles(void)
    }
 
    // Still water level
-   if (m_bStillWaterLevelTS)
+   if (m_bStillWaterLevelTSSave)
    {
       // Output as is (m)
       StillWaterLevelTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepSWL << endl;
@@ -653,7 +697,7 @@ bool CSimulation::bWriteTSFiles(void)
    }
 
    // Actual platform erosion (fine, sand, and coarse)
-   if (m_bActualPlatformErosionTS)
+   if (m_bActualPlatformErosionTSSave)
    {
       // Output as is (m depth equivalent)
       ErosionTSStream << m_dSimElapsed  << "\t,\t" << m_dThisTimestepActualPlatformErosionFine << ",\t" << m_dThisTimestepActualPlatformErosionSand << ",\t" << m_dThisTimestepActualPlatformErosionCoarse << endl;
@@ -664,7 +708,7 @@ bool CSimulation::bWriteTSFiles(void)
    }
 
    // Cliff collapse erosion (fine, sand, and coarse)
-   if (m_bCliffCollapseErosionTS)
+   if (m_bCliffCollapseErosionTSSave)
    {
       // Output as is (m depth equivalent)
       CliffCollapseErosionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepCliffCollapseErosionFine << ",\t" << m_dThisTimestepCliffCollapseErosionSand << ",\t" << m_dThisTimestepCliffCollapseErosionCoarse << endl;
@@ -675,7 +719,7 @@ bool CSimulation::bWriteTSFiles(void)
    }
 
    // Cliff collapse deposition (sand and coarse)
-   if (m_bCliffCollapseDepositionTS)
+   if (m_bCliffCollapseDepositionTSSave)
    {
       // Output as is (m depth equivalent)
       CliffCollapseDepositionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepCliffDepositionSand << ",\t" << m_dThisTimestepCliffDepositionCoarse << endl;
@@ -686,7 +730,7 @@ bool CSimulation::bWriteTSFiles(void)
    }
 
    // Cliff collapse net
-   if (m_bCliffCollapseNetTS)
+   if (m_bCliffCollapseNetTSSave)
    {
       // Output as is (m depth equivalent)
       CliffCollapseNetTSStream << noshowpos << m_dSimElapsed << "\t,\t" << showpos << -m_dThisTimestepCliffErosionFine + (m_dThisTimestepCliffDepositionSand - m_dThisTimestepCliffTalusSandErosion) + (m_dThisTimestepCliffDepositionCoarse - m_dThisTimestepCliffTalusCoarseErosion) << endl;
@@ -697,7 +741,7 @@ bool CSimulation::bWriteTSFiles(void)
    }
 
    // Beach erosion (fine, sand, and coarse)
-   if (m_bBeachErosionTS)
+   if (m_bBeachErosionTSSave)
    {
       // Output as is (m depth equivalent)
       BeachErosionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepActualBeachErosionFine << ",\t" << m_dThisTimestepActualBeachErosionSand << ",\t" << m_dThisTimestepActualBeachErosionCoarse << endl;
@@ -708,7 +752,7 @@ bool CSimulation::bWriteTSFiles(void)
    }
 
    // Beach deposition (sand and coarse)
-   if (m_bBeachDepositionTS)
+   if (m_bBeachDepositionTSSave)
    {
       // Output as is (m depth equivalent)
       BeachDepositionTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepBeachDepositionSand << ",\t" << m_dThisTimestepBeachDepositionCoarse << endl;
@@ -719,7 +763,7 @@ bool CSimulation::bWriteTSFiles(void)
    }
 
    // Net change in beach sediment
-   if (m_bBeachSedimentChangeNetTS)
+   if (m_bBeachSedimentChangeNetTSSave)
    {
       // Output as is (m depth equivalent)
       BeachSedimentChangeNetTSStream << noshowpos << m_dSimElapsed << "\t,\t" << showpos << -m_dThisTimestepActualBeachErosionFine + (m_dThisTimestepBeachDepositionSand - m_dThisTimestepActualBeachErosionSand) + (m_dThisTimestepBeachDepositionCoarse - m_dThisTimestepActualBeachErosionCoarse) << endl;
@@ -729,7 +773,7 @@ bool CSimulation::bWriteTSFiles(void)
          return false;
    }
 
-   if (m_bSuspSedTS)
+   if (m_bSuspSedTSSave)
    {
       // Output as is (m depth equivalent)
       SedLoadTSStream << m_dSimElapsed << "\t,\t" << m_dThisTimestepFineSedimentToSuspension << endl;

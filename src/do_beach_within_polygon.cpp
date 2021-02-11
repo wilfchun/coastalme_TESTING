@@ -155,7 +155,8 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
       // Safety check
       if (! bIsWithinValidGrid(nParProfEndX, nParProfEndY))
       {
-         LogStream << WARN << "while eroding beach erosion for coast " << nCoast << " polygon " << nPoly << ", hit edge of grid at [" << nParProfEndX << "][" << nParProfEndY << "] for parallel profile from coast point " << nCoastPoint << " at [" << nCoastX << "][" << nCoastY << "]. Constraining this parallel profile at its seaward end" << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << WARN << "while eroding beach erosion for coast " << nCoast << " polygon " << nPoly << ", hit edge of grid at [" << nParProfEndX << "][" << nParProfEndY << "] for parallel profile from coast point " << nCoastPoint << " at [" << nCoastX << "][" << nCoastY << "]. Constraining this parallel profile at its seaward end" << endl;
 
          KeepWithinValidGrid(nCoastX, nCoastY, nParProfEndX, nParProfEndY);
          VPtiParProfile[0].SetX(nParProfEndX);
@@ -194,7 +195,8 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
          {
             if (nInlandOffset > (pUpCoastProfile->nGetNumCellsInProfile()-1))
             {
-               LogStream << m_ulIter << ": reached end of up-coast profile " << nUpCoastProfile << " during down-coast beach erosion for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
+               if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                  LogStream << m_ulIter << ": reached end of up-coast profile " << nUpCoastProfile << " during down-coast beach erosion for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nInlandOffset = " << nInlandOffset << ")" << endl;
 
                bEndProfile = true;
                break;
@@ -306,7 +308,8 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
             // Safety check
             if (! bIsWithinValidGrid(nX, nY))
             {
-               LogStream << WARN << "while constructing parallel profile for beach erosion on coast " << nCoast << " polygon " << nPoly << ", hit edge of grid at [" << nX << "][" << nY << "] for parallel profile from coast point " << nCoastPoint << " at [" << nCoastX << "][" << nCoastY << "]. Constraining this parallel profile at its seaward end" << endl;
+               if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                  LogStream << WARN << "while constructing parallel profile for beach erosion on coast " << nCoast << " polygon " << nPoly << ", hit edge of grid at [" << nX << "][" << nY << "] for parallel profile from coast point " << nCoastPoint << " at [" << nCoastX << "][" << nCoastY << "]. Constraining this parallel profile at its seaward end" << endl;
 
                bVProfileValid[m] = false;
                continue;
@@ -370,7 +373,8 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
          // We have not been able to reach the erosion target for this parallel profile. Now, if we have moved at least MIN_INLAND_OFFSET_FOR_BEACH_EROSION_ESTIMATION cells inland, and dParProfTotDiff is zero, break out of the loop
          if ((nInlandOffset >= MIN_INLAND_OFFSET_FOR_BEACH_EROSION_ESTIMATION) && (bFPIsEqual(dParProfTotDiff, 0, TOLERANCE)))
          {
-            LogStream << m_ulIter << ": leaving loop because nInlandOffset (" << nInlandOffset << ") >= MIN_INLAND_OFFSET_FOR_BEACH_EROSION_ESTIMATION) and dParProfTotDiff = " << dParProfTotDiff << endl;
+            if (m_nLogFileDetail >= LOG_FILE_MOST_DETAIL)
+               LogStream << m_ulIter << ": leaving loop because nInlandOffset (" << nInlandOffset << ") >= MIN_INLAND_OFFSET_FOR_BEACH_EROSION_ESTIMATION) and dParProfTotDiff = " << dParProfTotDiff << endl;
             break;
          }
 
@@ -446,16 +450,21 @@ int CSimulation::nDoBeachErosionOnPolygon(int const nCoast, int const nPoly, dou
 
    // Is the depth eroded within TOLERANCE of the target depth-equivalent?
    if (bFPIsEqual(dTotalErosion, dErosionTarget, TOLERANCE))
-      LogStream << m_ulIter << ": polygon " << nPoly << " actual beach erosion approx equal to target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << endl;
+   {
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+         LogStream << m_ulIter << ": polygon " << nPoly << " actual beach erosion approx equal to target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << endl;
+   }
    else
    {
       if (dTotalErosion < dErosionTarget)
       {
-         LogStream << m_ulIter << ": on polygon " << nPoly << " actual beach erosion is less than target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << ", will reduce sediment exported from this polygon" << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": on polygon " << nPoly << " actual beach erosion is less than target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << ", will reduce sediment exported from this polygon" << endl;
       }
       else
       {
-         LogStream << ERR << "on polygon " << nPoly << " actual beach erosion is GREATER THAN target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << ERR << "on polygon " << nPoly << " actual beach erosion is GREATER THAN target beach erosion: actual = " << dTotalErosion << " target = " << dErosionTarget << " difference = " << -(dErosionTarget - dTotalErosion) << " dStillToErodeOnPolygon = " << dStillToErodeOnPolygon << endl;
       }
 
       double dTotError = dErosionTarget - dTotalErosion;
@@ -875,7 +884,8 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
          if (nParProfLen > (pUpCoastProfile->nGetNumCellsInProfile()))
          {
             // We've reached the seaward end of the up-coast profile, and still cannot deposit sufficient sediment. Need to quit, since mass balance will not be preserved (TODO find a way round this)
-            LogStream << m_ulIter << ": " << WARN << "reached seaward end of up-coast profile during DOWN-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
+            if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+               LogStream << m_ulIter << ": " << WARN << "reached seaward end of up-coast profile during DOWN-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
 
             break;
          }
@@ -897,7 +907,8 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
          // Safety check
          if (! bIsWithinValidGrid(nSeaEndX, nSeaEndY))
          {
-            LogStream << WARN << "09 @@@@ while doing DOWN-COAST deposition on polygon " << nPoly << ", hit edge of grid at [" << nSeaEndX << "][" << nSeaEndY << "] for parallel profile from coast point " << nCoastPoint << " at [" << nCoastX << "][" << nCoastY << "]. Constraining this parallel profile at its seaward end" << endl;
+            if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+               LogStream << WARN << "09 @@@@ while doing DOWN-COAST deposition on polygon " << nPoly << ", hit edge of grid at [" << nSeaEndX << "][" << nSeaEndY << "] for parallel profile from coast point " << nCoastPoint << " at [" << nCoastX << "][" << nCoastY << "]. Constraining this parallel profile at its seaward end" << endl;
 
             KeepWithinValidGrid(nCoastX, nCoastY, nSeaEndX, nSeaEndY);
             PtiVParProfile.back().SetX(nSeaEndX);
@@ -1337,7 +1348,8 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
             if (nParProfLen > (pDownCoastProfile->nGetNumCellsInProfile()))
             {
                // We've reached the seaward end of the down-coast profile, and still cannot deposit sufficient sediment. Need to quit, since mass balance will not be preserved (TODO find a way round this)
-               LogStream << m_ulIter << ": " << WARN << "reached seaward end of down-coast profile during UP-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
+               if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                  LogStream << m_ulIter << ": " << WARN << "reached seaward end of down-coast profile during UP-COAST deposition of unconsolidated sediment for coast " << nCoast << " polygon " << nPoly << " (nCoastPoint = " << nCoastPoint << " nSeawardOffset = " << nSeawardOffset << ")" << endl;
 
                break;
             }
@@ -1725,7 +1737,8 @@ int CSimulation::nDoBeachDepositionOnPolygon(int const nCoast, int const nPoly, 
       }
    }
 
-   LogStream << m_ulIter << ": polygon " << nPoly << " " << strMsg << " deposited = " << (dTotSandDeposited + dTotCoarseDeposited) * m_dCellArea << " target = " << dTotTargetToDeposit * m_dCellArea << " (sand = " << dTotSandDeposited * m_dCellArea << " sand remaining = " << dSandToDepositOnPoly * m_dCellArea << " coarse = " << dTotCoarseDeposited * m_dCellArea << " coarse remaining = " << dCoarseToDepositOnPoly * m_dCellArea << "), all m^3" << endl;
+   if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+      LogStream << m_ulIter << ": polygon " << nPoly << " " << strMsg << " deposited = " << (dTotSandDeposited + dTotCoarseDeposited) * m_dCellArea << " target = " << dTotTargetToDeposit * m_dCellArea << " (sand = " << dTotSandDeposited * m_dCellArea << " sand remaining = " << dSandToDepositOnPoly * m_dCellArea << " coarse = " << dTotCoarseDeposited * m_dCellArea << " coarse remaining = " << dCoarseToDepositOnPoly * m_dCellArea << "), all m^3" << endl;
 
    return RTN_OK;
 }

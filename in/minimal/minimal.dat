@@ -22,6 +22,7 @@
 ;
 ; Run information -----------------------------------------------------------------------------------------------------
 Main output/log file names                                          [omit path and extension]: minimal
+Content of log file                                       [1 = least detail, 3 = most detail]: 1
 
 Simulation start date and time                                          [hh-mm-ss dd/mm/yyyy]: 00-00-00 01/01/1999
 Duration of simulation                                           [hours, days, months, years]: 30 days
@@ -30,14 +31,14 @@ Save times                                                       [hours, days, m
 
 Random number seed(s)                                                                        : 280764
 
-GIS raster files to output                                                    [see codes.txt]: sea_depth beach_mask ; all
+GIS raster files to output                                         ["all", or from codes.txt]: sea_depth beach_mask cliff_collapse polygon_gain_or_loss  ; all
 GIS raster output format                                          [blank = same as DEM input]: gtiff                    ; gdal-config --formats for others
    If needed, also output GIS raster world file?                                        [y/n]: y
    If needed, scale GIS raster output values?                                           [y/n]: y
 GIS raster 'slice' elevation(s) (m)                                                          :
-GIS vector files to output                                                    [see codes.txt]: normals  ;all
+GIS vector files to output                                         ["all", or from codes.txt]: normals  ;all
 GIS vector output format                                                                     : ESRI Shapefile           ; ogrinfo --formats for others
-Time series files to output                                                   [see codes.txt]: sea_area ; all
+Time series files to output                                        ["all", or from codes.txt]: beach_change_net   ;all
 
 Coastline smoothing                          [0 = none, 1 = running mean, 2 = Savitsky-Golay]: 2
 Coastline smoothing window size                                                 [must be odd]: 7

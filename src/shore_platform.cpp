@@ -103,8 +103,12 @@ int CSimulation::nDoAllShorePlatFormErosion(void)
       }
    }
 
-   LogStream << endl << m_ulIter << ": potential shore platform erosion (m^3) = " << m_dThisTimestepPotentialPlatformErosion * m_dCellArea << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles * m_dCellArea << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles * m_dCellArea << ")" << endl;
-   LogStream << m_ulIter << ": actual shore platform erosion (m^3) = " << (m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepActualPlatformErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepActualPlatformErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepActualPlatformErosionCoarse * m_dCellArea << ")" << endl;
+   if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+   {
+      LogStream << endl << m_ulIter << ": potential shore platform erosion (m^3) = " << m_dThisTimestepPotentialPlatformErosion * m_dCellArea << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles * m_dCellArea << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles * m_dCellArea << ")" << endl;
+
+      LogStream << m_ulIter << ": actual shore platform erosion (m^3) = " << (m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepActualPlatformErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepActualPlatformErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepActualPlatformErosionCoarse * m_dCellArea << ")" << endl;
+   }
 
    return RTN_OK;
 }
@@ -400,7 +404,8 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       if (dDepthOfBreaking == DBL_NODATA)
       {
          // This parallel profile is not in the active zone, so no platform erosion here. Move on to the next point along the coastline in this direction
-         LogStream << m_ulIter << ": not in active zone at coastline " << nCoast << " coast point " << nThisPointOnCoast << " when constructing parallel profile for potential platform erosion. Working from profile " << nProfile << ", " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast, dist from profile = " <<  nDistFromProfile << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": not in active zone at coastline " << nCoast << " coast point " << nThisPointOnCoast << " when constructing parallel profile for potential platform erosion. Working from profile " << nProfile << ", " << (nDirection == DIRECTION_DOWNCOAST ? "down" : "up") << "-coast, dist from profile = " <<  nDistFromProfile << endl;
 
          continue;
       }
@@ -415,7 +420,8 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       if ((nParCoastX == nParCoastXLast) && (nParCoastY == nParCoastYLast))
       {
          // Should not happen, but could do due to rounding errors
-         LogStream << WARN << m_ulIter << ": rounding problem on coast " << nCoast << " profile " << nProfile << " at [" << nParCoastX << "][" << nParCoastY << "]" << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MOST_DETAIL)
+            LogStream << WARN << m_ulIter << ": rounding problem on coast " << nCoast << " profile " << nProfile << " at [" << nParCoastX << "][" << nParCoastY << "]" << endl;
 
          // So move on to the next point along the coastline in this direction
          continue;
@@ -925,7 +931,8 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       else
       {
          // Uh-oh, we have a problem
-         LogStream << m_ulIter << ": " << WARN << "platform erosion on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} but this is not in a polygon" << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": " << WARN << "platform erosion on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} but this is not in a polygon" << endl;
 
          m_dThisTimestepMassBalanceDepositionError += (dSandEroded + dCoarseEroded);
       }

@@ -156,9 +156,9 @@ char const     TILDE                                                       = '~'
 bool const     USE_DEEP_WATER_FOR_SHADOW_LINE                              = true;        // Use deep water wave orientation in determining shadow line orientation?
 bool const     CREATE_SHADOW_ZONE_IF_HITS_GRID_EDGE                        = true;        // If shadow line tracing hits grid edge, create shadow zone?
 bool const     SAVE_CSHORE_OUTPUT                                          = true;        // #ifdef CSHORE_FILE_INOUT || CSHORE_BOTH, append all CShore output files to a whole-run master
+
 // TODO Make this a user input
 bool const     ACCEPT_SHORT_PROFILES                                       = true;
-
 
 int const      BUF_SIZE                                                    = 2048;        // Max length (inc. terminating NULL) of any C-type string
 int const      MAX_SAVE_DIGITS                                             = 3;           // Maximum number of digits for GIS save number
@@ -176,6 +176,11 @@ int const      MAX_LEN_SHADOW_LINE_TO_IGNORE                               = 200
 int const      MIN_PAR_PROFILE_SIZE                                        = 3;           // In cells: min size for uncons sed parallel profile
 int const      MAX_NUM_PREV_ORIENTATION_VALUES                             = 10;          // Max length of deque used in tracing shadow boundary
 int const      MIN_INLAND_OFFSET_FOR_BEACH_EROSION_ESTIMATION              = 5;           // Used in estimation of beach erosion
+
+// Log file detail level
+int const      LOG_FILE_LEAST_DETAIL                                       = 1;
+int const      LOG_FILE_MIDDLE_DETAIL                                      = 2;
+int const      LOG_FILE_MOST_DETAIL                                        = 3;
 
 // TODO Make these user inputs
 int const      NUMBER_OF_INTERVENTION_CAPES                                = 4;
@@ -469,7 +474,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 09 February 2021";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 11 February 2021";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 

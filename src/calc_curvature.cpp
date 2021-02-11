@@ -157,11 +157,13 @@ void CSimulation::DoCoastCurvature(int const nCoast, int const nHandedness)
 //    LogStream << "-----------------" << endl;
 
    CGeom2DIPoint PtiMax = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nMaxConvexDetailedCoastPoint);
-   LogStream << m_ulIter << ": max detailed convexity (" << m_VCoast[nCoast].dGetDetailedCurvature(nMaxConvexDetailedCoastPoint) << ") at raster coastline point " << nMaxConvexDetailedCoastPoint << " [" << PtiMax.nGetX() << "][" << PtiMax.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiMax.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiMax.nGetY()) << "}"  << endl;
+   if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+      LogStream << m_ulIter << ": max detailed convexity (" << m_VCoast[nCoast].dGetDetailedCurvature(nMaxConvexDetailedCoastPoint) << ") at raster coastline point " << nMaxConvexDetailedCoastPoint << " [" << PtiMax.nGetX() << "][" << PtiMax.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiMax.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiMax.nGetY()) << "}"  << endl;
 
    CGeom2DIPoint PtiMaxSmooth = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nMaxConvexSmoothedCoastPoint);
    CGeom2DPoint PtMaxSmooth = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nMaxConvexSmoothedCoastPoint);
-   LogStream << m_ulIter << ": max smoothed convexity (" << m_VCoast[nCoast].dGetSmoothCurvature(nMaxConvexSmoothedCoastPoint) << ") near vector coastline point " << nMaxConvexSmoothedCoastPoint << ", at [" << PtiMaxSmooth.nGetX() << "][" << PtiMaxSmooth.nGetY() << "] = {" << PtMaxSmooth.dGetX() << ", " << PtMaxSmooth.dGetY() << "}" << endl;
+   if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+      LogStream << m_ulIter << ": max smoothed convexity (" << m_VCoast[nCoast].dGetSmoothCurvature(nMaxConvexSmoothedCoastPoint) << ") near vector coastline point " << nMaxConvexSmoothedCoastPoint << ", at [" << PtiMaxSmooth.nGetX() << "][" << PtiMaxSmooth.nGetY() << "] = {" << PtMaxSmooth.dGetX() << ", " << PtMaxSmooth.dGetY() << "}" << endl;
 }
 
 

@@ -921,8 +921,9 @@ string CSimulation::strListRasterFiles(void) const
       strTmp.append(", ");
    }
 
-   // remove the trailing comma and space
-   strTmp.resize(strTmp.size()-2);
+   // Remove the trailing comma and space
+   if (strTmp.size() > 2)
+      strTmp.resize(strTmp.size()-2);
 
    return strTmp;
 }
@@ -937,6 +938,13 @@ string CSimulation::strListVectorFiles(void) const
 {
    string strTmp;
 
+   if (m_bVectorGISSaveAll)
+   {
+      strTmp.append("all vector GIS files");
+      return strTmp;
+   }
+
+   // Not saving all vector GIS files
    if (m_bCoastSave)
    {
       strTmp.append(VECTOR_COAST_CODE);
@@ -963,7 +971,7 @@ string CSimulation::strListVectorFiles(void) const
 
    if (m_bAvgWaveAngleAndHeightSave)
    {
-      strTmp.append(VECTOR_WAVE_ANGLE_AND_HEIGHT_CODE);
+      strTmp.append(VECTOR_AVG_WAVE_ANGLE_AND_HEIGHT_CODE);
       strTmp.append(", ");
    }
 
@@ -1027,8 +1035,9 @@ string CSimulation::strListVectorFiles(void) const
       strTmp.append(", ");
    }
 
-   // remove the trailing comma and space
-   strTmp.resize(strTmp.size()-2);
+   // Remove the trailing comma and space
+   if (strTmp.size() > 2)
+      strTmp.resize(strTmp.size()-2);
 
    return strTmp;
 }
@@ -1043,68 +1052,69 @@ string CSimulation::strListTSFiles(void) const
 {
    string strTmp;
 
-   if (m_bSeaAreaTS)
+   if (m_bSeaAreaTSSave)
    {
       strTmp.append(TIME_SERIES_SEA_AREA_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bStillWaterLevelTS)
+   if (m_bStillWaterLevelTSSave)
    {
       strTmp.append(TIME_SERIES_STILL_WATER_LEVEL_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bActualPlatformErosionTS)
+   if (m_bActualPlatformErosionTSSave)
    {
       strTmp.append(TIME_SERIES_PLATFORM_EROSION_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bCliffCollapseErosionTS)
+   if (m_bCliffCollapseErosionTSSave)
    {
       strTmp.append(TIME_SERIES_CLIFF_COLLAPSE_EROSION_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bCliffCollapseDepositionTS)
+   if (m_bCliffCollapseDepositionTSSave)
    {
       strTmp.append(TIME_SERIES_CLIFF_COLLAPSE_DEPOSITION_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bCliffCollapseNetTS)
+   if (m_bCliffCollapseNetTSSave)
    {
       strTmp.append(TIME_SERIES_CLIFF_COLLAPSE_NET_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bBeachErosionTS)
+   if (m_bBeachErosionTSSave)
    {
       strTmp.append(TIME_SERIES_BEACH_EROSION_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bBeachDepositionTS)
+   if (m_bBeachDepositionTSSave)
    {
       strTmp.append(TIME_SERIES_BEACH_DEPOSITION_CODE);
       strTmp.append(", ");
    }
 
- if (m_bBeachSedimentChangeNetTS)
+ if (m_bBeachSedimentChangeNetTSSave)
    {
       strTmp.append(TIME_SERIES_BEACH_CHANGE_NET_CODE);
       strTmp.append(", ");
    }
 
-   if (m_bSuspSedTS)
+   if (m_bSuspSedTSSave)
    {
       strTmp.append(TIME_SERIES_SUSPENDED_SEDIMENT_CODE);
       strTmp.append(", ");
    }
 
-   // remove the trailing comma and space
-   strTmp.resize(strTmp.size()-2);
+   // Remove the trailing comma and space
+   if (strTmp.size() > 2)
+      strTmp.resize(strTmp.size()-2);
 
    return strTmp;
 }
@@ -1119,7 +1129,7 @@ bool CSimulation::bSetUpTSFiles(void)
 {
    string strTSFile;
 
-   if (m_bSeaAreaTS)
+   if (m_bSeaAreaTSSave)
    {
       // Start with wetted area
       strTSFile = m_strOutPath;
@@ -1136,7 +1146,7 @@ bool CSimulation::bSetUpTSFiles(void)
       }
    }
 
-   if (m_bStillWaterLevelTS)
+   if (m_bStillWaterLevelTSSave)
    {
       // Now still water level
       strTSFile = m_strOutPath;
@@ -1153,7 +1163,7 @@ bool CSimulation::bSetUpTSFiles(void)
       }
    }
 
-   if (m_bActualPlatformErosionTS)
+   if (m_bActualPlatformErosionTSSave)
    {
       // Erosion (fine, sand, coarse)
       strTSFile = m_strOutPath;
@@ -1170,7 +1180,7 @@ bool CSimulation::bSetUpTSFiles(void)
       }
    }
 
-   if (m_bCliffCollapseErosionTS)
+   if (m_bCliffCollapseErosionTSSave)
    {
       // Erosion due to cliff collapse
       strTSFile = m_strOutPath;
@@ -1187,7 +1197,7 @@ bool CSimulation::bSetUpTSFiles(void)
       }
    }
 
-   if (m_bCliffCollapseDepositionTS)
+   if (m_bCliffCollapseDepositionTSSave)
    {
       // Deposition due to cliff collapse
       strTSFile = m_strOutPath;
@@ -1204,7 +1214,7 @@ bool CSimulation::bSetUpTSFiles(void)
       }
    }
 
-   if (m_bCliffCollapseNetTS)
+   if (m_bCliffCollapseNetTSSave)
    {
       // Net change in unconsolidated sediment due to cliff collapse
       strTSFile = m_strOutPath;
@@ -1221,7 +1231,7 @@ bool CSimulation::bSetUpTSFiles(void)
       }
    }
 
-   if (m_bBeachErosionTS)
+   if (m_bBeachErosionTSSave)
    {
       // Beach erosion
       strTSFile = m_strOutPath;
@@ -1238,7 +1248,7 @@ bool CSimulation::bSetUpTSFiles(void)
       }
    }
 
-   if (m_bBeachDepositionTS)
+   if (m_bBeachDepositionTSSave)
    {
       // Beach deposition
       strTSFile = m_strOutPath;
@@ -1255,7 +1265,7 @@ bool CSimulation::bSetUpTSFiles(void)
       }
    }
 
-   if (m_bBeachSedimentChangeNetTS)
+   if (m_bBeachSedimentChangeNetTSSave)
    {
       // Beach sediment change
       strTSFile = m_strOutPath;
@@ -1272,7 +1282,7 @@ bool CSimulation::bSetUpTSFiles(void)
       }
    }
 
-   if (m_bSuspSedTS)
+   if (m_bSuspSedTSSave)
    {
       // Sediment load
       strTSFile = m_strOutPath;

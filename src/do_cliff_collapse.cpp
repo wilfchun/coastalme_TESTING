@@ -91,7 +91,10 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
                // So do the cliff collapse
                nRet = nDoCliffCollapse(pCliff, dNotchExtension, dFineCollapse, dSandCollapse, dCoarseCollapse);
                if (nRet != RTN_OK)
-                  LogStream << m_ulIter << WARN << " problem with cliff collapse, continuing however" << endl;
+               {
+                  if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                     LogStream << m_ulIter << WARN << " problem with cliff collapse, continuing however" << endl;
+               }
 
                // And put fine sediment into suspension, and deposit sand and/or coarse sediment as unconsolidated sediment
                nRet = nDoCliffCollapseDeposition(pCliff, dFineCollapse, dSandCollapse, dCoarseCollapse);
@@ -102,7 +105,8 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
       }
    }
 
-   LogStream << endl << m_ulIter << ": cliff collapse (m^3) = " << (m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepCliffCollapseErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepCliffCollapseErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse * m_dCellArea << "), talus deposition (m^3) = " << (m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse) * m_dCellArea << " (sand = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ")" << endl;
+   if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+      LogStream << endl << m_ulIter << ": cliff collapse (m^3) = " << (m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepCliffCollapseErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepCliffCollapseErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse * m_dCellArea << "), talus deposition (m^3) = " << (m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse) * m_dCellArea << " (sand = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ")" << endl;
 
    return RTN_OK;
 }
@@ -127,7 +131,8 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
    int nNotchLayer = m_pRasterGrid->m_Cell[nX][nY].nGetLayerAtElev(dNotchElev);
    if (nNotchLayer == ELEV_ABOVE_SEDIMENT_TOP)
    {
-      LogStream << endl << m_ulIter << ": " << ERR << " cell [" << nX << "][" << nY << "] has dNotchElev (" << dNotchElev << ") above sediment top elevation (" << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ")" << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MOST_DETAIL)
+         LogStream << endl << m_ulIter << ": " << ERR << " cell [" << nX << "][" << nY << "] has dNotchElev (" << dNotchElev << ") above sediment top elevation (" << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ")" << endl;
 
       return RTN_ERR_CLIFFNOTCH;
    }

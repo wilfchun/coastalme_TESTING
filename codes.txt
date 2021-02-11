@@ -1,4 +1,4 @@
-CODES.TXT for CoastalME
+CODES.TXT for CoastalME output
 
 // GIS raster output codes
 all
@@ -78,6 +78,8 @@ wave_energy
 
 
 // Time series output codes
+all
+
 beach_change_net
 beach_deposition
 beach_erosion

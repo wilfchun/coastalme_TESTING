@@ -130,7 +130,8 @@ int CSimulation::nCreateAllProfiles(void)
       if (tAbs(dStdCurvature) < TOLERANCE)
          dCoastProfileSmoothConvexityThreshold = -DBL_MAX;
 
-      LogStream << m_ulIter << ": convexity threshold = " << dCoastProfileSmoothConvexityThreshold << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MOST_DETAIL)
+         LogStream << m_ulIter << ": convexity threshold = " << dCoastProfileSmoothConvexityThreshold << endl;
 
       // Now create normals on either side of points of maximum smoothed convexity
       CreateRestOfNormals(nCoast, nProfile, nProfileToNodeSpacing, dCoastProfileSmoothConvexityThreshold, &bVCoastPointSearched, &prVCurvature);
@@ -224,7 +225,8 @@ int CSimulation::nCreateAllProfilesAndCheckForIntersection(void)
 
             if (m_pRasterGrid->m_Cell[nXEnd][nYEnd].dGetSeaDepth() < m_dDepthOfClosure)
             {
-               LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProf << " is invalid, is too short for depth of closure " << m_dDepthOfClosure << " at end point [" << nXEnd << "][" << nYEnd << "] = {" << pPtEnd->dGetX() << ", " << pPtEnd->dGetY() << "}, flagging as too short" << endl;
+               if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                  LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProf << " is invalid, is too short for depth of closure " << m_dDepthOfClosure << " at end point [" << nXEnd << "][" << nYEnd << "] = {" << pPtEnd->dGetX() << ", " << pPtEnd->dGetY() << "}, flagging as too short" << endl;
 
                pProfile->SetTooShort(true);
             }
@@ -295,7 +297,8 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile /*,
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
 
-         LogStream << m_ulIter << ": coast " << nCoast << " profile " << nProfile << " (intervention cape) created at coast point " << nThisCapePoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "} (smoothed curvature = " << m_VCoast[nCoast].dGetSmoothCurvature(nThisCapePoint) << ", detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisCapePoint) << ")" << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": coast " << nCoast << " profile " << nProfile << " (intervention cape) created at coast point " << nThisCapePoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "} (smoothed curvature = " << m_VCoast[nCoast].dGetSmoothCurvature(nThisCapePoint) << ", detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisCapePoint) << ")" << endl;
 
          // Mark points on either side of it
 //          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -353,7 +356,8 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
          CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisCapePoint);
          CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisCapePoint);
 
-         LogStream << m_ulIter << ": coast " << nCoast << " profile " << nProfile << " (natural cape) created at coast point " << nThisCapePoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "} (smoothed curvature = " << m_VCoast[nCoast].dGetSmoothCurvature(nThisCapePoint) << ", detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisCapePoint) << ")" << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": coast " << nCoast << " profile " << nProfile << " (natural cape) created at coast point " << nThisCapePoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "} (smoothed curvature = " << m_VCoast[nCoast].dGetSmoothCurvature(nThisCapePoint) << ", detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisCapePoint) << ")" << endl;
 
          // Mark points on either side of it
          for (int m = 1; m < nProfileToNodeSpacing; m++)
@@ -517,7 +521,8 @@ void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const
                   CGeom2DIPoint PtiThis = *m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(nThisPoint);
                   CGeom2DPoint PtThis = *m_VCoast[nCoast].pPtGetCoastlinePointExtCRS(nThisPoint);
 
-                  LogStream << m_ulIter << ": coast " << nCoast << " profile " << nProfile << " created at coast point " << nThisPoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "} (smoothed curvature = " << m_VCoast[nCoast].dGetSmoothCurvature(nThisPoint) << ", detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << ")" << endl;
+                  if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                     LogStream << m_ulIter << ": coast " << nCoast << " profile " << nProfile << " created at coast point " << nThisPoint << " [" << PtiThis.nGetX() << "][" << PtiThis.nGetY() << "] = {" << PtThis.dGetX() << ", " << PtThis.dGetY() << "} (smoothed curvature = " << m_VCoast[nCoast].dGetSmoothCurvature(nThisPoint) << ", detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nThisPoint) << ")" << endl;
 
 //                   LogStream << "\tSearch started from potential node point at coastline point " << nPossibleNodePoint << " which has detailed curvature = " << m_VCoast[nCoast].dGetDetailedCurvature(nPossibleNodePoint) << endl;
                }
@@ -569,7 +574,8 @@ int CSimulation::nCreateProfile(int const nCoast, int const nProfileStartPoint, 
    // Safety check: is the end point in the contiguous sea?
    if (! m_pRasterGrid->m_Cell[nXEnd][nYEnd].bIsInContiguousSea())
    {
-      LogStream << m_ulIter << ": coast " << nCoast << ", possible profile with start point " << nProfileStartPoint << " has inland end point at [" << nXEnd << "][" << nYEnd << "] = {" << dGridCentroidXToExtCRSX(nXEnd) << ", " << dGridCentroidYToExtCRSY(nYEnd) << "}, ignoring" << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+         LogStream << m_ulIter << ": coast " << nCoast << ", possible profile with start point " << nProfileStartPoint << " has inland end point at [" << nXEnd << "][" << nYEnd << "] = {" << dGridCentroidXToExtCRSX(nXEnd) << ", " << dGridCentroidYToExtCRSY(nYEnd) << "}, ignoring" << endl;
 
       return RTN_ERR_PROFILE_ENDPOINT_IS_INLAND;
    }
@@ -577,7 +583,8 @@ int CSimulation::nCreateProfile(int const nCoast, int const nProfileStartPoint, 
    // Safety check: is the water depth at the end point less than the depth of closure?
    if (m_pRasterGrid->m_Cell[nXEnd][nYEnd].dGetSeaDepth() < m_dDepthOfClosure)
    {
-      LogStream << m_ulIter << ": coast " << nCoast << ", possible profile with start point " << nProfileStartPoint << " is too short for depth of closure " << m_dDepthOfClosure << " at end point [" << nXEnd << "][" << nYEnd << "] = {" << dGridCentroidXToExtCRSX(nXEnd) << ", " << dGridCentroidYToExtCRSY(nYEnd) << "}, ignoring" << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+         LogStream << m_ulIter << ": coast " << nCoast << ", possible profile with start point " << nProfileStartPoint << " is too short for depth of closure " << m_dDepthOfClosure << " at end point [" << nXEnd << "][" << nYEnd << "] = {" << dGridCentroidXToExtCRSX(nXEnd) << ", " << dGridCentroidYToExtCRSY(nYEnd) << "}, ignoring" << endl;
 
       return RTN_ERR_PROFILE_END_INSUFFICIENT_DEPTH;
    }
@@ -640,7 +647,8 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    if (it == m_VEdgeCell.end())
    {
       // Not found. This can happen because of rounding problems, i.e. the cell which was stored as the first cell of the raster coastline
-      LogStream << m_ulIter << ": " << ERR << " when constructing start-of-coast profile, [" <<  PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiProfileStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiProfileStart.nGetY()) << "} not found in list of edge cells" << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+         LogStream << m_ulIter << ": " << ERR << " when constructing start-of-coast profile, [" <<  PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiProfileStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiProfileStart.nGetY()) << "} not found in list of edge cells" << endl;
 
       return RTN_ERR_COAST_CANT_FIND_EDGE_CELL;
    }
@@ -774,7 +782,8 @@ int CSimulation::nCreateGridEdgeProfile(bool const bCoastStart, int const nCoast
    pProfile->AppendLineSegment();
    pProfile->AppendCoincidentProfileToLineSegments(make_pair(nProfile, 0));
 
-   LogStream << std::fixed << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " created at coast " << (bCoastStart ? "start" : "end") << " point " << (bCoastStart ? 0 : nCoastSize -1) << ", from [" << PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiProfileStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiProfileStart.nGetY()) << "} to [" << VPtiNormalPoints.back().nGetX() << "][" << VPtiNormalPoints.back().nGetY() << "] = {" << dGridCentroidXToExtCRSX(VPtiNormalPoints.back().nGetX()) << ", " << dGridCentroidYToExtCRSY(VPtiNormalPoints.back().nGetY()) << "}" << endl;
+   if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+      LogStream << std::fixed << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " created at coast " << (bCoastStart ? "start" : "end") << " point " << (bCoastStart ? 0 : nCoastSize -1) << ", from [" << PtiProfileStart.nGetX() << "][" << PtiProfileStart.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiProfileStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiProfileStart.nGetY()) << "} to [" << VPtiNormalPoints.back().nGetX() << "][" << VPtiNormalPoints.back().nGetY() << "] = {" << dGridCentroidXToExtCRSX(VPtiNormalPoints.back().nGetX()) << ", " << dGridCentroidYToExtCRSY(VPtiNormalPoints.back().nGetY()) << "}" << endl;
 
    return RTN_OK;
 }
@@ -1274,7 +1283,8 @@ int CSimulation::nPutAllProfilesOntoGrid(void)
       if (nProfiles == 0)
       {
          // This can happen if the coastline is very short, so just give a warning and carry on with the next coastline
-         LogStream << WARN << m_ulIter << ": coast " << nCoast << " has no profiles" << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << WARN << m_ulIter << ": coast " << nCoast << " has no profiles" << endl;
          continue;
       }
 
@@ -1293,7 +1303,8 @@ int CSimulation::nPutAllProfilesOntoGrid(void)
             // Need at least two points in the profile, so this profile is invalid: mark it
             pProfile->SetTooShort(true);
 
-            LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, has only " << nPoints << " points" << endl;
+            if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+               LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, has only " << nPoints << " points" << endl;
 
             continue;
          }
@@ -1436,7 +1447,8 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                if (! ACCEPT_SHORT_PROFILES)
                   pProfile->SetTruncated(true);
 
-               LogStream << m_ulIter << ": profile " << nProfile << " is invalid, truncated at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+               if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                  LogStream << m_ulIter << ": profile " << nProfile << " is invalid, truncated at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 
                break;
             }
@@ -1451,7 +1463,8 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                   bHitCoast = true;
                   pProfile->SetHitCoast(true);
 
-                  LogStream << m_ulIter << ": profile " << nProfile << " is invalid, hit coast at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+                  if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                     LogStream << m_ulIter << ": profile " << nProfile << " is invalid, hit coast at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 
                   return;
                }
@@ -1463,7 +1476,8 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                   bHitCoast = true;
                   pProfile->SetHitCoast(true);
 
-                  LogStream << m_ulIter << ": profile " << nProfile << " is invalid, hit coast at [" << nX << "][" << nY+1 << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY+1) << "}" << endl;
+                  if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                     LogStream << m_ulIter << ": profile " << nProfile << " is invalid, hit coast at [" << nX << "][" << nY+1 << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY+1) << "}" << endl;
 
                   return;
                }
@@ -1503,7 +1517,8 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                      bHitAnotherProfile = true;
                      pProfile->SetHitAnotherProfile(true);
 
-                     LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile A1 (" << nHitProfile << ") at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+                     if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                        LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile A1 (" << nHitProfile << ") at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 
                      return;
                   }
@@ -1530,7 +1545,8 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                      bHitAnotherProfile = true;
                      pProfile->SetHitAnotherProfile(true);
 
-                     LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile B1 (" << nHitProfile << ") at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
+                     if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                        LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile B1 (" << nHitProfile << ") at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
 
                      return;
                   }
@@ -1560,7 +1576,8 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                      bHitAnotherProfile = true;
                      pProfile->SetHitAnotherProfile(true);
 
-                     LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile diagonally A2 (" << nHitProfile << ") at [" << nXTmp << "][" << nYTmp << "] = {" << dGridCentroidXToExtCRSX(nXTmp) << ", " << dGridCentroidYToExtCRSY(nYTmp) << "}" << endl;
+                     if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                        LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile diagonally A2 (" << nHitProfile << ") at [" << nXTmp << "][" << nYTmp << "] = {" << dGridCentroidXToExtCRSX(nXTmp) << ", " << dGridCentroidYToExtCRSY(nYTmp) << "}" << endl;
 
                      return;
                   }
@@ -1587,7 +1604,8 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
                      bHitAnotherProfile = true;
                      pProfile->SetHitAnotherProfile(true);
 
-                     LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile diagonally B2 (" << nHitProfile << ") at [" << nXTmp << "][" << nYTmp << "] = {" << dGridCentroidXToExtCRSX(nXTmp) << ", " << dGridCentroidYToExtCRSY(nYTmp) << "}" << endl;
+                     if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+                        LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " is invalid, crosses another profile diagonally B2 (" << nHitProfile << ") at [" << nXTmp << "][" << nYTmp << "] = {" << dGridCentroidXToExtCRSX(nXTmp) << ", " << dGridCentroidYToExtCRSY(nYTmp) << "}" << endl;
 
                      return;
                   }
@@ -1630,7 +1648,8 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
       bTooShort = true;
       pProfile->SetTooShort(true);
 
-      LogStream << m_ulIter << ": profile " << nProfile << " is invalid, is too short, only " << pVIPointsOut->size() << " points, HitLand?" << bHitLand << ". From [" << pVIPointsOut->at(0).nGetX() << "][" << pVIPointsOut->at(0).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(0).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(0).nGetY()) << "} to [" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetX() << "][" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(pVIPointsOut->size()-1).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(pVIPointsOut->size()-1).nGetY()) << "}" << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+         LogStream << m_ulIter << ": profile " << nProfile << " is invalid, is too short, only " << pVIPointsOut->size() << " points, HitLand?" << bHitLand << ". From [" << pVIPointsOut->at(0).nGetX() << "][" << pVIPointsOut->at(0).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(0).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(0).nGetY()) << "} to [" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetX() << "][" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(pVIPointsOut->size()-1).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(pVIPointsOut->size()-1).nGetY()) << "}" << endl;
    }
 }
 

@@ -50,6 +50,7 @@ CSimulation::CSimulation(void)
    m_bHaveSandSediment                             =
    m_bHaveCoarseSediment                           =
    m_bRasterGISSaveAll                             =
+   m_bVectorGISSaveAll                             =
    m_bBasementElevSave                             =
    m_bSedimentTopSurfSave                          =
    m_bTopSurfSave                                  =
@@ -116,16 +117,16 @@ CSimulation::CSimulation(void)
    m_bDeepWaterWavePeriodSave                      =
    m_bPolygonUnconsSedUpOrDownDrift                =
    m_bPolygonUnconssedGainOrLoss                   =
-   m_bSeaAreaTS                                    =
-   m_bStillWaterLevelTS                            =
-   m_bActualPlatformErosionTS                      =
-   m_bSuspSedTS                                    =
-   m_bCliffCollapseDepositionTS                    =
-   m_bCliffCollapseErosionTS                       =
-   m_bCliffCollapseNetTS                           =
-   m_bBeachErosionTS                               =
-   m_bBeachDepositionTS                            =
-   m_bBeachSedimentChangeNetTS                     =
+   m_bSeaAreaTSSave                                    =
+   m_bStillWaterLevelTSSave                            =
+   m_bActualPlatformErosionTSSave                      =
+   m_bSuspSedTSSave                                    =
+   m_bCliffCollapseDepositionTSSave                    =
+   m_bCliffCollapseErosionTSSave                       =
+   m_bCliffCollapseNetTSSave                           =
+   m_bBeachErosionTSSave                               =
+   m_bBeachDepositionTSSave                            =
+   m_bBeachSedimentChangeNetTSSave                     =
    m_bSaveGISThisTimestep                          =
    m_bOutputProfileData                            =
    m_bOutputParallelProfileData                    =
@@ -177,7 +178,8 @@ CSimulation::CSimulation(void)
    m_nSimStartDay                                  =
    m_nSimStartMonth                                =
    m_nSimStartYear                                 =
-   m_nDeepWaterWaveDataNTimeSteps                  = 0;
+   m_nDeepWaterWaveDataNTimeSteps                  =
+   m_nLogFileDetail                                = 0;
 
    // NOTE May wish to make this a user-supplied value
    m_nMissingValue                                 = INT_NODATA;
@@ -811,7 +813,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
-      LogStream << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL) LogStream << endl;
 
       // Tell the user how the simulation is progressing
       AnnounceProgress();
@@ -836,7 +838,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
-      LogStream << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL) LogStream << endl;
 
       // Tell the user how the simulation is progressing
       AnnounceProgress();
@@ -871,7 +873,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
-      LogStream << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL) LogStream << endl;
 
       // Tell the user how the simulation is progressing
       AnnounceProgress();
@@ -905,7 +907,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
-      LogStream << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL) LogStream << endl;
 
       // Tell the user how the simulation is progressing
       AnnounceProgress();
@@ -1089,9 +1091,15 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          if (! bSaveAllRasterGISFiles())
             return (RTN_ERR_RASTER_FILE_WRITE);
 
+         // Tell the user how the simulation is progressing
+         AnnounceProgress();
+
          // Save the vector GIS files
          if (! bSaveAllVectorGISFiles())
             return (RTN_ERR_VECTOR_FILE_WRITE);
+
+         // Tell the user how the simulation is progressing
+         AnnounceProgress();
       }
 
       // Output per-timestep results to the .out file
@@ -1101,6 +1109,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Now output time series CSV stuff
       if (! bWriteTSFiles())
          return (RTN_ERR_TIMESERIES_FILE_WRITE);
+
+      // Tell the user how the simulation is progressing
+      AnnounceProgress();
 
       // Update grand totals
       UpdateGrandTotals();

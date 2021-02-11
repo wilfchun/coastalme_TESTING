@@ -645,7 +645,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
    // Only do this for profiles without problems. Still do start- and end-of-coast profiles however
    if (! pProfile->bOKIncStartAndEndOfCoast())
    {
-      LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " has been marked invalid, will not calc wave properties on this profile" << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+         LogStream << m_ulIter << ": coast " << nCoast << ", profile " << nProfile << " has been marked invalid, will not calc wave properties on this profile" << endl;
 
       return RTN_OK;
    }
@@ -909,7 +910,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          }
 
          strErr += "(coast " + to_string(nCoast) + " profile " + to_string(nProfile) + ")\n";
-         LogStream << strErr;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << strErr;
 
          if (nRet < 0)
          {
@@ -996,7 +998,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
       if (nOutSize < 2)
       {
          // CShore sometimes returns only one row of results, which contains data only for the seaward point of the profile. This happens when all other (more coastward) points give an invalid result during CShore's calculations. This is a problem. We don't want to abandon the simulation just because of this, so instead we just duplicate the row
-         LogStream << m_ulIter << ": " << WARN << "for coast " << nCoast << " profile " << nProfile << ", only " << nOutSize << " CShore output row" << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": " << WARN << "for coast " << nCoast << " profile " << nProfile << ", only " << nOutSize << " CShore output row" << endl;
 
          // Duplicate the data
          VdXYDistFromCShoreOut.push_back(VdXYDistFromCShoreOut[0]);
@@ -1040,7 +1043,8 @@ int CSimulation::nCalcWavePropertiesOnProfile(int const nCoast, int const nCoast
          }
 
          strErr += "(coast " + to_string(nCoast) + " profile " + to_string(nProfile) + " profile length " + to_string(nOutSize) + ")\n";
-         LogStream << strErr;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << strErr;
 
          if (nRet < 0)
          {
@@ -1485,7 +1489,8 @@ int CSimulation::nReadCShoreOutput(int const nProfile, string const* strCShoreFi
    if (nReadRows < 2)
    {
       // CShore sometimes returns only one row, which contains data for the seaward point of the profile. This happens when all other (more coastward) points give an invalid result during CShore's calculations. This is a problem. We don't want to abandon the simulation just because of this, so instead we just duplicate the row, so that the profile will later get marked as invalid
-      LogStream << m_ulIter << ": " << WARN << "for profile " << nProfile << ", only " << nReadRows << " CShore output rows in file " << *strCShoreFilename << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+         LogStream << m_ulIter << ": " << WARN << "for profile " << nProfile << ", only " << nReadRows << " CShore output rows in file " << *strCShoreFilename << endl;
 
       // Duplicate the data
       VdXYDistCShore.push_back(VdXYDistCShore[0]);

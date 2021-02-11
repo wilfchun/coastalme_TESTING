@@ -240,7 +240,8 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
    if (! bFound)
    {
-      LogStream << m_ulIter << ": north (top) " << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MOST_DETAIL)
+         LogStream << m_ulIter << ": north (top) " << endl;
       return RTN_ERR_BOUNDING_BOX;
    }
 
@@ -265,7 +266,8 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
    if (! bFound)
    {
-      LogStream << m_ulIter << ": east (right) edge of bounding box not found" << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MOST_DETAIL)
+         LogStream << m_ulIter << ": east (right) edge of bounding box not found" << endl;
       return RTN_ERR_BOUNDING_BOX;
    }
 
@@ -290,7 +292,8 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
    if (! bFound)
    {
-      LogStream << m_ulIter << ": south (bottom) edge of bounding box not found" << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MOST_DETAIL)
+         LogStream << m_ulIter << ": south (bottom) edge of bounding box not found" << endl;
       return RTN_ERR_BOUNDING_BOX;
    }
 
@@ -315,7 +318,8 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
    if (! bFound)
    {
-      LogStream << m_ulIter << ": west (left) edge of bounding box not found" << endl;
+      if (m_nLogFileDetail >= LOG_FILE_MOST_DETAIL)
+         LogStream << m_ulIter << ": west (left) edge of bounding box not found" << endl;
       return RTN_ERR_BOUNDING_BOX;
    }
 
@@ -343,7 +347,8 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
       if (! bFound)
       {
-         LogStream << m_ulIter << ": could not find a bounding box edge cell for grid column " << nX << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": could not find a bounding box edge cell for grid column " << nX << endl;
          return RTN_ERR_BOUNDING_BOX;
       }
    }
@@ -372,7 +377,8 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
       if (! bFound)
       {
-         LogStream << m_ulIter << ": could not find a bounding box edge cell for grid row " << nY << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": could not find a bounding box edge cell for grid row " << nY << endl;
          return RTN_ERR_BOUNDING_BOX;
       }
    }
@@ -401,7 +407,8 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
       if (! bFound)
       {
-         LogStream << m_ulIter << ": could not find a bounding box edge cell for grid column " << nX << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": could not find a bounding box edge cell for grid column " << nX << endl;
          return RTN_ERR_BOUNDING_BOX;
       }
    }
@@ -430,7 +437,8 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
 
       if (! bFound)
       {
-         LogStream << m_ulIter << ": could not find a bounding box edge cell for grid row " << nY << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+            LogStream << m_ulIter << ": could not find a bounding box edge cell for grid row " << nY << endl;
          return RTN_ERR_BOUNDING_BOX;
       }
    }
