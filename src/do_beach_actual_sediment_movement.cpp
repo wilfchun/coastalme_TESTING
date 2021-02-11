@@ -125,10 +125,10 @@ int CSimulation::nDoAllActualBeachErosionAndDeposition(void)
       }
       if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL) LogStream << endl;
    }
-   if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL) LogStream << endl;
 
    if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
    {
+      LogStream << endl;
       LogStream << m_ulIter << ": unconsolidated sediment transport. Per-polygon potential beach erosion, and actual deposition from shore platform erosion (all m^3)" << endl;
       LogStream << "Num \tGlobal\tCoast\t\tPotential\tActual\t\tFine\t\t\tSand\t\t\tCoarse" << endl;
       LogStream << "    \tID    \tID   \t\tErosion\t\tDeposition\tDeposition\tDeposition\tDeposition" << endl;

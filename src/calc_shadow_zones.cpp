@@ -649,8 +649,7 @@ int CSimulation::nDoAllShadowZones(void)
                if (nShadowLineLen < MAX_LEN_SHADOW_LINE_TO_IGNORE)
                {
                   if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
-                     if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
-                        LogStream << m_ulIter << ": " << WARN << "could not find start point for flood fill of shadow zone " << nZone << " but continuing simulation because this is a small shadow zone (shadow line length = " << nShadowLineLen << " cells)" << endl;
+                     LogStream << m_ulIter << ": " << WARN << "could not find start point for flood fill of shadow zone " << nZone << " but continuing simulation because this is a small shadow zone (shadow line length = " << nShadowLineLen << " cells)" << endl;
 
                   continue;
                }
