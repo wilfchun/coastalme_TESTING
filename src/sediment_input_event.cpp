@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2020
+ * \date 2021
  * \copyright GNU General Public License
  *
  */
@@ -29,9 +29,9 @@
 
 
 //! Constructor with 7 parameters
-CSedInputEvent::CSedInputEvent(int const nIDIn, unsigned long long const ullTimeIn, double const dFineIn, double const dSandIn, double const dCoarseIn, double const dLenIn, double const dWidthIn) :
+CSedInputEvent::CSedInputEvent(int const nIDIn, unsigned long const ulTimeStepIn, double const dFineIn, double const dSandIn, double const dCoarseIn, double const dLenIn, double const dWidthIn) :
    m_nLocationID(nIDIn),
-   m_ullEventTime(ullTimeIn),
+   m_ulEventTimeStep(ulTimeStepIn),
    m_dFineSedVol(dFineIn),
    m_dSandSedVol(dSandIn),
    m_dCoarseSedVol(dCoarseIn),
@@ -43,3 +43,39 @@ CSedInputEvent::CSedInputEvent(int const nIDIn, unsigned long long const ullTime
 CSedInputEvent::~CSedInputEvent(void)
 {
 }
+
+int CSedInputEvent::nGetLocationID(void)
+{
+   return m_nLocationID;
+}
+
+unsigned long CSedInputEvent::ulGetEventTimeStep(void)
+{
+   return m_ulEventTimeStep;
+}
+
+double CSedInputEvent::dGetFineSedVol(void)
+{
+   return m_dFineSedVol;
+}
+
+double CSedInputEvent::dGetSandSedVol(void)
+{
+   return m_dSandSedVol;
+}
+
+double CSedInputEvent::dGetCoarseSedVol(void)
+{
+   return m_dCoarseSedVol;
+}
+
+double CSedInputEvent::dGetLen(void)
+{
+   return m_dLen;
+}
+
+double CSedInputEvent::dGetWidth(void)
+{
+   return m_dWidth;
+}
+

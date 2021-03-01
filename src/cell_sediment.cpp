@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2020
+ * \date 2021
  * \copyright GNU General Public License
  *
  */
@@ -77,6 +77,12 @@ double CRWCellSediment::dGetFine(void) const
    return m_dFine;
 }
 
+// Adds fine sediment (depth equivalent) to this sediment layer object's fine sediment
+void CRWCellSediment::AddFine(double const dSedDepthToAdd)
+{
+   m_dFine += dSedDepthToAdd;
+}
+
 
 // Sets this sediment layer object's sand sediment depth equivalent. Note no checks here to see if new equiv depth is sensible (e.g. non-negative)
 void CRWCellSediment::SetSand(double const dNewSedDepth)
@@ -91,6 +97,12 @@ double CRWCellSediment::dGetSand(void) const
    return m_dSand;
 }
 
+// Adds sand sediment (depth equivalent) to this sediment layer object's sand sediment
+void CRWCellSediment::AddSand(double const dSedDepthToAdd)
+{
+   m_dSand += dSedDepthToAdd;
+}
+
 
 // Sets this sediment layer object's coarse sediment depth equivalent. Note no checks here to see if new equiv depth is sensible (e.g. non-negative)
 void CRWCellSediment::SetCoarse(double const dNewSedDepth)
@@ -102,6 +114,12 @@ void CRWCellSediment::SetCoarse(double const dNewSedDepth)
 double CRWCellSediment::dGetCoarse(void) const
 {
    return m_dCoarse;
+}
+
+// Adds coarse sediment (depth equivalent) to this sediment layer object's coarse sediment
+void CRWCellSediment::AddCoarse(double const dSedDepthToAdd)
+{
+   m_dCoarse += dSedDepthToAdd;
 }
 
 

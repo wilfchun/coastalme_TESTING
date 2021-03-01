@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2020
+ * \date 2021
  * \copyright GNU General Public License
  *
  */
@@ -418,6 +418,7 @@ void CSimulation::WriteStartRunDetails(void)
 //    OutStream << " Tide data file                                            \t: " << m_strTideDataFile << endl;
    OutStream << " Do coast platform erosion?                                \t: " << (m_bDoCoastPlatformErosion ? "Y": "N") << endl;
    OutStream << " R value                                                   \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(2) << m_dR << endl;
+   OutStream << " Do beach sediment transport?                              \t: " << (m_bDoBeachSedimentTransport ? "Y": "N") << endl;
    OutStream << " Handling of beach sediment at grid edges                  \t: ";
    if (m_nUnconsSedimentHandlingAtGridEdges == GRID_EDGE_CLOSED)
       OutStream << "closed";
@@ -445,6 +446,18 @@ void CSimulation::WriteStartRunDetails(void)
    if (m_nBeachErosionDepositionEquation == UNCONS_SEDIMENT_EQUATION_KAMPHUIS)
       OutStream << " Transport parameter for Kamphuis equation                 \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(3) << m_dKamphuis << endl;
    OutStream << " Height of Dean profile start above SWL                    \t: " << resetiosflags(ios::floatfield) << std::fixed << setprecision(1) << m_dDeanProfileStartAboveSWL  << " m" << endl;
+   OutStream << " Sediment input at a point                                 \t: " << (m_bSedimentInputAtPoint ? "Y" : "N") << endl;
+   if (m_bSedimentInputAtPoint)
+   {
+      OutStream << " Sediment input shapefile                                  \t: " << m_strSedimentInputEventShapefile << endl;
+      OutStream << " Sediment input time series file                           \t: " << m_strSedimentInputEventTimeSeriesFile << endl;
+      OutStream << " Sediment input at location or point on coast?             \t: ";
+      if (m_bSedimentInputLocationIsExact)
+         OutStream << "exact";
+      else
+         OutStream << "coast";
+      OutStream << endl;
+   }
    OutStream << " Do cliff collapse?                                        \t: " << (m_bDoCliffCollapse ? "Y": "N") << endl;
    OutStream << " Cliff erodibility                                         \t: " << m_dCliffErosionResistance << endl;
    OutStream << " Notch overhang to initiate collapse                       \t: " << m_dNotchOverhangAtCollapse << " m" << endl;
@@ -481,8 +494,8 @@ void CSimulation::WriteStartRunDetails(void)
       OutStream << m_VnProfileToSave[i] << SPACE;
    OutStream << endl;
    OutStream << " Timesteps when profiles are saved                         \t: ";
-   for (unsigned int i = 0; i < m_VlProfileTimestep.size(); i++)
-      OutStream << m_VlProfileTimestep[i] << SPACE;
+   for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
+      OutStream << m_VulProfileTimestep[i] << SPACE;
    OutStream << endl;
    OutStream << " Output parallel profile data?                             \t: " << (m_bOutputParallelProfileData ? "Y": "N") << endl;
    OutStream << " Output erosion potential look-up data?                    \t: " << (m_bOutputLookUpData ? "Y": "N");
@@ -826,11 +839,11 @@ void CSimulation::WriteLookUpData(void)
 int CSimulation::nSaveProfile(int const nProfile, int const nCoast, int const nProfSize, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    // TODO make this more efficient, also give warnings if no profiles will be output
-   for (unsigned int i = 0; i < m_VlProfileTimestep.size(); i++)
+   for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
    {
       for (unsigned int j = 0; j < m_VnProfileToSave.size(); j++)
       {
-         if ((m_ulIter == m_VlProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
+         if ((m_ulIter == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {
             if (! bWriteProfileData(nCoast, nProfile, nProfSize, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVScapeXY))
                return RTN_ERR_PROFILEWRITE;
@@ -896,11 +909,11 @@ bool CSimulation::bWriteProfileData(int const nCoast, int const nProfile, int co
 int CSimulation::nSaveParProfile(int const nProfile, int const nCoast, int const nParProfSize, int const nDirection, int const nDistFromProfile, vector<double> const* pdVDistXY, vector<double> const* pdVZ, vector<double> const* pdVDepthOverDB, vector<double> const* pdVErosionPotentialFunc, vector<double> const* pdVSlope, vector<double> const* pdVRecessionXY, vector<double> const* pdVChangeElevZ, vector<CGeom2DIPoint>* const pPtVGridProfile, vector<double> const* pdVScapeXY)
 {
    // TODO make this more efficient, also give warnings if no profiles will be output
-   for (unsigned int i = 0; i < m_VlProfileTimestep.size(); i++)
+   for (unsigned int i = 0; i < m_VulProfileTimestep.size(); i++)
    {
       for (unsigned int j = 0; j < m_VnProfileToSave.size(); j++)
       {
-         if ((m_ulIter == m_VlProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
+         if ((m_ulIter == m_VulProfileTimestep[i]) && (nProfile == m_VnProfileToSave[j]))
          {
             if (! bWriteParProfileData(nCoast, nProfile, nParProfSize, nDirection, nDistFromProfile, pdVDistXY, pdVZ, pdVDepthOverDB, pdVErosionPotentialFunc, pdVSlope, pdVRecessionXY, pdVChangeElevZ, pPtVGridProfile, pdVScapeXY))
                return RTN_ERR_PROFILEWRITE;

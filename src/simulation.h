@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2020
+ * \date 2021
  * \copyright GNU General Public License
  *
  * \file simulation.h
@@ -157,13 +157,16 @@ private:
       m_bErodeShorePlatformAlternateDirection,
       m_bDoCoastPlatformErosion,
       m_bDoCliffCollapse,
+      m_bDoBeachSedimentTransport,
       m_bGDALCanCreate,
       m_bGDALCanWriteFloat,
       m_bGDALCanWriteInt32,
       m_bScaleRasterOutput,
       m_bWorldFile,
       m_bSingleDeepWaterWaveValues,
-      m_bHaveWaveStationData;
+      m_bHaveWaveStationData,
+      m_bSedimentInputAtPoint,
+      m_bSedimentInputLocationIsExact;
 
    char** m_papszGDALRasterOptions;
    char** m_papszGDALVectorOptions;
@@ -210,11 +213,11 @@ private:
       m_GDALWriteFloatDataType;
 
    long
-      m_ulIter,
       m_lGDALMaxCanWrite,
       m_lGDALMinCanWrite;
 
    unsigned long
+      m_ulIter,
       m_ulTotTimestep,
       m_ulRandSeed[NRNG],
       m_ulNumCells,
@@ -457,8 +460,8 @@ private:
       m_VnSedimentInputLocationID,              // ID for sediment input location, this corresponds with the ID in the sediment input time series file
       m_VnSavGolIndexCoast;                     // Savitzky-Golay shift index for the coastline vector(s)
 
-   vector<long>
-      m_VlProfileTimestep,
+   vector<unsigned long>
+      m_VulProfileTimestep,
       m_VlDeepWaterWaveValuesAtTimestep;        // Calculate deep water wave values at these timesteps
 
    vector<double>
@@ -565,6 +568,7 @@ private:
 
    // Top-level simulation routines
    static int nUpdateIntervention(void);
+   int nCheckForSedimentInputEvent(void);
    int nCalcExternalForcing(void);
    int nInitGridAndCalcStillWaterLevel(void);
    int nLocateSeaAndCoasts(void);
@@ -655,6 +659,7 @@ private:
    void CalcDepthOfClosure(void);
    int nInterpolateAllDeepWaterWaveValues(void);
    int nSetAllCoastpointDeepWaterWaveValues(void);
+   int nDoSedimentInputEvent(int const);
 
    // GIS utility routines
    int nMarkBoundingBoxEdgeCells(void);
@@ -765,6 +770,7 @@ private:
    static void AppendEnsureNoGap(vector<CGeom2DIPoint>*, CGeom2DIPoint const*);
    static bool bIsNumeric(string const*);
    static double dConstrainFieldWidthForShapefile(double const);
+   unsigned long ulConvertToTimestep(string const*);
 
    // Random number stuff
    static unsigned long ulGetTausworthe(unsigned long const, unsigned long const, unsigned long const, unsigned long const, unsigned long const);

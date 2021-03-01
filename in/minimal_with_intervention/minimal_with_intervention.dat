@@ -2,7 +2,7 @@
 ;
 ; Data file for CoastalME
 ;
-; Copyright (C) 2020 David Favis-Mortlock and Andres Payo
+; Copyright (C) 2021 David Favis-Mortlock and Andres Payo
 ;
 ;=====================================================================================================================
 ;
@@ -90,8 +90,9 @@ Breaking wave height to water depth ratio (non-dimensional)                : 0.8
 
 ; Sediment data --------------------------------------------------------------------------------------------------------
 Simulate coast platform erosion?                                           : y
-Resistance to erosion of coast platform (m^(9/4)s^(3/2))                           : 1e6       ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011)
+Resistance to erosion of coast platform (m^(9/4)s^(3/2))                   : 1e6       ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011)
 
+Simulate beach sediment transport?                                         : y
 Beach sediment transport at grid edges [0 = closed, 1 = open, 2 = re-circulate]: 1
 
 Beach potential erosion/deposition equation        [0 = CERC, 1 = Kamphuis]: 1
@@ -100,7 +101,7 @@ Median size of fine sediment (mm)      [0 = default, only for Kamphuis eqn]: 0
 Median size of sand sediment (mm)      [0 = default, only for Kamphuis eqn]: 0
 Median size of coarse sediment (mm)    [0 = default, only for Kamphuis eqn]: 0
 
-Density of beach sediment (kg/m3)                                          : 2650      ; For quartz
+Density of beach sediment (kg/m3)                                          : 2650       ; For quartz
 Beach sediment porosity                                                    : 0.4
 
 ; Arbitrary values of relative erosivities
@@ -108,13 +109,14 @@ Fine erosivity                                                             : 1
 Sand erosivity                                                             : 0.7
 Coarse erosivity                                                           : 0.3
 
-Transport parameter KLS                                 [only for CERC eqn]: 0.5         ; Should vary between 0.4 to 0.79
+Transport parameter KLS                                 [only for CERC eqn]: 0.5        ; Should vary between 0.4 to 0.79
 Transport parameter                                 [only for Kamphuis eqn]: 1.0
 
 Berm height i.e. height above SWL of start of depositional Dean profile (m): 0.25
 
 Sediment input location                                            [optional point shapefile]:
 Sediment input details file                            [optional, required if have shapefile]:
+Sediment input at exact location or at nearest point on coast?      [L = Location, C = Coast]:
 
 ; Cliff collapse data --------------------------------------------------------------------------------------------------
 Simulate cliff collapse?                                                   : y

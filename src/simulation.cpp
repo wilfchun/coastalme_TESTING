@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2020
+ * \date 2021
  * \copyright GNU General Public License
  *
  */
@@ -118,16 +118,16 @@ CSimulation::CSimulation(void)
    m_bDeepWaterWavePeriodSave                      =
    m_bPolygonUnconsSedUpOrDownDrift                =
    m_bPolygonUnconssedGainOrLoss                   =
-   m_bSeaAreaTSSave                                    =
-   m_bStillWaterLevelTSSave                            =
-   m_bActualPlatformErosionTSSave                      =
-   m_bSuspSedTSSave                                    =
-   m_bCliffCollapseDepositionTSSave                    =
-   m_bCliffCollapseErosionTSSave                       =
-   m_bCliffCollapseNetTSSave                           =
-   m_bBeachErosionTSSave                               =
-   m_bBeachDepositionTSSave                            =
-   m_bBeachSedimentChangeNetTSSave                     =
+   m_bSeaAreaTSSave                                =
+   m_bStillWaterLevelTSSave                        =
+   m_bActualPlatformErosionTSSave                  =
+   m_bSuspSedTSSave                                =
+   m_bCliffCollapseDepositionTSSave                =
+   m_bCliffCollapseErosionTSSave                   =
+   m_bCliffCollapseNetTSSave                       =
+   m_bBeachErosionTSSave                           =
+   m_bBeachDepositionTSSave                        =
+   m_bBeachSedimentChangeNetTSSave                 =
    m_bSaveGISThisTimestep                          =
    m_bOutputProfileData                            =
    m_bOutputParallelProfileData                    =
@@ -139,12 +139,15 @@ CSimulation::CSimulation(void)
    m_bErodeShorePlatformAlternateDirection         =
    m_bDoCoastPlatformErosion                       =
    m_bDoCliffCollapse                              =
+   m_bDoBeachSedimentTransport                     =
    m_bGDALCanWriteFloat                            =
    m_bGDALCanWriteInt32                            =
    m_bScaleRasterOutput                            =
    m_bWorldFile                                    =
    m_bSingleDeepWaterWaveValues                    =
-   m_bHaveWaveStationData                          = false;
+   m_bHaveWaveStationData                          =
+   m_bSedimentInputAtPoint                         =
+   m_bSedimentInputLocationIsExact                 = false;
 
    m_bGDALCanCreate                                = true;
 
@@ -683,7 +686,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       WriteLookUpData();
 
    // OK, now read in the vector files (if any)
-   if ((m_bHaveWaveStationData) || (! m_strSedimentInputEventShapefile.empty()))
+   if (m_bHaveWaveStationData || m_bSedimentInputAtPoint)
       AnnounceReadVectorFiles();
 
    // Maybe read in deep water wave station data
@@ -708,7 +711,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    }
 
    // Maybe read in sediment input event data
-   if (! m_strSedimentInputEventShapefile.empty())
+   if (m_bSedimentInputAtPoint)
    {
       // We are reading sediment input event data
       AnnounceReadSedimentEventInputValuesGIS();
@@ -798,6 +801,14 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nUpdateIntervention();
       if (nRet != RTN_OK)
          return nRet;
+
+      // If we have sediment input events, then check to see whether this is time for an event to occur. If it is, then do it
+      if (m_bSedimentInputAtPoint)
+      {
+         nRet = nCheckForSedimentInputEvent();
+         if (nRet != RTN_OK)
+            return nRet;
+      }
 
       // Calculate changes due to external forcing
       nRet = nCalcExternalForcing();
@@ -996,13 +1007,16 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Tell the user how the simulation is progressing
       AnnounceProgress();
 
-      // Next simulate beach erosion and deposition i.e. simulate alongshore transport of unconsolidated sediment (longshore drift) between polygons. First calculate potential sediment movement between polygons
-      DoAllPotentialBeachErosion();
+      if (m_bDoBeachSedimentTransport)
+      {
+         // Next simulate beach erosion and deposition i.e. simulate alongshore transport of unconsolidated sediment (longshore drift) between polygons. First calculate potential sediment movement between polygons
+         DoAllPotentialBeachErosion();
 
-      // Do within-sediment redistribution of unconsolidated sediment, constraining potential sediment movement to give actual (i.e. supply-limited) sediment movement to/from each polygon in three size clases
-      nRet = nDoAllActualBeachErosionAndDeposition();
-      if (nRet != RTN_OK)
-         return nRet;
+         // Do within-sediment redistribution of unconsolidated sediment, constraining potential sediment movement to give actual (i.e. supply-limited) sediment movement to/from each polygon in three size clases
+         nRet = nDoAllActualBeachErosionAndDeposition();
+         if (nRet != RTN_OK)
+            return nRet;
+      }
 
       // Add the fine sediment that was eroded this timestep (from the shore platform, from beach erosion, and cliff collapse talus deposition, minus the fine that went off-grid) to the suspended sediment load
       double dFineThisTimestep = m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualBeachErosionFine + m_dThisTimestepCliffErosionFine - m_dThisTimestepActualFineSedLostBeachErosion;

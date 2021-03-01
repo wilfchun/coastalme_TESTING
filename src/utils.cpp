@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2020
+ * \date 2021
  * \copyright GNU General Public License
  *
  */
@@ -2235,6 +2235,9 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_READING_SEDIMENT_INPUT_EVENT:
       strErr = "reading sediment input event time series file";
       break;
+   case RTN_ERR_SEDIMENT_INPUT_EVENT:
+      strErr = "simulating sediment input event";
+      break;
    default:
       // should never get here
       strErr = "unknown cause";
@@ -2841,7 +2844,7 @@ bool CSimulation::bParseDate(string const* strDate, int& nDay, int& nMonth, int&
 
    if (nYear < 0)
    {
-      cerr << "year must be greater than zero in date '" << strDate << "'" << endl;
+      cerr << "year must be > 0 in date '" << strDate << "'" << endl;
       return false;
    }
 
@@ -2912,3 +2915,139 @@ bool CSimulation::bParseTime(string const* strTime, int& nHour, int& nMin, int& 
    return true;
 }
 
+
+/*==============================================================================================================================
+
+  For sediment input events, parses a string that may be relative (a number of hours or days after the start of the simulation), or absolute (a time/date in the format hh-mm-ss dd/mm/yyyy). Returns the timestep in which the sediment input event occurs
+
+==============================================================================================================================*/
+unsigned long CSimulation::ulConvertToTimestep(string const* pstrIn)
+{
+   unsigned long ulTimeStep = 0;
+
+   // Convert to lower case
+   string strDate = strToLower(pstrIn);
+
+   if (strDate.find("hour") != string::npos)
+   {
+      // OK, this is a number of hours (a relative time, from the start of simulation)
+      vector<string> VstrTmp = VstrSplit(&strDate, SPACE);
+      if ((VstrTmp.size() < 2) || (! bIsStringValidInt(VstrTmp[1])))
+      {
+         cerr << "error in number of hours '" + strDate + "' for sediment input event";
+         return SEDINPUTEVENTERROR;
+      }
+
+      double dHours = stod(strTrim(&VstrTmp[1]));
+      if (dHours > m_dSimDuration)
+      {
+         cerr << "sediment input event '" + strDate + "' occurs after end of simulation";
+         return SEDINPUTEVENTERROR;
+      }
+
+      ulTimeStep = static_cast<unsigned long>(dRound(dHours / m_dTimeStep)) + 1;
+   }
+   else if (strDate.find("day") != string::npos)
+   {
+      // OK, this is a number of days (a relative time, from the start of simulation)
+      vector<string> VstrTmp = VstrSplit(&strDate, SPACE);
+      if ((VstrTmp.size() < 2) || (! bIsStringValidInt(VstrTmp[1])))
+      {
+         cerr << "error in number of days '" + strDate + "' for sediment input event";
+         return SEDINPUTEVENTERROR;
+      }
+
+      double dHours = stod(strTrim(&VstrTmp[1])) * 24;
+      if (dHours > m_dSimDuration)
+      {
+         cerr << "sediment input event '" + strDate + "' occurs after end of simulation";
+         return SEDINPUTEVENTERROR;
+      }
+
+      ulTimeStep = static_cast<unsigned long>(dRound(dHours / m_dTimeStep)) + 1;
+   }
+   else
+   {
+      // This is an absolute time/date in the format hh-mm-ss dd/mm/yyyy
+      vector<string> VstrTmp = VstrSplit(&strDate, SPACE);
+      if (VstrTmp.size() < 2)
+      {
+         cerr << "error in time/date '" + strDate + "' of sediment input event";
+         return SEDINPUTEVENTERROR;
+      }
+
+      int
+         nHour = 0,
+         nMin = 0,
+         nSec = 0;
+
+      // OK, first sort out the time
+      if (! bParseTime(&VstrTmp[0], nHour, nMin, nSec))
+      {
+         cerr << "error in time '" + VstrTmp[0] + "' of sediment input event";
+         return SEDINPUTEVENTERROR;
+      }
+
+      int
+         nDay = 0,
+         nMonth = 0,
+         nYear = 0;
+
+      // Now sort out the time
+      if (! bParseDate(&VstrTmp[1], nDay, nMonth, nYear))
+      {
+         cerr << "error in date '" + VstrTmp[1] + "' of sediment input event";
+         return SEDINPUTEVENTERROR;
+      }
+
+      // This is modified from https://stackoverflow.com/questions/14218894/number-of-days-between-two-dates-c
+      struct tm tmSimStart = {};
+      tmSimStart.tm_sec = m_nSimStartSec;
+      tmSimStart.tm_min = m_nSimStartMin;
+      tmSimStart.tm_hour = m_nSimStartHour;
+      tmSimStart.tm_mday = m_nSimStartDay;
+      tmSimStart.tm_mon = m_nSimStartMonth - 1;
+      tmSimStart.tm_year = m_nSimStartYear - 1900;
+
+      struct tm tmSimEvent = {};
+      tmSimEvent.tm_sec = nSec;
+      tmSimEvent.tm_min = nMin;
+      tmSimEvent.tm_hour = nHour;
+      tmSimEvent.tm_mday = nDay;
+      tmSimEvent.tm_mon = nMonth - 1;
+      tmSimEvent.tm_year = nYear - 1900;
+
+      time_t tStart = std::mktime(&tmSimStart);
+      time_t tEvent = std::mktime(&tmSimEvent);
+
+      if (tStart == (time_t)(-1))
+      {
+         cerr << "error in simulation start time/date";
+         return SEDINPUTEVENTERROR;
+      }
+
+      if (tEvent == (time_t)(-1))
+      {
+         cerr << "error in time/date '" + strDate + "' of sediment input event";
+         return SEDINPUTEVENTERROR;
+      }
+
+      double dHours = difftime(tEvent, tStart) / (60 * 60);
+      if (dHours < 0)
+      {
+         cerr << "sediment input event '" + strDate + "' occurs before start of simulation";
+         return SEDINPUTEVENTERROR;
+
+      }
+
+      if (dHours > m_dSimDuration)
+      {
+         cerr << "sediment input event '" + strDate + "' occurs after end of simulation";
+         return SEDINPUTEVENTERROR;
+      }
+
+      ulTimeStep = static_cast<unsigned long>(dRound(dHours / m_dTimeStep)) + 1;
+   }
+
+   return ulTimeStep;
+}

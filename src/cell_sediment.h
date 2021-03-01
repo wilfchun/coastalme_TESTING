@@ -6,7 +6,7 @@
  * \author David Favis-Mortlock
  * \author Andres Payo
 
- * \date 2020
+ * \date 2021
  * \copyright GNU General Public License
  *
  * \file cell_sediment.h
@@ -46,12 +46,15 @@ public:
 
    void SetFine(double const);
    double dGetFine(void) const;
+   void AddFine(double const);
 
    void SetSand(double const);
    double dGetSand(void) const;
+   void AddSand(double const);
 
    void SetCoarse(double const);
    double dGetCoarse(void) const;
+   void AddCoarse(double const);
 
    void SetNotchFineLost(double const);
    void IncrNotchFineLost(double const);

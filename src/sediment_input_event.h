@@ -5,7 +5,7 @@
  * \details This class represent a sediment input event such as sediment derived from inland (e.g. at the mouth of a gully or rambla), or sediment from an intervention such as beach nourishment
  * \author David Favis-Mortlock
  * \author Andres Payo
- * \date 2020
+ * \date 2021
  * \copyright GNU General Public License
  *
  * \file sediment_input_event.h
@@ -30,7 +30,7 @@ class CSedInputEvent
 {
 private:
    int m_nLocationID;        // The location ID in the shapefile
-   unsigned long long int m_ullEventTime;        // The timing of the sediment input event
+   unsigned long m_ulEventTimeStep;        // The timing of the sediment input event
    double
       m_dFineSedVol,         // Volume (m3) of fine sediment
       m_dSandSedVol,         // Volume (m3) of sand-sized sediment
@@ -39,8 +39,15 @@ private:
       m_dWidth;              // The along-coast width (m) of the sediment block
 
 public:
-   CSedInputEvent(int const, unsigned long long const, double const, double const, double const, double const, double const);
+   CSedInputEvent(int const, unsigned long const, double const, double const, double const, double const, double const);
    ~CSedInputEvent(void);
 
+   int nGetLocationID(void);
+   unsigned long ulGetEventTimeStep(void);
+   double dGetFineSedVol(void);
+   double dGetSandSedVol(void);
+   double dGetCoarseSedVol(void);
+   double dGetLen(void);
+   double dGetWidth(void);
 };
 #endif // CSEDINPUT_H

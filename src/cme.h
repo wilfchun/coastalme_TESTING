@@ -419,6 +419,7 @@ int const      RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA      = 62;
 int const      RTN_ERR_READING_DEEP_WATER_WAVE_DATA   = 63;
 int const      RTN_ERR_BOUNDING_BOX                   = 64;
 int const      RTN_ERR_READING_SEDIMENT_INPUT_EVENT   = 65;
+int const      RTN_ERR_SEDIMENT_INPUT_EVENT           = 66;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                       = -1;
@@ -444,7 +445,8 @@ int const      UNCONS_SEDIMENT_EQUATION_CERC          = 0;
 int const      UNCONS_SEDIMENT_EQUATION_KAMPHUIS      = 1;
 
 
-unsigned long const  MASK                                                  = 0xfffffffful;
+unsigned long const MASK                                                  = 0xfffffffful;
+unsigned long const SEDINPUTEVENTERROR                                    = -1;
 
 double const   PI                                                          = 3.141592653589793238462643;
 
@@ -474,11 +476,11 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 11 February 2021";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 1 March 2021";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
-string const   COPYRIGHT                                                   = "(C) 2020 Andres Payo and David Favis-Mortlock";
+string const   COPYRIGHT                                                   = "(C) 2021 Andres Payo and David Favis-Mortlock";
 string const   LINE                                                        = "-------------------------------------------------------------------------------";
 string const   DISCLAIMER1                                                 = "This program is distributed in the hope that it will be useful, but WITHOUT ANY";
 string const   DISCLAIMER2                                                 = "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A";
