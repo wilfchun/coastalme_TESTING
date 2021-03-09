@@ -3156,7 +3156,10 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
          vector<string> VstrTmp = VstrSplit(&strRec, COMMA);
 
          // Check that have all we need
-         if (VstrTmp.size() < 7)
+         unsigned int nTarget = 7;
+         if (m_bSedimentInputAlongLine || m_bSedimentInputAtPoint)
+            nTarget = 5;
+         if (VstrTmp.size() < nTarget)
          {
             strErr = "too few data items on data line '" + to_string(nRead) + "' in " + m_strSedimentInputEventTimeSeriesFile;
             break;
@@ -3238,32 +3241,40 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
          if (dCoarseSedVol > 0)
             m_bHaveCoarseSediment = true;
 
-         // The coast-normal length (m) of the sediment block, first check that this is a valid double
-         if (! bIsStringValidDouble(VstrTmp[5]))
+         // Only read the last two items if we have on-coast sediment block sediment input
+         double
+            dLen = 0,
+            dWidth = 0;
+         if (m_bSedimentInputAtCoast)
          {
-            strErr = "invalid floating point number '" + VstrTmp[5] + "' for coast-normal length of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
-            break;
-         }
 
-         double dLen = stod(strTrim(&VstrTmp[5]));
-         if ((! m_bSedimentInputAtCoast) && (dLen <= 0))
-         {
-            strErr = "coast-normal length L of the sediment block '" + to_string(dLen) + "' must be > 0 in " + m_strSedimentInputEventTimeSeriesFile;
-            break;
-         }
+            // The coast-normal length (m) of the sediment block, first check that this is a valid double
+            if (! bIsStringValidDouble(VstrTmp[5]))
+            {
+               strErr = "invalid floating point number '" + VstrTmp[5] + "' for coast-normal length of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
+               break;
+            }
 
-         // Finally the along-coast width (m) of the sediment block, first check that this is a valid double
-         if (! bIsStringValidDouble(VstrTmp[6]))
-         {
-            strErr = "invalid floating point number '" + VstrTmp[6] + "' for along-coast width of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
-            break;
-         }
+            dLen = stod(strTrim(&VstrTmp[5]));
+            if ((! m_bSedimentInputAtCoast) && (dLen <= 0))
+            {
+               strErr = "coast-normal length L of the sediment block '" + to_string(dLen) + "' must be > 0 in " + m_strSedimentInputEventTimeSeriesFile;
+               break;
+            }
 
-         double dWidth = stod(strTrim(&VstrTmp[6]));
-         if ((! m_bSedimentInputAtCoast) && (dWidth <= 0))
-         {
-            strErr = "along-coast width W (m) of the sediment block '" + to_string(dWidth) + "' must be > 0 in " + m_strSedimentInputEventTimeSeriesFile;
-            break;
+            // Finally the along-coast width (m) of the sediment block, first check that this is a valid double
+            if (! bIsStringValidDouble(VstrTmp[6]))
+            {
+               strErr = "invalid floating point number '" + VstrTmp[6] + "' for along-coast width of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
+               break;
+            }
+
+            dWidth = stod(strTrim(&VstrTmp[6]));
+            if ((! m_bSedimentInputAtCoast) && (dWidth <= 0))
+            {
+               strErr = "along-coast width W (m) of the sediment block '" + to_string(dWidth) + "' must be > 0 in " + m_strSedimentInputEventTimeSeriesFile;
+               break;
+            }
          }
 
          // Create the CSedInputEvent object
@@ -3278,7 +3289,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
    if (! strErr.empty())
    {
       // Error in input to initialisation file
-      cerr << ERR << strErr << " in deep water wave time series file " << m_strDeepWaterWavesTimeSeriesFile << endl << "'" << strRec << "'" << endl;
+      cerr << ERR << strErr << " in sediment input event file " << m_strSedimentInputEventTimeSeriesFile << endl << "'" << strRec << "'" << endl;
       InStream.close();
 
       return RTN_ERR_READING_SEDIMENT_INPUT_EVENT;

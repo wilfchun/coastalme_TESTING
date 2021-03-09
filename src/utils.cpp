@@ -1811,11 +1811,11 @@ void CSimulation::AnnounceProgress(void)
 
       // Add a 'marker' for GIS saves etc.
       if (m_bSaveGISThisIter)
-         cout << "GIS" << m_nGISSave;
+         cout << setw(9) << "GIS" + to_string(m_nGISSave);
       else if (m_bSedimentInputThisIter)
-         cout << " SED";
+         cout << setw(9) << "SED INPUT";
       else
-         cout << "        ";
+         cout << setw(9) << SPACE;
 
       cout.flush();
    }

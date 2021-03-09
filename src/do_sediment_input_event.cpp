@@ -408,7 +408,7 @@ int CSimulation::nDoSedimentInputEvent(int const nEvent)
       // And update the cell's total
       m_pRasterGrid->m_Cell[nCoastX][nCoastY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->AddToTotSedimentInputDepth(dFineDepth + dSandDepth + dCoarseDepth);
 
-      LogStream << ", depth of fine sediment added = " << dFineDepth << " m, depth of sand sediment added = " << dSandDepth << " m, depth of coarse sediment added = " << dCoarseDepth << " m" << endl;
+      LogStream << "Depth of fine sediment added = " << dFineDepth << " m, depth of sand sediment added = " << dSandDepth << " m, depth of coarse sediment added = " << dCoarseDepth << " m" << endl;
    }
 
    return RTN_OK;
