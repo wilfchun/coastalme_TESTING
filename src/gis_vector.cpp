@@ -47,7 +47,7 @@ using std::stringstream;
  Reads vector GIS datafiles
 
 ===============================================================================================================================*/
-int CSimulation::nReadVectorGISData(int const nDataItem)
+int CSimulation::nReadVectorGISFile(int const nDataItem)
 {
    int
       nMaxLayer = 0,
@@ -63,13 +63,16 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
    case (DEEP_WATER_WAVE_STATIONS_VEC):
       strGISFile = m_strDeepWaterWaveStationsShapefile;
       nMaxLayer = DEEP_WATER_WAVE_STATIONS_MAX_LAYER;
-      nNeedGeometry = DEEP_WATER_WAVE_STATIONS_GEOMETRY;
+      nNeedGeometry = DEEP_WATER_WAVE_STATIONS_POINT_GEOMETRY;
       break;
 
    case (SEDIMENT_INPUT_EVENT_LOCATION_VEC):
       strGISFile = m_strSedimentInputEventShapefile;
       nMaxLayer = SEDIMENT_INPUT_EVENT_LOCATION_MAX_LAYER;
-      nNeedGeometry = SEDIMENT_INPUT_EVENT_LOCATION_GEOMETRY;
+      if (m_bSedimentInputAtPoint || m_bSedimentInputAtCoast)
+         nNeedGeometry = SEDIMENT_INPUT_EVENT_LOCATION_POINT_GEOMETRY;
+      else if (m_bSedimentInputAlongLine)
+         nNeedGeometry = SEDIMENT_INPUT_EVENT_LOCATION_LINE_GEOMETRY;
       break;
    }
 
@@ -169,14 +172,14 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
          }
 
          // The geometry type is OK, so process the geometry data
-//          int nPoints = 0;
+         int nPoints = 0;
          OGRPoint* pOGRPoint;
-//          OGRLineString* pOGRLineString;
+         OGRLineString* pOGRLineString;
          switch (nDataItem)
          {
          case (DEEP_WATER_WAVE_STATIONS_VEC):
             // Point data
-            pOGRPoint = (OGRPoint *) pOGRGeometry;
+            pOGRPoint = (OGRPoint*) pOGRGeometry;
 
             // Convert the wave station co-ords to grid CRS and store them: we will use these in the spatial interpolation of deep water waves
             m_VdDeepWaterWaveStationX.push_back(dExtCRSXToGridX(pOGRPoint->getX()));
@@ -184,12 +187,28 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
             break;
 
          case (SEDIMENT_INPUT_EVENT_LOCATION_VEC):
-            // Point data
-            pOGRPoint = (OGRPoint *) pOGRGeometry;
+            if (m_bSedimentInputAtPoint || m_bSedimentInputAtCoast)
+            {
+               // Point data
+               pOGRPoint = (OGRPoint*) pOGRGeometry;
 
-            // Convert the co-ords to grid CRS and store them
-            m_VdSedimentInputLocationX.push_back(dExtCRSXToGridX(pOGRPoint->getX()));
-            m_VdSedimentInputLocationY.push_back(dExtCRSYToGridY(pOGRPoint->getY()));
+               // Convert the point co-ords to grid CRS and store them
+               m_VdSedimentInputLocationX.push_back(dExtCRSXToGridX(pOGRPoint->getX()));
+               m_VdSedimentInputLocationY.push_back(dExtCRSYToGridY(pOGRPoint->getY()));
+            }
+            else if (m_bSedimentInputAlongLine)
+            {
+               // Line data
+               pOGRLineString = (OGRLineString*) pOGRGeometry;
+
+               nPoints = pOGRLineString->getNumPoints();
+               for (int i = 0; i < nPoints; i++)
+               {
+                  // Convert the co-ords for each point in the line to grid CRS and store them
+                  m_VdSedimentInputLocationX.push_back(dExtCRSXToGridX(pOGRLineString->getX(i)));
+                  m_VdSedimentInputLocationY.push_back(dExtCRSYToGridY(pOGRLineString->getY(i)));
+               }
+            }
             break;
          }
 
@@ -230,7 +249,17 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
 
             // Get the Station ID for this point (note that we read it as an integer, not caring what type of field is actually in the shapefile)
             nID = pOGRFeature->GetFieldAsInteger(nFieldIndex);
-            m_VnSedimentInputLocationID.push_back(nID);
+
+            if (m_bSedimentInputAtPoint || m_bSedimentInputAtCoast)
+               // Save the ID for the point
+               m_VnSedimentInputLocationID.push_back(nID);
+
+            else if (m_bSedimentInputAlongLine)
+            {
+               // Save the ID for every point in the line
+               for (int i = 0; i < nPoints; i++)
+                  m_VnSedimentInputLocationID.push_back(nID);
+            }
 
             break;
          }
@@ -268,7 +297,7 @@ int CSimulation::nReadVectorGISData(int const nDataItem)
  Writes vector GIS files using OGR
 
 ===============================================================================================================================*/
-bool CSimulation::bWriteVectorGIS(int const nDataItem, string const* strPlotTitle)
+bool CSimulation::bWriteVectorGISFile(int const nDataItem, string const* strPlotTitle)
 {
    // Begin constructing the file name for this save
    string strFilePathName(m_strOutPath);

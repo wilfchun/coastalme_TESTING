@@ -60,9 +60,9 @@ using std::endl;
 //    pPolygon->SetDeltaEstimatedUnconsCoarse(-dTotCoarseEroded);
 //
 //    // Save the estimated values
-//    m_dThisTimestepEstimatedActualFineBeachErosion   += dTotFineEroded;
-//    m_dThisTimestepEstimatedActualSandBeachErosion   += dTotSandEroded;
-//    m_dThisTimestepEstimatedActualCoarseBeachErosion += dTotCoarseEroded;
+//    m_dThisIterEstimatedActualFineBeachErosion   += dTotFineEroded;
+//    m_dThisIterEstimatedActualSandBeachErosion   += dTotSandEroded;
+//    m_dThisIterEstimatedActualCoarseBeachErosion += dTotCoarseEroded;
 //
 //    return RTN_OK;
 // }

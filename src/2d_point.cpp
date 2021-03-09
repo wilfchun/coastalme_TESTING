@@ -96,8 +96,8 @@ bool CGeom2DPoint::operator== (CGeom2DPoint* pPt) const
 //! Compares two CGeom2DPoint objects for inequality
 bool CGeom2DPoint::operator!= (CGeom2DPoint* pPt) const
 {
-   if ((pPt->dGetX() == dX) && (pPt->dGetY() == dY))
-      return false;
+   if ((pPt->dGetX() != dX) || (pPt->dGetY() != dY))
+      return true;
 
-   return true;
+   return false;
 }

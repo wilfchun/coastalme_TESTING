@@ -115,8 +115,8 @@ int CSimulation::nCreateAllProfiles(void)
 
       if (m_nNaturalCapeNormals > 0)
       {
-         // Create profiles for natural capes i.e. points on the coastline at which smoothed convexity is high (a large -ve value), but detailed convexity is low
-         CreateNaturalCapeNormals(nCoast, nProfile, nProfileToNodeSpacing, &bVCoastPointSearched, &prVCurvature);
+         // Create normal profiles for natural capes i.e. points on the coastline at which smoothed convexity is high (a large -ve value), but detailed convexity is low
+         CreateNaturalCapeNormalProfiles(nCoast, nProfile, nProfileToNodeSpacing, &bVCoastPointSearched, &prVCurvature);
       }
 
       // TODO Try just one SD below the mean
@@ -133,8 +133,8 @@ int CSimulation::nCreateAllProfiles(void)
       if (m_nLogFileDetail >= LOG_FILE_MOST_DETAIL)
          LogStream << m_ulIter << ": convexity threshold = " << dCoastProfileSmoothConvexityThreshold << endl;
 
-      // Now create normals on either side of points of maximum smoothed convexity
-      CreateRestOfNormals(nCoast, nProfile, nProfileToNodeSpacing, dCoastProfileSmoothConvexityThreshold, &bVCoastPointSearched, &prVCurvature);
+      // Now create normal profiles on either side of points of maximum smoothed convexity
+      CreateRestOfNormalProfiles(nCoast, nProfile, nProfileToNodeSpacing, dCoastProfileSmoothConvexityThreshold, &bVCoastPointSearched, &prVCurvature);
 
       // Did we fail to create any normal profiles? If so, quit
       if (nProfile < 0)
@@ -320,7 +320,7 @@ void CSimulation::CreateInterventionProfiles(int const nCoast, int& nProfile /*,
  Create profiles for natural capes i.e. points on the coastline at which smoothed convexity is high (a large -ve value), but detailed convexity is low
 
 ===============================================================================================================================*/
-void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int const nProfileToNodeSpacing, vector<bool>* bVCoastPointSearched, vector<pair<int, double> > const* prVCurvature)
+void CSimulation::CreateNaturalCapeNormalProfiles(int const nCoast, int& nProfile, int const nProfileToNodeSpacing, vector<bool>* bVCoastPointSearched, vector<pair<int, double> > const* prVCurvature)
 {
    int
       nCoastSize = m_VCoast[nCoast].nGetCoastlineSize(),
@@ -380,7 +380,7 @@ void CSimulation::CreateNaturalCapeNormals(int const nCoast, int& nProfile, int 
  Create normal profiles on the rest of the coastline
 
  ===============================================================================================================================*/
-void CSimulation::CreateRestOfNormals(int const nCoast, int& nProfile, int const nProfileToNodeSpacing, double const dCoastProfileSmoothConvexityThreshold, vector<bool>* bVCoastPointSearched, vector<pair<int, double> > const* prVCurvature)
+void CSimulation::CreateRestOfNormalProfiles(int const nCoast, int& nProfile, int const nProfileToNodeSpacing, double const dCoastProfileSmoothConvexityThreshold, vector<bool>* bVCoastPointSearched, vector<pair<int, double> > const* prVCurvature)
 {
    int nCoastSize = m_VCoast[nCoast].nGetCoastlineSize();
 
@@ -1488,7 +1488,7 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
 //                   bHitLand = true;
 //                   pProfile->SetHitLand(true);
 //
-//                   LogStream << m_ulIter << ": profile " << nProfile << " HIT LAND at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, elevation = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ", SWL = " << m_dThisTimestepSWL << endl;
+//                   LogStream << m_ulIter << ": profile " << nProfile << " HIT LAND at [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, elevation = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ", SWL = " << m_dThisIterSWL << endl;
 //
 //                   LogStream << "On [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, sea depth = " << m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth() << ", bIsInContiguousSea = " << (m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea() ? "true" : "false") << ", landform = " << (m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea() ? "sea" : "not sea") << endl;
 //

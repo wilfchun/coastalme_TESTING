@@ -105,9 +105,9 @@ int CSimulation::nDoAllShorePlatFormErosion(void)
 
    if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
    {
-      LogStream << endl << m_ulIter << ": potential shore platform erosion (m^3) = " << m_dThisTimestepPotentialPlatformErosion * m_dCellArea << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles * m_dCellArea << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles * m_dCellArea << ")" << endl;
+      LogStream << endl << m_ulIter << ": potential shore platform erosion (m^3) = " << m_dThisIterPotentialPlatformErosion * m_dCellArea << " (on profiles = " << m_dTotPotentialPlatformErosionOnProfiles * m_dCellArea << ", between profiles = " << m_dTotPotentialPlatformErosionBetweenProfiles * m_dCellArea << ")" << endl;
 
-      LogStream << m_ulIter << ": actual shore platform erosion (m^3) = " << (m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepActualPlatformErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepActualPlatformErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepActualPlatformErosionCoarse * m_dCellArea << ")" << endl;
+      LogStream << m_ulIter << ": actual shore platform erosion (m^3) = " << (m_dThisIterActualPlatformErosionFine + m_dThisIterActualPlatformErosionSand + m_dThisIterActualPlatformErosionCoarse) * m_dCellArea << " (fine = " << m_dThisIterActualPlatformErosionFine * m_dCellArea << ", sand = " << m_dThisIterActualPlatformErosionSand * m_dCellArea << ", coarse = " << m_dThisIterActualPlatformErosionCoarse * m_dCellArea << ")" << endl;
    }
 
    return RTN_OK;
@@ -225,7 +225,7 @@ int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int co
    for (int i = 0; i < nProfSize; i++)
    {
       // Use the actual depth of water here (i.e. the depth to the top of the unconsolidated sediment, including the thickness of consolidated sediment beneath it)
-      dVProfileDepthOverDB[i] = m_dThisTimestepSWL - VdProfileZ[i];
+      dVProfileDepthOverDB[i] = m_dThisIterSWL - VdProfileZ[i];
       dVProfileDepthOverDB[i] /= dDepthOfBreaking;
 
       // Constrain dDepthOverDB[i] to be between 0 (can get small -ve values due to rounding errors) and m_dDepthOverDBMax
@@ -316,10 +316,10 @@ int CSimulation::nCalcPotentialPlatformErosionOnProfile(int const nCoast, int co
          m_pRasterGrid->m_Cell[nX][nY].SetPotentialPlatformErosion(-dDeltaZ);
 
          // Update this-timestep totals
-         m_ulThisTimestepNumPotentialPlatformErosionCells++;
-         m_dThisTimestepPotentialPlatformErosion -= dDeltaZ;       // Since dDeltaZ is a -ve value
-//          assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
-//          assert(m_dThisTimestepPotentialPlatformErosion >= 0);
+         m_ulThisIterNumPotentialPlatformErosionCells++;
+         m_dThisIterPotentialPlatformErosion -= dDeltaZ;       // Since dDeltaZ is a -ve value
+//          assert(isfinite(m_dThisIterPotentialPlatformErosion));
+//          assert(m_dThisIterPotentialPlatformErosion >= 0);
 
          // Increment the check values
          m_ulTotPotentialPlatformErosionOnProfiles++;
@@ -543,7 +543,7 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
       for (int i = 0; i < nParProfSize; i++)
       {
          // Use the actual depth of water here (i.e. the depth to the top of the unconsolidated sediment, including the thickness of consolidated sediment beneath it)
-         dVParProfileDepthOverDB[i] = m_dThisTimestepSWL - dVParProfileZ[i];
+         dVParProfileDepthOverDB[i] = m_dThisIterSWL - dVParProfileZ[i];
          dVParProfileDepthOverDB[i] /= dDepthOfBreaking;
 
          // Constrain dDepthOverDB[i] to be between 0 (can get small -ve due to rounding errors) and m_dDepthOverDBMax
@@ -631,10 +631,10 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
                dDeltaZ = tMin(dPrevPotentialErosion, dDeltaZ);
 
                // Adjust this-timestep totals, since this cell has already been eroded
-               m_ulThisTimestepNumPotentialPlatformErosionCells--;
-               m_dThisTimestepPotentialPlatformErosion += dPrevPotentialErosion;          // Since dPrevPotentialErosion is +ve
-//                assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
-//                assert(m_dThisTimestepPotentialPlatformErosion >= 0);
+               m_ulThisIterNumPotentialPlatformErosionCells--;
+               m_dThisIterPotentialPlatformErosion += dPrevPotentialErosion;          // Since dPrevPotentialErosion is +ve
+//                assert(isfinite(m_dThisIterPotentialPlatformErosion));
+//                assert(m_dThisIterPotentialPlatformErosion >= 0);
 
                // And also adjust the check values
                m_ulTotPotentialPlatformErosionBetweenProfiles--;
@@ -651,10 +651,10 @@ int CSimulation::nCalcPotentialPlatformErosionBetweenProfiles(int const nCoast, 
 //               LogStream << "[" << nXPar << "][" << nYPar << "] = {" << dGridCentroidXToExtCRSX(nXPar) << ", " <<  dGridCentroidYToExtCRSY(nYPar) << "} has potential platform erosion = " << -dDeltaZ << endl;
 
             // Update this-timestep totals
-            m_ulThisTimestepNumPotentialPlatformErosionCells++;
-            m_dThisTimestepPotentialPlatformErosion -= dDeltaZ;                // Since dDeltaZ is a -ve value
-//             assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
-//             assert(m_dThisTimestepPotentialPlatformErosion >= 0);
+            m_ulThisIterNumPotentialPlatformErosionCells++;
+            m_dThisIterPotentialPlatformErosion -= dDeltaZ;                // Since dDeltaZ is a -ve value
+//             assert(isfinite(m_dThisIterPotentialPlatformErosion));
+//             assert(m_dThisIterPotentialPlatformErosion >= 0);
 
             // Increment the check values
             m_ulTotPotentialPlatformErosionBetweenProfiles++;
@@ -748,10 +748,10 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nThisLayer)->pGetConsolidatedSediment()->SetFine(dRemaining);
 
       // And set the changed-this-timestep switch
-      m_bConsChangedThisTimestep[nThisLayer] = true;
+      m_bConsChangedThisIter[nThisLayer] = true;
 
       // And increment the per-timestep total
-      m_dThisTimestepActualPlatformErosionFine += dFineEroded;
+      m_dThisIterActualPlatformErosionFine += dFineEroded;
    }
 
    if (nSandWeight)
@@ -769,10 +769,10 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nThisLayer)->pGetConsolidatedSediment()->SetSand(dRemaining);
 
       // Set the changed-this-timestep switch
-      m_bConsChangedThisTimestep[nThisLayer] = true;
+      m_bConsChangedThisIter[nThisLayer] = true;
 
       // And increment the per-timestep total
-      m_dThisTimestepActualPlatformErosionSand += dSandEroded;
+      m_dThisIterActualPlatformErosionSand += dSandEroded;
    }
 
    if (nCoarseWeight)
@@ -790,10 +790,10 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nThisLayer)->pGetConsolidatedSediment()->SetCoarse(dRemaining);
 
       // Set the changed-this-timestep switch
-      m_bConsChangedThisTimestep[nThisLayer] = true;
+      m_bConsChangedThisIter[nThisLayer] = true;
 
       // And increment the per-timestep total
-      m_dThisTimestepActualPlatformErosionCoarse += dCoarseEroded;
+      m_dThisIterActualPlatformErosionCoarse += dCoarseEroded;
    }
 
    // Did we erode anything?
@@ -809,7 +809,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
       m_pRasterGrid->m_Cell[nX][nY].SetSeaDepth();
 
       // Update per-timestep totals
-      m_ulThisTimestepNumActualPlatformErosionCells++;
+      m_ulThisIterNumActualPlatformErosionCells++;
 
       // Eroded fine sediment goes onto suspension
 
@@ -934,7 +934,7 @@ void CSimulation::DoActualShorePlatformErosionOnCell(int const nX, int const nY)
          if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
             LogStream << m_ulIter << ": " << WARN << "platform erosion on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "} but this is not in a polygon" << endl;
 
-         m_dThisTimestepMassBalanceDepositionError += (dSandEroded + dCoarseEroded);
+         m_dThisIterMassBalanceDepositionError += (dSandEroded + dCoarseEroded);
       }
    }
 }
@@ -1187,9 +1187,9 @@ void CSimulation::FillPotentialPlatformErosionHoles(void)
                m_pRasterGrid->m_Cell[nX][nY].SetPotentialPlatformErosion(dThisPotentialPlatformErosion);
 
                // Update this-timestep totals
-               m_ulThisTimestepNumPotentialPlatformErosionCells++;
-               m_dThisTimestepPotentialPlatformErosion += dThisPotentialPlatformErosion;
-//                assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
+               m_ulThisIterNumPotentialPlatformErosionCells++;
+               m_dThisIterPotentialPlatformErosion += dThisPotentialPlatformErosion;
+//                assert(isfinite(m_dThisIterPotentialPlatformErosion));
 
                // Increment the check values
                m_ulTotPotentialPlatformErosionBetweenProfiles++;

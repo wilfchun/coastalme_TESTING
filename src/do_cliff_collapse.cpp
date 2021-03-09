@@ -106,7 +106,7 @@ int CSimulation::nDoAllWaveEnergyToCoastLandforms(void)
    }
 
    if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
-      LogStream << endl << m_ulIter << ": cliff collapse (m^3) = " << (m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse) * m_dCellArea << " (fine = " << m_dThisTimestepCliffCollapseErosionFine * m_dCellArea << ", sand = " << m_dThisTimestepCliffCollapseErosionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffCollapseErosionCoarse * m_dCellArea << "), talus deposition (m^3) = " << (m_dThisTimestepCliffDepositionSand + m_dThisTimestepCliffDepositionCoarse) * m_dCellArea << " (sand = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ", coarse = " << m_dThisTimestepCliffDepositionSand * m_dCellArea << ")" << endl;
+      LogStream << endl << m_ulIter << ": cliff collapse (m^3) = " << (m_dThisIterCliffCollapseErosionFine + m_dThisIterCliffCollapseErosionSand + m_dThisIterCliffCollapseErosionCoarse) * m_dCellArea << " (fine = " << m_dThisIterCliffCollapseErosionFine * m_dCellArea << ", sand = " << m_dThisIterCliffCollapseErosionSand * m_dCellArea << ", coarse = " << m_dThisIterCliffCollapseErosionCoarse * m_dCellArea << "), talus deposition (m^3) = " << (m_dThisIterCliffDepositionSand + m_dThisIterCliffDepositionCoarse) * m_dCellArea << " (sand = " << m_dThisIterCliffDepositionSand * m_dCellArea << ", coarse = " << m_dThisIterCliffDepositionSand * m_dCellArea << ")" << endl;
 
    return RTN_OK;
 }
@@ -158,8 +158,8 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
       pCliff->SetNotchBaseElev(dNotchElev);
 
       // Set flags to say that the top layer has changed
-      m_bConsChangedThisTimestep[nTopLayer] = true;
-      m_bUnconsChangedThisTimestep[nTopLayer] = true;
+      m_bConsChangedThisIter[nTopLayer] = true;
+      m_bUnconsChangedThisIter[nTopLayer] = true;
 
 //      int nX = pCliff->pPtiGetCellMarkedAsLF()->nGetX();
 //      int nY = pCliff->pPtiGetCellMarkedAsLF()->nGetY();
@@ -306,12 +306,12 @@ int CSimulation::nDoCliffCollapse(CRWCliff* pCliff, double const dNotchDeepen, d
 //   LogStream << m_ulIter << ": cell [" << nX << "][" << nY << "] after removing sediment, dGetVolEquivSedTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetVolEquivSedTopElev() << ", dGetSedimentTopElev() = " << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << endl << endl;
 
    // And update the this-timestep totals and the grand totals for collapse
-   m_nNThisTimestepCliffCollapse++;
+   m_nNThisIterCliffCollapse++;
    m_nNTotCliffCollapse++;
 
-   m_dThisTimestepCliffCollapseErosionFine += dFineCollapse;
-   m_dThisTimestepCliffCollapseErosionSand += dSandCollapse;
-   m_dThisTimestepCliffCollapseErosionCoarse += dCoarseCollapse;
+   m_dThisIterCliffCollapseErosionFine += dFineCollapse;
+   m_dThisIterCliffCollapseErosionSand += dSandCollapse;
+   m_dThisIterCliffCollapseErosionCoarse += dCoarseCollapse;
 
    return RTN_OK;
 }
@@ -329,7 +329,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
    // Fine sediment goes into suspension
    if (dFineCollapse > SEDIMENT_ELEV_TOLERANCE)
    {
-      m_dThisTimestepFineSedimentToSuspension += dFineCollapse;
+      m_dThisIterFineSedimentToSuspension += dFineCollapse;
    }
 
    // Do we have any sand- or coarse-sized sediment to deposit?
@@ -407,8 +407,8 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 //          LogStream << "dTotSandToDeposit WAS = " << dTotSandToDeposit << " dTotCoarseToDeposit WAS = " << dTotCoarseToDeposit << endl;
 
          // The start point of the profile would have been outside the grid, so just add this profile's sediment to the volume exported from the grid this timestep
-         m_dThisTimestepSandSedLostCliffCollapse += (dVToDepositPerProfile[nAcross] * dSandProp);
-         m_dThisTimestepCoarseSedLostCliffCollapse += (dVToDepositPerProfile[nAcross] * dCoarseProp);
+         m_dThisIterSandSedLostCliffCollapse += (dVToDepositPerProfile[nAcross] * dSandProp);
+         m_dThisIterCoarseSedLostCliffCollapse += (dVToDepositPerProfile[nAcross] * dCoarseProp);
 
          // Remove this volume from the total still to be deposited
          dTotSandToDeposit -= (dVToDepositPerProfile[nAcross] * dSandProp);
@@ -458,8 +458,8 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 //                LogStream << "END point of profile would have been outside the grid, so " << dVToDepositPerProfile[nAcross] << " exported from grid" << endl;
 
                // The end point of the profile would have been outside the grid, so just add this profile's sediment to the volume exported from the grid this timestep
-               m_dThisTimestepSandSedLostCliffCollapse += (dVToDepositPerProfile[nAcross] * dSandProp);
-               m_dThisTimestepCoarseSedLostCliffCollapse += (dVToDepositPerProfile[nAcross] * dCoarseProp);
+               m_dThisIterSandSedLostCliffCollapse += (dVToDepositPerProfile[nAcross] * dSandProp);
+               m_dThisIterCoarseSedLostCliffCollapse += (dVToDepositPerProfile[nAcross] * dCoarseProp);
 
                // Remove this volume from the total still to be deposited
                dTotSandToDeposit -= (dVToDepositPerProfile[nAcross] * dSandProp);
@@ -640,7 +640,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->SetSand(dSandNow + dPotentialSandToDeposit);
 
                   // Set the changed-this-timestep switch
-                  m_bUnconsChangedThisTimestep[nTopLayer] = true;
+                  m_bUnconsChangedThisIter[nTopLayer] = true;
 
                   dTotSandToDeposit -= dPotentialSandToDeposit;
 //                  dDepositedCheck += dPotentialSandToDeposit;
@@ -656,7 +656,7 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->SetCoarse(dCoarseNow + dPotentialCoarseToDeposit);
 
                   // Set the changed-this-timestep switch
-                  m_bUnconsChangedThisTimestep[nTopLayer] = true;
+                  m_bUnconsChangedThisIter[nTopLayer] = true;
 
                   dTotCoarseToDeposit -= dPotentialCoarseToDeposit;
 //                  dDepositedCheck += dPotentialCoarseToDeposit;
@@ -710,10 +710,10 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->SetFine(dRemaining);
 
                   // And set the changed-this-timestep switch
-                  m_bUnconsChangedThisTimestep[nTopLayer] = true;
+                  m_bUnconsChangedThisIter[nTopLayer] = true;
 
                   // And increment the per-timestep talus erosion total
-                  m_dThisTimestepCliffErosionFine += dFine;
+                  m_dThisIterCliffErosionFine += dFine;
                }
 
                if (nSandWeight)
@@ -732,10 +732,10 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->SetSand(dRemaining);
 
                   // Set the changed-this-timestep switch
-                  m_bUnconsChangedThisTimestep[nTopLayer] = true;
+                  m_bUnconsChangedThisIter[nTopLayer] = true;
 
                   // And increment the per-timestep talus erosion total
-                  m_dThisTimestepCliffTalusSandErosion += dSand;
+                  m_dThisIterCliffTalusSandErosion += dSand;
                }
 
                if (nCoarseWeight)
@@ -754,10 +754,10 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
                   m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->SetCoarse(dRemaining);
 
                   // Set the changed-this-timestep switch
-                  m_bUnconsChangedThisTimestep[nTopLayer] = true;
+                  m_bUnconsChangedThisIter[nTopLayer] = true;
 
                   // And increment the per-timestep talus erosion total
-                  m_dThisTimestepCliffTalusCoarseErosion += dCoarse;
+                  m_dThisIterCliffTalusCoarseErosion += dCoarse;
                }
 
                // Set the actual erosion value for this cell
@@ -772,8 +772,8 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 //                // Update per-timestep totals
 //                if (dTotActualErosion > 0)
 //                {
-//                   m_ulThisTimestepNumActualPlatformErosionCells++;
-//                   m_dThisTimestepActualPlatformErosion += dTotActualErosion;
+//                   m_ulThisIterNumActualPlatformErosionCells++;
+//                   m_dThisIterActualPlatformErosion += dTotActualErosion;
 //                }
             }
          }
@@ -802,8 +802,8 @@ int CSimulation::nDoCliffCollapseDeposition(CRWCliff* pCliff, double const dFine
 //   }
 
    // Increment this-timestep totals for cliff collapse deposition
-   m_dThisTimestepCliffDepositionSand += dSandCollapse;
-   m_dThisTimestepCliffDepositionCoarse += dCoarseCollapse;
+   m_dThisIterCliffDepositionSand += dSandCollapse;
+   m_dThisIterCliffDepositionCoarse += dCoarseCollapse;
 
    return RTN_OK;
 }

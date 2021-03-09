@@ -541,7 +541,7 @@ int CSimulation::nDoAllShadowZones(void)
             else
             {
                // We are not creating shadow zones if we hit the grid edge
-               LogStream << m_ulIter << ": coast " << nCoast << ", the possible shadow boundary from start point " << nStartPoint << " hits a grid edge: ignored. It starts at [" << ILShadowBoundary[0].nGetX() << "][" << ILShadowBoundary[0].nGetY() << "]" << endl;
+               if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL) LogStream << m_ulIter << ": coast " << nCoast << ", the possible shadow boundary from start point " << nStartPoint << " hits a grid edge: ignored. It starts at [" << ILShadowBoundary[0].nGetX() << "][" << ILShadowBoundary[0].nGetY() << "]" << endl;
             }
          }
       }
@@ -550,7 +550,7 @@ int CSimulation::nDoAllShadowZones(void)
       // The third stage: store the shadow zone boundary, flood fill the shadow zone, then change wave properties by sweeping the shadow zone and the area downdrift from the shadow zone
       for (unsigned int nZone = 0; nZone < VILShadowBoundary.size(); nZone++)
       {
-         LogStream << m_ulIter << ": coast " << nCoast << ", processing shadow zone " << nZone << " (" << VILShadowBoundary.size() << " total)" << endl;
+         if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL) LogStream << m_ulIter << ": coast " << nCoast << ", processing shadow zone " << nZone << " (" << VILShadowBoundary.size() << " total)" << endl;
 
          int nShadowLineLen = VILShadowBoundary[nZone].nGetSize();
 
@@ -732,7 +732,8 @@ int CSimulation::nFloodFillShadowZone(int const nZone, CGeom2DIPoint const* pPti
       return RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT;
    }
 
-   LogStream << m_ulIter << ": shadow zone flood fill start point [" << PtiFloodFillStart.nGetX() << "][" << PtiFloodFillStart.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiFloodFillStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiFloodFillStart.nGetY()) << "} is OK for shadow boundary from [" << pPtiShadowBoundaryStart->nGetX() << "][" << pPtiShadowBoundaryStart->nGetY() << "] = {" << dGridCentroidXToExtCRSX(pPtiShadowBoundaryStart->nGetX()) << ", " << dGridCentroidYToExtCRSY(pPtiShadowBoundaryStart->nGetY()) << "} to [" << pPtiShadowBoundaryEnd->nGetX() << "][" << pPtiShadowBoundaryEnd->nGetY() << "] = {" << dGridCentroidXToExtCRSX(pPtiShadowBoundaryEnd->nGetX()) << ", " << dGridCentroidYToExtCRSY(pPtiShadowBoundaryEnd->nGetY()) << "}" << endl;
+   if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+      LogStream << m_ulIter << ": shadow zone flood fill start point [" << PtiFloodFillStart.nGetX() << "][" << PtiFloodFillStart.nGetY() << "] = {" << dGridCentroidXToExtCRSX(PtiFloodFillStart.nGetX()) << ", " << dGridCentroidYToExtCRSY(PtiFloodFillStart.nGetY()) << "} is OK for shadow boundary from [" << pPtiShadowBoundaryStart->nGetX() << "][" << pPtiShadowBoundaryStart->nGetY() << "] = {" << dGridCentroidXToExtCRSX(pPtiShadowBoundaryStart->nGetX()) << ", " << dGridCentroidYToExtCRSY(pPtiShadowBoundaryStart->nGetY()) << "} to [" << pPtiShadowBoundaryEnd->nGetX() << "][" << pPtiShadowBoundaryEnd->nGetY() << "] = {" << dGridCentroidXToExtCRSX(pPtiShadowBoundaryEnd->nGetX()) << ", " << dGridCentroidYToExtCRSY(pPtiShadowBoundaryEnd->nGetY()) << "}" << endl;
 
    // All OK, so create an empty stack
    stack<CGeom2DIPoint> PtiStack;

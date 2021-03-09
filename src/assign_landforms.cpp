@@ -71,25 +71,25 @@ int CSimulation::nAssignAllCoastalLandforms(void)
          }
 
          // OK this landform is something other than an intervention. So check what we have at SWL on this cell: is it unconsolidated or consolidated sediment? Note that layer 0 is the first layer above basement
-         int nLayer = m_pRasterGrid->m_Cell[nX][nY].nGetLayerAtElev(m_dThisTimestepSWL);
+         int nLayer = m_pRasterGrid->m_Cell[nX][nY].nGetLayerAtElev(m_dThisIterSWL);
          if (nLayer == ELEV_IN_BASEMENT)
          {
             // Should never happen
-            LogStream << m_ulIter << ": SWL (" << m_dThisTimestepSWL << ") is in basement on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, cannot assign coastal landform for coastline " << nCoast << endl;
+            LogStream << m_ulIter << ": SWL (" << m_dThisIterSWL << ") is in basement on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, cannot assign coastal landform for coastline " << nCoast << endl;
 
             return RTN_ERR_CANNOT_ASSIGN_COASTAL_LANDFORM;
          }
          else if (nLayer == ELEV_ABOVE_SEDIMENT_TOP)
          {
             // Again, should never happen
-            LogStream << m_ulIter << ": SWL (" << m_dThisTimestepSWL << ") is above sediment-top elevation (" << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ") on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, cannot assign coastal landform for coastline " << nCoast << endl;
+            LogStream << m_ulIter << ": SWL (" << m_dThisIterSWL << ") is above sediment-top elevation (" << m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() << ") on cell [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}, cannot assign coastal landform for coastline " << nCoast << endl;
 
             return RTN_ERR_CANNOT_ASSIGN_COASTAL_LANDFORM;
          }
 
          double dConsSedTop = m_pRasterGrid->m_Cell[nX][nY].dGetConsSedTopForLayerAboveBasement(nLayer);
          bool bConsSedAtSWL = false;
-         if (dConsSedTop >= m_dThisTimestepSWL)
+         if (dConsSedTop >= m_dThisIterSWL)
             bConsSedAtSWL = true;
 
          if (m_ulIter == 1)
@@ -99,12 +99,12 @@ int CSimulation::nAssignAllCoastalLandforms(void)
             {
                // First timestep: we have consolidated sediment at SWL, so this is a cliff cell. Set some initial values for the cliff object's attributes
                m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetLFSubCategory(LF_SUBCAT_CLIFF_ON_COASTLINE);
-               m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffNotchBaseElev(m_dThisTimestepSWL);      // APayo March 2018 replaced m_dMinSWL by m_dThisTimestepSWL
+               m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffNotchBaseElev(m_dThisIterSWL);      // APayo March 2018 replaced m_dMinSWL by m_dThisIterSWL
                m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffNotchOverhang(0);
                m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->SetCliffRemaining(m_dCellSide);
 
                // Create a cliff object on the vector coastline with these attributes
-               CACoastLandform* pCliff = new CRWCliff(&m_VCoast[nCoast], nCoast, j, m_dCellSide, m_dThisTimestepSWL, 0, 0);   // APayo March 2018 replaced m_dMinSWL by m_dThisTimestepSWL
+               CACoastLandform* pCliff = new CRWCliff(&m_VCoast[nCoast], nCoast, j, m_dCellSide, m_dThisIterSWL, 0, 0);   // APayo March 2018 replaced m_dMinSWL by m_dThisIterSWL
                m_VCoast[nCoast].AppendCoastLandform(pCliff);
 
 //                LogStream << m_ulIter << ": CLIFF CREATED [" << nX << "][" << nY << "] = {" << dGridCentroidXToExtCRSX(nX) << ", " << dGridCentroidYToExtCRSY(nY) << "}" << endl;
@@ -131,7 +131,7 @@ int CSimulation::nAssignAllCoastalLandforms(void)
                // We have consolidated sediment at SWL, so this is a cliff cell. Set some default values
                double
                   dAccumWaveEnergy  = 0,
-                  dNotchBaseElev    = m_dThisTimestepSWL, // APayo March 2018 replaced m_dMinSWL by m_dThisTimestepSWL
+                  dNotchBaseElev    = m_dThisIterSWL, // APayo March 2018 replaced m_dMinSWL by m_dThisIterSWL
                   dNotchOverhang    = 0,
                   dRemaining        = m_dCellSide;
 

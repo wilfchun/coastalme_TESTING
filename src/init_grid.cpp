@@ -59,47 +59,50 @@ int CSimulation::nInitGridAndCalcStillWaterLevel(void)
    m_nYMinBoundingBox                              = INT_MAX;
    m_nYMaxBoundingBox                              = INT_MIN;
 
-   m_ulThisTimestepNumSeaCells                      =
-   m_ulThisTimestepNumCoastCells                    =
-   m_ulThisTimestepNumPotentialPlatformErosionCells =
-   m_ulThisTimestepNumActualPlatformErosionCells    =
-   m_ulThisTimestepNumPotentialBeachErosionCells    =
-   m_ulThisTimestepNumActualBeachErosionCells       =
-   m_ulThisTimestepNumBeachDepositionCells          = 0;
+   m_ulThisIterNumSeaCells                      =
+   m_ulThisIterNumCoastCells                    =
+   m_ulThisIterNumPotentialPlatformErosionCells =
+   m_ulThisIterNumActualPlatformErosionCells    =
+   m_ulThisIterNumPotentialBeachErosionCells    =
+   m_ulThisIterNumActualBeachErosionCells       =
+   m_ulThisIterNumBeachDepositionCells          = 0;
 
-   m_dThisTimestepTotSeaDepth                       =
-   m_dThisTimestepPotentialPlatformErosion          =
-   m_dThisTimestepActualPlatformErosionFine         =
-   m_dThisTimestepActualPlatformErosionSand         =
-   m_dThisTimestepActualPlatformErosionCoarse       =
-   m_dThisTimestepPotentialBeachErosion             =
-   m_dThisTimestepActualBeachErosionFine            =
-   m_dThisTimestepActualBeachErosionSand            =
-   m_dThisTimestepActualBeachErosionCoarse          =
-   m_dThisTimestepBeachDepositionSand               =
-   m_dThisTimestepBeachDepositionCoarse             =
-   m_dThisTimestepPotentialSedLostBeachErosion      =
-   m_dThisTimestepActualFineSedLostBeachErosion     =
-   m_dThisTimestepActualSandSedLostBeachErosion     =
-   m_dThisTimestepActualCoarseSedLostBeachErosion   =
-   m_dThisTimestepEstimatedActualFineBeachErosion   =
-   m_dThisTimestepEstimatedActualSandBeachErosion   =
-   m_dThisTimestepEstimatedActualCoarseBeachErosion =
-   m_dThisTimestepSandSedLostCliffCollapse          =
-   m_dThisTimestepCoarseSedLostCliffCollapse        =
-   m_dThisTimestepCliffCollapseErosionFine          =
-   m_dThisTimestepCliffCollapseErosionSand          =
-   m_dThisTimestepCliffCollapseErosionCoarse        =
-   m_dThisTimestepCliffDepositionSand               =
-   m_dThisTimestepCliffDepositionCoarse             =
-   m_dThisTimestepFineSedimentToSuspension          =
-   m_dThisTimestepMassBalanceErosionError           =
-   m_dThisTimestepMassBalanceDepositionError        = 0;
+   m_dThisIterTotSeaDepth                       =
+   m_dThisIterPotentialPlatformErosion          =
+   m_dThisIterActualPlatformErosionFine         =
+   m_dThisIterActualPlatformErosionSand         =
+   m_dThisIterActualPlatformErosionCoarse       =
+   m_dThisIterPotentialBeachErosion             =
+   m_dThisIterActualBeachErosionFine            =
+   m_dThisIterActualBeachErosionSand            =
+   m_dThisIterActualBeachErosionCoarse          =
+   m_dThisIterBeachDepositionSand               =
+   m_dThisIterBeachDepositionCoarse             =
+   m_dThisIterPotentialSedLostBeachErosion      =
+   m_dThisIterActualFineSedLostBeachErosion     =
+   m_dThisIterActualSandSedLostBeachErosion     =
+   m_dThisIterActualCoarseSedLostBeachErosion   =
+   m_dThisIterEstimatedActualFineBeachErosion   =
+   m_dThisIterEstimatedActualSandBeachErosion   =
+   m_dThisIterEstimatedActualCoarseBeachErosion =
+   m_dThisIterSandSedLostCliffCollapse          =
+   m_dThisIterCoarseSedLostCliffCollapse        =
+   m_dThisIterCliffCollapseErosionFine          =
+   m_dThisIterCliffCollapseErosionSand          =
+   m_dThisIterCliffCollapseErosionCoarse        =
+   m_dThisIterCliffDepositionSand               =
+   m_dThisIterCliffDepositionCoarse             =
+   m_dThisIterFineSedimentToSuspension          =
+   m_dThisIterMassBalanceErosionError           =
+   m_dThisIterMassBalanceDepositionError        =
+   m_dThisiterFineSedimentInput                 =
+   m_dThisiterSandSedimentInput                 =
+   m_dThisiterCoarseSedimentInput               = 0;
 
    for (int n = 0; n < m_nLayers; n++)
    {
-      m_bConsChangedThisTimestep[n] = false;
-      m_bUnconsChangedThisTimestep[n] = false;
+      m_bConsChangedThisIter[n] = false;
+      m_bUnconsChangedThisIter[n] = false;
    }
 
    // Re-calculate the depth of closure, in case deep water wave properties have changed

@@ -36,6 +36,7 @@ potential_platform_erosion_mask
 rcoast
 rcoast_normal
 sea_depth
+sediment_input_event
 sediment_top_elevation
 shadow_downdrift_zones
 shadow_zones

@@ -59,12 +59,12 @@ private:
       m_dTotSeaDepth,                        // Total depth of still water (m) since beginning of simulation (used to calc average)
       m_dWaveHeight,                         // Wave height
       m_dTotWaveHeight,                      // Total wave height (m) (used to calc average)
-      m_dWaveAngle,                    // Wave orientation
+      m_dWaveAngle,                          // Wave orientation
       m_dWavePeriod,                         // Wave period (s)
-      m_dTotWaveAngle,                 // Total wave orientation  (used to calc average)
+      m_dTotWaveAngle,                       // Total wave orientation  (used to calc average)
       m_dDeepWaterWaveHeight,                // Wave height if this is a deep water cell
-      m_dDeepWaterWaveAngle,           // Wave orientation if this is a deep water cell
-      m_dDeepWaterWavePeriod,		     // Wave period if this is a deep water cell
+      m_dDeepWaterWaveAngle,                 // Wave orientation if this is a deep water cell
+      m_dDeepWaterWavePeriod,		            // Wave period if this is a deep water cell
       m_dBeachProtectionFactor,              // Only meaningful if in zone of platform erosion. 0 is fully protected, 1 = no protection
       m_dSuspendedSediment,                  // Suspended sediment as depth equivalent (m)
       m_dTotSuspendedSediment,               // Total depth of suspended sediment (m) since simulation start (used to calc average)
@@ -207,14 +207,14 @@ public:
    void SetActualBeachErosion(double const);
    double dGetActualBeachErosion(void) const;
    double dGetTotActualBeachErosion(void) const;
-//    bool bActualBeachErosionThisTimestep(void) const;
+//    bool bActualBeachErosionThisIter(void) const;
 
    void IncrBeachDeposition(double const);
    double dGetBeachDeposition(void) const;
    double dGetTotBeachDeposition(void) const;
-//    bool bBeachDepositionThisTimestep(void) const;
+//    bool bBeachDepositionThisIter(void) const;
 
-   bool bBeachErosionOrDepositionThisTimestep(void) const;
+   bool bBeachErosionOrDepositionThisIter(void) const;
 
    double dGetUnconsD50(void) const;
 

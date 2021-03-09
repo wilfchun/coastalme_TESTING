@@ -51,15 +51,15 @@ int CSimulation::nCalcExternalForcing(void)
       if (snTideDataCount > nSize-1)
          snTideDataCount = 0;
 
-      m_dThisTimestepSWL = m_dOrigSWL + m_VdTideData[snTideDataCount] + m_dAccumulatedSeaLevelChange;
+      m_dThisIterSWL = m_dOrigSWL + m_VdTideData[snTideDataCount] + m_dAccumulatedSeaLevelChange;
 
-      // cout << m_dThisTimestepSWL << endl;
+      // cout << m_dThisIterSWL << endl;
       snTideDataCount++;
    }
 
    // Update min and max still water levels
-   m_dMaxSWL = tMax(m_dThisTimestepSWL, m_dMaxSWL);
-   m_dMinSWL = tMin(m_dThisTimestepSWL, m_dMinSWL);
+   m_dMaxSWL = tMax(m_dThisIterSWL, m_dMaxSWL);
+   m_dMinSWL = tMin(m_dThisIterSWL, m_dMinSWL);
 
    // Update the wave height, orientation and period for this time step and start again with the first record if we do not have enough
    if (m_bHaveWaveStationData)

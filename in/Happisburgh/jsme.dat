@@ -108,9 +108,9 @@ Transport parameter                                                   [only for 
 
 Berm height i.e. height above SWL of start of depositional Dean profile (m)                  : 0.5
 
-Sediment input location                                            [optional point shapefile]:
-Sediment input details file                            [optional, required if have shapefile]:
-Sediment input at exact location or at nearest point on coast?      [L = Location, C = Coast]:
+Sediment input location                                             [point or line shapefile]:
+Sediment input type        [required if have shapefile, P = Point, C = coast block, L = line]:
+Sediment input details file                                      [required if have shapefile]:
 
 ; Cliff collapse data -----------------------------------------------------------------------------------------------------------------------------------------
 Simulate cliff collapse?                                                                     : y

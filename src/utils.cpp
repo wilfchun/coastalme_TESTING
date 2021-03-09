@@ -917,7 +917,13 @@ string CSimulation::strListRasterFiles(void) const
 
    if (m_bPotentialPlatformErosionMaskSave)
    {
-      strTmp.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_CODE );
+      strTmp.append(RASTER_POTENTIAL_PLATFORM_EROSION_MASK_CODE);
+      strTmp.append(", ");
+   }
+
+   if (m_bSedimentInputEventSave)
+   {
+      strTmp.append(RASTER_SEDIMENT_INPUT_EVENT_CODE);
       strTmp.append(", ");
    }
 
@@ -1342,131 +1348,143 @@ bool CSimulation::bTimeToQuit(void)
 void CSimulation::UpdateGrandTotals(void)
 {
    LogStream << endl << "TOTALS FOR TIMESTEP " << m_ulIter << " (all m^3)" << endl;
-   LogStream << "Potential platform erosion = " << m_dThisTimestepPotentialPlatformErosion * m_dCellArea << endl;
+   LogStream << "Potential platform erosion = " << m_dThisIterPotentialPlatformErosion * m_dCellArea << endl;
 
-   LogStream << "Actual fine platform erosion = " << m_dThisTimestepActualPlatformErosionFine * m_dCellArea << endl;
-   LogStream << "Actual sand platform erosion = " << m_dThisTimestepActualPlatformErosionSand * m_dCellArea << endl;
-   LogStream << "Actual coarse platform erosion = " << m_dThisTimestepActualPlatformErosionCoarse * m_dCellArea << endl;
-   LogStream << "TOTAL actual platform erosion = " << (m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualPlatformErosionSand + m_dThisTimestepActualPlatformErosionCoarse) * m_dCellArea << endl;
+   LogStream << "Actual fine platform erosion = " << m_dThisIterActualPlatformErosionFine * m_dCellArea << endl;
+   LogStream << "Actual sand platform erosion = " << m_dThisIterActualPlatformErosionSand * m_dCellArea << endl;
+   LogStream << "Actual coarse platform erosion = " << m_dThisIterActualPlatformErosionCoarse * m_dCellArea << endl;
+   LogStream << "TOTAL actual platform erosion = " << (m_dThisIterActualPlatformErosionFine + m_dThisIterActualPlatformErosionSand + m_dThisIterActualPlatformErosionCoarse) * m_dCellArea << endl;
 
    LogStream << endl;
 
    // Cliff collapse
-   LogStream << "Cliff collapse fine = " << noshowpos << m_dThisTimestepCliffCollapseErosionFine * m_dCellArea << endl;
-   LogStream << "Cliff collapse sand = " << m_dThisTimestepCliffCollapseErosionSand * m_dCellArea << endl;
-   LogStream << "Cliff collapse coarse = " << m_dThisTimestepCliffCollapseErosionCoarse * m_dCellArea << endl;
-   LogStream << "TOTAL cliff collapse = " << (m_dThisTimestepCliffCollapseErosionFine + m_dThisTimestepCliffCollapseErosionSand + m_dThisTimestepCliffCollapseErosionCoarse) * m_dCellArea << endl;
+   LogStream << "Cliff collapse fine = " << noshowpos << m_dThisIterCliffCollapseErosionFine * m_dCellArea << endl;
+   LogStream << "Cliff collapse sand = " << m_dThisIterCliffCollapseErosionSand * m_dCellArea << endl;
+   LogStream << "Cliff collapse coarse = " << m_dThisIterCliffCollapseErosionCoarse * m_dCellArea << endl;
+   LogStream << "TOTAL cliff collapse = " << (m_dThisIterCliffCollapseErosionFine + m_dThisIterCliffCollapseErosionSand + m_dThisIterCliffCollapseErosionCoarse) * m_dCellArea << endl;
 
    LogStream << endl;
 
    // Cliff collapse talus deposition
-   LogStream << "Deposition of unconsolidated sand talus due to cliff collapse = " << noshowpos << m_dThisTimestepCliffDepositionSand * m_dCellArea << endl;
-   LogStream << "Deposition of unconsolidated coarse talus due to cliff collapse = " << m_dThisTimestepCliffDepositionCoarse * m_dCellArea << endl;
+   LogStream << "Deposition of unconsolidated sand talus due to cliff collapse = " << noshowpos << m_dThisIterCliffDepositionSand * m_dCellArea << endl;
+   LogStream << "Deposition of unconsolidated coarse talus due to cliff collapse = " << m_dThisIterCliffDepositionCoarse * m_dCellArea << endl;
 
    // Cliff collapse talus erosion
-   LogStream << "Erosion of previously-deposited fine talus = " << m_dThisTimestepCliffErosionFine * m_dCellArea << endl;
-   LogStream << "Erosion of previously-deposited sand talus = " << m_dThisTimestepCliffTalusSandErosion * m_dCellArea << endl;
-   LogStream << "Erosion of previously-deposited coarse talus = " << m_dThisTimestepCliffTalusCoarseErosion * m_dCellArea << endl;
-   LogStream << "TOTAL change in talus from cliff collapse = " << showpos << (-m_dThisTimestepCliffErosionFine + (m_dThisTimestepCliffDepositionSand - m_dThisTimestepCliffTalusSandErosion) + (m_dThisTimestepCliffDepositionCoarse - m_dThisTimestepCliffTalusCoarseErosion)) * m_dCellArea << endl;
+   LogStream << "Erosion of previously-deposited fine talus = " << m_dThisIterCliffErosionFine * m_dCellArea << endl;
+   LogStream << "Erosion of previously-deposited sand talus = " << m_dThisIterCliffTalusSandErosion * m_dCellArea << endl;
+   LogStream << "Erosion of previously-deposited coarse talus = " << m_dThisIterCliffTalusCoarseErosion * m_dCellArea << endl;
+   LogStream << "TOTAL change in talus from cliff collapse = " << showpos << (-m_dThisIterCliffErosionFine + (m_dThisIterCliffDepositionSand - m_dThisIterCliffTalusSandErosion) + (m_dThisIterCliffDepositionCoarse - m_dThisIterCliffTalusCoarseErosion)) * m_dCellArea << endl;
 
    LogStream << endl;
 
    // Beach erosion
-   LogStream << "Potential beach erosion = " << noshowpos << m_dThisTimestepPotentialBeachErosion * m_dCellArea << endl;
+   LogStream << "Potential beach erosion = " << noshowpos << m_dThisIterPotentialBeachErosion * m_dCellArea << endl;
 
-   LogStream << "Actual fine beach erosion = " << m_dThisTimestepActualBeachErosionFine * m_dCellArea << endl;
-   LogStream << "Actual sand beach erosion = " << m_dThisTimestepActualBeachErosionSand * m_dCellArea << endl;
-   LogStream << "Actual coarse beach erosion = " << m_dThisTimestepActualBeachErosionCoarse * m_dCellArea << endl;
+   LogStream << "Actual fine beach erosion = " << m_dThisIterActualBeachErosionFine * m_dCellArea << endl;
+   LogStream << "Actual sand beach erosion = " << m_dThisIterActualBeachErosionSand * m_dCellArea << endl;
+   LogStream << "Actual coarse beach erosion = " << m_dThisIterActualBeachErosionCoarse * m_dCellArea << endl;
 
    // Beach deposition
-   LogStream << "Sand beach deposition = " << m_dThisTimestepBeachDepositionSand * m_dCellArea << endl;
-   LogStream << "Coarse beach deposition = " << m_dThisTimestepBeachDepositionCoarse * m_dCellArea << endl;
+   LogStream << "Sand beach deposition = " << m_dThisIterBeachDepositionSand * m_dCellArea << endl;
+   LogStream << "Coarse beach deposition = " << m_dThisIterBeachDepositionCoarse * m_dCellArea << endl;
 
-   LogStream << "Change in fine beach sediment = " << -m_dThisTimestepActualBeachErosionFine * m_dCellArea << endl;
-   LogStream << "Change in sand beach sediment = " << (m_dThisTimestepBeachDepositionSand - m_dThisTimestepActualBeachErosionSand) * m_dCellArea << endl;
-   LogStream << "Change in coarse beach sediment = " << (m_dThisTimestepBeachDepositionCoarse - m_dThisTimestepActualBeachErosionCoarse) * m_dCellArea << endl;
-   LogStream << "TOTAL change in beach sediment = " << showpos << (-m_dThisTimestepActualBeachErosionFine + (m_dThisTimestepBeachDepositionSand - m_dThisTimestepActualBeachErosionSand) + (m_dThisTimestepBeachDepositionCoarse - m_dThisTimestepActualBeachErosionCoarse)) * m_dCellArea << endl;
+   LogStream << "Change in fine beach sediment = " << -m_dThisIterActualBeachErosionFine * m_dCellArea << endl;
+   LogStream << "Change in sand beach sediment = " << (m_dThisIterBeachDepositionSand - m_dThisIterActualBeachErosionSand) * m_dCellArea << endl;
+   LogStream << "Change in coarse beach sediment = " << (m_dThisIterBeachDepositionCoarse - m_dThisIterActualBeachErosionCoarse) * m_dCellArea << endl;
+   LogStream << "TOTAL change in beach sediment = " << showpos << (-m_dThisIterActualBeachErosionFine + (m_dThisIterBeachDepositionSand - m_dThisIterActualBeachErosionSand) + (m_dThisIterBeachDepositionCoarse - m_dThisIterActualBeachErosionCoarse)) * m_dCellArea << endl;
+
+   LogStream << endl;
+
+   // Sediment input events
+   LogStream << "Fine sediment added via input events = " << m_dThisiterFineSedimentInput * m_dCellArea << endl;
+   LogStream << "Sand sediment added via input events = " << m_dThisiterSandSedimentInput * m_dCellArea << endl;
+   LogStream << "Coarse sediment added via input events = " << m_dThisiterCoarseSedimentInput * m_dCellArea << endl;
 
    LogStream << endl;
 
    // Sediment lost from grid due to beach erosion and deposition
-   LogStream << "Beach sediment potentially lost from grid = " << noshowpos << m_dThisTimestepPotentialSedLostBeachErosion * m_dCellArea << endl;
+   LogStream << "Beach sediment potentially lost from grid = " << noshowpos << m_dThisIterPotentialSedLostBeachErosion * m_dCellArea << endl;
 
-   LogStream << "Fine beach sediment actually lost from grid = " << m_dThisTimestepActualFineSedLostBeachErosion * m_dCellArea << endl;
-   LogStream << "Sand beach sediment actually lost from grid = " << m_dThisTimestepActualSandSedLostBeachErosion * m_dCellArea << endl;
-   LogStream << "Coarse beach sediment actually lost from grid = " << m_dThisTimestepActualCoarseSedLostBeachErosion * m_dCellArea << endl;
+   LogStream << "Fine beach sediment actually lost from grid = " << m_dThisIterActualFineSedLostBeachErosion * m_dCellArea << endl;
+   LogStream << "Sand beach sediment actually lost from grid = " << m_dThisIterActualSandSedLostBeachErosion * m_dCellArea << endl;
+   LogStream << "Coarse beach sediment actually lost from grid = " << m_dThisIterActualCoarseSedLostBeachErosion * m_dCellArea << endl;
 
    LogStream << endl;
 
    // Sediment lost from grid due to cliff collapse
-   LogStream << "Sand sediment lost from grid due to cliff collapse = " << m_dThisTimestepSandSedLostCliffCollapse * m_dCellArea << endl;
-   LogStream << "Coarse sediment lost from grid due to cliff collapse = " << m_dThisTimestepCoarseSedLostCliffCollapse * m_dCellArea << endl;
+   LogStream << "Sand sediment lost from grid due to cliff collapse = " << m_dThisIterSandSedLostCliffCollapse * m_dCellArea << endl;
+   LogStream << "Coarse sediment lost from grid due to cliff collapse = " << m_dThisIterCoarseSedLostCliffCollapse * m_dCellArea << endl;
 
-   LogStream << "TOTAL beach sediment actually lost from grid (all processes)  = " << (m_dThisTimestepActualFineSedLostBeachErosion + m_dThisTimestepActualSandSedLostBeachErosion + m_dThisTimestepActualCoarseSedLostBeachErosion + m_dThisTimestepSandSedLostCliffCollapse + m_dThisTimestepCoarseSedLostCliffCollapse) * m_dCellArea << endl;
+   LogStream << "TOTAL beach sediment actually lost from grid (all processes)  = " << (m_dThisIterActualFineSedLostBeachErosion + m_dThisIterActualSandSedLostBeachErosion + m_dThisIterActualCoarseSedLostBeachErosion + m_dThisIterSandSedLostCliffCollapse + m_dThisIterCoarseSedLostCliffCollapse) * m_dCellArea << endl;
 
    LogStream << endl;
 
    // Suspended sediment
-   LogStream << "Suspended sediment = " << noshowpos << m_dThisTimestepFineSedimentToSuspension * m_dCellArea << endl;
+   LogStream << "Suspended sediment = " << noshowpos << m_dThisIterFineSedimentToSuspension * m_dCellArea << endl;
 
    LogStream << endl;
 
-   // Any errors?
-   LogStream << "Erosion errors = " << m_dThisTimestepMassBalanceErosionError * m_dCellArea << endl;
-   LogStream << "Deposition errors = " << m_dThisTimestepMassBalanceDepositionError * m_dCellArea << endl;
+   // Any errors? TODO REPLACE THIS
+//    LogStream << "Erosion errors = " << m_dThisIterMassBalanceErosionError * m_dCellArea << endl;
+//    LogStream << "Deposition errors = " << m_dThisIterMassBalanceDepositionError * m_dCellArea << endl;
 
    LogStream << endl;
 
    // Add to grand totals: first platform erosion
-   m_ldGTotPotentialPlatformErosion        += m_dThisTimestepPotentialPlatformErosion;
-//    assert(isfinite(m_dThisTimestepPotentialPlatformErosion));
+   m_ldGTotPotentialPlatformErosion        += m_dThisIterPotentialPlatformErosion;
+//    assert(isfinite(m_dThisIterPotentialPlatformErosion));
 
-   m_ldGTotFineActualPlatformErosion       += m_dThisTimestepActualPlatformErosionFine;
-   m_ldGTotSandActualPlatformErosion       += m_dThisTimestepActualPlatformErosionSand;
-   m_ldGTotCoarseActualPlatformErosion     += m_dThisTimestepActualPlatformErosionCoarse;
+   m_ldGTotFineActualPlatformErosion       += m_dThisIterActualPlatformErosionFine;
+   m_ldGTotSandActualPlatformErosion       += m_dThisIterActualPlatformErosionSand;
+   m_ldGTotCoarseActualPlatformErosion     += m_dThisIterActualPlatformErosionCoarse;
 
    // Next cliff collapse
-   m_ldGTotCliffCollapseFine               += m_dThisTimestepCliffCollapseErosionFine;
-   m_ldGTotCliffCollapseSand               += m_dThisTimestepCliffCollapseErosionSand;
-   m_ldGTotCliffCollapseCoarse             += m_dThisTimestepCliffCollapseErosionCoarse;
+   m_ldGTotCliffCollapseFine               += m_dThisIterCliffCollapseErosionFine;
+   m_ldGTotCliffCollapseSand               += m_dThisIterCliffCollapseErosionSand;
+   m_ldGTotCliffCollapseCoarse             += m_dThisIterCliffCollapseErosionCoarse;
 
    // Cliff collapse talus deposition
-   m_ldGTotCliffTalusSandDeposition        += m_dThisTimestepCliffDepositionSand;
-   m_ldGTotCliffTalusCoarseDeposition      += m_dThisTimestepCliffDepositionCoarse;
+   m_ldGTotCliffTalusSandDeposition        += m_dThisIterCliffDepositionSand;
+   m_ldGTotCliffTalusCoarseDeposition      += m_dThisIterCliffDepositionCoarse;
 
    // Cliff collapse talus erosion
-   m_ldGTotCliffTalusFineErosion           += m_dThisTimestepCliffErosionFine;
-   m_ldGTotCliffTalusSandErosion           += m_dThisTimestepCliffTalusSandErosion;
-   m_ldGTotCliffTalusCoarseErosion         += m_dThisTimestepCliffTalusCoarseErosion;
+   m_ldGTotCliffTalusFineErosion           += m_dThisIterCliffErosionFine;
+   m_ldGTotCliffTalusSandErosion           += m_dThisIterCliffTalusSandErosion;
+   m_ldGTotCliffTalusCoarseErosion         += m_dThisIterCliffTalusCoarseErosion;
 
    // Beach erosion
-   m_ldGTotPotentialBeachErosion           += m_dThisTimestepPotentialBeachErosion;
+   m_ldGTotPotentialBeachErosion           += m_dThisIterPotentialBeachErosion;
 
-   m_ldGTotActualFineBeachErosion          += m_dThisTimestepActualBeachErosionFine;
-   m_ldGTotActualSandBeachErosion          += m_dThisTimestepActualBeachErosionSand;
-   m_ldGTotActualCoarseBeachErosion        += m_dThisTimestepActualBeachErosionCoarse;
+   m_ldGTotActualFineBeachErosion          += m_dThisIterActualBeachErosionFine;
+   m_ldGTotActualSandBeachErosion          += m_dThisIterActualBeachErosionSand;
+   m_ldGTotActualCoarseBeachErosion        += m_dThisIterActualBeachErosionCoarse;
 
    // Beach deposition
-   m_ldGTotSandBeachDeposition             += m_dThisTimestepBeachDepositionSand;
-   m_ldGTotCoarseBeachDeposition           += m_dThisTimestepBeachDepositionCoarse;
+   m_ldGTotSandBeachDeposition             += m_dThisIterBeachDepositionSand;
+   m_ldGTotCoarseBeachDeposition           += m_dThisIterBeachDepositionCoarse;
 
    // Sediment lost due to beach erosion
-   m_ldGTotPotentialSedLostBeachErosion    += m_dThisTimestepPotentialSedLostBeachErosion;
+   m_ldGTotPotentialSedLostBeachErosion    += m_dThisIterPotentialSedLostBeachErosion;
 
-   m_ldGTotActualFineSedLostBeachErosion   += m_dThisTimestepActualFineSedLostBeachErosion;
-   m_ldGTotActualSandSedLostBeachErosion   += m_dThisTimestepActualSandSedLostBeachErosion;
-   m_ldGTotActualCoarseSedLostBeachErosion += m_dThisTimestepActualCoarseSedLostBeachErosion;
+   m_ldGTotActualFineSedLostBeachErosion   += m_dThisIterActualFineSedLostBeachErosion;
+   m_ldGTotActualSandSedLostBeachErosion   += m_dThisIterActualSandSedLostBeachErosion;
+   m_ldGTotActualCoarseSedLostBeachErosion += m_dThisIterActualCoarseSedLostBeachErosion;
 
    // Sediment lost due to cliff collapse
-   m_ldGTotSandSedLostCliffCollapse        += m_dThisTimestepSandSedLostCliffCollapse;
-   m_ldGTotCoarseSedLostCliffCollapse      += m_dThisTimestepCoarseSedLostCliffCollapse;
+   m_ldGTotSandSedLostCliffCollapse        += m_dThisIterSandSedLostCliffCollapse;
+   m_ldGTotCoarseSedLostCliffCollapse      += m_dThisIterCoarseSedLostCliffCollapse;
+
+   // Sediment input event(s)
+   m_ldGTotFineSedimentInput               += m_dThisiterFineSedimentInput;
+   m_ldGTotSandSedimentInput               += m_dThisiterSandSedimentInput;
+   m_ldGTotCoarseSedimentInput             += m_dThisiterCoarseSedimentInput;
 
    // Suspended sediment
-   m_ldGTotSuspendedSediment               += m_dThisTimestepFineSedimentToSuspension;
+   m_ldGTotSuspendedSediment               += m_dThisIterFineSedimentToSuspension;
 
    // Errors
-   m_ldGTotMassBalanceErosionError         += m_dThisTimestepMassBalanceErosionError;
-   m_ldGTotMassBalanceDepositionError      += m_dThisTimestepMassBalanceDepositionError;
+   m_ldGTotMassBalanceErosionError         += m_dThisIterMassBalanceErosionError;
+   m_ldGTotMassBalanceDepositionError      += m_dThisIterMassBalanceDepositionError;
 }
 
 
@@ -1790,6 +1808,15 @@ void CSimulation::AnnounceProgress(void)
       cout << "%   (elapsed " << strDispTime(sdElapsed, false, false) << " remaining ";
 
       cout << strDispTime(sdToGo, false, false) << ")  ";
+
+      // Add a 'marker' for GIS saves etc.
+      if (m_bSaveGISThisIter)
+         cout << "GIS" << m_nGISSave;
+      else if (m_bSedimentInputThisIter)
+         cout << " SED";
+      else
+         cout << "        ";
+
       cout.flush();
    }
 }
@@ -2127,9 +2154,6 @@ string CSimulation::strGetErrorText(int const nErr)
    case RTN_ERR_NOCOAST:
       strErr = "no coastlines found. Is the SWL correct?";
       break;
-   case RTN_ERR_MASSBALANCE:
-      strErr = "error in this-timestep mass balance";
-      break;
    case RTN_ERR_PROFILEWRITE:
       strErr = "error writing coastline-normal profiles";
       break;
@@ -2276,7 +2300,7 @@ void CSimulation::DoSimulationEnd(int const nRtn)
       if (m_ulIter > 1)
       {
          // If the run has actually started, then output all GIS files: this is very helpful in tracking down problems
-         m_bSaveGISThisTimestep = true;
+         m_bSaveGISThisIter = true;
          m_nGISSave = 998;                   // Will get incremented to 999 when we write the files
          bSaveAllRasterGISFiles();
          bSaveAllVectorGISFiles();
@@ -2908,7 +2932,7 @@ bool CSimulation::bParseTime(string const* strTime, int& nHour, int& nMin, int& 
 
    if ((nSec < 0) || (nSec > 59))
    {
-      cerr << "seconds must be betwen 0 and 59 in time '" << strTime << "'" << endl;
+      cerr << "seconds must be between 0 and 59 in time '" << strTime << "'" << endl;
       return false;
    }
 
@@ -2925,46 +2949,47 @@ unsigned long CSimulation::ulConvertToTimestep(string const* pstrIn)
 {
    unsigned long ulTimeStep = 0;
 
-   // Convert to lower case
+   // Convert to lower case, remove leading and trailing whitespace
    string strDate = strToLower(pstrIn);
+   strDate = strTrim(&strDate);
 
    if (strDate.find("hour") != string::npos)
    {
       // OK, this is a number of hours (a relative time, from the start of simulation)
       vector<string> VstrTmp = VstrSplit(&strDate, SPACE);
-      if ((VstrTmp.size() < 2) || (! bIsStringValidInt(VstrTmp[1])))
+      if ((VstrTmp.size() < 2) || (! bIsStringValidInt(VstrTmp[0])))
       {
-         cerr << "error in number of hours '" + strDate + "' for sediment input event";
+         cerr << "Error in number of hours '" + strDate + "' for sediment input event" << endl;
          return SEDINPUTEVENTERROR;
       }
 
-      double dHours = stod(strTrim(&VstrTmp[1]));
+      double dHours = stod(strTrim(&VstrTmp[0]));
       if (dHours > m_dSimDuration)
       {
-         cerr << "sediment input event '" + strDate + "' occurs after end of simulation";
+         cerr << "Sediment input event '" + strDate + "' occurs after end of simulation" << endl;
          return SEDINPUTEVENTERROR;
       }
 
-      ulTimeStep = static_cast<unsigned long>(dRound(dHours / m_dTimeStep)) + 1;
+      ulTimeStep = static_cast<unsigned long>(dRound(dHours / m_dTimeStep));
    }
    else if (strDate.find("day") != string::npos)
    {
       // OK, this is a number of days (a relative time, from the start of simulation)
       vector<string> VstrTmp = VstrSplit(&strDate, SPACE);
-      if ((VstrTmp.size() < 2) || (! bIsStringValidInt(VstrTmp[1])))
+      if ((VstrTmp.size() < 2) || (! bIsStringValidInt(VstrTmp[0])))
       {
-         cerr << "error in number of days '" + strDate + "' for sediment input event";
+         cerr << "Error in number of days '" + strDate + "' for sediment input event" << endl;
          return SEDINPUTEVENTERROR;
       }
 
-      double dHours = stod(strTrim(&VstrTmp[1])) * 24;
+      double dHours = stod(strTrim(&VstrTmp[0])) * 24;
       if (dHours > m_dSimDuration)
       {
-         cerr << "sediment input event '" + strDate + "' occurs after end of simulation";
+         cerr << "Sediment input event '" + strDate + "' occurs after end of simulation" << endl;
          return SEDINPUTEVENTERROR;
       }
 
-      ulTimeStep = static_cast<unsigned long>(dRound(dHours / m_dTimeStep)) + 1;
+      ulTimeStep = static_cast<unsigned long>(dRound(dHours / m_dTimeStep));
    }
    else
    {
@@ -2972,7 +2997,7 @@ unsigned long CSimulation::ulConvertToTimestep(string const* pstrIn)
       vector<string> VstrTmp = VstrSplit(&strDate, SPACE);
       if (VstrTmp.size() < 2)
       {
-         cerr << "error in time/date '" + strDate + "' of sediment input event";
+         cerr << "Error in time/date '" + strDate + "' of sediment input event" << endl;
          return SEDINPUTEVENTERROR;
       }
 
@@ -2984,7 +3009,7 @@ unsigned long CSimulation::ulConvertToTimestep(string const* pstrIn)
       // OK, first sort out the time
       if (! bParseTime(&VstrTmp[0], nHour, nMin, nSec))
       {
-         cerr << "error in time '" + VstrTmp[0] + "' of sediment input event";
+         cerr << "Error in time '" + VstrTmp[0] + "' of sediment input event" << endl;
          return SEDINPUTEVENTERROR;
       }
 
@@ -2996,7 +3021,7 @@ unsigned long CSimulation::ulConvertToTimestep(string const* pstrIn)
       // Now sort out the time
       if (! bParseDate(&VstrTmp[1], nDay, nMonth, nYear))
       {
-         cerr << "error in date '" + VstrTmp[1] + "' of sediment input event";
+         cerr << "Error in date '" + VstrTmp[1] + "' of sediment input event" << endl;
          return SEDINPUTEVENTERROR;
       }
 
@@ -3022,31 +3047,30 @@ unsigned long CSimulation::ulConvertToTimestep(string const* pstrIn)
 
       if (tStart == (time_t)(-1))
       {
-         cerr << "error in simulation start time/date";
+         cerr << "Error in simulation start time/date" << endl;
          return SEDINPUTEVENTERROR;
       }
 
       if (tEvent == (time_t)(-1))
       {
-         cerr << "error in time/date '" + strDate + "' of sediment input event";
+         cerr << "Error in time/date '" + strDate + "' of sediment input event" << endl;
          return SEDINPUTEVENTERROR;
       }
 
       double dHours = difftime(tEvent, tStart) / (60 * 60);
       if (dHours < 0)
       {
-         cerr << "sediment input event '" + strDate + "' occurs before start of simulation";
+         cerr << "Sediment input event '" + strDate + "' occurs before start of simulation" << endl;
          return SEDINPUTEVENTERROR;
-
       }
 
       if (dHours > m_dSimDuration)
       {
-         cerr << "sediment input event '" + strDate + "' occurs after end of simulation";
+         cerr << "Sediment input event '" + strDate + "' occurs after end of simulation" << endl;
          return SEDINPUTEVENTERROR;
       }
 
-      ulTimeStep = static_cast<unsigned long>(dRound(dHours / m_dTimeStep)) + 1;
+      ulTimeStep = static_cast<unsigned long>(dHours / m_dTimeStep);
    }
 
    return ulTimeStep;

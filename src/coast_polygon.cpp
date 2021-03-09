@@ -32,7 +32,7 @@
 CGeomCoastPolygon::CGeomCoastPolygon(int const nGlobalID, int const nCoastID, int const nNode, int const nProfileUpCoast, int const nProfileDownCoast, vector<CGeom2DPoint> const* pVIn, int const nLastPointUpCoast, const int nLastPointDownCoast, CGeom2DIPoint const* PtiNode, CGeom2DIPoint const* PtiAntinode, int const nPointInPolygonStartPoint)
 :
 //    m_bIsPointedSeaward(true),
-   m_bDownCoastThisTimestep(false),
+   m_bDownCoastThisIter(false),
    m_nGlobalID(nGlobalID),
    m_nCoastID(nCoastID),
    m_nCoastNode(nNode),
@@ -73,14 +73,14 @@ CGeomCoastPolygon::~CGeomCoastPolygon(void)
 // }
 
 
-void CGeomCoastPolygon::SetDownCoastThisTimestep(bool const bFlag)
+void CGeomCoastPolygon::SetDownCoastThisIter(bool const bFlag)
 {
-   m_bDownCoastThisTimestep = bFlag;
+   m_bDownCoastThisIter = bFlag;
 }
 
-bool CGeomCoastPolygon::bDownCoastThisTimestep(void) const
+bool CGeomCoastPolygon::bDownCoastThisIter(void) const
 {
-   return m_bDownCoastThisTimestep;
+   return m_bDownCoastThisIter;
 }
 
 

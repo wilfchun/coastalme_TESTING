@@ -33,7 +33,7 @@ class CGeomCoastPolygon : public CA2DShape
 private:
    bool
 //       m_bIsPointedSeaward,                // Does the polygon meet at a point at its seaward end? (is it roughly triangular?)
-      m_bDownCoastThisTimestep;
+      m_bDownCoastThisIter;
 
    int
       m_nGlobalID,                        // The simulation-global number of this polygon
@@ -74,8 +74,8 @@ public:
    CGeomCoastPolygon(int const, int const, int const, int const, int const, vector<CGeom2DPoint> const*, int const, int const, CGeom2DIPoint const*, CGeom2DIPoint const*, int const);
    ~CGeomCoastPolygon(void);
 
-   void SetDownCoastThisTimestep(bool const);
-   bool bDownCoastThisTimestep(void) const;
+   void SetDownCoastThisIter(bool const);
+   bool bDownCoastThisIter(void) const;
 
    int nGetGlobalID(void) const;
 

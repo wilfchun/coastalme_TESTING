@@ -150,17 +150,17 @@ bool CGeom2DIPoint::operator== (CGeom2DIPoint Pti) const
 //! Compares two CGeom2DIPoint objects for inequality
 bool CGeom2DIPoint::operator!= (CGeom2DIPoint* pPti) const
 {
-   if ((pPti->nGetX() == nX) && (pPti->nGetY() == nY))
-      return false;
+   if ((pPti->nGetX() != nX) || (pPti->nGetY() != nY))
+      return true;
 
-   return true;
+   return false;
 }
 
 //! Compares two CGeom2DIPoint objects for inequality
 bool CGeom2DIPoint::operator!= (CGeom2DIPoint Pti) const
 {
-   if ((Pti.nGetX() == nX) && (Pti.nGetY() == nY))
-      return false;
+   if ((Pti.nGetX() != nX) || (Pti.nGetY() != nY))
+      return true;
 
-   return true;
+   return false;
 }

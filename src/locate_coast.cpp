@@ -69,7 +69,7 @@ int CSimulation::nLocateSeaAndCoasts(void)
    // Have we created any coasts?
    if (m_VCoast.empty())
    {
-      cerr << m_ulIter << ": " << ERR << "no coastline located: this iteration SWL = " << m_dThisTimestepSWL << ", maximum DEM top surface elevation = " << m_dThisTimestepTopElevMax << ", minimum DEM top surface elevation = " << m_dThisTimestepTopElevMin << endl;
+      cerr << m_ulIter << ": " << ERR << "no coastline located: this iteration SWL = " << m_dThisIterSWL << ", maximum DEM top surface elevation = " << m_dThisIterTopElevMax << ", minimum DEM top surface elevation = " << m_dThisIterTopElevMin << endl;
       return RTN_ERR_NOCOAST;
    }
 
@@ -169,7 +169,7 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
             m_nYMaxBoundingBox = nY;
 
          // Update count
-         m_ulThisTimestepNumSeaCells++;
+         m_ulThisIterNumSeaCells++;
 
          if ((! bSpanAbove) && (nY > 0) && (! m_pRasterGrid->m_Cell[nX][nY-1].bBasementElevIsMissingValue()) && (m_pRasterGrid->m_Cell[nX][nY-1].bIsInundated()) && (m_pRasterGrid->m_Cell[nX][nY-1].dGetSeaDepth() == 0))
          {
@@ -225,7 +225,7 @@ void CSimulation::FloodFillSea(int const nXStart, int const nYStart)
 //    // DEBUG CODE ===========================================
 
 
-//    LogStream << m_ulIter << ": flood fill of sea from [" << nXStart << "][" << nYStart << "] = {" << dGridCentroidXToExtCRSX(nXStart) << ", " << dGridCentroidYToExtCRSY(nYStart) << "} with SWL = " << m_dThisTimestepSWL << ", " << m_ulThisTimestepNumSeaCells << " of " << m_ulNumCells << " cells now marked as sea (" <<  std::fixed << setprecision(2) << 100.0 * m_ulThisTimestepNumSeaCells / m_ulNumCells << " %)" << endl;
+//    LogStream << m_ulIter << ": flood fill of sea from [" << nXStart << "][" << nYStart << "] = {" << dGridCentroidXToExtCRSX(nXStart) << ", " << dGridCentroidYToExtCRSY(nYStart) << "} with SWL = " << m_dThisIterSWL << ", " << m_ulThisIterNumSeaCells << " of " << m_ulNumCells << " cells now marked as sea (" <<  std::fixed << setprecision(2) << 100.0 * m_ulThisIterNumSeaCells / m_ulNumCells << " %)" << endl;
 
 //    LogStream << " m_nXMinBoundingBox = " << m_nXMinBoundingBox << " m_nXMaxBoundingBox = " << m_nXMaxBoundingBox << " m_nYMinBoundingBox = " << m_nYMinBoundingBox << " m_nYMaxBoundingBox = " << m_nYMaxBoundingBox << endl;
 }
@@ -664,13 +664,13 @@ int CSimulation::nTraceCoastLine(unsigned int const nTraceFromStartCellIndex, in
             if (! m_pRasterGrid->m_Cell[nX][nY].bIsCoastline())
             {
                // Not already marked, is this an intervention cell with the top above SWL?
-               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() >= m_dThisTimestepSWL))
+               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() >= m_dThisIterSWL))
                {
                   // It is, so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
                   ILTempGridCRS.Append(&Pti);
                }
-               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() >= m_dThisTimestepSWL)
+               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() >= m_dThisIterSWL)
                {
                   // The sediment top is above SWL so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
@@ -703,13 +703,13 @@ int CSimulation::nTraceCoastLine(unsigned int const nTraceFromStartCellIndex, in
             if (! m_pRasterGrid->m_Cell[nX][nY].bIsCoastline())
             {
                // Not already marked, is this an intervention cell with the top above SWL?
-               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() >= m_dThisTimestepSWL))
+               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() >= m_dThisIterSWL))
                {
                   // It is, so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
                   ILTempGridCRS.Append(&Pti);
                }
-               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() >= m_dThisTimestepSWL)
+               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() >= m_dThisIterSWL)
                {
                   // The sediment top is above SWL so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
@@ -741,13 +741,13 @@ int CSimulation::nTraceCoastLine(unsigned int const nTraceFromStartCellIndex, in
             if (! m_pRasterGrid->m_Cell[nX][nY].bIsCoastline())
             {
                // Not already marked, is this an intervention cell with the top above SWL?
-               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() >= m_dThisTimestepSWL))
+               if ((m_pRasterGrid->m_Cell[nX][nY].pGetLandform()->nGetLFCategory() == LF_CAT_INTERVENTION) && (m_pRasterGrid->m_Cell[nX][nY].dGetInterventionTopElev() >= m_dThisIterSWL))
                {
                   // It is, so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);
                   ILTempGridCRS.Append(&Pti);
                }
-               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() >= m_dThisTimestepSWL)
+               else if (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() >= m_dThisIterSWL)
                {
                   // The sediment top is above SWL so mark as coast and add it to the vector object
                   m_pRasterGrid->m_Cell[nX][nY].SetAsCoastline(true);

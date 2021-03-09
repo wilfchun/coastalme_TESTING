@@ -407,7 +407,7 @@ double CGeomCell::dGetOverallTopElev(void) const
 //! Returns true if the elevation of the sediment top surface for this cell (plus any intervention) is less than the grid's this-timestep still water elevation
 bool CGeomCell::bIsInundated(void) const
 {
-   return ((m_VdAllHorizonTopElev.back() + m_dInterventionHeight) < m_pGrid->pGetSim()->CSimulation::dGetThisTimestepSWL());
+   return ((m_VdAllHorizonTopElev.back() + m_dInterventionHeight) < m_pGrid->pGetSim()->CSimulation::dGetThisIterSWL());
 }
 
 //! Returns true if the elevation of the sediment top surface for this cell is greater than or equal to the grid's this-timestep still water elevation. Also returns true if the cell has unconsolidated sediment on it and the elevation of the sediment top surface, minus a tolerance value, is less than the grid's this-timestep still water elevation
@@ -418,7 +418,7 @@ bool CGeomCell::bIsSeaIncBeach(void) const
       return true;
 
    double
-      dWaterLevel = m_pGrid->pGetSim()->CSimulation::dGetThisTimestepSWL(),
+      dWaterLevel = m_pGrid->pGetSim()->CSimulation::dGetThisIterSWL(),
       dSedTop = m_VdAllHorizonTopElev.back();
 
    // Beach
@@ -564,7 +564,7 @@ double CGeomCell::dGetTotActualPlatformErosion(void) const
 //! Returns the depth of seawater on this cell if the sediment top is < SWL, or zero
 void CGeomCell::SetSeaDepth(void)
 {
-   m_dSeaDepth = tMax(m_pGrid->pGetSim()->CSimulation::dGetThisTimestepSWL() - m_VdAllHorizonTopElev.back(), 0.0);
+   m_dSeaDepth = tMax(m_pGrid->pGetSim()->CSimulation::dGetThisIterSWL() - m_VdAllHorizonTopElev.back(), 0.0);
 }
 
 
@@ -777,7 +777,7 @@ double CGeomCell::dGetTotActualBeachErosion(void) const
 }
 
 // //! Returns true if there has been actual beach erosion this timestep
-// bool CGeomCell::bActualBeachErosionThisTimestep(void) const
+// bool CGeomCell::bActualBeachErosionThisIter(void) const
 // {
 //    return (m_dActualBeachErosion > 0 ? true : false);
 // }
@@ -803,14 +803,14 @@ double CGeomCell::dGetTotBeachDeposition(void) const
 }
 
 // //! Returns true if there has been beach deposition this timestep
-// bool CGeomCell::bBeachDepositionThisTimestep(void) const
+// bool CGeomCell::bBeachDepositionThisIter(void) const
 // {
 //    return (m_dBeachDeposition > 0 ? true : false);
 // }
 
 
 //! Returns true only if this cell has had no deposition or erosion this timestep
-bool CGeomCell::bBeachErosionOrDepositionThisTimestep(void) const
+bool CGeomCell::bBeachErosionOrDepositionThisIter(void) const
 {
    if ((m_dActualBeachErosion > 0) || (m_dBeachDeposition > 0))
       return true;

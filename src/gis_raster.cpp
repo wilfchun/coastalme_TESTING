@@ -53,7 +53,7 @@ using std::to_string;
  Reads a raster DEM of basement elevation data to the Cell array
 
 ===============================================================================================================================*/
-int CSimulation::nReadBasementDEMData(void)
+int CSimulation::nReadRasterBasementDEM(void)
 {
    // Use GDAL to create a dataset object, which then opens the DEM file
    GDALDataset* pGDALDataset = (GDALDataset *) GDALOpen(m_strInitialBasementDEMFile.c_str(), GA_ReadOnly);
@@ -452,7 +452,7 @@ int CSimulation::nMarkBoundingBoxEdgeCells(void)
  Reads all other raster GIS datafiles into the RasterGrid array
 
 ===============================================================================================================================*/
-int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
+int CSimulation::nReadRasterGISFile(int const nDataItem, int const nLayer)
 {
    string
       strGISFile,
@@ -902,7 +902,7 @@ int CSimulation::nReadRasterGISData(int const nDataItem, int const nLayer)
  Writes GIS raster files using GDAL, using data from the RasterGrid array
 
 ===============================================================================================================================*/
-bool CSimulation::bWriteRasterGIS(int const nDataItem, string const* strPlotTitle, int const nLayer, double const dElev)
+bool CSimulation::bWriteRasterGISFile(int const nDataItem, string const* strPlotTitle, int const nLayer, double const dElev)
 {
    bool bIsInteger = false;
 
@@ -1073,6 +1073,10 @@ bool CSimulation::bWriteRasterGIS(int const nDataItem, string const* strPlotTitl
 
    case (RASTER_PLOT_DEEP_WATER_WAVE_PERIOD):
       strFilePathName.append(RASTER_WAVE_PERIOD_NAME);
+      break;
+
+   case (RASTER_PLOT_SEDIMENT_INPUT):
+      strFilePathName.append(RASTER_SEDIMENT_INPUT_EVENT_NAME);
       break;
 
    case (RASTER_PLOT_BEACH_MASK):
@@ -1431,7 +1435,6 @@ bool CSimulation::bWriteRasterGIS(int const nDataItem, string const* strPlotTitl
                // Calculate the rate in m^3 / sec
                dTmp /= (m_dTimeStep * 3600);
             }
-
             break;
 
          case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK):
@@ -1448,7 +1451,7 @@ bool CSimulation::bWriteRasterGIS(int const nDataItem, string const* strPlotTitl
             if ((nTopLayer == INT_NODATA) || (nTopLayer == NO_NONZERO_THICKNESS_LAYERS))
                break;
 
-            if ((m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->dGetUnconsolidatedThickness() > 0) && (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisTimestepSWL))
+            if ((m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->dGetUnconsolidatedThickness() > 0) && (m_pRasterGrid->m_Cell[nX][nY].dGetSedimentTopElev() > m_dThisIterSWL))
                dTmp = 1;
             break;
 
@@ -1496,11 +1499,15 @@ bool CSimulation::bWriteRasterGIS(int const nDataItem, string const* strPlotTitl
                dTmp = m_nMissingValue;
             else
             {
-               if (m_pVCoastPolygon[nPoly]->bDownCoastThisTimestep())
+               if (m_pVCoastPolygon[nPoly]->bDownCoastThisIter())
                   dTmp = 1;
                else
                   dTmp = 0;
             }
+            break;
+
+         case (RASTER_PLOT_SEDIMENT_INPUT):
+            dTmp = m_pRasterGrid->m_Cell[nX][nY].pGetLayerAboveBasement(nTopLayer)->pGetUnconsolidatedSediment()->dGetTotSedimentInputDepth();
             break;
          }
 
@@ -1562,6 +1569,7 @@ bool CSimulation::bWriteRasterGIS(int const nDataItem, string const* strPlotTitl
    case (RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT):
    case (RASTER_PLOT_INTERVENTION_HEIGHT):
    case (RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT):
+   case (RASTER_PLOT_SEDIMENT_INPUT):
       strUnits = "m";
       break;
 
@@ -1772,7 +1780,7 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<double> c
 
    unsigned int nPoints = static_cast<unsigned int>(pVdX->size());
 
-//    // DEBUG CODE
+//    // DEBUG CODE ============================================
 //    for (int nn = 0; nn < nPoints; nn++)
 //    {
 //       LogStream << nn << " " << dX[nn] << " " << dY[nn] << " " << dZ[nn] << endl;
@@ -1782,7 +1790,7 @@ int CSimulation::nInterpolateWavePropertiesToWithinPolygonCells(vector<double> c
 //    m_nYMaxBoundingBox = m_nYGridMax-1;
 //    m_nXMinBoundingBox = 0;
 //    m_nYMinBoundingBox = 0;
-//    // DEBUG CODE
+//    // DEBUG CODE ============================================
 
    vector<double>
       VdOutX(nGridSize, 0),
@@ -2296,66 +2304,66 @@ int CSimulation::nInterpolateAllDeepWaterWaveValues(void)
       }
    }
 
-// DEBUG CODE ===========================================
-   string strOutFile = m_strOutPath;
-   strOutFile += "init_deep_water_wave_height_";
-   strOutFile += to_string(m_ulIter);
-   strOutFile += ".tif";
-   GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
-   GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
-   pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
-   pDataSet->SetGeoTransform(m_dGeoTransform);
-   double* pdRaster = new double[m_ulNumCells];
-   int nn = 0;
-   for (int nY = 0; nY < m_nYGridMax; nY++)
-   {
-      for (int nX = 0; nX < m_nXGridMax; nX++)
-      {
-         // Write this value to the array
-         pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight();
-         nn++;
-      }
-   }
+// // DEBUG CODE ===========================================
+//    string strOutFile = m_strOutPath;
+//    strOutFile += "init_deep_water_wave_height_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//    GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName("gtiff");
+//    GDALDataset* pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//    double* pdRaster = new double[m_ulNumCells];
+//    int nn = 0;
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          // Write this value to the array
+//          pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveHeight();
+//          nn++;
+//       }
+//    }
+//
+//    GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_nMissingValue);
+//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+// // DEBUG CODE ===========================================
 
-   GDALRasterBand* pBand = pDataSet->GetRasterBand(1);
-   pBand->SetNoDataValue(m_nMissingValue);
-   nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
-
-   if (nRet == CE_Failure)
-      return RTN_ERR_GRIDCREATE;
-
-   GDALClose(pDataSet);
-// DEBUG CODE ===========================================
-
-// DEBUG CODE ===========================================
-   strOutFile = m_strOutPath;
-   strOutFile += "init_deep_water_wave_angle_";
-   strOutFile += to_string(m_ulIter);
-   strOutFile += ".tif";
-   pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
-   pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
-   pDataSet->SetGeoTransform(m_dGeoTransform);
-   nn = 0;
-   for (int nY = 0; nY < m_nYGridMax; nY++)
-   {
-      for (int nX = 0; nX < m_nXGridMax; nX++)
-      {
-         // Write this value to the array
-         pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveAngle();
-         nn++;
-      }
-   }
-
-   pBand = pDataSet->GetRasterBand(1);
-   pBand->SetNoDataValue(m_nMissingValue);
-   nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
-
-   if (nRet == CE_Failure)
-      return RTN_ERR_GRIDCREATE;
-
-   GDALClose(pDataSet);
-   delete[] pdRaster;
-// DEBUG CODE ===========================================
+// // DEBUG CODE ===========================================
+//    strOutFile = m_strOutPath;
+//    strOutFile += "init_deep_water_wave_angle_";
+//    strOutFile += to_string(m_ulIter);
+//    strOutFile += ".tif";
+//    pDataSet = pDriver->Create(strOutFile.c_str(), m_nXGridMax, m_nYGridMax, 1, GDT_Float64, m_papszGDALRasterOptions);
+//    pDataSet->SetProjection(m_strGDALBasementDEMProjection.c_str());
+//    pDataSet->SetGeoTransform(m_dGeoTransform);
+//    nn = 0;
+//    for (int nY = 0; nY < m_nYGridMax; nY++)
+//    {
+//       for (int nX = 0; nX < m_nXGridMax; nX++)
+//       {
+//          // Write this value to the array
+//          pdRaster[nn] = m_pRasterGrid->m_Cell[nX][nY].dGetCellDeepWaterWaveAngle();
+//          nn++;
+//       }
+//    }
+//
+//    pBand = pDataSet->GetRasterBand(1);
+//    pBand->SetNoDataValue(m_nMissingValue);
+//    nRet = pBand->RasterIO(GF_Write, 0, 0, m_nXGridMax, m_nYGridMax, pdRaster, m_nXGridMax, m_nYGridMax, GDT_Float64, 0, 0, NULL);
+//
+//    if (nRet == CE_Failure)
+//       return RTN_ERR_GRIDCREATE;
+//
+//    GDALClose(pDataSet);
+//    delete[] pdRaster;
+// // DEBUG CODE ===========================================
 
    return RTN_OK;
 }

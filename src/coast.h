@@ -66,14 +66,14 @@ private:
       m_VdCurvatureDetailed,        // Detailed curvature at each point on m_LCoastlineExtCRS
       m_VdCurvatureSmooth,          // Smoothed curvature at each point on m_LCoastlineExtCRS
       m_VdDeepWaterWaveHeight,      // The deep water wave height at the end of a normal drawn from each point on m_LCoastlineExtCRS
-      m_VdDeepWaterWaveAngle, // The deep water wave orientation at the end of a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdDeepWaterWaveAngle,       // The deep water wave orientation at the end of a normal drawn from each point on m_LCoastlineExtCRS
       m_VdDeepWaterWavePeriod,      // The deep water wave period at the end of a normal drawn from each point on m_LCoastlineExtCRS
       m_VdBreakingWaveHeight,       // The breaking wave height on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdCoastWaveHeight,          // The wave height at coast point on a normal drawn from each point on m_LCoastlineExtCRS
-      m_VdBreakingWaveAngle,  // The breaking wave orientation on a normal drawn from each point on m_LCoastlineExtCRS
+      m_VdBreakingWaveAngle,        // The breaking wave orientation on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdDepthOfBreaking,          // The depth of breaking on a normal drawn from each point on m_LCoastlineExtCRS
       m_VdFluxOrientation,          // As in the COVE model, is the orientation alongshore energy/sediment movement; a +ve flux is in direction of increasing indices along coast. At each point on m_LCoastlineExtCRS
-      m_VdWaveEnergyAtBreaking;               // Wave energy at each point on m_LCoastlineExtCRS
+      m_VdWaveEnergyAtBreaking;     // Wave energy at each point on m_LCoastlineExtCRS
 
    vector<CACoastLandform*>
       m_pVLandforms;                // Pointer to a coastal landform object, at each point on m_LCoastlineExtCRS
@@ -90,7 +90,7 @@ private:
    vector<CGeomLine>
       m_LShadowBoundary;            // Lines which delineate the edge of a shadow zone, ext CRS
    vector<CGeomLine>
-      m_LShadowDowndriftBoundary;         // Lines which delineate the edge of a downdrift zone, ext CRS
+      m_LShadowDowndriftBoundary;   // Lines which delineate the edge of a downdrift zone, ext CRS
 
 public:
    CRWCoast(void);

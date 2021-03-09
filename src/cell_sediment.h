@@ -31,12 +31,13 @@ class CRWCellSediment
 {
 private:
    double
-      m_dFine,                // depth equivalent in m
-      m_dNotchFineLost,       // depth equivalent (m) of sediment lost via notch incision
-      m_dSand,                // depth equivalent in m
-      m_dNotchSandLost,       // depth equivalent (m) of sediment lost via notch incision
-      m_dCoarse,              // depth equivalent in m
-      m_dNotchCoarseLost;     // depth equivalent (m) of sediment lost via notch incision
+      m_dFine,                // Depth equivalent in m
+      m_dNotchFineLost,       // Depth equivalent (m) of sediment lost via notch incision
+      m_dSand,                // Depth equivalent in m
+      m_dNotchSandLost,       // Depth equivalent (m) of sediment lost via notch incision
+      m_dCoarse,              // Depth equivalent in m
+      m_dNotchCoarseLost,     // Depth equivalent (m) of sediment lost via notch incision
+      m_dTotSedimentInput;    // Total depth (m, from all size classes) of sediment input events, since start of simulation
 
 public:
    CRWCellSediment(void);
@@ -67,5 +68,8 @@ public:
    void SetNotchCoarseLost(double const);
    void IncrNotchCoarseLost(double const);
    double dGetNotchCoarseLost(void) const;
+
+   void AddToTotSedimentInputDepth(double const);
+   double dGetTotSedimentInputDepth(void) const;
 };
 #endif // SEDIMENT_H

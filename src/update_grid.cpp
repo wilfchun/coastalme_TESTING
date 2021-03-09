@@ -40,39 +40,39 @@ using std::endl;
 int CSimulation::nUpdateGrid(void)
 {
    // Go through all cells in the raster grid and calculate some this-timestep totals
-   m_dThisTimestepTopElevMax = -DBL_MAX;
-   m_dThisTimestepTopElevMin = DBL_MAX;
+   m_dThisIterTopElevMax = -DBL_MAX;
+   m_dThisIterTopElevMin = DBL_MAX;
    for (int nX = 0; nX < m_nXGridMax; nX++)
    {
       for (int nY = 0; nY < m_nYGridMax; nY++)
       {
          if (m_pRasterGrid->m_Cell[nX][nY].bIsCoastline())
-            m_ulThisTimestepNumCoastCells++;
+            m_ulThisIterNumCoastCells++;
 
          if (m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
          {
             // Is a sea cell
-            m_dThisTimestepTotSeaDepth += m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
+            m_dThisIterTotSeaDepth += m_pRasterGrid->m_Cell[nX][nY].dGetSeaDepth();
          }
 
          double dTopElev = m_pRasterGrid->m_Cell[nX][nY].dGetOverallTopElev();
 
          // Get highest and lowest elevations of the top surface of the DEM
-         if (dTopElev > m_dThisTimestepTopElevMax)
-            m_dThisTimestepTopElevMax = dTopElev;
+         if (dTopElev > m_dThisIterTopElevMax)
+            m_dThisIterTopElevMax = dTopElev;
 
-         if (dTopElev < m_dThisTimestepTopElevMin)
-            m_dThisTimestepTopElevMin = dTopElev;
+         if (dTopElev < m_dThisIterTopElevMin)
+            m_dThisIterTopElevMin = dTopElev;
       }
    }
 
    // No sea cells?
-   if (m_ulThisTimestepNumSeaCells == 0)
+   if (m_ulThisIterNumSeaCells == 0)
       // All land, assume this is an error
       return RTN_ERR_NOSEACELLS;
 
    // Now go through all cells again and sort out suspended sediment load
-   double dSuspPerSeaCell = static_cast<double>(m_ldGTotSuspendedSediment / m_ulThisTimestepNumSeaCells);
+   double dSuspPerSeaCell = static_cast<double>(m_ldGTotSuspendedSediment / m_ulThisIterNumSeaCells);
    for (int nX = 0; nX < m_nXGridMax; nX++)
    {
       for (int nY = 0; nY < m_nYGridMax; nY++)

@@ -128,7 +128,7 @@ CSimulation::CSimulation(void)
    m_bBeachErosionTSSave                           =
    m_bBeachDepositionTSSave                        =
    m_bBeachSedimentChangeNetTSSave                 =
-   m_bSaveGISThisTimestep                          =
+   m_bSaveGISThisIter                              =
    m_bOutputProfileData                            =
    m_bOutputParallelProfileData                    =
    m_bOutputLookUpData                             =
@@ -146,8 +146,11 @@ CSimulation::CSimulation(void)
    m_bWorldFile                                    =
    m_bSingleDeepWaterWaveValues                    =
    m_bHaveWaveStationData                          =
+   m_bSedimentInput                                =
    m_bSedimentInputAtPoint                         =
-   m_bSedimentInputLocationIsExact                 = false;
+   m_bSedimentInputAtCoast                         =
+   m_bSedimentInputAlongLine                       =
+   m_bSedimentInputThisIter                        = false;
 
    m_bGDALCanCreate                                = true;
 
@@ -169,7 +172,7 @@ CSimulation::CSimulation(void)
    m_nYGridMax                                     =
    m_nCoastMax                                     =
    m_nCoastMin                                     =
-   m_nNThisTimestepCliffCollapse                   =
+   m_nNThisIterCliffCollapse                       =
    m_nNTotCliffCollapse                            =
    m_nCliffCollapseTalusPlanviewWidth              =
    m_nGlobalPolygonID                              =
@@ -199,19 +202,19 @@ CSimulation::CSimulation(void)
    m_lGDALMaxCanWrite                              =
    m_lGDALMinCanWrite                              = 0;
 
-   m_ulIter                                            =
-   m_ulTotTimestep                                     =
-   m_ulNumCells                                        =
-   m_ulThisTimestepNumSeaCells                         =
-   m_ulThisTimestepNumCoastCells                       =
-   m_ulThisTimestepNumPotentialPlatformErosionCells    =
-   m_ulThisTimestepNumActualPlatformErosionCells       =
-   m_ulThisTimestepNumPotentialBeachErosionCells       =
-   m_ulThisTimestepNumActualBeachErosionCells          =
-   m_ulThisTimestepNumBeachDepositionCells             =
-   m_ulTotPotentialPlatformErosionOnProfiles           =
-   m_ulTotPotentialPlatformErosionBetweenProfiles      =
-   m_ulMissingValueBasementCells                       = 0;
+   m_ulIter                                        =
+   m_ulTotTimestep                                 =
+   m_ulNumCells                                    =
+   m_ulThisIterNumSeaCells                         =
+   m_ulThisIterNumCoastCells                       =
+   m_ulThisIterNumPotentialPlatformErosionCells    =
+   m_ulThisIterNumActualPlatformErosionCells       =
+   m_ulThisIterNumPotentialBeachErosionCells       =
+   m_ulThisIterNumActualBeachErosionCells          =
+   m_ulThisIterNumBeachDepositionCells             =
+   m_ulTotPotentialPlatformErosionOnProfiles       =
+   m_ulTotPotentialPlatformErosionBetweenProfiles  =
+   m_ulMissingValueBasementCells                   = 0;
 
    for (int i = 0; i < NRNG; i++)
       m_ulRandSeed[i]  = 0;
@@ -219,110 +222,113 @@ CSimulation::CSimulation(void)
    for (int i = 0; i < SAVEMAX; i++)
       m_dUSaveTime[i] = 0;
 
-   m_dDurationUnitsMult                         =
-   m_dNorthWestXExtCRS                          =
-   m_dNorthWestYExtCRS                          =
-   m_dSouthEastXExtCRS                          =
-   m_dSouthEastYExtCRS                          =
-   m_dExtCRSGridArea                            =
-   m_dCellSide                                  =
-   m_dCellDiagonal                              =
-   m_dInvCellSide                               =
-   m_dInvCellDiagonal                           =
-   m_dCellArea                                  =
-   m_dSimDuration                               =
-   m_dTimeStep                                  =
-   m_dSimElapsed                                =
-   m_dRSaveTime                                 =
-   m_dRSaveInterval                             =
-   m_dClkLast                                   =
-   m_dCPUClock                                  =
-   m_dSeaWaterDensity                           =
-   m_dThisTimestepSWL                           =
-   m_dOrigSWL                                   =
-   m_dFinalSWL                                  =
-   m_dDeltaSWLPerTimestep                       =
-   m_dBreakingWaveHeight                        =
-   m_dC_0                                       =
-   m_dL_0                                       =
-   m_dWaveDepthRatioForWaveCalcs                =
-   m_dAllCellsDeepWaterWaveHeight               =
-   m_dAllCellsDeepWaterWaveAngle                =
-   m_dAllCellsDeepWaterWavePeriod               =
-   m_dMaxUserInputWaveHeight                    =
-   m_dMaxUserInputWavePeriod                    =
-   m_dR                                         =
-   m_dD50Fine                                   =
-   m_dD50Sand                                   =
-   m_dD50Coarse                                 =
-   m_dBeachSedimentDensity                      =
-   m_dBeachSedimentPorosity                     =
-   m_dFineErodibility                           =
-   m_dSandErodibility                           =
-   m_dCoarseErodibility                         =
-   m_dFineErodibilityNormalized                 =
-   m_dSandErodibilityNormalized                 =
-   m_dCoarseErodibilityNormalized               =
-   m_dKLS                                       =
-   m_dKamphuis                                  =
-   m_dG                                         =
-   m_dInmersedToBulkVolumetric                  =
-   m_dDepthOfClosure                            =
-   m_dCoastNormalAvgSpacing                     =
-   m_dCoastNormalLength                         =
-   m_dThisTimestepTotSeaDepth                       =
-   m_dThisTimestepPotentialSedLostBeachErosion      =
-   m_dThisTimestepActualFineSedLostBeachErosion     =
-   m_dThisTimestepActualSandSedLostBeachErosion     =
-   m_dThisTimestepActualCoarseSedLostBeachErosion   =
-   m_dThisTimestepSandSedLostCliffCollapse          =
-   m_dThisTimestepCoarseSedLostCliffCollapse        =
-   m_dThisTimestepPotentialPlatformErosion          =
-   m_dThisTimestepActualPlatformErosionFine         =
-   m_dThisTimestepActualPlatformErosionSand         =
-   m_dThisTimestepActualPlatformErosionCoarse       =
-   m_dThisTimestepPotentialBeachErosion             =
-   m_dThisTimestepActualBeachErosionFine            =
-   m_dThisTimestepActualBeachErosionSand            =
-   m_dThisTimestepActualBeachErosionCoarse          =
-   m_dThisTimestepBeachDepositionSand               =
-   m_dThisTimestepBeachDepositionCoarse             =
-   m_dThisTimestepEstimatedActualFineBeachErosion   =
-   m_dThisTimestepEstimatedActualSandBeachErosion   =
-   m_dThisTimestepEstimatedActualCoarseBeachErosion =
-   m_dThisTimestepFineSedimentToSuspension          =
-   m_dThisTimestepMassBalanceErosionError           =
-   m_dThisTimestepMassBalanceDepositionError        =
-   m_dDepthOverDBMax                                =
-   m_dTotPotentialPlatformErosionOnProfiles         =
-   m_dTotPotentialPlatformErosionBetweenProfiles    =
-   m_dProfileMaxSlope                               =
-   m_dMaxBeachElevAboveSWL                          =
-   m_dCliffErosionResistance                        =
-   m_dNotchOverhangAtCollapse                       =
-   m_dNotchBaseBelowSWL                             =
-   m_dCliffDepositionA                              =
-   m_dCliffDepositionPlanviewWidth                  =
-   m_dCliffDepositionPlanviewLength                 =
-   m_dCliffDepositionHeightFrac                     =
-   m_dThisTimestepCliffCollapseErosionFine          =
-   m_dThisTimestepCliffCollapseErosionSand          =
-   m_dThisTimestepCliffCollapseErosionCoarse        =
-   m_dThisTimestepCliffDepositionSand               =
-   m_dThisTimestepCliffDepositionCoarse             =
-   m_dThisTimestepCliffErosionFine                  =
-   m_dThisTimestepCliffTalusSandErosion             =
-   m_dThisTimestepCliffTalusCoarseErosion           =
-   m_dCoastNormalRandSpaceFact                      =
-   m_dDeanProfileStartAboveSWL                      =
-   m_dAccumulatedSeaLevelChange                     =
-   m_dBreakingWaveHeightDepthRatio                  =
-   m_dWaveDataWrapHours                             =
-   m_dThisTimestepTopElevMax                        =
-   m_dThisTimestepTopElevMin                        = 0;
+   m_dDurationUnitsMult                            =
+   m_dNorthWestXExtCRS                             =
+   m_dNorthWestYExtCRS                             =
+   m_dSouthEastXExtCRS                             =
+   m_dSouthEastYExtCRS                             =
+   m_dExtCRSGridArea                               =
+   m_dCellSide                                     =
+   m_dCellDiagonal                                 =
+   m_dInvCellSide                                  =
+   m_dInvCellDiagonal                              =
+   m_dCellArea                                     =
+   m_dSimDuration                                  =
+   m_dTimeStep                                     =
+   m_dSimElapsed                                   =
+   m_dRSaveTime                                    =
+   m_dRSaveInterval                                =
+   m_dClkLast                                      =
+   m_dCPUClock                                     =
+   m_dSeaWaterDensity                              =
+   m_dThisIterSWL                                  =
+   m_dOrigSWL                                      =
+   m_dFinalSWL                                     =
+   m_dDeltaSWLPerTimestep                          =
+   m_dBreakingWaveHeight                           =
+   m_dC_0                                          =
+   m_dL_0                                          =
+   m_dWaveDepthRatioForWaveCalcs                   =
+   m_dAllCellsDeepWaterWaveHeight                  =
+   m_dAllCellsDeepWaterWaveAngle                   =
+   m_dAllCellsDeepWaterWavePeriod                  =
+   m_dMaxUserInputWaveHeight                       =
+   m_dMaxUserInputWavePeriod                       =
+   m_dR                                            =
+   m_dD50Fine                                      =
+   m_dD50Sand                                      =
+   m_dD50Coarse                                    =
+   m_dBeachSedimentDensity                         =
+   m_dBeachSedimentPorosity                        =
+   m_dFineErodibility                              =
+   m_dSandErodibility                              =
+   m_dCoarseErodibility                            =
+   m_dFineErodibilityNormalized                    =
+   m_dSandErodibilityNormalized                    =
+   m_dCoarseErodibilityNormalized                  =
+   m_dKLS                                          =
+   m_dKamphuis                                     =
+   m_dG                                            =
+   m_dInmersedToBulkVolumetric                     =
+   m_dDepthOfClosure                               =
+   m_dCoastNormalAvgSpacing                        =
+   m_dCoastNormalLength                            =
+   m_dThisIterTotSeaDepth                          =
+   m_dThisIterPotentialSedLostBeachErosion         =
+   m_dThisIterActualFineSedLostBeachErosion        =
+   m_dThisIterActualSandSedLostBeachErosion        =
+   m_dThisIterActualCoarseSedLostBeachErosion      =
+   m_dThisIterSandSedLostCliffCollapse             =
+   m_dThisIterCoarseSedLostCliffCollapse           =
+   m_dThisIterPotentialPlatformErosion             =
+   m_dThisIterActualPlatformErosionFine            =
+   m_dThisIterActualPlatformErosionSand            =
+   m_dThisIterActualPlatformErosionCoarse          =
+   m_dThisIterPotentialBeachErosion                =
+   m_dThisIterActualBeachErosionFine               =
+   m_dThisIterActualBeachErosionSand               =
+   m_dThisIterActualBeachErosionCoarse             =
+   m_dThisIterBeachDepositionSand                  =
+   m_dThisIterBeachDepositionCoarse                =
+   m_dThisIterEstimatedActualFineBeachErosion      =
+   m_dThisIterEstimatedActualSandBeachErosion      =
+   m_dThisIterEstimatedActualCoarseBeachErosion    =
+   m_dThisIterFineSedimentToSuspension             =
+   m_dThisIterMassBalanceErosionError              =
+   m_dThisIterMassBalanceDepositionError           =
+   m_dDepthOverDBMax                               =
+   m_dTotPotentialPlatformErosionOnProfiles        =
+   m_dTotPotentialPlatformErosionBetweenProfiles   =
+   m_dProfileMaxSlope                              =
+   m_dMaxBeachElevAboveSWL                         =
+   m_dCliffErosionResistance                       =
+   m_dNotchOverhangAtCollapse                      =
+   m_dNotchBaseBelowSWL                            =
+   m_dCliffDepositionA                             =
+   m_dCliffDepositionPlanviewWidth                 =
+   m_dCliffDepositionPlanviewLength                =
+   m_dCliffDepositionHeightFrac                    =
+   m_dThisIterCliffCollapseErosionFine             =
+   m_dThisIterCliffCollapseErosionSand             =
+   m_dThisIterCliffCollapseErosionCoarse           =
+   m_dThisIterCliffDepositionSand                  =
+   m_dThisIterCliffDepositionCoarse                =
+   m_dThisIterCliffErosionFine                     =
+   m_dThisIterCliffTalusSandErosion                =
+   m_dThisIterCliffTalusCoarseErosion              =
+   m_dCoastNormalRandSpaceFact                     =
+   m_dDeanProfileStartAboveSWL                     =
+   m_dAccumulatedSeaLevelChange                    =
+   m_dBreakingWaveHeightDepthRatio                 =
+   m_dWaveDataWrapHours                            =
+   m_dThisIterTopElevMax                           =
+   m_dThisIterTopElevMin                           =
+   m_dThisiterFineSedimentInput                    =
+   m_dThisiterSandSedimentInput                    =
+   m_dThisiterCoarseSedimentInput                  = 0;
 
-   m_dMinSWL                                        = DBL_MAX;
-   m_dMaxSWL                                        = DBL_MIN;
+   m_dMinSWL                                       = DBL_MAX;
+   m_dMaxSWL                                       = DBL_MIN;
 
    for (int i = 0; i < 6; i++)
       m_dGeoTransform[i] = 0;
@@ -356,7 +362,10 @@ CSimulation::CSimulation(void)
    m_ldGTotCoarseBeachDeposition             =
    m_ldGTotSuspendedSediment                 =
    m_ldGTotMassBalanceErosionError           =
-   m_ldGTotMassBalanceDepositionError        = 0;
+   m_ldGTotMassBalanceDepositionError        =
+   m_ldGTotFineSedimentInput                 =
+   m_ldGTotSandSedimentInput                 =
+   m_ldGTotCoarseSedimentInput               = 0;
 
    for (int i = 0; i < 2; i++)
    {
@@ -444,9 +453,9 @@ double CSimulation::dGetMissingValue(void) const
 }
 
 
-double CSimulation::dGetThisTimestepSWL(void) const
+double CSimulation::dGetThisIterSWL(void) const
 {
-   return m_dThisTimestepSWL;
+   return m_dThisIterSWL;
 }
 
 
@@ -554,7 +563,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 
    // Read in the basement layer (NOTE MUST HAVE THIS FILE), create the raster grid, then read in the basement DEM data to the array
    AnnounceReadBasementDEM();
-   nRet = nReadBasementDEMData();
+   nRet = nReadRasterBasementDEM();
    if (nRet != RTN_OK)
       return nRet;
 
@@ -602,44 +611,44 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    {
       // Read in the initial fine unconsolidated sediment depth file(s)
       AnnounceReadInitialFineUnconsSedGIS(nLayer);
-      nRet = nReadRasterGISData(FINE_UNCONS_RASTER, nLayer);
+      nRet = nReadRasterGISFile(FINE_UNCONS_RASTER, nLayer);
       if (nRet != RTN_OK)
          return (nRet);
 
       // Read in the initial sand unconsolidated sediment depth file
       AnnounceReadInitialSandUnconsSedGIS(nLayer);
-      nRet = nReadRasterGISData(SAND_UNCONS_RASTER, nLayer);
+      nRet = nReadRasterGISFile(SAND_UNCONS_RASTER, nLayer);
       if (nRet != RTN_OK)
          return (nRet);
 
       // Read in the initial coarse unconsolidated sediment depth file
       AnnounceReadInitialCoarseUnconsSedGIS(nLayer);
-      nRet = nReadRasterGISData(COARSE_UNCONS_RASTER, nLayer);
+      nRet = nReadRasterGISFile(COARSE_UNCONS_RASTER, nLayer);
       if (nRet != RTN_OK)
          return (nRet);
 
       // Read in the initial fine consolidated sediment depth file
       AnnounceReadInitialFineConsSedGIS(nLayer);
-      nRet = nReadRasterGISData(FINE_CONS_RASTER, nLayer);
+      nRet = nReadRasterGISFile(FINE_CONS_RASTER, nLayer);
       if (nRet != RTN_OK)
          return (nRet);
 
       // Read in the initial sand consolidated sediment depth file
       AnnounceReadInitialSandConsSedGIS(nLayer);
-      nRet = nReadRasterGISData(SAND_CONS_RASTER, nLayer);
+      nRet = nReadRasterGISFile(SAND_CONS_RASTER, nLayer);
       if (nRet != RTN_OK)
          return (nRet);
 
       // Read in the initial coarse consolidated sediment depth file
       AnnounceReadInitialCoarseConsSedGIS(nLayer);
-      nRet = nReadRasterGISData(COARSE_CONS_RASTER, nLayer);
+      nRet = nReadRasterGISFile(COARSE_CONS_RASTER, nLayer);
       if (nRet != RTN_OK)
          return (nRet);
    }
 
    // Read in the initial suspended sediment depth file
    AnnounceReadInitialSuspSedGIS();
-   nRet = nReadRasterGISData(SUSP_SED_RASTER, 0);
+   nRet = nReadRasterGISFile(SUSP_SED_RASTER, 0);
    if (nRet != RTN_OK)
       return (nRet);
 
@@ -647,7 +656,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    if (! m_strInitialLandformFile.empty())
    {
       AnnounceReadLGIS();
-      nRet = nReadRasterGISData(LANDFORM_RASTER, 0);
+      nRet = nReadRasterGISFile(LANDFORM_RASTER, 0);
       if (nRet != RTN_OK)
          return (nRet);
    }
@@ -656,12 +665,12 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    if (! m_strInterventionClassFile.empty())
    {
       AnnounceReadICGIS();
-      nRet = nReadRasterGISData(INTERVENTION_CLASS_RASTER, 0);
+      nRet = nReadRasterGISFile(INTERVENTION_CLASS_RASTER, 0);
       if (nRet != RTN_OK)
          return (nRet);
 
       AnnounceReadIHGIS();
-      nRet = nReadRasterGISData(INTERVENTION_HEIGHT_RASTER, 0);
+      nRet = nReadRasterGISFile(INTERVENTION_HEIGHT_RASTER, 0);
       if (nRet != RTN_OK)
          return (nRet);
    }
@@ -686,7 +695,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       WriteLookUpData();
 
    // OK, now read in the vector files (if any)
-   if (m_bHaveWaveStationData || m_bSedimentInputAtPoint)
+   if (m_bHaveWaveStationData || m_bSedimentInput)
       AnnounceReadVectorFiles();
 
    // Maybe read in deep water wave station data
@@ -696,7 +705,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       AnnounceReadDeepWaterWaveValuesGIS();
 
       // Read in vector points
-      nRet = nReadVectorGISData(DEEP_WATER_WAVE_STATIONS_VEC);
+      nRet = nReadVectorGISFile(DEEP_WATER_WAVE_STATIONS_VEC);
       if (nRet != RTN_OK)
          return (nRet);
 
@@ -711,13 +720,13 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    }
 
    // Maybe read in sediment input event data
-   if (m_bSedimentInputAtPoint)
+   if (m_bSedimentInput)
    {
       // We are reading sediment input event data
       AnnounceReadSedimentEventInputValuesGIS();
 
       // Read in vector points for sediment input events
-      nRet = nReadVectorGISData(SEDIMENT_INPUT_EVENT_LOCATION_VEC);
+      nRet = nReadVectorGISFile(SEDIMENT_INPUT_EVENT_LOCATION_VEC);
       if (nRet != RTN_OK)
          return (nRet);
 
@@ -750,8 +759,8 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    // For beach erosion/deposition, conversion from immersed weight to bulk volumetric (sand and voids) transport rate (Leo Van Rijn)
    m_dInmersedToBulkVolumetric = 1 / ((m_dBeachSedimentDensity - m_dSeaWaterDensity) * (1 - m_dBeachSedimentPorosity) * m_dG);
 
-   m_bConsChangedThisTimestep.resize(m_nLayers, false);
-   m_bUnconsChangedThisTimestep.resize(m_nLayers, false);
+   m_bConsChangedThisIter.resize(m_nLayers, false);
+   m_bUnconsChangedThisIter.resize(m_nLayers, false);
 
    // Normalize erodibility values, so that none are > 1
    double dTmp = m_dFineErodibility + m_dSandErodibility + m_dCoarseErodibility;
@@ -760,7 +769,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    m_dCoarseErodibilityNormalized = m_dCoarseErodibility / dTmp;
 
    // Intialise SWL
-   m_dThisTimestepSWL = m_dOrigSWL;
+   m_dThisIterSWL = m_dOrigSWL;
 
    // If SWL changes during the simulation, calculate the per-timestep increment (could be -ve)
    if (m_dFinalSWL != m_dOrigSWL)
@@ -785,8 +794,9 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
    AnnounceIsRunning();
    while (true)
    {
-//       // DEBUG CODE
+//       // DEBUG CODE =========================================
 //       LogStream << ulGetRand0() << " " << ulGetRand1() << endl;
+//       // DEBUG CODE =========================================
 
       // Check that we haven't gone on too long: if not then update timestep number etc.
       if (bTimeToQuit())
@@ -801,15 +811,6 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       nRet = nUpdateIntervention();
       if (nRet != RTN_OK)
          return nRet;
-
-      // If we have sediment input events, then check to see whether this is time for an event to occur. If it is, then do it
-      if (m_bSedimentInputAtPoint)
-      {
-         nRet = nCheckForSedimentInputEvent();
-         if (nRet != RTN_OK)
-            return nRet;
-      }
-
       // Calculate changes due to external forcing
       nRet = nCalcExternalForcing();
       if (nRet != RTN_OK)
@@ -845,6 +846,16 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
+      // If we have sediment input events, then check to see whether this is time for an event to occur. If it is, then do it
+      if (m_bSedimentInput)
+      {
+         m_bSedimentInputThisIter = false;
+
+         nRet = nCheckForSedimentInputEvent();
+         if (nRet != RTN_OK)
+            return nRet;
+      }
+
       // Create the coastline-normal profiles
       nRet = nCreateAllProfilesAndCheckForIntersection();
       if (nRet != RTN_OK)
@@ -860,7 +871,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       if (nRet != RTN_OK)
          return nRet;
 
-//       // DEBUG CODE
+//       // DEBUG CODE =========================================
 //       int nNODATA = 0;
 //       int nPoly0 = 0;
 //       for (int nX = 0; nX < m_nXGridMax; nX++)
@@ -876,6 +887,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //       }
 //       LogStream << "Before marking polygon cells, N cells with NODATA polygon ID = " << nNODATA << endl;
 //       LogStream << "Before marking polygon cells, N cells with zero polygon ID = " << nPoly0 << endl;
+//       // DEBUG CODE =========================================
 
       // Mark cells of the raster grid that are within each polygon
       MarkPolygonCells();
@@ -890,7 +902,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       // Tell the user how the simulation is progressing
       AnnounceProgress();
 
-//       // DEBUG CODE
+//       // DEBUG CODE =========================================
 //       nNODATA = 0;
 //       nPoly0 = 0;
 //       for (int nX = 0; nX < m_nXGridMax; nX++)
@@ -906,6 +918,7 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
 //       }
 //       LogStream << "After marking polygon cells, N cells with NODATA polygon ID = " << nNODATA << endl;
 //       LogStream << "After marking polygon cells, N cells with zero polygon ID = " << nPoly0 << endl;
+//       // DEBUG CODE =========================================
 
       // PropagateWind();
 
@@ -1019,8 +1032,8 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
       }
 
       // Add the fine sediment that was eroded this timestep (from the shore platform, from beach erosion, and cliff collapse talus deposition, minus the fine that went off-grid) to the suspended sediment load
-      double dFineThisTimestep = m_dThisTimestepActualPlatformErosionFine + m_dThisTimestepActualBeachErosionFine + m_dThisTimestepCliffErosionFine - m_dThisTimestepActualFineSedLostBeachErosion;
-      m_dThisTimestepFineSedimentToSuspension += dFineThisTimestep;
+      double dFineThisIter = m_dThisIterActualPlatformErosionFine + m_dThisIterActualBeachErosionFine + m_dThisIterCliffErosionFine - m_dThisIterActualFineSedLostBeachErosion;
+      m_dThisIterFineSedimentToSuspension += dFineThisIter;
 
       // Tell the user how the simulation is progressing
       AnnounceProgress();
@@ -1097,10 +1110,10 @@ int CSimulation::nDoSimulation(int nArg, char* pcArgv[])
          return nRet;
 
       // Now save results, first the raster and vector GIS files if required
-      m_bSaveGISThisTimestep = false;
+      m_bSaveGISThisIter = false;
       if ((m_bSaveRegular && (m_dSimElapsed >= m_dRSaveTime) && (m_dSimElapsed < m_dSimDuration)) || (! m_bSaveRegular && (m_dSimElapsed >= m_dUSaveTime[m_nThisSave])))
       {
-         m_bSaveGISThisTimestep = true;
+         m_bSaveGISThisIter = true;
 
          // Save the values from the RasterGrid array into raster GIS files
          if (! bSaveAllRasterGISFiles())

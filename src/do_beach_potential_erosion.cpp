@@ -153,7 +153,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
                bDownCoast = false;
 
             // And save the direction of sediment movement in the polygon object
-            pPolygon->SetDownCoastThisTimestep(bDownCoast);
+            pPolygon->SetDownCoastThisIter(bDownCoast);
 
             // Now that we have the direction of sediment movement, normalize dThetaBr to be always +ve so that subsequent calculations are clearer
             dThetaBr = tAbs(dThetaBr);

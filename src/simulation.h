@@ -146,7 +146,7 @@ private:
       m_bBeachDepositionTSSave,
       m_bBeachSedimentChangeNetTSSave,
       m_bSuspSedTSSave,
-      m_bSaveGISThisTimestep,
+      m_bSaveGISThisIter,
       m_bOutputProfileData,
       m_bOutputParallelProfileData,
       m_bOutputLookUpData,
@@ -165,8 +165,12 @@ private:
       m_bWorldFile,
       m_bSingleDeepWaterWaveValues,
       m_bHaveWaveStationData,
+      m_bSedimentInput,
       m_bSedimentInputAtPoint,
-      m_bSedimentInputLocationIsExact;
+      m_bSedimentInputAtCoast,
+      m_bSedimentInputAlongLine,
+      m_bSedimentInputEventSave,
+      m_bSedimentInputThisIter;
 
    char** m_papszGDALRasterOptions;
    char** m_papszGDALVectorOptions;
@@ -187,7 +191,7 @@ private:
       m_nThisSave,
       m_nCoastMax,
       m_nCoastMin,
-      m_nNThisTimestepCliffCollapse,
+      m_nNThisIterCliffCollapse,
       m_nNTotCliffCollapse,
       m_nCliffCollapseTalusPlanviewWidth,
       m_nGlobalPolygonID,                    // There are m_nGlobalPolygonID + 1 polygons at any time (all coasts)
@@ -221,13 +225,13 @@ private:
       m_ulTotTimestep,
       m_ulRandSeed[NRNG],
       m_ulNumCells,
-      m_ulThisTimestepNumSeaCells,
-      m_ulThisTimestepNumCoastCells,
-      m_ulThisTimestepNumPotentialPlatformErosionCells,
-      m_ulThisTimestepNumActualPlatformErosionCells,
-      m_ulThisTimestepNumPotentialBeachErosionCells,
-      m_ulThisTimestepNumActualBeachErosionCells,
-      m_ulThisTimestepNumBeachDepositionCells,
+      m_ulThisIterNumSeaCells,
+      m_ulThisIterNumCoastCells,
+      m_ulThisIterNumPotentialPlatformErosionCells,
+      m_ulThisIterNumActualPlatformErosionCells,
+      m_ulThisIterNumPotentialBeachErosionCells,
+      m_ulThisIterNumActualBeachErosionCells,
+      m_ulThisIterNumBeachDepositionCells,
       m_ulTotPotentialPlatformErosionOnProfiles,
       m_ulTotPotentialPlatformErosionBetweenProfiles,
       m_ulMissingValueBasementCells;
@@ -257,7 +261,7 @@ private:
       m_dOrigSWL,
       m_dFinalSWL,
       m_dDeltaSWLPerTimestep,
-      m_dThisTimestepSWL,
+      m_dThisIterSWL,
       m_dAccumulatedSeaLevelChange,
       m_dMinSWL,
       m_dMaxSWL,
@@ -290,32 +294,32 @@ private:
       m_dDepthOfClosure,
       m_dCoastNormalAvgSpacing,        // In m
       m_dCoastNormalLength,
-      m_dThisTimestepTotSeaDepth,
-      m_dThisTimestepPotentialPlatformErosion,
-      m_dThisTimestepActualPlatformErosionFine,
-      m_dThisTimestepActualPlatformErosionSand,
-      m_dThisTimestepActualPlatformErosionCoarse,
-      m_dThisTimestepPotentialBeachErosion,
-      m_dThisTimestepActualBeachErosionFine,
-      m_dThisTimestepActualBeachErosionSand,
-      m_dThisTimestepActualBeachErosionCoarse,
-      m_dThisTimestepBeachDepositionSand,
-      m_dThisTimestepBeachDepositionCoarse,
-      m_dThisTimestepFineSedimentToSuspension,
-      m_dThisTimestepPotentialSedLostBeachErosion,
-      m_dThisTimestepActualFineSedLostBeachErosion,
-      m_dThisTimestepActualSandSedLostBeachErosion,
-      m_dThisTimestepActualCoarseSedLostBeachErosion,
-      m_dThisTimestepEstimatedActualFineBeachErosion,
-      m_dThisTimestepEstimatedActualSandBeachErosion,
-      m_dThisTimestepEstimatedActualCoarseBeachErosion,
-      m_dThisTimestepCliffErosionFine,
-      m_dThisTimestepCliffTalusSandErosion,
-      m_dThisTimestepCliffTalusCoarseErosion,
-      m_dThisTimestepSandSedLostCliffCollapse,
-      m_dThisTimestepCoarseSedLostCliffCollapse,
-      m_dThisTimestepMassBalanceErosionError,
-      m_dThisTimestepMassBalanceDepositionError,
+      m_dThisIterTotSeaDepth,
+      m_dThisIterPotentialPlatformErosion,
+      m_dThisIterActualPlatformErosionFine,
+      m_dThisIterActualPlatformErosionSand,
+      m_dThisIterActualPlatformErosionCoarse,
+      m_dThisIterPotentialBeachErosion,
+      m_dThisIterActualBeachErosionFine,
+      m_dThisIterActualBeachErosionSand,
+      m_dThisIterActualBeachErosionCoarse,
+      m_dThisIterBeachDepositionSand,
+      m_dThisIterBeachDepositionCoarse,
+      m_dThisIterFineSedimentToSuspension,
+      m_dThisIterPotentialSedLostBeachErosion,
+      m_dThisIterActualFineSedLostBeachErosion,
+      m_dThisIterActualSandSedLostBeachErosion,
+      m_dThisIterActualCoarseSedLostBeachErosion,
+      m_dThisIterEstimatedActualFineBeachErosion,
+      m_dThisIterEstimatedActualSandBeachErosion,
+      m_dThisIterEstimatedActualCoarseBeachErosion,
+      m_dThisIterCliffErosionFine,
+      m_dThisIterCliffTalusSandErosion,
+      m_dThisIterCliffTalusCoarseErosion,
+      m_dThisIterSandSedLostCliffCollapse,
+      m_dThisIterCoarseSedLostCliffCollapse,
+      m_dThisIterMassBalanceErosionError,
+      m_dThisIterMassBalanceDepositionError,
       m_dDepthOverDBMax,                                    // Used in erosion potential look-up function
       m_dTotPotentialPlatformErosionOnProfiles,
       m_dTotPotentialPlatformErosionBetweenProfiles,
@@ -328,17 +332,20 @@ private:
       m_dCliffDepositionPlanviewWidth,
       m_dCliffDepositionPlanviewLength,
       m_dCliffDepositionHeightFrac,
-      m_dThisTimestepCliffCollapseErosionFine,
-      m_dThisTimestepCliffCollapseErosionSand,
-      m_dThisTimestepCliffCollapseErosionCoarse,
-      m_dThisTimestepCliffDepositionSand,
-      m_dThisTimestepCliffDepositionCoarse,
+      m_dThisIterCliffCollapseErosionFine,
+      m_dThisIterCliffCollapseErosionSand,
+      m_dThisIterCliffCollapseErosionCoarse,
+      m_dThisIterCliffDepositionSand,
+      m_dThisIterCliffDepositionCoarse,
       m_dCoastNormalRandSpaceFact,
       m_dDeanProfileStartAboveSWL,
       m_dMissingValue,
       m_dWaveDataWrapHours,
-      m_dThisTimestepTopElevMax,
-      m_dThisTimestepTopElevMin;
+      m_dThisIterTopElevMax,
+      m_dThisIterTopElevMin,
+      m_dThisiterFineSedimentInput,
+      m_dThisiterSandSedimentInput,
+      m_dThisiterCoarseSedimentInput;
 
    // These grand totals are all long doubles, the aim is to minimize rounding errors when many very small numbers are added to a single much larger number, see e.g. http://www.ddj.com/cpp/184403224
    long double
@@ -368,7 +375,10 @@ private:
       m_ldGTotCoarseBeachDeposition,
       m_ldGTotSuspendedSediment,
       m_ldGTotMassBalanceErosionError,
-      m_ldGTotMassBalanceDepositionError;
+      m_ldGTotMassBalanceDepositionError,
+      m_ldGTotFineSedimentInput,
+      m_ldGTotSandSedimentInput,
+      m_ldGTotCoarseSedimentInput;
 
    string
       m_strCMEDir,
@@ -451,8 +461,8 @@ private:
       SedLoadTSStream;
 
    vector<bool>
-      m_bConsChangedThisTimestep,
-      m_bUnconsChangedThisTimestep;
+      m_bConsChangedThisIter,
+      m_bUnconsChangedThisIter;
 
    vector<int>
       m_VnProfileToSave,
@@ -554,11 +564,11 @@ private:
    void WriteLookUpData(void);
 
    // GIS input and output stuff
-   int nReadBasementDEMData(void);
-   int nReadRasterGISData(int const, int const);
-   int nReadVectorGISData(int const);
-   bool bWriteRasterGIS(int const, string const*, int const = 0, double const = 0);
-   bool bWriteVectorGIS(int const, string const*);
+   int nReadRasterBasementDEM(void);
+   int nReadRasterGISFile(int const, int const);
+   int nReadVectorGISFile(int const);
+   bool bWriteRasterGISFile(int const, string const*, int const = 0, double const = 0);
+   bool bWriteVectorGISFile(int const, string const*);
    void GetRasterOutputMinMax(int const, double&, double&, int const, double const);
    void SetRasterFileCreationDefaults(void);
    int nInterpolateWavePropertiesToWithinPolygonCells(vector<double> const*, vector<double> const*, vector<double> const*, vector<double> const*);
@@ -590,8 +600,8 @@ private:
    void DoCoastCurvature(int const, int const);
    int nCreateAllProfilesAndCheckForIntersection(void);
    int nCreateAllProfiles(void);
-   void CreateNaturalCapeNormals(int const, int&, int const, vector<bool>*, vector<pair<int, double> > const*);
-   void CreateRestOfNormals(int const, int&, int const, double const, vector<bool>*, vector<pair<int, double> > const*);
+   void CreateNaturalCapeNormalProfiles(int const, int&, int const, vector<bool>*, vector<pair<int, double> > const*);
+   void CreateRestOfNormalProfiles(int const, int&, int const, double const, vector<bool>*, vector<pair<int, double> > const*);
    void CreateInterventionProfiles(int const, int& /*, int const*/);
    int nCreateProfile(int const, int const, int&);
    int nCreateGridEdgeProfile(bool const, int const, int&);
@@ -698,6 +708,8 @@ private:
    static double dAngleSubtended(CGeom2DIPoint const*, CGeom2DIPoint const*, CGeom2DIPoint const*);
    static int nGetOppositeDirection(int const);
    static void GetSlopeAndInterceptFromPoints(CGeom2DIPoint const*, CGeom2DIPoint const*, double&, double&);
+   CGeom2DIPoint PtiFindClosestCoastPoint(int const, int const nY);
+
 
    // Utility routines
    static void AnnounceStart(void);
@@ -800,7 +812,7 @@ public:
    double dGetMissingValue(void) const;
 
    //! Returns this timestep's still water level
-   double dGetThisTimestepSWL(void) const;
+   double dGetThisIterSWL(void) const;
 
    //! Returns the vertical tolerance for beach cells to be included in smoothing
    double dGetMaxBeachElevAboveSWL(void) const;

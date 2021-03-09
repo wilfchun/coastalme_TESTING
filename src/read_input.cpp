@@ -623,7 +623,8 @@ bool CSimulation::bReadRunDataFile(void)
                   m_bDeepWaterWaveHeightSave             =
                   m_bDeepWaterWavePeriodSave             =
                   m_bPolygonUnconsSedUpOrDownDrift       =
-                  m_bPolygonUnconssedGainOrLoss          = true;
+                  m_bPolygonUnconssedGainOrLoss          =
+                  m_bSedimentInputEventSave              = true;
                }
                else
                {
@@ -928,10 +929,10 @@ bool CSimulation::bReadRunDataFile(void)
                      strRH = strRemoveSubstr(&strRH, &RASTER_TOTAL_BEACH_DEPOSITION_CODE);
                   }
 
-                  if (strRH.find(RASTER_LOCAL_SLOPE_CODE) != string::npos)
+                  if (strRH.find(RASTER_SEDIMENT_INPUT_EVENT_CODE) != string::npos)
                   {
-//                     m_bTotalBeachDepositionSave = true;
-                     strRH = strRemoveSubstr(&strRH, &RASTER_LOCAL_SLOPE_CODE);
+                     m_bSedimentInputEventSave = true;
+                     strRH = strRemoveSubstr(&strRH, &RASTER_SEDIMENT_INPUT_EVENT_CODE);
                   }
 
                   // Check to see if all codes have been removed
@@ -2225,7 +2226,7 @@ bool CSimulation::bReadRunDataFile(void)
             break;
 
          case 56:
-            // Sediment input location (optional point shapefile)
+            // Sediment input location (point or line shapefile)
             if (! strRH.empty())
             {
 #ifdef _WIN32
@@ -2244,13 +2245,30 @@ bool CSimulation::bReadRunDataFile(void)
                }
 
                // Set the switch
-               m_bSedimentInputAtPoint = true;
+               m_bSedimentInput = true;
             }
             break;
 
          case 57:
+            // Sediment input type: required if have shapefile [P = Point, C = coast block, L = line]
+            if (m_bSedimentInput)
+            {
+               strRH = strToLower(&strRH);
+
+               if (strRH.find("p") != string::npos)
+                  m_bSedimentInputAtPoint = true;
+               else if (strRH.find("c") != string::npos)
+                  m_bSedimentInputAtCoast = true;
+               else if (strRH.find("l") != string::npos)
+                  m_bSedimentInputAlongLine = true;
+               else
+                  strErr = "Sediment input type must be P, C, or L";
+            }
+            break;
+
+         case 58:
             // Sediment input details file (required if have shapefile)
-            if (m_bSedimentInputAtPoint)
+            if (m_bSedimentInput)
             {
                if (strRH.empty())
                {
@@ -2278,20 +2296,6 @@ bool CSimulation::bReadRunDataFile(void)
             }
             break;
 
-         case 58:
-            // Sediment input at exact location or at nearest point on coast? [L = Location, C = Coast]
-            if (m_bSedimentInputAtPoint)
-            {
-               strRH = strToLower(&strRH);
-
-               if (strRH.find("l") != string::npos)
-                  m_bSedimentInputLocationIsExact = true;
-               else if (strRH.find("c") != string::npos)
-                  m_bSedimentInputLocationIsExact = false;
-               else
-                  strErr = "Sediment input at exact location or nearest point on coast must be L or C";
-            }
-            break;
 
          // ------------------------------------------------ Cliff collapse data -----------------------------------------------
          case 59:
@@ -2877,7 +2881,7 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
                nYear = 0;
             double
                dMult,
-               dThisTimestep;
+               dThisIter;
             vector<string> VstrTmp;
 
             switch (nRead)
@@ -2953,12 +2957,12 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
                   break;
                }
 
-               dThisTimestep = strtod(strRH.c_str(), NULL) * dMult;         // in hours
+               dThisIter = strtod(strRH.c_str(), NULL) * dMult;         // in hours
 
-               if (dThisTimestep <= 0)
+               if (dThisIter <= 0)
                   strErr = "timestep must be > 0";
 
-               if (dThisTimestep != m_dTimeStep)
+               if (dThisIter != m_dTimeStep)
                   strErr = "timestep must be the same as the simulation timestep";
 
                break;
@@ -3175,7 +3179,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
             break;
          }
 
-         // Next get the timestep at which the sediment input event occurs. This may be specified either as a relative time (i.e. a number of hours or days after the simulation start) or an absolute time (i.e. a time/date in the format hh-mm-ss dd/mm/yyyy)
+         // Next get the timestep at which the sediment input event occurs. This may be specified either as a relative time (i.e. a number of hours or days after the simulation start) or as an absolute time (i.e. a time/date in the format hh-mm-ss dd/mm/yyyy)
          unsigned long ulEventTimeStep = ulConvertToTimestep(&VstrTmp[1]);
          if (ulEventTimeStep == SEDINPUTEVENTERROR)
          {
@@ -3186,26 +3190,53 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
          // Then the volume (m3) of fine sediment, first check that this is a valid double
          if (! bIsStringValidDouble(VstrTmp[2]))
          {
-            strErr = "invalid floating point number '" + VstrTmp[2] + "' for fine sediment volume of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
+            strErr = "invalid floating point number '" + VstrTmp[2] + "' for fine sediment volume for sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
             break;
          }
+
          double dFineSedVol = stod(strTrim(&VstrTmp[2]));
+         if (dFineSedVol < 0)
+         {
+            strErr = "negative number '" + to_string(dFineSedVol) + "' for fine sediment volume for sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
+            break;
+         }
+
+         if (dFineSedVol > 0)
+            m_bHaveFineSediment = true;
 
          // Then the volume (m3) of sand sediment, first check that this is a valid double
          if (! bIsStringValidDouble(VstrTmp[3]))
          {
-            strErr = "invalid floating point number '" + VstrTmp[3] + "' for sand-sized sediment volume of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
+            strErr = "invalid floating point number '" + VstrTmp[3] + "' for sand-sized sediment volume for sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
             break;
          }
+
          double dSandSedVol = stod(strTrim(&VstrTmp[3]));
+         if (dSandSedVol < 0)
+         {
+            strErr = "negative number '" + to_string(dSandSedVol) + "' for sand-sized sediment volume for sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
+            break;
+         }
+
+         if (dSandSedVol > 0)
+            m_bHaveSandSediment = true;
 
          // Then the volume (m3) of coarse sediment, first check that this is a valid double
          if (! bIsStringValidDouble(VstrTmp[4]))
          {
-            strErr = "invalid floating point number '" + VstrTmp[4] + "' for coarse sediment volume of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
+            strErr = "invalid floating point number '" + VstrTmp[4] + "' for coarse sediment volume for sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
             break;
          }
+
          double dCoarseSedVol = stod(strTrim(&VstrTmp[4]));
+         if (dCoarseSedVol < 0)
+         {
+            strErr = "negative number '" + to_string(dCoarseSedVol) + "' for coarse sediment volume of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
+            break;
+         }
+
+         if (dCoarseSedVol > 0)
+            m_bHaveCoarseSediment = true;
 
          // The coast-normal length (m) of the sediment block, first check that this is a valid double
          if (! bIsStringValidDouble(VstrTmp[5]))
@@ -3213,7 +3244,13 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
             strErr = "invalid floating point number '" + VstrTmp[5] + "' for coast-normal length of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
             break;
          }
+
          double dLen = stod(strTrim(&VstrTmp[5]));
+         if ((! m_bSedimentInputAtCoast) && (dLen <= 0))
+         {
+            strErr = "coast-normal length L of the sediment block '" + to_string(dLen) + "' must be > 0 in " + m_strSedimentInputEventTimeSeriesFile;
+            break;
+         }
 
          // Finally the along-coast width (m) of the sediment block, first check that this is a valid double
          if (! bIsStringValidDouble(VstrTmp[6]))
@@ -3221,7 +3258,13 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
             strErr = "invalid floating point number '" + VstrTmp[6] + "' for along-coast width of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
             break;
          }
+
          double dWidth = stod(strTrim(&VstrTmp[6]));
+         if ((! m_bSedimentInputAtCoast) && (dWidth <= 0))
+         {
+            strErr = "along-coast width W (m) of the sediment block '" + to_string(dWidth) + "' must be > 0 in " + m_strSedimentInputEventTimeSeriesFile;
+            break;
+         }
 
          // Create the CSedInputEvent object
          CSedInputEvent* pEvent = new CSedInputEvent(nID, ulEventTimeStep, dFineSedVol, dSandSedVol, dCoarseSedVol, dLen, dWidth);

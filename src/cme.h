@@ -277,10 +277,11 @@ int const      VEC_GEOMETRY_OTHER                                          = 4;
 // GIS vector input codes and constraints
 int const      DEEP_WATER_WAVE_STATIONS_VEC                                = 1;
 int const      DEEP_WATER_WAVE_STATIONS_MAX_LAYER                          = 1;
-int const      DEEP_WATER_WAVE_STATIONS_GEOMETRY                           = VEC_GEOMETRY_POINT;
+int const      DEEP_WATER_WAVE_STATIONS_POINT_GEOMETRY                     = VEC_GEOMETRY_POINT;
 int const      SEDIMENT_INPUT_EVENT_LOCATION_VEC                           = 2;
 int const      SEDIMENT_INPUT_EVENT_LOCATION_MAX_LAYER                     = 1;
-int const      SEDIMENT_INPUT_EVENT_LOCATION_GEOMETRY                      = VEC_GEOMETRY_POINT;
+int const      SEDIMENT_INPUT_EVENT_LOCATION_POINT_GEOMETRY                = VEC_GEOMETRY_POINT;
+int const      SEDIMENT_INPUT_EVENT_LOCATION_LINE_GEOMETRY                 = VEC_GEOMETRY_LINE;
 
 // GIS raster output codes
 int const      RASTER_PLOT_ACTIVE_ZONE                                     = 1;
@@ -334,6 +335,7 @@ int const      RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION                = 48;
 int const      RASTER_PLOT_WAVE_HEIGHT                                     = 49;
 int const      RASTER_PLOT_WAVE_ORIENTATION                                = 50;
 int const      RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK                 = 51;
+int const      RASTER_PLOT_SEDIMENT_INPUT                                  = 52;
 
 // GIS vector output codes
 int const      VECTOR_PLOT_AVG_WAVE_ANGLE_AND_HEIGHT                       = 1;
@@ -388,38 +390,37 @@ int const      RTN_ERR_NOSEACELLS                     = 31;
 int const      RTN_ERR_GRIDTOLINE                     = 32;
 int const      RTN_ERR_TRACECOAST                     = 33;
 int const      RTN_ERR_NOCOAST                        = 34;
-int const      RTN_ERR_MASSBALANCE                    = 35;
-int const      RTN_ERR_PROFILEWRITE                   = 36;
-int const      RTN_ERR_TIMEUNITS                      = 37;
-int const      RTN_ERR_CLIFFNOTCH                     = 38;
-int const      RTN_ERR_CLIFFDEPOSIT                   = 39;
-int const      RTN_ERR_BAD_INDEX                      = 40;
-int const      RTN_ERR_EDGEOFGRID                     = 41;
-int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_1    = 42;
-int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_2    = 43;
-int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_3    = 44;
-int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_4    = 45;
-int const      RTN_ERR_LANDFORM_TO_GRID               = 46;
-int const      RTN_ERR_NO_TOP_LAYER                   = 47;
-int const      RTN_ERR_NO_ADJACENT_POLYGON            = 48;
-int const      RTN_ERR_BAD_MULTILINE                  = 49;
-int const      RTN_ERR_CANNOT_INSERT_POINT            = 50;
-int const      RTN_ERR_CANNOT_ASSIGN_COASTAL_LANDFORM = 51;
-int const      RTN_ERR_SHADOW_ZONE_FLOOD_FILL_NOGRID  = 52;
-int const      RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT  = 53;
-int const      RTN_ERR_CSHORE_EMPTY_PROFILE           = 54;
-int const      RTN_ERR_CSHORE_FILE_INPUT              = 55;
-int const      RTN_ERR_READING_CSHORE_FILE_OUTPUT     = 56;
-int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 57;
-int const      RTN_ERR_GRIDCREATE                     = 58;
-int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 59;
-int const      RTN_ERR_CSHORE_ERROR                   = 60;
-int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 61;
-int const      RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA      = 62;
-int const      RTN_ERR_READING_DEEP_WATER_WAVE_DATA   = 63;
-int const      RTN_ERR_BOUNDING_BOX                   = 64;
-int const      RTN_ERR_READING_SEDIMENT_INPUT_EVENT   = 65;
-int const      RTN_ERR_SEDIMENT_INPUT_EVENT           = 66;
+int const      RTN_ERR_PROFILEWRITE                   = 35;
+int const      RTN_ERR_TIMEUNITS                      = 36;
+int const      RTN_ERR_CLIFFNOTCH                     = 37;
+int const      RTN_ERR_CLIFFDEPOSIT                   = 38;
+int const      RTN_ERR_BAD_INDEX                      = 39;
+int const      RTN_ERR_EDGEOFGRID                     = 40;
+int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_1    = 41;
+int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_2    = 42;
+int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_3    = 43;
+int const      RTN_ERR_NO_SEAWARD_END_OF_PROFILE_4    = 44;
+int const      RTN_ERR_LANDFORM_TO_GRID               = 45;
+int const      RTN_ERR_NO_TOP_LAYER                   = 46;
+int const      RTN_ERR_NO_ADJACENT_POLYGON            = 47;
+int const      RTN_ERR_BAD_MULTILINE                  = 48;
+int const      RTN_ERR_CANNOT_INSERT_POINT            = 49;
+int const      RTN_ERR_CANNOT_ASSIGN_COASTAL_LANDFORM = 50;
+int const      RTN_ERR_SHADOW_ZONE_FLOOD_FILL_NOGRID  = 51;
+int const      RTN_ERR_SHADOW_ZONE_FLOOD_START_POINT  = 52;
+int const      RTN_ERR_CSHORE_EMPTY_PROFILE           = 53;
+int const      RTN_ERR_CSHORE_FILE_INPUT              = 54;
+int const      RTN_ERR_READING_CSHORE_FILE_OUTPUT     = 55;
+int const      RTN_ERR_WAVE_INTERPOLATION_LOOKUP      = 56;
+int const      RTN_ERR_GRIDCREATE                     = 57;
+int const      RTN_ERR_COAST_CANT_FIND_EDGE_CELL      = 58;
+int const      RTN_ERR_CSHORE_ERROR                   = 59;
+int const      RTN_ERR_NO_CELL_UNDER_COASTLINE        = 60;
+int const      RTN_ERR_OPEN_DEEP_WATER_WAVE_DATA      = 61;
+int const      RTN_ERR_READING_DEEP_WATER_WAVE_DATA   = 62;
+int const      RTN_ERR_BOUNDING_BOX                   = 63;
+int const      RTN_ERR_READING_SEDIMENT_INPUT_EVENT   = 64;
+int const      RTN_ERR_SEDIMENT_INPUT_EVENT           = 65;
 
 // Elevation and 'slice' codes
 int const      ELEV_IN_BASEMENT                       = -1;
@@ -476,7 +477,7 @@ double const   MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE                         = 5; 
 double const   DBL_NODATA                                                  = -9999;
 
 
-string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 1 March 2021";
+string const   PROGRAM_NAME                                                = "CoastalME 0.9.9 TESTING: 9 March 2021";
 string const   PROGRAM_NAME_SHORT                                          = "CME";
 string const   CME_INI                                                     = "cme.ini";
 
@@ -546,35 +547,35 @@ string const   WARN                                                        = "WA
 string const   NOTE                                                        = "      Note ";
 
 string const   PERITERHEAD1 =
-"<-----ELAPSED----><-SEA-><----POTENTIAL---><----------ACTUAL-----------><----POTENTIAL----><-----------ACTUAL------------><----------BEACH------------><--CLIFF COLLAPSE--><SUSP>";
+"<-----ELAPSED----><-SEA-><----POTENTIAL---><----------ACTUAL-----------><----POTENTIAL----><------------ACTUAL------------><-----------ACTUAL-----------><-SEDIMENT-><--CLIFF COLLAPSE--><SUSP>";
 
 string const   PERITERHEAD2 =
-"       TIME        DEPTH  PLATFORM EROSION        PLATFORM EROSION          BEACH EROSION           BEACH EROSION                   DEPOSITION            EROSION DEPOSITION  SED";
+"       TIME        DEPTH  PLATFORM EROSION        PLATFORM EROSION          BEACH EROSION            BEACH EROSION                BEACH DEPOSITION        INPUT EVENT  EROSION DEPOSITION  SED";
 
 string const   PERITERHEAD3 =
-"Time  Hours  Years   Avg  % Sea   All  Erod % Sea   All Erod <-sea avg->  % Sea   All  Erod  % Sea   All  Erod <-sea avg->  % Sea   All Deposit <-sea-><-coast avg><--sea->";
+"Time  Hours  Years   Avg  % Sea   All  Erod % Sea   All Erod <-sea avg->  % Sea   All  Erod  % Sea   All Erodng <-sea avg->  % Sea   All  Deposit <-sea->            <-coast avg><--sea->";
 string const   PERITERHEAD4 =
-"Step                       Area   Sea  Area  Area   Sea Area   F   S   C   Area   Sea  Area   Area   Sea  Area   F   S   C   Area   Sea    Area   S   C   F   S   C   S   C    F";
+"Step                       Area   Sea  Area  Area   Sea Area   F   S   C   Area   Sea  Area   Area   Sea   Area   F   S   C   Area   Sea     Area   S   C   F   S   C   F   S   C   S   C    F";
 string const   PERITERHEAD5 =
-"                                  Avg   Avg         Avg  Avg                            Avg          Avg   Avg                      Avg     Avg";
+"                                  Avg   Avg         Avg  Avg                            Avg          Avg    Avg                      Avg      Avg";
 
 string const   PERITERHEAD =
-"PER-ITERATION RESULTS =================================================================================================================================================================";
+"PER-ITERATION RESULTS =========================================================================================================================================================================";
 string const   ENDHYDROLOGYHEAD =
-"END OF SIMULATION: HYDROLOGY ==========================================================================================================================================================";
+"END OF SIMULATION: HYDROLOGY ==================================================================================================================================================================";
 string const   ENDSEDIMENTHEAD =
-"END OF SIMULATION: SEDIMENT MOVEMENT ==================================================================================================================================================";
+"END OF SIMULATION: SEDIMENT MOVEMENT ==========================================================================================================================================================";
 string const   PERFORMHEAD =
-"END OF SIMULATION: PERFORMANCE ========================================================================================================================================================";
+"END OF SIMULATION: PERFORMANCE ================================================================================================================================================================";
 
 string const   OUTEXT                                                      = ".out";
 string const   LOGEXT                                                      = ".log";
 string const   CSVEXT                                                      = ".csv";
 
 string const   DEEP_WATER_WAVE_STATION_ID                                  = "id";
-string const   DEEP_WATER_WAVE_STATIONS_HEIGHT                             = "HEIGHT";
-string const   DEEP_WATER_WAVE_STATIONS_ANGLE                              = "ANGLE";
-string const   DEEP_WATER_WAVE_STATIONS_PERIOD                             = "PERIOD";
+// string const   DEEP_WATER_WAVE_STATIONS_HEIGHT                             = "HEIGHT";
+// string const   DEEP_WATER_WAVE_STATIONS_ANGLE                              = "ANGLE";
+// string const   DEEP_WATER_WAVE_STATIONS_PERIOD                             = "PERIOD";
 string const   SEDIMENT_INPUT_EVENT_LOCATION_ID                            = "id";
 
 // GIS raster output user codes
@@ -683,6 +684,8 @@ string const   RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_CODE                    = "po
 string const   RASTER_POLYGON_UPDRIFT_OR_DOWNDRIFT_NAME                    = "polygon_updrift_or_downdrift";
 string const   RASTER_POLYGON_GAIN_OR_LOSS_CODE                            = "polygon_gain_or_loss";
 string const   RASTER_POLYGON_GAIN_OR_LOSS_NAME                            = "polygon_gain_or_loss";
+string const   RASTER_SEDIMENT_INPUT_EVENT_CODE                            = "sediment_input_total";
+string const   RASTER_SEDIMENT_INPUT_EVENT_NAME                            = "sediment_input_total";
 
 // GIS raster output titles
 string const   RASTER_PLOT_ACTIVE_ZONE_TITLE                               = "Active zone";
@@ -735,7 +738,8 @@ string const   RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION_TITLE             = "To
 string const   RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION_TITLE          = "Total potential (unconstrained) shore platform erosion depth";
 string const   RASTER_PLOT_WAVE_HEIGHT_TITLE                               = "Wave height";
 string const   RASTER_PLOT_WAVE_ORIENTATION_TITLE                          = "Wave orientation";
-string const   RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK_TITLE    = "Potential (unconstrained) shore platform erosion binary mask";
+string const   RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK_TITLE           = "Potential (unconstrained) shore platform erosion binary mask";
+string const   RASTER_PLOT_SEDIMENT_INPUT_EVENT_TITLE                      = "Sediment input event(s) since last GIS save";
 
 // GIS vector output user codes
 string const   VECTOR_ALL_OUTPUT_CODE                                      = "all";
