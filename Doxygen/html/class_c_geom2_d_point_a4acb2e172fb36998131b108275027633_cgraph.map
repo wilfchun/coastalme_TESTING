@@ -1,5 +1,5 @@
 <map id="CGeom2DPoint::operator==" name="CGeom2DPoint::operator==">
-<area shape="rect" id="node1" title="Compares two CGeom2DPoint objects for equality." alt="" coords="5,31,191,57"/>
-<area shape="rect" id="node2" href="$class_c_geom2_d_point.html#a250f937d03cfdf6e0244b74ad2bf96a4" title="Returns the CGeom2DPoint object&#39;s double X co&#45;ordinate." alt="" coords="239,5,397,32"/>
-<area shape="rect" id="node3" href="$class_c_geom2_d_point.html#a216921dc2c592d9468e6430fee7c7719" title="Returns the CGeom2DPoint object&#39;s double Y co&#45;ordinate." alt="" coords="239,56,397,83"/>
+<area shape="rect" id="node1" title="Compares two CGeom2DPoint objects for equality." alt="" coords="5,31,212,57"/>
+<area shape="rect" id="node2" href="$class_c_geom2_d_point.html#a250f937d03cfdf6e0244b74ad2bf96a4" title="Returns the CGeom2DPoint object&#39;s double X co&#45;ordinate." alt="" coords="260,5,429,32"/>
+<area shape="rect" id="node3" href="$class_c_geom2_d_point.html#a216921dc2c592d9468e6430fee7c7719" title="Returns the CGeom2DPoint object&#39;s double Y co&#45;ordinate." alt="" coords="261,56,429,83"/>
 </map>
