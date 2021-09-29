@@ -21,6 +21,7 @@
 ;
 ; Run information ---------------------------------------------------------------------------------------------------------------------------------------------
 Main output/log file names                                          [omit path and extension]: jsme
+Content of log file                                       [1 = least detail, 3 = most detail]: 1
 
 Simulation start date and time                                          [hh-mm-ss dd/mm/yyyy]: 00-00-00 01/01/1999
 Duration of simulation                                           [hours, days, months, years]: 9 hours                  ; *** LAST 3 days
@@ -54,18 +55,18 @@ Number of layers                                                                
 Basement DEM file                                                             [path and name]: in/Happisburgh/HappisburghBasement.asc
    ; LAYER 0 THICKNESS FILES, LAYER 0 IS LOWEST
    ; *** MUST HAVE AT LEAST ONE THICKNESS FILE FOR THE FIRST LAYER
-   Initial Unconsolidated fine sediment file                                  [path and name]: in/Happisburgh/1_U_F.asc
-   Initial Unconsolidated sand sediment file                                  [path and name]: in/Happisburgh/1_U_S.asc
-   Initial Unconsolidated coarse sediment file                                [path and name]: in/Happisburgh/1_U_G.asc
-   Initial Consolidated fine sediment file                                    [path and name]: in/Happisburgh/1_C_F.asc
-   Initial Consolidated sand sediment file                                    [path and name]: in/Happisburgh/1_C_S.asc
-   Initial Consolidated coarse sediment file                                  [path and name]: in/Happisburgh/1_C_G.asc
+   Initial unconsolidated fine sediment file                                  [path and name]: in/Happisburgh/1_U_F.asc
+   Initial unconsolidated sand sediment file                                  [path and name]: in/Happisburgh/1_U_S.asc
+   Initial unconsolidated coarse sediment file                                [path and name]: in/Happisburgh/1_U_G.asc
+   Initial consolidated fine sediment file                                    [path and name]: in/Happisburgh/1_C_F.asc
+   Initial consolidated sand sediment file                                    [path and name]: in/Happisburgh/1_C_S.asc
+   Initial consolidated coarse sediment file                                  [path and name]: in/Happisburgh/1_C_G.asc
 
 ; OPTIONAL THICKNESS FILE
-Initial Suspended sediment file                                               [path and name]:
+Initial suspended sediment file                                               [path and name]:
 
 ; OTHER OPTIONAL RASTER FILES
-Initial Landform file                                                         [path and name]:
+Initial landform file                                                         [path and name]:
 Intervention class file                                                       [path and name]: in/Happisburgh/DefenceType.asc
 Intervention height file                                                      [path and name]: in/Happisburgh/DefenceElev.asc
 

@@ -1632,11 +1632,10 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
          // We are truncating the profile, so remove any line segments after this one
          pProfile->TruncateLineSegments(nSeg);
 
-      // Shorten the vector input
+      // Shorten the vector input. Ignore CPPCheck errors here, since we know that pVIPointsOut is not empty
       int
-         nOutSize = static_cast<int>(pVIPointsOut->size()),
-         nLastX = pVIPointsOut->at(nOutSize-1).nGetX(),
-         nLastY = pVIPointsOut->at(nOutSize-1).nGetY();
+         nLastX = pVIPointsOut->at(pVIPointsOut->size()-1).nGetX(),
+         nLastY = pVIPointsOut->at(pVIPointsOut->size()-1).nGetY();
 
       pProfile->pPtGetPointInProfile(nSeg+1)->SetX(dGridCentroidXToExtCRSX(nLastX));
       pProfile->pPtGetPointInProfile(nSeg+1)->SetY(dGridCentroidYToExtCRSY(nLastY));
@@ -1649,7 +1648,10 @@ void CSimulation::RasterizeProfile(int const nCoast, int const nProfile, vector<
       pProfile->SetTooShort(true);
 
       if (m_nLogFileDetail >= LOG_FILE_MIDDLE_DETAIL)
+      {
+         // Ignore CPPCheck errors here, since we know that pVIPointsOut is not empty         
          LogStream << m_ulIter << ": profile " << nProfile << " is invalid, is too short, only " << pVIPointsOut->size() << " points, HitLand?" << bHitLand << ". From [" << pVIPointsOut->at(0).nGetX() << "][" << pVIPointsOut->at(0).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(0).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(0).nGetY()) << "} to [" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetX() << "][" << pVIPointsOut->at(pVIPointsOut->size()-1).nGetY() << "] = {" << dGridCentroidXToExtCRSX(pVIPointsOut->at(pVIPointsOut->size()-1).nGetX()) << ", " << dGridCentroidYToExtCRSY(pVIPointsOut->at(pVIPointsOut->size()-1).nGetY()) << "}" << endl;
+      }
    }
 }
 

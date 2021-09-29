@@ -74,8 +74,10 @@ node
 normals
 polygon
 shadow_boundary
+storm_surge
 wave_angle
 wave_energy
+wave_setup
 
 
 // Time series output codes

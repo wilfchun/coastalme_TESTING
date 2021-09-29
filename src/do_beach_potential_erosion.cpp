@@ -33,13 +33,12 @@ using std::endl;
 using std::stable_sort;
 
 #include <utility>
-using std::pair;
 using std::make_pair;
+using std::pair;
 
 #include "cme.h"
 #include "simulation.h"
 #include "coast.h"
-
 
 /*===============================================================================================================================
 
@@ -54,7 +53,6 @@ bool bPolygonLengthPairCompare(const pair<int, double> &prLeft, const pair<int, 
    return prLeft.second < prRight.second;
 }
 
-
 /*===============================================================================================================================
 
  Uses either the CERC equation or the Kamphuis (1990) equation to calculate potential (unconstrained) sediment movement between polygons
@@ -68,7 +66,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
       int nNumPolygons = m_VCoast[nCoast].nGetNumPolygons();
 
       // Create a vector of pairs: the first value of the pair is the profile index, the second is the seaward length of that profile
-      vector<pair<int, double> > prVPolygonLength;
+      vector<pair<int, double>> prVPolygonLength;
       for (int nPoly = 0; nPoly < nNumPolygons; nPoly++)
          prVPolygonLength.push_back(make_pair(nPoly, m_VCoast[nCoast].dGetPolygonLength(nPoly)));
 
@@ -80,31 +78,30 @@ void CSimulation::DoAllPotentialBeachErosion(void)
       {
          int nThisPoly = prVPolygonLength[n].first;
 
-         CGeomCoastPolygon* pPolygon = m_VCoast[nCoast].pGetPolygon(nThisPoly);
+         CGeomCoastPolygon *pPolygon = m_VCoast[nCoast].pGetPolygon(nThisPoly);
 
          // Calculate the average breaking wave height and angle along this polygon's segment of coastline
          int
-            nStartNormal = pPolygon->nGetUpCoastProfile(),
-            nEndNormal = pPolygon->nGetDownCoastProfile(),
-            nCoastStartPoint = m_VCoast[nCoast].pGetProfile(nStartNormal)->nGetNumCoastPoint(),
-            nCoastEndPoint = m_VCoast[nCoast].pGetProfile(nEndNormal)->nGetNumCoastPoint(),
-            nCoastPoints = 0,
-            nActiveZonePoints = 0;
+             nStartNormal = pPolygon->nGetUpCoastProfile(),
+             nEndNormal = pPolygon->nGetDownCoastProfile(),
+             nCoastStartPoint = m_VCoast[nCoast].pGetProfile(nStartNormal)->nGetNumCoastPoint(),
+             nCoastEndPoint = m_VCoast[nCoast].pGetProfile(nEndNormal)->nGetNumCoastPoint(),
+             nCoastPoints = 0,
+             nActiveZonePoints = 0;
 
          double
-            dAvgBreakingWaveHeight = 0,
-            dAvgBreakingWaveAngle = 0,
-	    dAvgDeepWaterWavePeriod = 0,
-            dAvgFluxOrientation = 0,
-            dAvgBreakingDepth = 0,
-            dAvgBreakingDist = 0;
+             dAvgBreakingWaveHeight = 0,
+             dAvgBreakingWaveAngle = 0,
+             dAvgDeepWaterWavePeriod = 0,
+             dAvgFluxOrientation = 0,
+             dAvgBreakingDepth = 0,
+             dAvgBreakingDist = 0;
 
          // Calculate the average tangent to the polygon's coast segment, the average wave breaking height, the average depth of breaking, and the average distance of breaking, for this coast segment
-         for (int nCoastPoint = nCoastStartPoint; nCoastPoint < nCoastEndPoint-1; nCoastPoint++)
+         for (int nCoastPoint = nCoastStartPoint; nCoastPoint < nCoastEndPoint - 1; nCoastPoint++)
          {
             nCoastPoints++;
             dAvgFluxOrientation += m_VCoast[nCoast].dGetFluxOrientation(nCoastPoint);
-
 
             double dThisBreakingWaveHeight = m_VCoast[nCoast].dGetBreakingWaveHeight(nCoastPoint);
             if (dThisBreakingWaveHeight != DBL_NODATA)
@@ -114,10 +111,10 @@ void CSimulation::DoAllPotentialBeachErosion(void)
                dAvgBreakingWaveHeight += dThisBreakingWaveHeight;
 
                double dThisBreakingWaveAngle = m_VCoast[nCoast].dGetBreakingWaveAngle(nCoastPoint);
-	       double dThisDeepWaterWavePeriod = m_VCoast[nCoast].dGetCoastDeepWaterWavePeriod(nCoastPoint);
+               double dThisDeepWaterWavePeriod = m_VCoast[nCoast].dGetCoastDeepWaterWavePeriod(nCoastPoint);
 
                dAvgBreakingWaveAngle += dThisBreakingWaveAngle;
-	       dAvgDeepWaterWavePeriod     += dThisDeepWaterWavePeriod;
+               dAvgDeepWaterWavePeriod += dThisDeepWaterWavePeriod;
 
                dAvgBreakingDepth += m_VCoast[nCoast].dGetDepthOfBreaking(nCoastPoint);
 
@@ -133,7 +130,7 @@ void CSimulation::DoAllPotentialBeachErosion(void)
             // Only calculate sediment movement if the polygon has at least one coast point in its coastline segment which is in the active zone
             dAvgBreakingWaveHeight /= nActiveZonePoints;
             dAvgBreakingWaveAngle /= nActiveZonePoints;
-	    dAvgDeepWaterWavePeriod /= nActiveZonePoints;
+            dAvgDeepWaterWavePeriod /= nActiveZonePoints;
             dAvgBreakingDepth /= nActiveZonePoints;
             dAvgBreakingDist /= nActiveZonePoints;
 
@@ -212,17 +209,14 @@ void CSimulation::DoAllPotentialBeachErosion(void)
             if (dSedimentDepth < SEDIMENT_ELEV_TOLERANCE)
                dSedimentDepth = 0;
 
-//            LogStream << m_ulIter << ": polygon = " << nThisPoly << " nActiveZonePoints = " << nActiveZonePoints << " dAvgBreakingWaveHeight = " << dAvgBreakingWaveHeight << " dAvgFluxOrientation = " << dAvgFluxOrientation << " dNormalOrientation = " << dNormalOrientation << " dAvgBreakingWaveAngle = " << dAvgBreakingWaveAngle <<  " potential sediment transport this timestep = " << dSedimentDepth << " m " << (bDownCoast ? "DOWN" : "UP") << " coast" << endl;
-
+            //            LogStream << m_ulIter << ": polygon = " << nThisPoly << " nActiveZonePoints = " << nActiveZonePoints << " dAvgBreakingWaveHeight = " << dAvgBreakingWaveHeight << " dAvgFluxOrientation = " << dAvgFluxOrientation << " dNormalOrientation = " << dNormalOrientation << " dAvgBreakingWaveAngle = " << dAvgBreakingWaveAngle <<  " potential sediment transport this timestep = " << dSedimentDepth << " m " << (bDownCoast ? "DOWN" : "UP") << " coast" << endl;
 
             // Store the potential erosion value for this polygon
             pPolygon->AddDeltaPotentialTotalSediment(-dSedimentDepth);
-//            LogStream << "\tPotential erosion on polygon " << nThisPoly << " -dSedimentDepth = " << -dSedimentDepth << endl;
+            //            LogStream << "\tPotential erosion on polygon " << nThisPoly << " -dSedimentDepth = " << -dSedimentDepth << endl;
          }
-//          else
-//             LogStream << m_ulIter << ": polygon = " << nThisPoly << " NOT IN ACTIVE ZONE dAvgFluxOrientation = " << dAvgFluxOrientation << endl;
+         //          else
+         //             LogStream << m_ulIter << ": polygon = " << nThisPoly << " NOT IN ACTIVE ZONE dAvgFluxOrientation = " << dAvgFluxOrientation << endl;
       }
    }
 }
-
-

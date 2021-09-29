@@ -22,13 +22,13 @@
  You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ==============================================================================================================================*/
-#include <stdlib.h>                 // for strtod()
+#include <stdlib.h> // for strtod()
 #include <fstream>
 using std::ifstream;
 
 #include <iostream>
-using std::cout;
 using std::cerr;
+using std::cout;
 using std::endl;
 using std::ios;
 
@@ -41,7 +41,6 @@ using std::find;
 #include "cme.h"
 #include "simulation.h"
 #include "sediment_input_event.h"
-
 
 /*==============================================================================================================================
 
@@ -66,7 +65,7 @@ bool CSimulation::bReadIniFile(void)
    InStream.open(strFilePathName.c_str(), ios::in);
 
    // Did it open OK?
-   if (! InStream.is_open())
+   if (!InStream.is_open())
    {
       // Error: cannot open .ini file for input
       cerr << ERR << "cannot open " << strFilePathName << " for input" << endl;
@@ -82,7 +81,7 @@ bool CSimulation::bReadIniFile(void)
       strRec = strTrim(&strRec);
 
       // If it is a blank line or a comment then ignore it
-      if ((! strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
+      if ((!strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
       {
          // It isn't so increment counter
          i++;
@@ -92,19 +91,21 @@ bool CSimulation::bReadIniFile(void)
          if (nPos == string::npos)
          {
             // Error: badly formatted line (no colon)
-            cerr << ERR << "badly formatted line (no ':') in " << strFilePathName << endl << "'" << strRec << "'" << endl;
+            cerr << ERR << "badly formatted line (no ':') in " << strFilePathName << endl
+                 << "'" << strRec << "'" << endl;
             return false;
          }
 
-         if (nPos == strRec.size()-1)
+         if (nPos == strRec.size() - 1)
          {
             // Error: badly formatted line (colon with nothing following)
-            cerr << ERR << "badly formatted line (nothing following ':') in " << strFilePathName << endl << "'" << strRec << "'" << endl;
+            cerr << ERR << "badly formatted line (nothing following ':') in " << strFilePathName << endl
+                 << "'" << strRec << "'" << endl;
             return false;
          }
 
          // Strip off leading portion (the bit up to and including the colon)
-         string strRH = strRec.substr(nPos+1);
+         string strRH = strRec.substr(nPos + 1);
 
          // Remove leading whitespace
          strRH = strTrimLeft(&strRH);
@@ -112,11 +113,11 @@ bool CSimulation::bReadIniFile(void)
          // Look for a trailing comment, if found then terminate string at that point and trim off any trailing whitespace
          nPos = strRH.rfind(QUOTE1);
          if (nPos != string::npos)
-            strRH = strRH.substr(0, nPos+1);
+            strRH = strRH.substr(0, nPos + 1);
 
          nPos = strRH.rfind(QUOTE2);
          if (nPos != string::npos)
-            strRH = strRH.substr(0, nPos+1);
+            strRH = strRH.substr(0, nPos + 1);
 
          // Remove trailing whitespace
          strRH = strTrimRight(&strRH);
@@ -153,7 +154,7 @@ bool CSimulation::bReadIniFile(void)
             else
             {
                // Check for trailing slash on CoastalME output directory name (is vital)
-               if (strRH[strRH.size()-1] != PATH_SEPARATOR)
+               if (strRH[strRH.size() - 1] != PATH_SEPARATOR)
                   strRH.push_back(PATH_SEPARATOR);
 
                // Now check for leading slash, or leading Unix home dir symbol, or occurrence of a drive letter
@@ -171,7 +172,7 @@ bool CSimulation::bReadIniFile(void)
 
          case 3:
             // Email address, only useful if running under Linux/Unix
-            if (! strRH.empty())
+            if (!strRH.empty())
             {
                // Something was entered, do rudimentary check for valid email address
                if (strRH.find('@') == string::npos)
@@ -183,10 +184,11 @@ bool CSimulation::bReadIniFile(void)
          }
 
          // Did an error occur?
-         if (! strErr.empty())
+         if (!strErr.empty())
          {
             // Error in input to initialisation file
-            cerr << ERR << "reading " << strErr << " in " << strFilePathName << endl << "'" << strRec << "'" << endl;
+            cerr << ERR << "reading " << strErr << " in " << strFilePathName << endl
+                 << "'" << strRec << "'" << endl;
             InStream.close();
 
             return false;
@@ -197,7 +199,6 @@ bool CSimulation::bReadIniFile(void)
    InStream.close();
    return true;
 }
-
 
 /*==============================================================================================================================
 
@@ -213,7 +214,7 @@ bool CSimulation::bReadRunDataFile(void)
    InStream.open(m_strDataPathName.c_str(), ios::in);
 
    // Did it open OK?
-   if (! InStream.is_open())
+   if (!InStream.is_open())
    {
       // Error: cannot open run details file for input
       cerr << ERR << "cannot open " << m_strDataPathName << " for input" << endl;
@@ -221,9 +222,9 @@ bool CSimulation::bReadRunDataFile(void)
    }
 
    int
-      i = 0,
-      nMult = 0;
-      size_t nPos;
+       i = 0,
+       nMult = 0;
+   size_t nPos;
    string strRec, strErr;
 
    while (getline(InStream, strRec))
@@ -232,7 +233,7 @@ bool CSimulation::bReadRunDataFile(void)
       strRec = strTrim(&strRec);
 
       // If it is a blank line or a comment then ignore it
-      if ((! strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
+      if ((!strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
       {
          // It isn't so increment counter
          i++;
@@ -242,12 +243,13 @@ bool CSimulation::bReadRunDataFile(void)
          if (nPos == string::npos)
          {
             // Error: badly formatted line (no colon)
-            cerr << ERR << "badly formatted line (no ':') in " << m_strDataPathName << endl << strRec << endl;
+            cerr << ERR << "badly formatted line (no ':') in " << m_strDataPathName << endl
+                 << strRec << endl;
             return false;
          }
 
          // Strip off leading portion (the bit up to and including the colon)
-         string strRH = strRec.substr(nPos+1);
+         string strRH = strRec.substr(nPos + 1);
 
          // Remove leading whitespace after the colon
          strRH = strTrimLeft(&strRH);
@@ -280,7 +282,8 @@ bool CSimulation::bReadRunDataFile(void)
          // For Windows, make sure has backslashes, not Unix-style slashes
          strRH = pstrChangeToBackslash(&strRH);
 #endif
-         bool bFirst = true;
+         bool 
+            bFirst = true;
          int
             nRet = 0,
             nHour = 0,
@@ -316,7 +319,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 2:
             // Content of log file, 1 = least detail, 3 = most detail
-            if (! bIsStringValidInt(strRH))
+            if (!bIsStringValidInt(strRH))
             {
                strErr = "invalid integer for log file detail level '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -341,14 +344,14 @@ bool CSimulation::bReadRunDataFile(void)
             }
 
             // OK, first sort out the time
-            if (! bParseTime(&VstrTmp[0], nHour, nMin, nSec))
+            if (!bParseTime(&VstrTmp[0], nHour, nMin, nSec))
             {
                strErr = "could not understand simulation start time in '" + m_strDataPathName + "'";
                break;
             }
 
             // Next sort out the date
-            if (! bParseDate(&VstrTmp[1], nDay, nMonth, nYear))
+            if (!bParseDate(&VstrTmp[1], nDay, nMonth, nYear))
             {
                strErr = "could not understand simulation start date in '" + m_strDataPathName + "'";
                break;
@@ -384,7 +387,7 @@ bool CSimulation::bReadRunDataFile(void)
             }
 
             // Cut off rh bit of string
-            strRH = strRH.substr(0, nPos+1);
+            strRH = strRH.substr(0, nPos + 1);
 
             // Remove trailing spaces
             strRH = strTrimRight(&strRH);
@@ -416,19 +419,19 @@ bool CSimulation::bReadRunDataFile(void)
             }
 
             // cut off rh bit of string
-            strRH = strRH.substr(0, nPos+1);
+            strRH = strRH.substr(0, nPos + 1);
 
             // remove trailing spaces
             strRH = strTrimRight(&strRH);
 
             // Check that this is a valid double
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for timestep '" + strRH + "' in " + m_strDataPathName;
                break;
             }
 
-            m_dTimeStep = strtod(strRH.c_str(), NULL) * dMult;         // in hours
+            m_dTimeStep = strtod(strRH.c_str(), NULL) * dMult; // in hours
 
             if (m_dTimeStep <= 0)
                strErr = "timestep of simulation must be > 0";
@@ -459,7 +462,7 @@ bool CSimulation::bReadRunDataFile(void)
             }
 
             // cut off rh bit of string
-            strRH = strRH.substr(0, nPos+1);
+            strRH = strRH.substr(0, nPos + 1);
 
             // remove trailing spaces
             strRH = strTrimRight(&strRH);
@@ -476,21 +479,21 @@ bool CSimulation::bReadRunDataFile(void)
                do
                {
                   // Put the number into the array
-                  if (m_nUSave > static_cast<int>(SAVEMAX)-1)
+                  if (m_nUSave > static_cast<int>(SAVEMAX) - 1)
                   {
                      strErr = "too many save intervals";
                      break;
                   }
-                  m_dUSaveTime[m_nUSave++] = strtod(strRH.substr(0, nPos).c_str(), NULL) * dMult;        // convert to hours
+                  m_dUSaveTime[m_nUSave++] = strtod(strRH.substr(0, nPos).c_str(), NULL) * dMult; // convert to hours
 
                   // Trim off the number and remove leading whitespace
-                  strRH = strRH.substr(nPos, strRH.size()-nPos);
+                  strRH = strRH.substr(nPos, strRH.size() - nPos);
                   strRH = strTrimLeft(&strRH);
 
                   // Now look for another space
                   nPos = strRH.find(SPACE);
                }
-//               while (nPos != string::npos);
+               //               while (nPos != string::npos);
                while (strRH.size() > 1);
 
                // Check that we have at least 2 numbers
@@ -513,7 +516,7 @@ bool CSimulation::bReadRunDataFile(void)
             {
                // There isn't a space, so we have only one number
                m_bSaveRegular = true;
-               m_dRSaveInterval = strtod(strRH.c_str(), NULL) * nMult;                   // convert to hours
+               m_dRSaveInterval = strtod(strRH.c_str(), NULL) * nMult; // convert to hours
                if (m_dRSaveTime <= m_dTimeStep)
                   strErr = "save interval cannot be less than timestep";
                else
@@ -541,7 +544,7 @@ bool CSimulation::bReadRunDataFile(void)
                do
                {
                   // Trim off the part before the first space then remove leading whitespace
-                  strRH = strRH.substr(nPos, strRH.size()-nPos);
+                  strRH = strRH.substr(nPos, strRH.size() - nPos);
                   strRH = strTrimLeft(&strRH);
 
                   // Put the number into the array
@@ -549,14 +552,13 @@ bool CSimulation::bReadRunDataFile(void)
 
                   // Now look for another space
                   nPos = strRH.find(SPACE);
-               }
-               while ((n < NRNG) && (nPos != string::npos));
+               } while ((n < NRNG) && (nPos != string::npos));
             }
             else
             {
                // Only one seed specified, so make all seeds the same
                for (int n = 1; n < NRNG; n++)
-                  m_ulRandSeed[n] = m_ulRandSeed[n-1];
+                  m_ulRandSeed[n] = m_ulRandSeed[n - 1];
             }
             break;
 
@@ -573,58 +575,58 @@ bool CSimulation::bReadRunDataFile(void)
                if (strRH.find(RASTER_ALL_OUTPUT_CODE) != string::npos)
                {
                   // Set switches for all output
-                  m_bRasterGISSaveAll                    =
-                  m_bSedimentTopSurfSave                 =
-                  m_bTopSurfSave                         =
-                  m_bSeaDepthSave                        =
-                  m_bWaveHeightSave                      =
-                  m_bWaveAngleSave                       =
-                  m_bPotentialPlatformErosionSave        =
-                  m_bActualPlatformErosionSave           =
-                  m_bTotalPotentialPlatformErosionSave   =
-                  m_bTotalActualPlatformErosionSave      =
-                  m_bPotentialBeachErosionSave           =
-                  m_bActualBeachErosionSave              =
-                  m_bTotalPotentialBeachErosionSave      =
-                  m_bTotalActualBeachErosionSave         =
-                  m_bBeachDepositionSave                 =
-                  m_bTotalBeachDepositionSave            =
-                  m_bLandformSave                        =
-                  m_bLocalSlopeSave                      =
-                  m_bAvgSeaDepthSave                     =
-                  m_bAvgWaveHeightSave                   =
-                  m_bAvgWaveAngleSave                    =
-                  m_bBeachProtectionSave                 =
-                  m_bBasementElevSave                    =
-                  m_bSuspSedSave                         =
-                  m_bAvgSuspSedSave                      =
-                  m_bFineUnconsSedSave                   =
-                  m_bSandUnconsSedSave                   =
-                  m_bCoarseUnconsSedSave                 =
-                  m_bFineConsSedSave                     =
-                  m_bSandConsSedSave                     =
-                  m_bCoarseConsSedSave                   =
-                  m_bRasterCoastlineSave                 =
-                  m_bRasterNormalSave                    =
-                  m_bDistWeightSave                      =
-                  m_bActiveZoneSave                      =
-                  m_bCliffCollapseSave                   =
-                  m_bTotCliffCollapseSave                =
-                  m_bCliffCollapseDepositionSave         =
-                  m_bTotCliffCollapseDepositionSave      =
-                  m_bRasterPolygonSave                   =
-                  m_bPotentialPlatformErosionMaskSave    =
-                  m_bSeaMaskSave                         =
-                  m_bBeachMaskSave                       =
-                  m_bInterventionClassSave               =
-                  m_bInterventionHeightSave              =
-                  m_bShadowZoneCodesSave                 =
-                  m_bDeepWaterWaveAngleSave              =
-                  m_bDeepWaterWaveHeightSave             =
-                  m_bDeepWaterWavePeriodSave             =
-                  m_bPolygonUnconsSedUpOrDownDrift       =
-                  m_bPolygonUnconssedGainOrLoss          =
-                  m_bSedimentInputEventSave              = true;
+                  m_bRasterGISSaveAll =
+                  m_bSedimentTopSurfSave =
+                  m_bTopSurfSave =
+                  m_bSeaDepthSave =
+                  m_bWaveHeightSave =
+                  m_bWaveAngleSave =
+                  m_bPotentialPlatformErosionSave =
+                  m_bActualPlatformErosionSave =
+                  m_bTotalPotentialPlatformErosionSave =
+                  m_bTotalActualPlatformErosionSave =
+                  m_bPotentialBeachErosionSave =
+                  m_bActualBeachErosionSave =
+                  m_bTotalPotentialBeachErosionSave =
+                  m_bTotalActualBeachErosionSave =
+                  m_bBeachDepositionSave =
+                  m_bTotalBeachDepositionSave =
+                  m_bLandformSave =
+                  m_bLocalSlopeSave =
+                  m_bAvgSeaDepthSave =
+                  m_bAvgWaveHeightSave =
+                  m_bAvgWaveAngleSave =
+                  m_bBeachProtectionSave =
+                  m_bBasementElevSave =
+                  m_bSuspSedSave =
+                  m_bAvgSuspSedSave =
+                  m_bFineUnconsSedSave =
+                  m_bSandUnconsSedSave =
+                  m_bCoarseUnconsSedSave =
+                  m_bFineConsSedSave =
+                  m_bSandConsSedSave =
+                  m_bCoarseConsSedSave =
+                  m_bRasterCoastlineSave =
+                  m_bRasterNormalSave =
+                  m_bDistWeightSave =
+                  m_bActiveZoneSave =
+                  m_bCliffCollapseSave =
+                  m_bTotCliffCollapseSave =
+                  m_bCliffCollapseDepositionSave =
+                  m_bTotCliffCollapseDepositionSave =
+                  m_bRasterPolygonSave =
+                  m_bPotentialPlatformErosionMaskSave =
+                  m_bSeaMaskSave =
+                  m_bBeachMaskSave =
+                  m_bInterventionClassSave =
+                  m_bInterventionHeightSave =
+                  m_bShadowZoneCodesSave =
+                  m_bDeepWaterWaveAngleSave =
+                  m_bDeepWaterWaveHeightSave =
+                  m_bDeepWaterWavePeriodSave =
+                  m_bPolygonUnconsSedUpOrDownDrift =
+                  m_bPolygonUnconssedGainOrLoss =
+                  m_bSedimentInputEventSave = true;
                }
                else
                {
@@ -936,7 +938,7 @@ bool CSimulation::bReadRunDataFile(void)
                   }
 
                   // Check to see if all codes have been removed
-                  if (! strRH.empty())
+                  if (!strRH.empty())
                      strErr = "unknown code '" + strRH + "' in list of raster GIS output files";
                }
             }
@@ -967,7 +969,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 12:
             // Elevations for raster slice output, if desired
-            if (! strRH.empty())
+            if (!strRH.empty())
             {
                m_bSliceSave = true;
 
@@ -983,13 +985,12 @@ bool CSimulation::bReadRunDataFile(void)
                      m_VdSliceElev.push_back(strtod(strTmp.c_str(), NULL));
 
                      // Get the RH bit
-                     strRH = strRH.substr(nPos, strRH.size()-nPos);
+                     strRH = strRH.substr(nPos, strRH.size() - nPos);
                      strRH = strTrimLeft(&strRH);
 
                      // Now look for another space
                      nPos = strRH.find(SPACE);
-                  }
-                  while (nPos != string::npos);
+                  } while (nPos != string::npos);
                }
                // Read either the single number, or the left-over number
                m_VdSliceElev.push_back(strtod(strTmp.c_str(), NULL));
@@ -1007,22 +1008,24 @@ bool CSimulation::bReadRunDataFile(void)
                // First look for "all"
                if (strRH.find(VECTOR_ALL_OUTPUT_CODE) != string::npos)
                {
-                  m_bVectorGISSaveAll                 =
-                  m_bCoastSave                        =
-                  m_bWaveAngleAndHeightSave           =
-                  m_bNormalsSave                      =
-                  m_bInvalidNormalsSave               =
-                  m_bAvgWaveAngleAndHeightSave        =
-                  m_bWaveEnergySinceCollapseSave      =
-                  m_bMeanWaveEnergySave               =
-                  m_bBreakingWaveHeightSave           =
-                  m_bCoastCurvatureSave               =
-                  m_bPolygonNodeSave                  =
-                  m_bPolygonBoundarySave              =
-                  m_bCliffNotchSave                   =
-                  m_bShadowBoundarySave               =
-                  m_bShadowDowndriftBoundarySave      =
-                  m_bDeepWaterWaveAngleAndHeightSave  = true;
+                  m_bVectorGISSaveAll =
+                  m_bCoastSave =
+                  m_bWaveAngleAndHeightSave =
+                  m_bNormalsSave =
+                  m_bInvalidNormalsSave =
+                  m_bAvgWaveAngleAndHeightSave =
+                  m_bWaveEnergySinceCollapseSave =
+                  m_bMeanWaveEnergySave =
+                  m_bBreakingWaveHeightSave =
+                  m_bCoastCurvatureSave =
+                  m_bPolygonNodeSave =
+                  m_bPolygonBoundarySave =
+                  m_bCliffNotchSave =
+                  m_bShadowBoundarySave =
+                  m_bShadowDowndriftBoundarySave =
+                  m_bDeepWaterWaveAngleAndHeightSave =
+                  m_bWaveSetupSave =
+                  m_bStormSurgeSave = true;
                }
                else
                {
@@ -1117,8 +1120,20 @@ bool CSimulation::bReadRunDataFile(void)
                      strRH = strRemoveSubstr(&strRH, &VECTOR_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_CODE);
                   }
 
+                  if (strRH.find(VECTOR_WAVE_SETUP_CODE) != string::npos)
+                  {
+                     m_bWaveSetupSave = true;
+                     strRH = strRemoveSubstr(&strRH, &VECTOR_WAVE_SETUP_CODE);
+                  }
+
+                  if (strRH.find(VECTOR_STORM_SURGE_CODE) != string::npos)
+                  {
+                     m_bStormSurgeSave = true;
+                     strRH = strRemoveSubstr(&strRH, &VECTOR_STORM_SURGE_CODE);
+                  }
+
                   // Check to see if all codes have been removed
-                  if (! strRH.empty())
+                  if (!strRH.empty())
                      strErr = "unknown code '" + strRH + "' in list of vector GIS output files";
                }
             }
@@ -1134,23 +1149,23 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 15:
             // Time series files to output
-            if (! strRH.empty())
+            if (!strRH.empty())
             {
                strRH = strToLower(&strRH);
 
                // First check for "all"
                if (strRH.find(RASTER_ALL_OUTPUT_CODE) != string::npos)
                {
-                  m_bSeaAreaTSSave                  =
-                  m_bStillWaterLevelTSSave          =
-                  m_bActualPlatformErosionTSSave    =
-                  m_bCliffCollapseErosionTSSave     =
-                  m_bCliffCollapseDepositionTSSave  =
-                  m_bCliffCollapseNetTSSave         =
-                  m_bBeachErosionTSSave             =
-                  m_bBeachDepositionTSSave          =
-                  m_bBeachSedimentChangeNetTSSave   =
-                  m_bSuspSedTSSave                  = true;
+                  m_bSeaAreaTSSave =
+                  m_bStillWaterLevelTSSave =
+                  m_bActualPlatformErosionTSSave =
+                  m_bCliffCollapseErosionTSSave =
+                  m_bCliffCollapseDepositionTSSave =
+                  m_bCliffCollapseNetTSSave =
+                  m_bBeachErosionTSSave =
+                  m_bBeachDepositionTSSave =
+                  m_bBeachSedimentChangeNetTSSave =
+                  m_bSuspSedTSSave = true;
                }
                else
                {
@@ -1215,7 +1230,7 @@ bool CSimulation::bReadRunDataFile(void)
                   }
 
                   // Check to see if all codes have been removed
-                  if (! strRH.empty())
+                  if (!strRH.empty())
                      strErr = "unknown code '" + strRH + "' in list of time series output files";
                }
             }
@@ -1223,7 +1238,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 16:
             // Vector coastline smoothing algorithm: 0 = none, 1 = running mean, 2 = Savitsky-Golay
-            if (! bIsStringValidInt(strRH))
+            if (!bIsStringValidInt(strRH))
             {
                strErr = "invalid integer for coastline smoothing algorithm '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1238,7 +1253,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 17:
             // Size of coastline smoothing window: must be odd
-            if (! bIsStringValidInt(strRH))
+            if (!bIsStringValidInt(strRH))
             {
                strErr = "invalid integer for coastline smoothing window '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1253,7 +1268,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 18:
             // Order of coastline profile smoothing polynomial for Savitsky-Golay: usually 2 or 4, max is 6
-            if (! bIsStringValidInt(strRH))
+            if (!bIsStringValidInt(strRH))
             {
                strErr = "invalid integer for Savitsky-Golay polynomial for coastline smoothing '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1270,19 +1285,36 @@ bool CSimulation::bReadRunDataFile(void)
             // Grid edge(s) to omit when searching for coastline [NSWE]
             strRH = strToLower(&strRH);
 
+            bFound = false;
             if (strRH.find("n") != string::npos)
-               m_bOmitSearchNorthEdge = true;
+            {
+               m_bOmitSearchNorthEdge =
+               bFound = true;
+            }
             if (strRH.find("s") != string::npos)
-               m_bOmitSearchSouthEdge = true;
+            {
+               m_bOmitSearchSouthEdge =
+               bFound = true;
+            }
             if (strRH.find("w") != string::npos)
-               m_bOmitSearchWestEdge = true;
+            {
+               m_bOmitSearchWestEdge =
+               bFound = true;
+            }
             if (strRH.find("e") != string::npos)
-               m_bOmitSearchEastEdge = true;
+            {
+               m_bOmitSearchEastEdge =
+               bFound = true;
+            }
+            
+            if (! bFound)
+               strErr = "at least one edge must be omitted from coastline search";
+            
             break;
 
          case 20:
             // Profile slope running-mean smoothing window size: must be odd
-            if (! bIsStringValidInt(strRH))
+            if (!bIsStringValidInt(strRH))
             {
                strErr = "invalid integer for size of coastline smoothing window '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1297,7 +1329,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 21:
             // Max local slope (m/m), first check that this is a valid double
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for max local slope '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1311,7 +1343,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 22:
             // Maximum elevation of beach above SWL, first check that this is a valid double
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for maximum elevation of beach above SWL '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1323,11 +1355,10 @@ bool CSimulation::bReadRunDataFile(void)
                strErr = "maximum elevation of beach above SWL must be >= 0";
             break;
 
-
          // ------------------------------------------------- Raster GIS layers ------------------------------------------------
          case 23:
             // Number of sediment layers
-            if (! bIsStringValidInt(strRH))
+            if (!bIsStringValidInt(strRH))
             {
                strErr = "invalid integer for number of sediment layers '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1379,7 +1410,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 24:
             // Basement DEM file (can be blank)
-            if (! strRH.empty())
+            if (!strRH.empty())
             {
 #ifdef _WIN32
                // For Windows, make sure has backslashes, not Unix-style slashes
@@ -1404,11 +1435,11 @@ bool CSimulation::bReadRunDataFile(void)
             {
                for (int j = 1; j <= 6; j++)
                {
-                  if (! bFirst)
+                  if (!bFirst)
                   {
                      do
                      {
-                        if (! (getline(InStream, strRec)))
+                        if (!(getline(InStream, strRec)))
                         {
                            cerr << ERR << "premature end of file in " << m_strDataPathName << endl;
                            return false;
@@ -1425,12 +1456,13 @@ bool CSimulation::bReadRunDataFile(void)
                      if (nPos == string::npos)
                      {
                         // Error: badly formatted line (no colon)
-                        cerr << ERR << "badly formatted line (no ':') in " << m_strDataPathName << endl << strRec << endl;
+                        cerr << ERR << "badly formatted line (no ':') in " << m_strDataPathName << endl
+                             << strRec << endl;
                         return false;
                      }
 
                      // Strip off leading portion (the bit up to and including the colon)
-                     strRH = strRec.substr(nPos+1);
+                     strRH = strRec.substr(nPos + 1);
 
                      // Remove leading whitespace after the colon
                      strRH = strTrimLeft(&strRH);
@@ -1459,7 +1491,7 @@ bool CSimulation::bReadRunDataFile(void)
                   {
                   case 1:
                      // Initial fine unconsolidated sediment depth GIS file (can be blank)
-                     if (! strRH.empty())
+                     if (!strRH.empty())
                      {
                         // Set switch
                         m_bHaveFineSediment = true;
@@ -1485,7 +1517,7 @@ bool CSimulation::bReadRunDataFile(void)
 
                   case 2:
                      // Initial sand unconsolidated sediment depth GIS file (can be blank)
-                     if (! strRH.empty())
+                     if (!strRH.empty())
                      {
                         // Set switch
                         m_bHaveSandSediment = true;
@@ -1510,7 +1542,7 @@ bool CSimulation::bReadRunDataFile(void)
 
                   case 3:
                      // Initial coarse unconsolidated sediment depth GIS file (can be blank)
-                     if (! strRH.empty())
+                     if (!strRH.empty())
                      {
                         // Set switch
                         m_bHaveCoarseSediment = true;
@@ -1535,7 +1567,7 @@ bool CSimulation::bReadRunDataFile(void)
 
                   case 4:
                      // Initial fine consolidated sediment depth GIS file (can be blank)
-                     if (! strRH.empty())
+                     if (!strRH.empty())
                      {
                         // Set switch
                         m_bHaveFineSediment = true;
@@ -1560,7 +1592,7 @@ bool CSimulation::bReadRunDataFile(void)
 
                   case 5:
                      // Initial sand consolidated sediment depth GIS file (can be blank)
-                     if (! strRH.empty())
+                     if (!strRH.empty())
                      {
                         // Set switch
                         m_bHaveSandSediment = true;
@@ -1585,7 +1617,7 @@ bool CSimulation::bReadRunDataFile(void)
 
                   case 6:
                      // Initial coarse consolidated sediment depth GIS file (can be blank)
-                     if (! strRH.empty())
+                     if (!strRH.empty())
                      {
                         // Set switch
                         m_bHaveCoarseSediment = true;
@@ -1610,10 +1642,11 @@ bool CSimulation::bReadRunDataFile(void)
                   }
 
                   // Did an error occur?
-                  if (! strErr.empty())
+                  if (!strErr.empty())
                   {
                      // Error in input to run details file
-                     cerr << ERR << "reading " << strErr << " in " << m_strDataPathName << endl << "'" << strRec << "'" << endl;
+                     cerr << ERR << "reading " << strErr << " in " << m_strDataPathName << endl
+                          << "'" << strRec << "'" << endl;
                      InStream.close();
                      return false;
                   }
@@ -1623,7 +1656,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 26:
             // Initial suspended sediment depth GIS file (can be blank)
-            if (! strRH.empty())
+            if (!strRH.empty())
             {
                // Set switch
                m_bHaveFineSediment = true;
@@ -1648,7 +1681,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 27:
             // Initial Landform class GIS file (can be blank)
-            if (! strRH.empty())
+            if (!strRH.empty())
             {
 #ifdef _WIN32
                // For Windows, make sure has backslashes, not Unix-style slashes
@@ -1671,7 +1704,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 28:
             // Initial Intervention class GIS file (can be blank: if so then intervention height file must also be blank)
-            if (! strRH.empty())
+            if (!strRH.empty())
             {
 #ifdef _WIN32
                // For Windows, make sure has backslashes, not Unix-style slashes
@@ -1696,7 +1729,7 @@ bool CSimulation::bReadRunDataFile(void)
             // Initial Intervention height GIS file (can be blank: if so then intervention class file must also be blank)
             if (strRH.empty())
             {
-               if (! m_strInterventionClassFile.empty())
+               if (!m_strInterventionClassFile.empty())
                   strErr = "must specify both intervention class and intervention height files";
                break;
             }
@@ -1708,10 +1741,10 @@ bool CSimulation::bReadRunDataFile(void)
                   break;
                }
 
-               #ifdef _WIN32
+#ifdef _WIN32
                // For Windows, make sure has backslashes, not Unix-style slashes
                strRH = pstrChangeToBackslash(&strRH);
-               #endif
+#endif
 
                // Now check for leading slash, or leading Unix home dir symbol, or occurrence of a drive letter
                if ((strRH[0] == PATH_SEPARATOR) || (strRH[0] == TILDE) || (strRH[1] == COLON))
@@ -1731,7 +1764,7 @@ bool CSimulation::bReadRunDataFile(void)
             // ---------------------------------------------------- Hydrology data ------------------------------------------------
          case 30:
             // Wave propagation model [0 = COVE, 1 = CShore]
-            if (! bIsStringValidInt(strRH))
+            if (!bIsStringValidInt(strRH))
             {
                strErr = "invalid integer for wave propagation model '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1746,7 +1779,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 31:
             // Density of sea water (kg/m3), first check that this is a valid double
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for sea water density '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1760,7 +1793,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 32:
             // Initial still water level (m), first check that this is a valid double TODO make this a per-timestep SWL file
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for initial SWL '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1776,7 +1809,7 @@ bool CSimulation::bReadRunDataFile(void)
             else
             {
                // Check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for final SWL '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -1788,10 +1821,10 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 34:
             // Deep water wave height (m) or a file of point vectors giving deep water wave height (m) and orientation (for units, see below)
-            if (isdigit(strRH.at(0)))        // If this starts with a number then is a single value, otherwise is a filename. Note that filename must not start with number
+            if (isdigit(strRH.at(0))) // If this starts with a number then is a single value, otherwise is a filename. Note that filename must not start with number
             {
                // Just one value of wave height for all deep water cells, first check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for deep water wave height '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -1816,10 +1849,10 @@ bool CSimulation::bReadRunDataFile(void)
                   break;
                }
 
-               #ifdef _WIN32
+#ifdef _WIN32
                // For Windows, make sure has backslashes, not Unix-style slashes
                strRH = pstrChangeToBackslash(&strRH);
-               #endif
+#endif
 
                // Now check for leading slash, or leading Unix home dir symbol, or occurrence of a drive letter
                if ((strRH[0] == PATH_SEPARATOR) || (strRH[0] == TILDE) || (strRH[1] == COLON))
@@ -1847,10 +1880,10 @@ bool CSimulation::bReadRunDataFile(void)
                   break;
                }
 
-               #ifdef _WIN32
+#ifdef _WIN32
                // For Windows, make sure has backslashes, not Unix-style slashes
                strRH = pstrChangeToBackslash(&strRH);
-               #endif
+#endif
 
                // Now check for leading slash, or leading Unix home dir symbol, or occurrence of a drive letter
                if ((strRH[0] == PATH_SEPARATOR) || (strRH[0] == TILDE) || (strRH[1] == COLON))
@@ -1869,10 +1902,10 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 36:
             // Deep water wave orientation in input CRS: this is the oceanographic convention i.e. direction TOWARDS which the waves move (in degrees clockwise from north)
-            if (! m_bHaveWaveStationData)
+            if (!m_bHaveWaveStationData)
             {
                // Only read this if we have just a single value of wave height for all deep water cells. Check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for deep water wave orientation '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -1889,10 +1922,10 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 37:
             // Wave period (sec)
-            if (! m_bHaveWaveStationData)
+            if (!m_bHaveWaveStationData)
             {
                // Only read this if we also have just a single value of wave height for all deep water cells. Check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for wave period '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -1905,30 +1938,30 @@ bool CSimulation::bReadRunDataFile(void)
             }
             break;
 
-          case 38:
-             // Tide data file (can be blank). This is the change (m) from still water level for each timestep
-             if (! strRH.empty())
-             {
- #ifdef _WIN32
-                // For Windows, make sure has backslashes, not Unix-style slashes
-                strRH = pstrChangeToBackslash(&strRH);
- #endif
-                // Now check for leading slash, or leading Unix home dir symbol, or occurrence of a drive letter
-                if ((strRH[0] == PATH_SEPARATOR) || (strRH[0] == TILDE) || (strRH[1] == COLON))
-                   // It has an absolute path, so use it 'as is'
-                   m_strTideDataFile = strRH;
-                else
-                {
-                   // It has a relative path, so prepend the CoastalME dir
-                   m_strTideDataFile = m_strCMEDir;
-                   m_strTideDataFile.append(strRH);
-                }
-             }
-             break;
+         case 38:
+            // Tide data file (can be blank). This is the change (m) from still water level for each timestep
+            if (!strRH.empty())
+            {
+#ifdef _WIN32
+               // For Windows, make sure has backslashes, not Unix-style slashes
+               strRH = pstrChangeToBackslash(&strRH);
+#endif
+               // Now check for leading slash, or leading Unix home dir symbol, or occurrence of a drive letter
+               if ((strRH[0] == PATH_SEPARATOR) || (strRH[0] == TILDE) || (strRH[1] == COLON))
+                  // It has an absolute path, so use it 'as is'
+                  m_strTideDataFile = strRH;
+               else
+               {
+                  // It has a relative path, so prepend the CoastalME dir
+                  m_strTideDataFile = m_strCMEDir;
+                  m_strTideDataFile.append(strRH);
+               }
+            }
+            break;
 
          case 39:
             // Breaking wave height-to-depth ratio, check that this is a valid double
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for breaking wave height to depth ratio '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -1955,7 +1988,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for R (resistance to erosion) '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -1977,12 +2010,11 @@ bool CSimulation::bReadRunDataFile(void)
                m_bDoBeachSedimentTransport = true;
             break;
 
-
          case 43:
             // Beach sediment transport at grid edges [0 = closed, 1 = open, 2 = re-circulate]
             if (m_bDoCoastPlatformErosion)
             {
-               if (! bIsStringValidInt(strRH))
+               if (!bIsStringValidInt(strRH))
                {
                   strErr = "invalid integer for beach sediment transport at grid edges '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -1999,7 +2031,7 @@ bool CSimulation::bReadRunDataFile(void)
             // Beach erosion/deposition equation [0 = CERC, 1 = Kamphuis]
             if (m_bDoCoastPlatformErosion)
             {
-               if (! bIsStringValidInt(strRH))
+               if (!bIsStringValidInt(strRH))
                {
                   strErr = "invalid integer for beach erosion/deposition equation '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2017,7 +2049,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for median particle size of fine sediment '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2038,7 +2070,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for median particle size of sand sediment '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2059,7 +2091,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for median particle size of coarse sediment '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2080,7 +2112,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for density of beach sediment '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2098,7 +2130,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for porosity of beach sediment '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2116,7 +2148,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for erodibility of fine-sized sediment '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2134,7 +2166,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for erodibility of sand-sized sediment '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2152,7 +2184,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for erodibility of coarse-sized sediment '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2176,7 +2208,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for transport parameter KLS of CERC equation '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2194,7 +2226,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for transport parameter of Kamphuis equation '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2212,7 +2244,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCoastPlatformErosion)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for Dean profile start height above SWL '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2227,7 +2259,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 56:
             // Sediment input location (point or line shapefile)
-            if (! strRH.empty())
+            if (!strRH.empty())
             {
 #ifdef _WIN32
                // For Windows, make sure has backslashes, not Unix-style slashes
@@ -2296,7 +2328,6 @@ bool CSimulation::bReadRunDataFile(void)
             }
             break;
 
-
          // ------------------------------------------------ Cliff collapse data -----------------------------------------------
          case 59:
             // Simulate cliff collapse?
@@ -2312,7 +2343,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCliffCollapse)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for cliff resistance to erosion '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2330,7 +2361,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCliffCollapse)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for cliff notch overhang at collapse '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2358,7 +2389,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCliffCollapse)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for scale parameter A for cliff deposition '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2376,7 +2407,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCliffCollapse)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for width of cliff collapse talus '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2394,7 +2425,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCliffCollapse)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for planview length of cliff deposition '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2412,7 +2443,7 @@ bool CSimulation::bReadRunDataFile(void)
             if (m_bDoCliffCollapse)
             {
                // First check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for height of cliff collapse (as a fraction of cliff elevation) '" + strRH + "' in " + m_strDataPathName;
                   break;
@@ -2428,7 +2459,7 @@ bool CSimulation::bReadRunDataFile(void)
          // ------------------------------------------------------ Other data --------------------------------------------------
          case 67:
             // Gravitational acceleration (m2/s), check that this is a valid double
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for gravitational acceleration '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -2445,14 +2476,14 @@ bool CSimulation::bReadRunDataFile(void)
             m_dCoastNormalAvgSpacing = strtod(strRH.c_str(), NULL);
 
             if (m_dCoastNormalAvgSpacing == 0)
-               m_nCoastNormalAvgSpacing = MIN_PROFILE_SPACING;    // In cells, we will set m_dCoastNormalAvgSpacing later when we know m_dCellSide
+               m_nCoastNormalAvgSpacing = MIN_PROFILE_SPACING; // In cells, we will set m_dCoastNormalAvgSpacing later when we know m_dCellSide
             else if (m_dCoastNormalAvgSpacing < 0)
                strErr = "spacing of coastline normals must be > 0";
             break;
 
          case 69:
             // Random factor for spacing of normals  [0 to 1, 0 = deterministic], check that this is a valid double
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for random factor for spacing of coastline normals '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -2468,7 +2499,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 70:
             // Length of coastline normals (m), check that this is a valid double
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for length of coastline normals '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -2482,7 +2513,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 71:
             // Maximum number of 'cape' normals
-            if (! bIsStringValidInt(strRH))
+            if (!bIsStringValidInt(strRH))
             {
                strErr = "invalid integer for maximum number of 'cape' normals '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -2497,7 +2528,7 @@ bool CSimulation::bReadRunDataFile(void)
 
          case 72:
             // Start depth for wave calcs (ratio to deep water wave height), check that this is a valid double
-            if (! bIsStringValidDouble(strRH))
+            if (!bIsStringValidDouble(strRH))
             {
                strErr = "invalid floating point number for start depth for wave calcs '" + strRH + "' in " + m_strDataPathName;
                break;
@@ -2531,7 +2562,7 @@ bool CSimulation::bReadRunDataFile(void)
                {
                   VstrTmp[j] = strTrim(&VstrTmp[j]);
 
-                  if (! bIsStringValidInt(VstrTmp[j]))
+                  if (!bIsStringValidInt(VstrTmp[j]))
                   {
                      strErr = "invalid integer for profile to be saved '" + VstrTmp[j] + "' in " + m_strDataPathName;
                      break;
@@ -2551,7 +2582,7 @@ bool CSimulation::bReadRunDataFile(void)
             break;
 
          case 75:
-           // Timesteps to save profile for output
+            // Timesteps to save profile for output
             if (m_bOutputProfileData)
             {
                VstrTmp = VstrSplit(&strRH, SPACE);
@@ -2594,15 +2625,18 @@ bool CSimulation::bReadRunDataFile(void)
 
             m_bErodeShorePlatformAlternateDirection = false;
             if (strRH.find("y") != string::npos)
-            m_bErodeShorePlatformAlternateDirection = true;
-               break;
+               m_bErodeShorePlatformAlternateDirection = true;
+            break;
          }
 
          // Did an error occur?
-         if (! strErr.empty())
+         if (!strErr.empty())
          {
             // Error in input to run details file
-            cerr << endl << ERR << strErr << ".\nPlease edit " << m_strDataPathName << " and change this line:" << endl << "'" << strRec << "'" << endl << endl;
+            cerr << endl
+                 << ERR << strErr << ".\nPlease edit " << m_strDataPathName << " and change this line:" << endl
+                 << "'" << strRec << "'" << endl
+                 << endl;
             InStream.close();
             return false;
          }
@@ -2614,12 +2648,12 @@ bool CSimulation::bReadRunDataFile(void)
 
    // Finally, need to check that we have at least one raster file, so that we know the grid size and units (and preferably also the projection)
    bool bNoRasterFiles = true;
-   if ((! m_strInitialBasementDEMFile.empty()) || (! m_strInitialSuspSedimentFile.empty()) || (! m_strInitialLandformFile.empty()) || (! m_strInterventionHeightFile.empty()))
+   if ((!m_strInitialBasementDEMFile.empty()) || (!m_strInitialSuspSedimentFile.empty()) || (!m_strInitialLandformFile.empty()) || (!m_strInterventionHeightFile.empty()))
       bNoRasterFiles = false;
 
    for (int j = 0; j < m_nLayers; j++)
    {
-      if ((! m_VstrInitialFineUnconsSedimentFile[j].empty()) || (! m_VstrInitialSandUnconsSedimentFile[j].empty()) || (! m_VstrInitialCoarseUnconsSedimentFile[j].empty()) || (! m_VstrInitialFineConsSedimentFile[j].empty()) || (! m_VstrInitialSandConsSedimentFile[j].empty()) || (! m_VstrInitialCoarseConsSedimentFile[j].empty()))
+      if ((!m_VstrInitialFineUnconsSedimentFile[j].empty()) || (!m_VstrInitialSandUnconsSedimentFile[j].empty()) || (!m_VstrInitialCoarseUnconsSedimentFile[j].empty()) || (!m_VstrInitialFineConsSedimentFile[j].empty()) || (!m_VstrInitialSandConsSedimentFile[j].empty()) || (!m_VstrInitialCoarseConsSedimentFile[j].empty()))
          bNoRasterFiles = false;
    }
 
@@ -2632,7 +2666,6 @@ bool CSimulation::bReadRunDataFile(void)
 
    return true;
 }
-
 
 /*==============================================================================================================================
 
@@ -2648,7 +2681,7 @@ int CSimulation::nReadTideDataFile()
    InStream.open(m_strTideDataFile.c_str(), ios::in);
 
    // Did it open OK?
-   if (! InStream.is_open())
+   if (!InStream.is_open())
    {
       // Error: cannot open tide data file for input
       cerr << ERR << "cannot open " << m_strTideDataFile << " for input" << endl;
@@ -2669,7 +2702,7 @@ int CSimulation::nReadTideDataFile()
          continue;
 
       // Check that this is a valid double
-      if (! bIsStringValidDouble(strRec))
+      if (!bIsStringValidDouble(strRec))
       {
          cerr << ERR << "invalid floating point number for tide data '" << strRec << "' in " << m_strTideDataFile << endl;
          return RTN_ERR_TIDEDATAFILE;
@@ -2684,7 +2717,6 @@ int CSimulation::nReadTideDataFile()
 
    return RTN_OK;
 }
-
 
 /*==============================================================================================================================
 
@@ -2705,7 +2737,7 @@ int CSimulation::nReadShapeFunctionFile()
    InStream.open(m_strShapeFunctionFile.c_str(), ios::in);
 
    // Did it open OK?
-   if (! InStream.is_open())
+   if (!InStream.is_open())
    {
       // Error: cannot open shape function file for input
       cerr << ERR << "cannot open " << m_strShapeFunctionFile << " for input" << endl;
@@ -2721,9 +2753,9 @@ int CSimulation::nReadShapeFunctionFile()
 
    // Set up the vectors to hold the input data
    vector<double>
-      VdDepthOverDB,
-      VdErosionPotential,
-      VdErosionPotentialFirstDeriv;
+       VdDepthOverDB,
+       VdErosionPotential,
+       VdErosionPotentialFirstDeriv;
 
    // Now read the rest of the data from the file to get the Erosion Potential Shape function
    while (getline(InStream, strRec))
@@ -2746,7 +2778,7 @@ int CSimulation::nReadShapeFunctionFile()
          strTmp[i] = strTrim(&strTmp[i]);
 
          // Check that this is a valid double
-         if (! bIsStringValidDouble(strTmp[i]))
+         if (!bIsStringValidDouble(strTmp[i]))
          {
             cerr << ERR << "invalid floating point number for Erosion Potential Shape data '" << strTmp[i] << "' in " << m_strShapeFunctionFile << endl;
             return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
@@ -2758,11 +2790,10 @@ int CSimulation::nReadShapeFunctionFile()
       VdErosionPotential.push_back(strtod(strTmp[1].c_str(), NULL));
       VdErosionPotentialFirstDeriv.push_back(strtod(strTmp[2].c_str(), NULL));
    }
-  // Now create the look up table values
+   // Now create the look up table values
    m_VdErosionPotential = VdErosionPotential;
    m_VdDepthOverDB = VdDepthOverDB;
-   m_dDepthOverDBMax = VdDepthOverDB[nRead-1];
-
+   m_dDepthOverDBMax = VdDepthOverDB[nRead - 1];
 
    // Close file
    InStream.close();
@@ -2775,25 +2806,24 @@ int CSimulation::nReadShapeFunctionFile()
    }
 
    // Is the shape funcion well defined? i.e. it must be -ve or 0.0 for all values
-   for (unsigned int j = 0; j < m_VdErosionPotential.size(); j++ )
+   for (unsigned int j = 0; j < m_VdErosionPotential.size(); j++)
    {
-      if (m_VdErosionPotential[j]>0)
+      if (m_VdErosionPotential[j] > 0)
       {
-      cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function cannot be positive" << endl;
-      return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
+         cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function cannot be positive" << endl;
+         return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
       }
    }
 
    // OK, now use this data to create a look-up table to be used for the rest of the simulation
-//   if (! bCreateErosionPotentialLookUp(&VdDepthOverDB, &VdErosionPotential, &VdErosionPotentialFirstDeriv))
-//   {
-//      cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function is unbounded for high values of depth over DB" << endl;
-//      return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
-//   }
-//
+   //   if (! bCreateErosionPotentialLookUp(&VdDepthOverDB, &VdErosionPotential, &VdErosionPotentialFirstDeriv))
+   //   {
+   //      cout << ERR << " in " << m_strShapeFunctionFile << ", erosion potential function is unbounded for high values of depth over DB" << endl;
+   //      return RTN_ERR_SCAPE_SHAPE_FUNCTION_FILE;
+   //   }
+   //
    return RTN_OK;
 }
-
 
 /*==============================================================================================================================
 
@@ -2809,7 +2839,7 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
    InStream.open(m_strDeepWaterWavesTimeSeriesFile.c_str(), ios::in);
 
    // Did it open OK?
-   if (! InStream.is_open())
+   if (!InStream.is_open())
    {
       // Error: cannot open time series file for input
       cerr << ERR << "cannot open " << m_strDeepWaterWavesTimeSeriesFile << " for input" << endl;
@@ -2818,9 +2848,9 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
 
    // Opened OK
    int
-      nExpectedStations = 0,
-      nRead = 0,
-      nTimeStepsRead = 0;
+       nExpectedStations = 0,
+       nRead = 0,
+       nTimeStepsRead = 0;
    string strRec, strErr;
 
    // Read each line, ignoring comment lines
@@ -2830,7 +2860,7 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
       strRec = strTrim(&strRec);
 
       // If it is a blank line or a comment then ignore it
-      if ((! strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
+      if ((!strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
       {
          // It isn't so increment counter
          nRead++;
@@ -2843,19 +2873,21 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
             if (nPos == string::npos)
             {
                // Error: badly formatted line (no colon)
-               cerr << ERR << "badly formatted line (no ':') in " << m_strDeepWaterWavesTimeSeriesFile << endl << "'" << strRec << "'" << endl;
+               cerr << ERR << "badly formatted line (no ':') in " << m_strDeepWaterWavesTimeSeriesFile << endl
+                    << "'" << strRec << "'" << endl;
                return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
             }
 
-            if (nPos == strRec.size()-1)
+            if (nPos == strRec.size() - 1)
             {
                // Error: badly formatted line (colon with nothing following)
-               cerr << ERR << "badly formatted line (nothing following ':') in " << m_strDeepWaterWavesTimeSeriesFile << endl << "'" << strRec << "'" << endl;
+               cerr << ERR << "badly formatted line (nothing following ':') in " << m_strDeepWaterWavesTimeSeriesFile << endl
+                    << "'" << strRec << "'" << endl;
                return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
             }
 
             // Strip off leading portion (the bit up to and including the colon)
-            string strRH = strRec.substr(nPos+1);
+            string strRH = strRec.substr(nPos + 1);
 
             // Remove leading whitespace
             strRH = strTrimLeft(&strRH);
@@ -2863,25 +2895,25 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
             // Look for a trailing comment, if found then terminate string at that point and trim off any trailing whitespace
             nPos = strRH.rfind(QUOTE1);
             if (nPos != string::npos)
-               strRH = strRH.substr(0, nPos+1);
+               strRH = strRH.substr(0, nPos + 1);
 
             nPos = strRH.rfind(QUOTE2);
             if (nPos != string::npos)
-               strRH = strRH.substr(0, nPos+1);
+               strRH = strRH.substr(0, nPos + 1);
 
             // Remove trailing whitespace
             strRH = strTrimRight(&strRH);
 
             int
-               nSec = 0,
-               nMin = 0,
-               nHour = 0,
-               nDay = 0,
-               nMonth = 0,
-               nYear = 0;
+                nSec = 0,
+                nMin = 0,
+                nHour = 0,
+                nDay = 0,
+                nMonth = 0,
+                nYear = 0;
             double
-               dMult,
-               dThisIter;
+                dMult,
+                dThisIter;
             vector<string> VstrTmp;
 
             switch (nRead)
@@ -2898,14 +2930,14 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
                }
 
                // OK, first sort out the time
-               if (! bParseTime(&VstrTmp[0], nHour, nMin, nSec))
+               if (!bParseTime(&VstrTmp[0], nHour, nMin, nSec))
                {
                   strErr = "could not understand start time for data";
                   break;
                }
 
                // Next sort out the date
-               if (! bParseDate(&VstrTmp[1], nDay, nMonth, nYear))
+               if (!bParseDate(&VstrTmp[1], nDay, nMonth, nYear))
                {
                   strErr = "could not understand start date for data";
                   break;
@@ -2913,11 +2945,11 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
 
                // Compare time and date with simulation time and date
                if ((nSec != m_nSimStartSec) ||
-                  (nMin != m_nSimStartMin) ||
-                  (nHour != m_nSimStartHour) ||
-                  (nDay != m_nSimStartDay) ||
-                  (nMonth != m_nSimStartMonth) ||
-                  (nYear != m_nSimStartYear))
+                   (nMin != m_nSimStartMin) ||
+                   (nHour != m_nSimStartHour) ||
+                   (nDay != m_nSimStartDay) ||
+                   (nMonth != m_nSimStartMonth) ||
+                   (nYear != m_nSimStartYear))
                {
                   strErr = "start time and date for wave time series data differs from simulation start time and date,";
                   break;
@@ -2945,19 +2977,19 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
                }
 
                // Cut off rh bit of string
-               strRH = strRH.substr(0, nPos+1);
+               strRH = strRH.substr(0, nPos + 1);
 
                // Remove trailing spaces
                strRH = strTrimRight(&strRH);
 
                // Check that this is a valid double
-               if (! bIsStringValidDouble(strRH))
+               if (!bIsStringValidDouble(strRH))
                {
                   strErr = "invalid floating point number for timestep";
                   break;
                }
 
-               dThisIter = strtod(strRH.c_str(), NULL) * dMult;         // in hours
+               dThisIter = strtod(strRH.c_str(), NULL) * dMult; // in hours
 
                if (dThisIter <= 0)
                   strErr = "timestep must be > 0";
@@ -2969,7 +3001,7 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
 
             case 3:
                // Read the number of stations
-               if (! bIsStringValidInt(strRH))
+               if (!bIsStringValidInt(strRH))
                {
                   strErr = "invalid integer for number of wave stations '" + strRH + "' in " + m_strDeepWaterWavesTimeSeriesFile;
                   break;
@@ -2990,7 +3022,7 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
 
             case 4:
                // Read the expected number of time steps in the file
-               if (! bIsStringValidInt(strRH))
+               if (!bIsStringValidInt(strRH))
                {
                   strErr = "invalid integer for expected number of time steps '" + strRH + "' in " + m_strDeepWaterWaveStationsShapefile;
                   break;
@@ -3015,13 +3047,13 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
 
             // Read in each wave attribute for each time step and station: split the string, and remove whitespace
             vector<string> VstrTmp = VstrSplit(&strRec, COMMA);
-            for (unsigned int i = 0; i < VstrTmp.size(); i++)      // VstrTmp.size() should be 3 x nExpectedStations
+            for (unsigned int i = 0; i < VstrTmp.size(); i++) // VstrTmp.size() should be 3 x nExpectedStations
             {
                // Remove leading and trailing whitespace
                VstrTmp[i] = strTrim(&VstrTmp[i]);
 
                // Check that this is a valid double
-               if (! bIsStringValidDouble(VstrTmp[i]))
+               if (!bIsStringValidDouble(VstrTmp[i]))
                {
                   strErr = "invalid floating point number for deep water wave value '" + VstrTmp[i] + "' in " + m_strDeepWaterWavesTimeSeriesFile;
                   break;
@@ -3032,9 +3064,9 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
             int n = 0;
             for (int i = 0; i < nExpectedStations; i++)
             {
-               m_VdTSDeepWaterWaveStationHeight.push_back(strtod(VstrTmp[n+0].c_str(), NULL));
-               m_VdTSDeepWaterWaveStationAngle.push_back(strtod(VstrTmp[n+1].c_str(), NULL));
-               m_VdTSDeepWaterWaveStationPeriod.push_back(strtod(VstrTmp[n+2].c_str(), NULL));
+               m_VdTSDeepWaterWaveStationHeight.push_back(strtod(VstrTmp[n + 0].c_str(), NULL));
+               m_VdTSDeepWaterWaveStationAngle.push_back(strtod(VstrTmp[n + 1].c_str(), NULL));
+               m_VdTSDeepWaterWaveStationPeriod.push_back(strtod(VstrTmp[n + 2].c_str(), NULL));
 
                // Check some simple wave input stats
                if (m_VdTSDeepWaterWaveStationHeight.back() > m_dMaxUserInputWaveHeight)
@@ -3049,10 +3081,11 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
       }
 
       // Did an error occur?
-      if (! strErr.empty())
+      if (!strErr.empty())
       {
          // Error in input to initialisation file
-         cerr << ERR << strErr << " in deep water wave time series file " << m_strDeepWaterWavesTimeSeriesFile << endl << "'" << strRec << "'" << endl;
+         cerr << ERR << strErr << " in deep water wave time series file " << m_strDeepWaterWavesTimeSeriesFile << endl
+              << "'" << strRec << "'" << endl;
          InStream.close();
 
          return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
@@ -3064,7 +3097,7 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
       // Error: number of timesteps read does not match the number given in the file's header
       cerr << ERR << "in " << m_strDeepWaterWavesTimeSeriesFile << ", data for " << nTimeStepsRead << " timesteps was read, but " << m_nDeepWaterWaveDataNTimeSteps << " timesteps were specified in the file's header" << endl;
 
-      return  RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
+      return RTN_ERR_READING_DEEP_WATER_WAVE_DATA;
    }
 
    // Close file
@@ -3114,7 +3147,6 @@ int CSimulation::nReadWaveStationTimeSeriesFile(int const nWaveStations)
    return RTN_OK;
 }
 
-
 /*==============================================================================================================================
 
  Reads the sediment input events time series data
@@ -3129,7 +3161,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
    InStream.open(m_strSedimentInputEventTimeSeriesFile.c_str(), ios::in);
 
    // Did it open OK?
-   if (! InStream.is_open())
+   if (!InStream.is_open())
    {
       // Error: cannot open time series file for input
       cerr << ERR << "cannot open " << m_strSedimentInputEventTimeSeriesFile << " for input" << endl;
@@ -3147,7 +3179,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
       strRec = strTrim(&strRec);
 
       // If it is a blank line or a comment then ignore it
-      if ((! strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
+      if ((!strRec.empty()) && (strRec[0] != QUOTE1) && (strRec[0] != QUOTE2))
       {
          // It isn't so increment counter
          nRead++;
@@ -3166,7 +3198,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
          }
 
          // First item is the Location ID of the sediment input event (same as the ID in the shapefile)
-         if (! bIsStringValidInt(VstrTmp[0]))
+         if (!bIsStringValidInt(VstrTmp[0]))
          {
             strErr = "invalid integer for Location ID of sediment input event '" + VstrTmp[0] + "' in " + m_strSedimentInputEventTimeSeriesFile;
             break;
@@ -3191,7 +3223,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
          }
 
          // Then the volume (m3) of fine sediment, first check that this is a valid double
-         if (! bIsStringValidDouble(VstrTmp[2]))
+         if (!bIsStringValidDouble(VstrTmp[2]))
          {
             strErr = "invalid floating point number '" + VstrTmp[2] + "' for fine sediment volume for sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
             break;
@@ -3208,7 +3240,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
             m_bHaveFineSediment = true;
 
          // Then the volume (m3) of sand sediment, first check that this is a valid double
-         if (! bIsStringValidDouble(VstrTmp[3]))
+         if (!bIsStringValidDouble(VstrTmp[3]))
          {
             strErr = "invalid floating point number '" + VstrTmp[3] + "' for sand-sized sediment volume for sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
             break;
@@ -3225,7 +3257,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
             m_bHaveSandSediment = true;
 
          // Then the volume (m3) of coarse sediment, first check that this is a valid double
-         if (! bIsStringValidDouble(VstrTmp[4]))
+         if (!bIsStringValidDouble(VstrTmp[4]))
          {
             strErr = "invalid floating point number '" + VstrTmp[4] + "' for coarse sediment volume for sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
             break;
@@ -3243,34 +3275,34 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
 
          // Only read the last two items if we have on-coast sediment block sediment input
          double
-            dLen = 0,
-            dWidth = 0;
+             dLen = 0,
+             dWidth = 0;
          if (m_bSedimentInputAtCoast)
          {
 
             // The coast-normal length (m) of the sediment block, first check that this is a valid double
-            if (! bIsStringValidDouble(VstrTmp[5]))
+            if (!bIsStringValidDouble(VstrTmp[5]))
             {
                strErr = "invalid floating point number '" + VstrTmp[5] + "' for coast-normal length of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
                break;
             }
 
             dLen = stod(strTrim(&VstrTmp[5]));
-            if ((! m_bSedimentInputAtCoast) && (dLen <= 0))
+            if ((!m_bSedimentInputAtCoast) && (dLen <= 0))
             {
                strErr = "coast-normal length L of the sediment block '" + to_string(dLen) + "' must be > 0 in " + m_strSedimentInputEventTimeSeriesFile;
                break;
             }
 
             // Finally the along-coast width (m) of the sediment block, first check that this is a valid double
-            if (! bIsStringValidDouble(VstrTmp[6]))
+            if (!bIsStringValidDouble(VstrTmp[6]))
             {
                strErr = "invalid floating point number '" + VstrTmp[6] + "' for along-coast width of sediment input event in " + m_strSedimentInputEventTimeSeriesFile;
                break;
             }
 
             dWidth = stod(strTrim(&VstrTmp[6]));
-            if ((! m_bSedimentInputAtCoast) && (dWidth <= 0))
+            if ((!m_bSedimentInputAtCoast) && (dWidth <= 0))
             {
                strErr = "along-coast width W (m) of the sediment block '" + to_string(dWidth) + "' must be > 0 in " + m_strSedimentInputEventTimeSeriesFile;
                break;
@@ -3278,7 +3310,7 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
          }
 
          // Create the CSedInputEvent object
-         CSedInputEvent* pEvent = new CSedInputEvent(nID, ulEventTimeStep, dFineSedVol, dSandSedVol, dCoarseSedVol, dLen, dWidth);
+         CSedInputEvent *pEvent = new CSedInputEvent(nID, ulEventTimeStep, dFineSedVol, dSandSedVol, dCoarseSedVol, dLen, dWidth);
 
          // And store it in the m_pVSedInputEvent 2D vector
          m_pVSedInputEvent.push_back(pEvent);
@@ -3286,10 +3318,11 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
    }
 
    // Did an error occur?
-   if (! strErr.empty())
+   if (!strErr.empty())
    {
       // Error in input to initialisation file
-      cerr << ERR << strErr << " in sediment input event file " << m_strSedimentInputEventTimeSeriesFile << endl << "'" << strRec << "'" << endl;
+      cerr << ERR << strErr << " in sediment input event file " << m_strSedimentInputEventTimeSeriesFile << endl
+           << "'" << strRec << "'" << endl;
       InStream.close();
 
       return RTN_ERR_READING_SEDIMENT_INPUT_EVENT;
@@ -3300,4 +3333,3 @@ int CSimulation::nReadSedimentInputEventTimeSeriesFile(void)
 
    return RTN_OK;
 }
-

@@ -150,7 +150,10 @@ CSimulation::CSimulation(void)
    m_bSedimentInputAtPoint                         =
    m_bSedimentInputAtCoast                         =
    m_bSedimentInputAlongLine                       =
-   m_bSedimentInputThisIter                        = false;
+   m_bSedimentInputThisIter                        = 
+   m_bSedimentInputEventSave                       = 
+   m_bWaveSetupSave                                = 
+   m_bStormSurgeSave                               = false;
 
    m_bGDALCanCreate                                = true;
 

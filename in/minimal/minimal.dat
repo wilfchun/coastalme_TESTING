@@ -22,7 +22,7 @@
 ;
 ; Run information -----------------------------------------------------------------------------------------------------
 Main output/log file names                                          [omit path and extension]: minimal
-Content of log file                                       [1 = least detail, 3 = most detail]: 1
+Content of log file                                       [1 = least detail, 3 = most detail]: 3
 
 Simulation start date and time                                          [hh-mm-ss dd/mm/yyyy]: 00-00-00 01/01/1999
 Duration of simulation                                           [hours, days, months, years]: 30 days
@@ -31,19 +31,19 @@ Save times                                                       [hours, days, m
 
 Random number seed(s)                                                                        : 280764
 
-GIS raster files to output                                         ["all", or from codes.txt]: sea_depth beach_mask cliff_collapse polygon_gain_or_loss  ; all
+GIS raster files to output                                         ["all", or from codes.txt]: all          ; sea_depth beach_mask cliff_collapse polygon_gain_or_loss
 GIS raster output format                                          [blank = same as DEM input]: gtiff                    ; gdal-config --formats for others
    If needed, also output GIS raster world file?                                        [y/n]: y
    If needed, scale GIS raster output values?                                           [y/n]: y
 GIS raster 'slice' elevation(s) (m)                                                          :
-GIS vector files to output                                         ["all", or from codes.txt]: normals  ;all
+GIS vector files to output                                         ["all", or from codes.txt]: all          ; normals
 GIS vector output format                                                                     : ESRI Shapefile           ; ogrinfo --formats for others
-Time series files to output                                        ["all", or from codes.txt]: beach_change_net   ;all
+Time series files to output                                        ["all", or from codes.txt]: all          ; beach_change_net
 
 Coastline smoothing                          [0 = none, 1 = running mean, 2 = Savitsky-Golay]: 2
 Coastline smoothing window size                                                 [must be odd]: 7
 Polynomial order for Savitsky-Golay coastline smoothing                              [2 or 4]: 4
-Grid edge(s) to omit when searching for coastline                                      [NSWE]:
+Grid edge(s) to omit when searching for coastline                                      [NSWE]: W
 
 Profile slope running-mean smoothing window size                        [must be zero or odd]: 0
 Max local slope (m/m)                                                                        : 1.18
@@ -56,18 +56,18 @@ Number of layers                                                                
 Basement DEM file                                                             [path and name]: in/minimal/basement.asc
    ; LAYER 0 THICKNESS FILES, LAYER 0 IS LOWEST
    ; *** MUST HAVE AT LEAST ONE THICKNESS FILE FOR THE FIRST LAYER
-   Initial Unconsolidated fine sediment file                                  [path and name]:
-   Initial Unconsolidated sand sediment file                                  [path and name]:
-   Initial Unconsolidated coarse sediment file                                [path and name]:
-   Initial Consolidated fine sediment file                                    [path and name]:
-   Initial Consolidated sand sediment file                                    [path and name]: in/minimal/two_bays.tif
-   Initial Consolidated coarse sediment file                                  [path and name]:
+   Initial unconsolidated fine sediment file                                  [path and name]:
+   Initial unconsolidated sand sediment file                                  [path and name]:
+   Initial unconsolidated coarse sediment file                                [path and name]:
+   Initial consolidated fine sediment file                                    [path and name]:
+   Initial consolidated sand sediment file                                    [path and name]: in/minimal/two_bays.tif
+   Initial consolidated coarse sediment file                                  [path and name]:
 
 ; OPTIONAL THICKNESS FILE
-Initial Suspended sediment file                                               [path and name]:
+Initial suspended sediment file                                               [path and name]:
 
 ; OTHER OPTIONAL RASTER FILES
-Initial Landform file                                                         [path and name]:
+Initial landform file                                                         [path and name]:
 Intervention class file                                                       [path and name]:
 Intervention height file                                                      [path and name]:
 
@@ -92,7 +92,7 @@ Breaking wave height to water depth ratio (non dimensional)                     
 Simulate coast platform erosion?                                                             : y
 Resistance to erosion of coast platform (m^(9/4)s^(3/2))                                     : 2e6        ; [2-6]e6 to produce 0.6 m/yr recession (Walkden & Hall, 2011)
 
-Simulate beach sediment transport?                                                           : n
+Simulate beach sediment transport?                                                           : y
 Beach sediment transport at grid edges                [0 = closed, 1 = open, 2 = recirculate]: 1
 
 Beach potential erosion/deposition equation                          [0 = CERC, 1 = Kamphuis]: 1

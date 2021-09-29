@@ -43,7 +43,7 @@ Time series files to output                                 [see codes.txt]: all
 Coastline smoothing              [0=none, 1=running mean, 2=Savitsky-Golay]: 2
 Coastline smoothing window size                               [must be odd]: 7
 Polynomial order for Savitsky-Golay coastline smoothing            [2 or 4]: 4
-Grid edge(s) to omit when searching for coastline                    [NSWE]:
+Grid edge(s) to omit when searching for coastline                    [NSWE]: W
 
 Profile slope running-mean smoothing window size              [must be odd]: 0                        ; was 5 11 33
 Max local slope (m/m)                                                      : 1.18
@@ -56,18 +56,18 @@ Number of layers                                                           : 1
 Basement DEM file                                           [path and name]: in/minimal_with_intervention/basement.asc
 ; LAYER 0 THICKNESS FILES, LAYER 0 IS LOWEST
    ; *** MUST HAVE AT LEAST ONE THICKNESS FILE FOR THE FIRST LAYER
-   Initial Unconsolidated fine sediment file                [path and name]:
-   Initial Unconsolidated sand sediment file                [path and name]:
-   Initial Unconsolidated coarse sediment file              [path and name]:
-   Initial Consolidated fine sediment file                  [path and name]:
-   Initial Consolidated sand sediment file                  [path and name]: in/minimal_with_intervention/two_bays.tif
-   Initial Consolidated coarse sediment file                [path and name]:
+   Initial unconsolidated fine sediment file                [path and name]:
+   Initial unconsolidated sand sediment file                [path and name]:
+   Initial unconsolidated coarse sediment file              [path and name]:
+   Initial consolidated fine sediment file                  [path and name]:
+   Initial consolidated sand sediment file                  [path and name]: in/minimal_with_intervention/two_bays.tif
+   Initial consolidated coarse sediment file                [path and name]:
 
 ; OPTIONAL THICKNESS FILE
-Initial Suspended sediment file                             [path and name]:
+Initial suspended sediment file                             [path and name]:
 
 ; OTHER OPTIONAL RASTER FILES
-Initial Landform file                                       [path and name]:
+Initial landform file                                       [path and name]:
 Intervention class file                                     [path and name]: in/minimal_with_intervention/intervention_class.tif
 Intervention height file                                    [path and name]: in/minimal_with_intervention/intervention_height.tif
 
@@ -76,7 +76,7 @@ Wave propagation model                               [0 = COVE, 1 = CShore]: 1
 
 Density of sea water (kg/m3)                                               : 1029
 
-Initial still water level (m), or per-timestep SWL file                    : 28
+Initial still water level (m), or per-timestep SWL file                    : 26
 Final still water level (m)                   [blank = same as initial SWL]:
 
 Deep water wave height (m)                                         [value or point shapefile]: 3

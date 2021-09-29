@@ -24,8 +24,8 @@
 ===============================================================================================================================*/
 #include <assert.h>
 #include <iostream>
-using std::cout;
 using std::cerr;
+using std::cout;
 using std::endl;
 using std::ios;
 
@@ -39,7 +39,6 @@ using std::ios;
 #include "simulation.h"
 #include "coast.h"
 #include "raster_grid.h"
-
 
 /*
  Notes re. co-ordinate systems used
@@ -69,7 +68,6 @@ double CSimulation::dGridCentroidXToExtCRSX(int const nGridX) const
    return (m_dGeoTransform[0] + (nGridX * m_dGeoTransform[1]) + (m_dGeoTransform[1] / 2));
 }
 
-
 /*==============================================================================================================================
 
  Given the integer Y-axis ordinate of a cell in the raster-grid CRS, returns the external CRS Y-axis ordinate of the cell's centroid
@@ -85,19 +83,18 @@ double CSimulation::dGridCentroidYToExtCRSY(int const nGridY) const
  Transforms a pointer to a CGeom2DIPoint in the raster-grid CRS (assumed to be the centroid of a cell) to the equivalent CGeom2DPoint in the external CRS
 
 ===============================================================================================================================*/
-CGeom2DPoint CSimulation::PtGridCentroidToExt(CGeom2DIPoint const* pPtiIn) const
+CGeom2DPoint CSimulation::PtGridCentroidToExt(CGeom2DIPoint const *pPtiIn) const
 {
-    int
-      nGridX = pPtiIn->nGetX(),
-      nGridY = pPtiIn->nGetY();
+   int
+       nGridX = pPtiIn->nGetX(),
+       nGridY = pPtiIn->nGetY();
 
    double
-      dX = m_dGeoTransform[0] + (nGridX * m_dGeoTransform[1]) + (m_dGeoTransform[1] / 2),
-      dY = m_dGeoTransform[3] + (nGridY * m_dGeoTransform[5]) + (m_dGeoTransform[5] / 2);
+       dX = m_dGeoTransform[0] + (nGridX * m_dGeoTransform[1]) + (m_dGeoTransform[1] / 2),
+       dY = m_dGeoTransform[3] + (nGridY * m_dGeoTransform[5]) + (m_dGeoTransform[5] / 2);
 
    return CGeom2DPoint(dX, dY);
 }
-
 
 /*==============================================================================================================================
 
@@ -109,7 +106,6 @@ double CSimulation::dGridXToExtCRSX(double const dGridX) const
    return (m_dGeoTransform[0] + (dGridX * m_dGeoTransform[1]));
 }
 
-
 /*==============================================================================================================================
 
  Given a real-valued Y-axis ordinate in the raster-grid CRS (i.e. not the centroid of a cell), returns the external CRS Y-axis ordinate
@@ -119,7 +115,6 @@ double CSimulation::dGridYToExtCRSY(double const dGridY) const
 {
    return (m_dGeoTransform[3] + (dGridY * m_dGeoTransform[5]));
 }
-
 
 /*==============================================================================================================================
 
@@ -131,7 +126,6 @@ double CSimulation::dExtCRSXToGridX(double const dExtCRSX) const
    return ((dExtCRSX - m_dGeoTransform[0]) / m_dGeoTransform[1]);
 }
 
-
 /*==============================================================================================================================
 
  Transforms a Y-axis ordinate in the external CRS to the equivalent Y-axis ordinate in the raster-grid CRS (the result may not be integer, and may be outside the grid)
@@ -142,68 +136,63 @@ double CSimulation::dExtCRSYToGridY(double const dExtCRSY) const
    return ((dExtCRSY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
 }
 
-
 /*==============================================================================================================================
 
  Transforms a pointer to a CGeom2DPoint in the external CRS to the equivalent CGeom2DIPoint in the raster-grid CRS (both values rounded). Note that the result may be outside the grid, because of rounding
 
 ===============================================================================================================================*/
-CGeom2DIPoint CSimulation::PtiExtCRSToGrid(CGeom2DPoint const* pPtIn) const
+CGeom2DIPoint CSimulation::PtiExtCRSToGrid(CGeom2DPoint const *pPtIn) const
 {
    double
-      dX = pPtIn->dGetX(),
-      dY = pPtIn->dGetY();
+       dX = pPtIn->dGetX(),
+       dY = pPtIn->dGetY();
 
    int
-//       nX = nRound((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
-//       nY = nRound((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
-      nX = static_cast<int>((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
-      nY = static_cast<int>((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
+       //       nX = nRound((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
+       //       nY = nRound((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
+       nX = static_cast<int>((dX - m_dGeoTransform[0]) / m_dGeoTransform[1]),
+       nY = static_cast<int>((dY - m_dGeoTransform[3]) / m_dGeoTransform[5]);
 
    return CGeom2DIPoint(nX, nY);
 }
-
 
 /*==============================================================================================================================
 
  Returns the distance (in external CRS) between two points
 
 ===============================================================================================================================*/
-double CSimulation::dGetDistanceBetween(CGeom2DPoint const* Pt1, CGeom2DPoint const* Pt2)
+double CSimulation::dGetDistanceBetween(CGeom2DPoint const *Pt1, CGeom2DPoint const *Pt2)
 {
    double
-      dXDist = Pt1->dGetX() - Pt2->dGetX(),
-      dYDist = Pt1->dGetY() - Pt2->dGetY();
+       dXDist = Pt1->dGetX() - Pt2->dGetX(),
+       dYDist = Pt1->dGetY() - Pt2->dGetY();
 
    return hypot(dXDist, dYDist);
 }
-
 
 /*==============================================================================================================================
 
  Returns the distance (in grid units) between two grid cell points
 
 ===============================================================================================================================*/
-double CSimulation::dGetDistanceBetween(CGeom2DIPoint const* Pti1, CGeom2DIPoint const* Pti2)
+double CSimulation::dGetDistanceBetween(CGeom2DIPoint const *Pti1, CGeom2DIPoint const *Pti2)
 {
    double
-      dXDist = Pti1->nGetX() - Pti2->nGetX(),
-      dYDist = Pti1->nGetY() - Pti2->nGetY();
+       dXDist = Pti1->nGetX() - Pti2->nGetX(),
+       dYDist = Pti1->nGetY() - Pti2->nGetY();
 
    return hypot(dXDist, dYDist);
 }
-
 
 /*===============================================================================================================================
 
  Returns twice the signed area of a triangle
 
  ===============================================================================================================================*/
-double CSimulation::dTriangleAreax2(CGeom2DPoint const* pPtA, CGeom2DPoint const* pPtB, CGeom2DPoint const* pPtC)
+double CSimulation::dTriangleAreax2(CGeom2DPoint const *pPtA, CGeom2DPoint const *pPtB, CGeom2DPoint const *pPtC)
 {
    return (pPtB->dGetX() - pPtA->dGetX()) * (pPtC->dGetY() - pPtA->dGetY()) - (pPtB->dGetY() - pPtA->dGetY()) * (pPtC->dGetX() - pPtA->dGetX());
 }
-
 
 /*==============================================================================================================================
 
@@ -218,13 +207,12 @@ bool CSimulation::bIsWithinValidGrid(int const nX, int const nY) const
    return true;
 }
 
-
 /*==============================================================================================================================
 
  Checks whether the supplied point (a reference to a CGeom2DIPoint, in the grid CRS) is within the raster grid, and is a valid cell (i.e. the basement DEM is not NODATA)
 
 ===============================================================================================================================*/
-bool CSimulation::bIsWithinValidGrid(CGeom2DIPoint const* Pti) const
+bool CSimulation::bIsWithinValidGrid(CGeom2DIPoint const *Pti) const
 {
    int nX = Pti->nGetX();
 
@@ -242,17 +230,15 @@ bool CSimulation::bIsWithinValidGrid(CGeom2DIPoint const* Pti) const
    return true;
 }
 
-
 /*==============================================================================================================================
 
  Constrains the second supplied point (both are CGeom2DIPoints, in the grid CRS) to be an a valid cell within the raster grid
 
 ===============================================================================================================================*/
-void CSimulation::KeepWithinValidGrid(CGeom2DIPoint const* Pti0, CGeom2DIPoint* Pti1) const
+void CSimulation::KeepWithinValidGrid(CGeom2DIPoint const *Pti0, CGeom2DIPoint *Pti1) const
 {
    KeepWithinValidGrid(Pti0->nGetX(), Pti0->nGetY(), *Pti1->pnGetX(), *Pti1->pnGetY());
 }
-
 
 /*==============================================================================================================================
 
@@ -261,23 +247,23 @@ void CSimulation::KeepWithinValidGrid(CGeom2DIPoint const* Pti0, CGeom2DIPoint* 
  However in some cases (e.g. if the first point is at the edge of the valid part of the raster grid) then the second cell will be coincident with the first cell, and the line joining them is thus of zero length. The calling routine has to be able to handle this
 
 ===============================================================================================================================*/
-void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) const
+void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int &nX1, int &nY1) const
 {
    // Safety check: make sure that the first point is within the valid grid
    if (nX0 >= m_nXGridMax)
-      nX0 = m_nXGridMax-1;
+      nX0 = m_nXGridMax - 1;
    else if (nX0 < 0)
       nX0 = 0;
 
    if (nY0 >= m_nYGridMax)
-      nY0 = m_nYGridMax-1;
+      nY0 = m_nYGridMax - 1;
    else if (nY0 < 0)
       nY0 = 0;
 
    // OK let's go
    int
-      nDiffX = nX0 - nX1,
-      nDiffY = nY0 - nY1;
+       nDiffX = nX0 - nX1,
+       nDiffY = nY0 - nY1;
 
    if (nDiffX == 0)
    {
@@ -289,8 +275,7 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
          do
          {
             nY1++;
-         }
-         while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
+         } while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
 
          return;
       }
@@ -301,8 +286,7 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
          do
          {
             nY1--;
-         }
-         while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
+         } while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
 
          return;
       }
@@ -317,8 +301,7 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
          do
          {
             nX1++;
-         }
-         while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
+         } while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
 
          return;
       }
@@ -329,8 +312,7 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
          do
          {
             nX1--;
-         }
-         while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
+         } while (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue());
 
          return;
       }
@@ -339,8 +321,8 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
    {
       // The two points have different x co-ords and different y co-ords, so we have to work harder. First find which of the co-ords is the greatest distance outside the grid, and constrain that co-ord for efficiency (since this will reduce the number of times round the loop). Note that both may be inside the grid, if the incorrect co-ord is in the invalid margin, in which case arbitrarily contrain the x co-ord
       int
-         nXDistanceOutside = 0,
-         nYDistanceOutside = 0;
+          nXDistanceOutside = 0,
+          nYDistanceOutside = 0;
 
       if (nX1 < 0)
          nXDistanceOutside = -nX1;
@@ -365,8 +347,7 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
                nX1++;
 
                nY1 = nY0 + nRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
-            }
-            while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
+            } while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
             return;
          }
@@ -381,8 +362,7 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
                nX1--;
 
                nY1 = nY0 + nRound(((nX1 - nX0) * nDiffY) / static_cast<double>(nDiffX));
-            }
-            while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
+            } while ((nY1 < 0) || (nY1 >= m_nYGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
             return;
          }
@@ -400,8 +380,7 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
                nY1++;
 
                nX1 = nX0 + nRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
-            }
-            while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
+            } while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
             return;
          }
@@ -416,15 +395,13 @@ void CSimulation::KeepWithinValidGrid(int nX0, int nY0, int& nX1, int& nY1) cons
                nY1--;
 
                nX1 = nX0 + nRound(((nY1 - nY0) * nDiffX) / static_cast<double>(nDiffY));
-            }
-            while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
+            } while ((nX1 < 0) || (nX1 >= m_nXGridMax) || (m_pRasterGrid->m_Cell[nX1][nY1].bBasementElevIsMissingValue()));
 
             return;
          }
       }
    }
 }
-
 
 /*==============================================================================================================================
 
@@ -446,81 +423,77 @@ double CSimulation::dKeepWithin360(double const dAngle)
    return dNewAngle;
 }
 
-
 /*==============================================================================================================================
 
  Returns a point (external CRS) which is the average of (i.e. is midway between) two other external CRS points
 
 ===============================================================================================================================*/
-CGeom2DPoint CSimulation::PtAverage(CGeom2DPoint const* pPt1, CGeom2DPoint const* pPt2)
+CGeom2DPoint CSimulation::PtAverage(CGeom2DPoint const *pPt1, CGeom2DPoint const *pPt2)
 {
    double
-      dPt1X = pPt1->dGetX(),
-      dPt1Y = pPt1->dGetY(),
-      dPt2X = pPt2->dGetX(),
-      dPt2Y = pPt2->dGetY(),
-      dPtAvgX = (dPt1X + dPt2X) / 2,
-      dPtAvgY = (dPt1Y + dPt2Y) / 2;
+       dPt1X = pPt1->dGetX(),
+       dPt1Y = pPt1->dGetY(),
+       dPt2X = pPt2->dGetX(),
+       dPt2Y = pPt2->dGetY(),
+       dPtAvgX = (dPt1X + dPt2X) / 2,
+       dPtAvgY = (dPt1Y + dPt2Y) / 2;
 
    return CGeom2DPoint(dPtAvgX, dPtAvgY);
 }
-
 
 /*==============================================================================================================================
 
  Returns an integer point (grid CRS) which is the approximate average of (i.e. is midway between) two other grid CRS integer points
 
 ===============================================================================================================================*/
-CGeom2DIPoint CSimulation::PtiAverage(CGeom2DIPoint const* pPti1, CGeom2DIPoint const* pPti2)
+CGeom2DIPoint CSimulation::PtiAverage(CGeom2DIPoint const *pPti1, CGeom2DIPoint const *pPti2)
 {
    int
-      nPti1X = pPti1->nGetX(),
-      nPti1Y = pPti1->nGetY(),
-      nPti2X = pPti2->nGetX(),
-      nPti2Y = pPti2->nGetY(),
-      nPtiAvgX = (nPti1X + nPti2X) / 2,
-      nPtiAvgY = (nPti1Y + nPti2Y) / 2;
+       nPti1X = pPti1->nGetX(),
+       nPti1Y = pPti1->nGetY(),
+       nPti2X = pPti2->nGetX(),
+       nPti2Y = pPti2->nGetY(),
+       nPtiAvgX = (nPti1X + nPti2X) / 2,
+       nPtiAvgY = (nPti1Y + nPti2Y) / 2;
 
    return CGeom2DIPoint(nPtiAvgX, nPtiAvgY);
 }
-
 
 /*==============================================================================================================================
 
  Returns an integer point (grid CRS) which is the weighted average of two other grid CRS integer points. The weight must be <= 1, if the weight is < 0.5 then the output point is closer to the first point, if the weight is > 0.5 then the output point is closer to the second point
 
 ===============================================================================================================================*/
-CGeom2DIPoint CSimulation::PtiWeightedAverage(CGeom2DIPoint const* pPti1, CGeom2DIPoint const* pPti2, double const dWeight)
+CGeom2DIPoint CSimulation::PtiWeightedAverage(CGeom2DIPoint const *pPti1, CGeom2DIPoint const *pPti2, double const dWeight)
 {
    int
-      nPti1X = pPti1->nGetX(),
-      nPti1Y = pPti1->nGetY(),
-      nPti2X = pPti2->nGetX(),
-      nPti2Y = pPti2->nGetY();
+       nPti1X = pPti1->nGetX(),
+       nPti1Y = pPti1->nGetY(),
+       nPti2X = pPti2->nGetX(),
+       nPti2Y = pPti2->nGetY();
    double dOtherWeight = 1.0 - dWeight;
 
    int
-      nPtiWeightAvgX = nRound((dWeight * nPti2X) + (dOtherWeight * nPti1X)),
-      nPtiWeightAvgY = nRound((dWeight * nPti2Y) + (dOtherWeight * nPti1Y));
+       nPtiWeightAvgX = nRound((dWeight * nPti2X) + (dOtherWeight * nPti1X)),
+       nPtiWeightAvgY = nRound((dWeight * nPti2Y) + (dOtherWeight * nPti1Y));
 
    return CGeom2DIPoint(nPtiWeightAvgX, nPtiWeightAvgY);
 }
-
 
 /*==============================================================================================================================
 
  Returns a point (external CRS) which is the average of a vector of external CRS points
 
 ===============================================================================================================================*/
-CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
+CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint> *pVIn)
 {
    int nSize = static_cast<int>(pVIn->size());
    if (nSize == 0)
       return CGeom2DPoint(DBL_NODATA, DBL_NODATA);
 
    double
-      dAvgX = 0,
-      dAvgY = 0;
+       dAvgX = 0,
+       dAvgY = 0;
 
    for (int n = 0; n < nSize; n++)
    {
@@ -534,21 +507,20 @@ CGeom2DPoint CSimulation::PtAverage(vector<CGeom2DPoint>* pVIn)
    return CGeom2DPoint(dAvgX, dAvgY);
 }
 
-
 /*==============================================================================================================================
 
  Returns a point (grid CRS) which is the average of a vector of grid CRS points
 
 ===============================================================================================================================*/
-CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
+CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint> *pVIn)
 {
    int nSize = static_cast<int>(pVIn->size());
    if (nSize == 0)
       return CGeom2DIPoint(INT_NODATA, INT_NODATA);
 
    double
-      dAvgX = 0,
-      dAvgY = 0;
+       dAvgX = 0,
+       dAvgY = 0;
 
    for (int n = 0; n < nSize; n++)
    {
@@ -562,33 +534,32 @@ CGeom2DIPoint CSimulation::PtiAverage(vector<CGeom2DIPoint>* pVIn)
    return CGeom2DIPoint(nRound(dAvgX), nRound(dAvgY));
 }
 
-
 /*==============================================================================================================================
 
  Returns an integer point (grid CRS) which is the centroid of a polygon, given by a vector of grid CRS points. From https://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon
 
 ===============================================================================================================================*/
-CGeom2DIPoint CSimulation::PtiPolygonCentroid(vector<CGeom2DIPoint>* pVIn)
+CGeom2DIPoint CSimulation::PtiPolygonCentroid(vector<CGeom2DIPoint> *pVIn)
 {
    CGeom2DIPoint PtiCentroid(0, 0);
    int
-      nSize = static_cast<int>(pVIn->size()),
-      nX0 = 0,       // Current vertex X
-      nY0 = 0,       // Current vertex Y
-      nX1 = 0,       // Next vertex X
-      nY1 = 0;       // Next vertex Y
+       nSize = static_cast<int>(pVIn->size()),
+       nX0 = 0, // Current vertex X
+       nY0 = 0, // Current vertex Y
+       nX1 = 0, // Next vertex X
+       nY1 = 0; // Next vertex Y
 
    double
-      dA = 0,        // Partial signed area
-      dSignedArea = 0.0;
+       dA = 0, // Partial signed area
+       dSignedArea = 0.0;
 
    // For all vertices except last
-   for (int i = 0; i < nSize-1; ++i)
+   for (int i = 0; i < nSize - 1; ++i)
    {
       nX0 = pVIn->at(i).nGetX();
       nY0 = pVIn->at(i).nGetY();
-      nX1 = pVIn->at(i+1).nGetX();
-      nY1 = pVIn->at(i+1).nGetY();
+      nX1 = pVIn->at(i + 1).nGetX();
+      nY1 = pVIn->at(i + 1).nGetY();
 
       dA = (nX0 * nY1) - (nX1 * nY0);
       dSignedArea += dA;
@@ -596,8 +567,8 @@ CGeom2DIPoint CSimulation::PtiPolygonCentroid(vector<CGeom2DIPoint>* pVIn)
    }
 
    // Do last vertex separately to avoid performing an expensive modulus operation in each iteration
-   nX0 = pVIn->at(nSize-1).nGetX();
-   nY0 = pVIn->at(nSize-1).nGetY();
+   nX0 = pVIn->at(nSize - 1).nGetX();
+   nY0 = pVIn->at(nSize - 1).nGetY();
    nX1 = pVIn->at(0).nGetX();
    nY1 = pVIn->at(0).nGetY();
 
@@ -610,7 +581,6 @@ CGeom2DIPoint CSimulation::PtiPolygonCentroid(vector<CGeom2DIPoint>* pVIn)
 
    return PtiCentroid;
 }
-
 
 /*==============================================================================================================================
 
@@ -645,19 +615,17 @@ CGeom2DIPoint CSimulation::PtiPolygonCentroid(vector<CGeom2DIPoint>* pVIn)
 //    return VNew;
 // }
 
-
-
 /*==============================================================================================================================
 
  Returns a CGeom2DPoint which is the 'other' point of a two-point vector passing through PtStart, and which is perpendicular to the two-point vector from PtStart to PtNext
 
 ===============================================================================================================================*/
-CGeom2DPoint CSimulation::PtGetPerpendicular(CGeom2DPoint const* PtStart, CGeom2DPoint const* PtNext, double const dDesiredLength, int const nHandedness)
+CGeom2DPoint CSimulation::PtGetPerpendicular(CGeom2DPoint const *PtStart, CGeom2DPoint const *PtNext, double const dDesiredLength, int const nHandedness)
 {
    double
-      dXLen = PtNext->dGetX() - PtStart->dGetX(),
-      dYLen = PtNext->dGetY() - PtStart->dGetY(),
-      dLength;
+       dXLen = PtNext->dGetX() - PtStart->dGetX(),
+       dYLen = PtNext->dGetY() - PtStart->dGetY(),
+       dLength;
 
    if (dXLen == 0)
       dLength = dYLen;
@@ -684,18 +652,17 @@ CGeom2DPoint CSimulation::PtGetPerpendicular(CGeom2DPoint const* PtStart, CGeom2
    return EndPt;
 }
 
-
 /*==============================================================================================================================
 
  Returns a CGeom2DIPoint (grid CRS) which is the 'other' point of a two-point vector passing through PtiStart, and which is perpendicular to the two-point vector from PtiStart to PtiNext
 
 *==============================================================================================================================*/
-CGeom2DIPoint CSimulation::PtiGetPerpendicular(CGeom2DIPoint const* PtiStart, CGeom2DIPoint const* PtiNext, double const dDesiredLength, int const nHandedness)
+CGeom2DIPoint CSimulation::PtiGetPerpendicular(CGeom2DIPoint const *PtiStart, CGeom2DIPoint const *PtiNext, double const dDesiredLength, int const nHandedness)
 {
    double
-      dXLen = PtiNext->nGetX() - PtiStart->nGetX(),
-      dYLen = PtiNext->nGetY() - PtiStart->nGetY(),
-      dLength;
+       dXLen = PtiNext->nGetX() - PtiStart->nGetX(),
+       dYLen = PtiNext->nGetY() - PtiStart->nGetY(),
+       dLength;
 
    if (dXLen == 0)
       dLength = dYLen;
@@ -722,7 +689,6 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(CGeom2DIPoint const* PtiStart, CG
    return EndPti;
 }
 
-
 /*==============================================================================================================================
 
  Returns a CGeom2DIPoint (grid CRS) which is the 'other' point of a two-point vector passing through [nStartX][nStartY], and which is perpendicular to the two-point vector from [nStartX][nStartY] to [nNextX][nNextY]
@@ -731,9 +697,9 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(CGeom2DIPoint const* PtiStart, CG
 CGeom2DIPoint CSimulation::PtiGetPerpendicular(int const nStartX, int const nStartY, int const nNextX, int const nNextY, double const dDesiredLength, int const nHandedness)
 {
    double
-      dXLen = nNextX - nStartX,
-      dYLen = nNextY - nStartY,
-      dLength;
+       dXLen = nNextX - nStartX,
+       dYLen = nNextY - nStartY,
+       dLength;
 
    if (dXLen == 0)
       dLength = dYLen;
@@ -760,26 +726,24 @@ CGeom2DIPoint CSimulation::PtiGetPerpendicular(int const nStartX, int const nSta
    return EndPti;
 }
 
-
 /*==============================================================================================================================
 
  Returns the signed angle BAC (in radians) subtended between three CGeom2DIPoints B A C. From http://stackoverflow.com/questions/3057448/angle-between-3-vertices
 
 *==============================================================================================================================*/
-double CSimulation::dAngleSubtended(CGeom2DIPoint const* pPtiA, CGeom2DIPoint const* pPtiB, CGeom2DIPoint const* pPtiC)
+double CSimulation::dAngleSubtended(CGeom2DIPoint const *pPtiA, CGeom2DIPoint const *pPtiB, CGeom2DIPoint const *pPtiC)
 {
    double
-      dXDistBtoA = pPtiB->nGetX() - pPtiA->nGetX(),
-      dYDistBtoA = pPtiB->nGetY() - pPtiA->nGetY(),
-      dXDistCtoA = pPtiC->nGetX() - pPtiA->nGetX(),
-      dYDistCtoA = pPtiC->nGetY() - pPtiA->nGetY(),
-      dDotProduct = dXDistBtoA * dXDistCtoA + dYDistBtoA * dYDistCtoA,
-      dPseudoCrossProduct = dXDistBtoA * dYDistCtoA - dYDistBtoA * dXDistCtoA,
-      dAngle = atan2(dPseudoCrossProduct, dDotProduct);
+       dXDistBtoA = pPtiB->nGetX() - pPtiA->nGetX(),
+       dYDistBtoA = pPtiB->nGetY() - pPtiA->nGetY(),
+       dXDistCtoA = pPtiC->nGetX() - pPtiA->nGetX(),
+       dYDistCtoA = pPtiC->nGetY() - pPtiA->nGetY(),
+       dDotProduct = dXDistBtoA * dXDistCtoA + dYDistBtoA * dYDistCtoA,
+       dPseudoCrossProduct = dXDistBtoA * dYDistCtoA - dYDistBtoA * dXDistCtoA,
+       dAngle = atan2(dPseudoCrossProduct, dDotProduct);
 
    return dAngle;
 }
-
 
 /*==============================================================================================================================
 
@@ -796,7 +760,7 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
       m_strRasterGISOutFormat = m_strGDALBasementDEMDriverCode;
 
    // Load the raster GDAL driver
-   GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName(m_strRasterGISOutFormat.c_str());
+   GDALDriver *pDriver = GetGDALDriverManager()->GetDriverByName(m_strRasterGISOutFormat.c_str());
    if (NULL == pDriver)
    {
       // Can't load raster GDAL driver. Incorrectly specified?
@@ -805,14 +769,14 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
    }
 
    // Get the metadata for this raster driver
-   char** papszMetadata = pDriver->GetMetadata();
+   char **papszMetadata = pDriver->GetMetadata();
 
-//    for (int i = 0; papszMetadata[i] != NULL; i++)
-//       cout << papszMetadata[i] << endl;
-//    cout << endl;
+   //    for (int i = 0; papszMetadata[i] != NULL; i++)
+   //       cout << papszMetadata[i] << endl;
+   //    cout << endl;
 
    // For GDAL2, need to test if this is a raster driver
-   if (! CSLFetchBoolean(papszMetadata, GDAL_DCAP_RASTER, FALSE))
+   if (!CSLFetchBoolean(papszMetadata, GDAL_DCAP_RASTER, FALSE))
    {
       // This is not a raster driver
       cerr << ERR << "GDAL driver '" << m_strRasterGISOutFormat << "' is not a raster driver. Choose another format." << endl;
@@ -820,17 +784,17 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
    }
 
    // This driver is OK, so store its longname and the default file extension
-   m_strGDALRasterOutputDriverLongname  = CSLFetchNameValue(papszMetadata, "DMD_LONGNAME");
+   m_strGDALRasterOutputDriverLongname = CSLFetchNameValue(papszMetadata, "DMD_LONGNAME");
    m_strGDALRasterOutputDriverExtension = CSLFetchNameValue(papszMetadata, "DMD_EXTENSION");
 
    // Set up any defaults for raster files that are created using this driver
    SetRasterFileCreationDefaults();
 
    // Now do various tests of the driver's capabilities
-   if (! CSLFetchBoolean(papszMetadata, GDAL_DCAP_CREATE, FALSE))
+   if (!CSLFetchBoolean(papszMetadata, GDAL_DCAP_CREATE, FALSE))
    {
       // This raster driver does not support the Create() method, does it support CreateCopy()?
-      if (! CSLFetchBoolean(papszMetadata, GDAL_DCAP_CREATECOPY, FALSE))
+      if (!CSLFetchBoolean(papszMetadata, GDAL_DCAP_CREATECOPY, FALSE))
       {
          cerr << ERR << "Cannot write using raster GDAL driver '" << m_strRasterGISOutFormat << " since neither Create() or CreateCopy() are supported'. Choose another GDAL raster format." << endl;
          return false;
@@ -855,7 +819,7 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
       m_lGDALMaxCanWrite = UINT32_MAX;
       m_lGDALMinCanWrite = 0;
 
-      if (! m_bGDALCanWriteFloat)
+      if (!m_bGDALCanWriteFloat)
          m_GDALWriteFloatDataType = GDT_UInt32;
 
       return true;
@@ -869,7 +833,7 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
       m_lGDALMaxCanWrite = INT32_MAX;
       m_lGDALMinCanWrite = INT32_MIN;
 
-      if (! m_bGDALCanWriteFloat)
+      if (!m_bGDALCanWriteFloat)
          m_GDALWriteFloatDataType = GDT_Int32;
 
       return true;
@@ -883,7 +847,7 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
       m_lGDALMaxCanWrite = UINT16_MAX;
       m_lGDALMinCanWrite = 0;
 
-      if (! m_bGDALCanWriteFloat)
+      if (!m_bGDALCanWriteFloat)
          m_GDALWriteFloatDataType = GDT_UInt16;
 
       return true;
@@ -897,7 +861,7 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
       m_lGDALMaxCanWrite = INT16_MAX;
       m_lGDALMinCanWrite = INT16_MIN;
 
-      if (! m_bGDALCanWriteFloat)
+      if (!m_bGDALCanWriteFloat)
          m_GDALWriteFloatDataType = GDT_Int16;
 
       return true;
@@ -911,7 +875,7 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
       m_lGDALMaxCanWrite = UINT8_MAX;
       m_lGDALMinCanWrite = 0;
 
-      if (! m_bGDALCanWriteFloat)
+      if (!m_bGDALCanWriteFloat)
          m_GDALWriteFloatDataType = GDT_Byte;
 
       return true;
@@ -922,7 +886,6 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
    return false;
 }
 
-
 /*==============================================================================================================================
 
  Checks whether the selected vector OGR driver supports file creation etc.
@@ -931,7 +894,7 @@ bool CSimulation::bCheckRasterGISOutputFormat(void)
 bool CSimulation::bCheckVectorGISOutputFormat(void)
 {
    // Load the vector GDAL driver (NOTE this assumes that GDALAllRegister() has already been called)
-   GDALDriver* pDriver = GetGDALDriverManager()->GetDriverByName(m_strVectorGISOutFormat.c_str());
+   GDALDriver *pDriver = GetGDALDriverManager()->GetDriverByName(m_strVectorGISOutFormat.c_str());
    if (NULL == pDriver)
    {
       // Can't load vector GDAL driver. Incorrectly specified?
@@ -940,17 +903,17 @@ bool CSimulation::bCheckVectorGISOutputFormat(void)
    }
 
    // Get the metadata for this vector driver
-   char** papszMetadata = pDriver->GetMetadata();
+   char **papszMetadata = pDriver->GetMetadata();
 
    // For GDAL2, need to test if this is a vector driver
-   if (! CSLFetchBoolean(papszMetadata, GDAL_DCAP_VECTOR, FALSE))
+   if (!CSLFetchBoolean(papszMetadata, GDAL_DCAP_VECTOR, FALSE))
    {
       // This is not a vector driver
       cerr << ERR << "GDAL driver '" << m_strVectorGISOutFormat << "' is not a vector driver. Choose another format." << endl;
       return false;
    }
 
-   if (! CSLFetchBoolean(papszMetadata, GDAL_DCAP_CREATE, FALSE))
+   if (!CSLFetchBoolean(papszMetadata, GDAL_DCAP_CREATE, FALSE))
    {
       // Driver does not support create() method
       cerr << ERR << "Cannot write vector GIS files using GDAL driver '" << m_strRasterGISOutFormat << "'. Choose another format." << endl;
@@ -963,13 +926,11 @@ bool CSimulation::bCheckVectorGISOutputFormat(void)
       // Set this, so that just a single dataset-with-one-layer shapefile is created, rather than a directory
       // (see http://www.gdal.org/ogr/drv_shapefile.html)
       m_strOGRVectorOutputExtension = ".shp";
-
    }
    // TODO Others
 
    return true;
 }
-
 
 /*==============================================================================================================================
 
@@ -988,144 +949,144 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
       m_nThisSave = tMin(++m_nThisSave, m_nUSave);
 
    if (m_bSedimentTopSurfSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV, &RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV, &RASTER_PLOT_SEDIMENT_TOP_ELEVATION_ELEV_TITLE))
          return false;
 
    if (m_bTopSurfSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_OVERALL_TOP_ELEVATION, &RASTER_PLOT_OVERALL_TOP_ELEVATION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_OVERALL_TOP_ELEVATION, &RASTER_PLOT_OVERALL_TOP_ELEVATION_TITLE))
          return false;
 
    if (m_bLocalSlopeSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_LOCAL_SLOPE_OF_CONSOLIDATED_SEDIMENT_TITLE))
          return false;
 
    if (m_bSeaDepthSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_SEA_DEPTH, &RASTER_PLOT_SEA_DEPTH_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_SEA_DEPTH, &RASTER_PLOT_SEA_DEPTH_TITLE))
          return false;
 
    if (m_bWaveHeightSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_WAVE_HEIGHT, &RASTER_PLOT_WAVE_HEIGHT_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_WAVE_HEIGHT, &RASTER_PLOT_WAVE_HEIGHT_TITLE))
          return false;
 
    if (m_bWaveAngleSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_WAVE_ORIENTATION, &RASTER_PLOT_WAVE_ORIENTATION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_WAVE_ORIENTATION, &RASTER_PLOT_WAVE_ORIENTATION_TITLE))
          return false;
 
    if (m_bBeachProtectionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_BEACH_PROTECTION, &RASTER_PLOT_BEACH_PROTECTION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_BEACH_PROTECTION, &RASTER_PLOT_BEACH_PROTECTION_TITLE))
          return false;
 
    if (m_bPotentialPlatformErosionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_TITLE))
          return false;
 
    if (m_bActualPlatformErosionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_ACTUAL_PLATFORM_EROSION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_ACTUAL_PLATFORM_EROSION_TITLE))
          return false;
 
    if (m_bTotalPotentialPlatformErosionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_PLATFORM_EROSION_TITLE))
          return false;
 
    if (m_bTotalActualPlatformErosionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_PLATFORM_EROSION_TITLE))
          return false;
 
    if (m_bPotentialBeachErosionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_POTENTIAL_BEACH_EROSION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_POTENTIAL_BEACH_EROSION_TITLE))
          return false;
 
    if (m_bActualBeachErosionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_ACTUAL_BEACH_EROSION, &RASTER_PLOT_ACTUAL_BEACH_EROSION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_ACTUAL_BEACH_EROSION, &RASTER_PLOT_ACTUAL_BEACH_EROSION_TITLE))
          return false;
 
    if (m_bTotalPotentialBeachErosionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_POTENTIAL_BEACH_EROSION_TITLE))
          return false;
 
    if (m_bTotalActualBeachErosionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION, &RASTER_PLOT_TOTAL_ACTUAL_BEACH_EROSION_TITLE))
          return false;
 
    if (m_bBeachDepositionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_BEACH_DEPOSITION, &RASTER_PLOT_BEACH_DEPOSITION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_BEACH_DEPOSITION, &RASTER_PLOT_BEACH_DEPOSITION_TITLE))
          return false;
 
    if (m_bTotalBeachDepositionSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_TOTAL_BEACH_DEPOSITION, &RASTER_PLOT_TOTAL_BEACH_DEPOSITION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_TOTAL_BEACH_DEPOSITION, &RASTER_PLOT_TOTAL_BEACH_DEPOSITION_TITLE))
          return false;
 
    if (m_bLandformSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_LANDFORM, &RASTER_PLOT_LANDFORM_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_LANDFORM, &RASTER_PLOT_LANDFORM_TITLE))
          return false;
 
    if (m_bAvgWaveHeightSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_AVG_WAVE_HEIGHT, &RASTER_PLOT_AVG_WAVE_HEIGHT_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_AVG_WAVE_HEIGHT, &RASTER_PLOT_AVG_WAVE_HEIGHT_TITLE))
          return false;
 
    if (m_bAvgWaveAngleSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_AVG_WAVE_ORIENTATION, &RASTER_PLOT_AVG_WAVE_ORIENTATION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_AVG_WAVE_ORIENTATION, &RASTER_PLOT_AVG_WAVE_ORIENTATION_TITLE))
          return false;
 
    if (m_bAvgSeaDepthSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_AVG_SEA_DEPTH, &RASTER_PLOT_AVG_SEA_DEPTH_TITLE))
-      return false;
+      if (!bWriteRasterGISFile(RASTER_PLOT_AVG_SEA_DEPTH, &RASTER_PLOT_AVG_SEA_DEPTH_TITLE))
+         return false;
 
    if (m_bSedimentInput && m_bSedimentInputEventSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_SEDIMENT_INPUT, &RASTER_PLOT_SEDIMENT_INPUT_EVENT_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_SEDIMENT_INPUT, &RASTER_PLOT_SEDIMENT_INPUT_EVENT_TITLE))
          return false;
 
    // Don't write suspended sediment files if there is no fine sediment
    if (m_bHaveFineSediment)
    {
       if (m_bSuspSedSave)
-         if (! bWriteRasterGISFile(RASTER_PLOT_SUSPENDED_SEDIMENT, &RASTER_PLOT_SUSPENDED_SEDIMENT_TITLE))
+         if (!bWriteRasterGISFile(RASTER_PLOT_SUSPENDED_SEDIMENT, &RASTER_PLOT_SUSPENDED_SEDIMENT_TITLE))
             return false;
 
       if (m_bAvgSuspSedSave)
-         if (! bWriteRasterGISFile(RASTER_PLOT_AVG_SUSPENDED_SEDIMENT, &RASTER_PLOT_AVG_SUSPENDED_SEDIMENT_TITLE))
+         if (!bWriteRasterGISFile(RASTER_PLOT_AVG_SUSPENDED_SEDIMENT, &RASTER_PLOT_AVG_SUSPENDED_SEDIMENT_TITLE))
             return false;
    }
 
    if (m_bBasementElevSave)
-      if (! bWriteRasterGISFile(RASTER_PLOT_BASEMENT_ELEVATION, &RASTER_PLOT_BASEMENT_ELEVATION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_BASEMENT_ELEVATION, &RASTER_PLOT_BASEMENT_ELEVATION_TITLE))
          return false;
 
    for (int nLayer = 0; nLayer < m_nLayers; nLayer++)
    {
       if (m_bHaveFineSediment && m_bFineUnconsSedSave)
       {
-         if (! bWriteRasterGISFile(RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
+         if (!bWriteRasterGISFile(RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_FINE_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bHaveSandSediment && m_bSandUnconsSedSave)
       {
-         if (! bWriteRasterGISFile(RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
+         if (!bWriteRasterGISFile(RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_SAND_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bHaveCoarseSediment && m_bCoarseUnconsSedSave)
       {
-         if (! bWriteRasterGISFile(RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
+         if (!bWriteRasterGISFile(RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT, &RASTER_PLOT_COARSE_UNCONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bHaveFineSediment && m_bFineConsSedSave)
       {
-         if (! bWriteRasterGISFile(RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
+         if (!bWriteRasterGISFile(RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_FINE_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bHaveSandSediment && m_bSandConsSedSave)
       {
-         if (! bWriteRasterGISFile(RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
+         if (!bWriteRasterGISFile(RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_SAND_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
 
       if (m_bHaveCoarseSediment && m_bCoarseConsSedSave)
       {
-         if (! bWriteRasterGISFile(RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
+         if (!bWriteRasterGISFile(RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT, &RASTER_PLOT_COARSE_CONSOLIDATED_SEDIMENT_TITLE, nLayer))
             return false;
       }
    }
@@ -1134,131 +1095,130 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
    {
       for (int i = 0; i < static_cast<int>(m_VdSliceElev.size()); i++)
       {
-         if (! bWriteRasterGISFile(RASTER_PLOT_SLICE, &RASTER_PLOT_SLICE_TITLE, 0, m_VdSliceElev[i]))
+         if (!bWriteRasterGISFile(RASTER_PLOT_SLICE, &RASTER_PLOT_SLICE_TITLE, 0, m_VdSliceElev[i]))
             return false;
       }
    }
 
    if (m_bRasterCoastlineSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_COAST, &RASTER_PLOT_COAST_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_COAST, &RASTER_PLOT_COAST_TITLE))
          return false;
    }
 
    if (m_bRasterNormalSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_NORMAL, &RASTER_PLOT_NORMAL_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_NORMAL, &RASTER_PLOT_NORMAL_TITLE))
          return false;
    }
 
    if (m_bActiveZoneSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_ACTIVE_ZONE, &RASTER_PLOT_ACTIVE_ZONE_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_ACTIVE_ZONE, &RASTER_PLOT_ACTIVE_ZONE_TITLE))
          return false;
    }
 
    if (m_bCliffCollapseSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_CLIFF_COLLAPSE, &RASTER_PLOT_CLIFF_COLLAPSE_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_CLIFF_COLLAPSE, &RASTER_PLOT_CLIFF_COLLAPSE_TITLE))
          return false;
    }
 
    if (m_bTotCliffCollapseSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_TOTAL_CLIFF_COLLAPSE, &RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_TOTAL_CLIFF_COLLAPSE, &RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_TITLE))
          return false;
    }
 
    if (m_bCliffCollapseDepositionSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT, &RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT, &RASTER_PLOT_CLIFF_COLLAPSE_DEPOSIT_TITLE))
          return false;
    }
 
    if (m_bTotCliffCollapseDepositionSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT, &RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT, &RASTER_PLOT_TOTAL_CLIFF_COLLAPSE_DEPOSIT_TITLE))
          return false;
    }
 
    if (m_bRasterPolygonSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_POLYGON, &RASTER_PLOT_POLYGON_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_POLYGON, &RASTER_PLOT_POLYGON_TITLE))
          return false;
    }
 
    if (m_bPotentialPlatformErosionMaskSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK, &RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK_TITLE))
-      return false;
+      if (!bWriteRasterGISFile(RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK, &RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK_TITLE))
+         return false;
    }
 
    if (m_bSeaMaskSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_INUNDATION_MASK, &RASTER_PLOT_INUNDATION_MASK_TITLE))
-      return false;
+      if (!bWriteRasterGISFile(RASTER_PLOT_INUNDATION_MASK, &RASTER_PLOT_INUNDATION_MASK_TITLE))
+         return false;
    }
 
    if (m_bBeachMaskSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_BEACH_MASK, &RASTER_PLOT_BEACH_MASK_TITLE))
-      return false;
+      if (!bWriteRasterGISFile(RASTER_PLOT_BEACH_MASK, &RASTER_PLOT_BEACH_MASK_TITLE))
+         return false;
    }
 
    if (m_bInterventionClassSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_INTERVENTION_CLASS, &RASTER_PLOT_INTERVENTION_CLASS_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_INTERVENTION_CLASS, &RASTER_PLOT_INTERVENTION_CLASS_TITLE))
          return false;
    }
 
    if (m_bInterventionHeightSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_INTERVENTION_HEIGHT, &RASTER_PLOT_INTERVENTION_HEIGHT_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_INTERVENTION_HEIGHT, &RASTER_PLOT_INTERVENTION_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bShadowZoneCodesSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_SHADOW_ZONE, &RASTER_PLOT_SHADOW_ZONE_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_SHADOW_ZONE, &RASTER_PLOT_SHADOW_ZONE_TITLE))
          return false;
 
-      if (! bWriteRasterGISFile(RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE, &RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE, &RASTER_PLOT_SHADOW_DOWNDRIFT_ZONE_TITLE))
          return false;
    }
 
    if (m_bDeepWaterWaveAngleSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION, &RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION, &RASTER_PLOT_DEEP_WATER_WAVE_ORIENTATION_TITLE))
          return false;
    }
 
    if (m_bDeepWaterWaveHeightSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT, &RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT, &RASTER_PLOT_DEEP_WATER_WAVE_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bDeepWaterWavePeriodSave)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_DEEP_WATER_WAVE_PERIOD, &RASTER_PLOT_DEEP_WATER_WAVE_PERIOD_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_DEEP_WATER_WAVE_PERIOD, &RASTER_PLOT_DEEP_WATER_WAVE_PERIOD_TITLE))
          return false;
    }
 
    if (m_bPolygonUnconsSedUpOrDownDrift)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT, &RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT, &RASTER_PLOT_POLYGON_UPDRIFT_OR_DOWNDRIFT_TITLE))
          return false;
    }
 
    if (m_bPolygonUnconssedGainOrLoss)
    {
-      if (! bWriteRasterGISFile(RASTER_PLOT_POLYGON_GAIN_OR_LOSS, &RASTER_PLOT_POLYGON_GAIN_OR_LOSS_TITLE))
+      if (!bWriteRasterGISFile(RASTER_PLOT_POLYGON_GAIN_OR_LOSS, &RASTER_PLOT_POLYGON_GAIN_OR_LOSS_TITLE))
          return false;
    }
 
    return true;
 }
-
 
 /*==============================================================================================================================
 
@@ -1268,101 +1228,111 @@ bool CSimulation::bSaveAllRasterGISFiles(void)
 bool CSimulation::bSaveAllVectorGISFiles(void)
 {
    // Always written
-   if (! bWriteVectorGISFile(VECTOR_PLOT_COAST, &VECTOR_PLOT_COAST_TITLE))
+   if (!bWriteVectorGISFile(VECTOR_PLOT_COAST, &VECTOR_PLOT_COAST_TITLE))
       return false;
 
-   if (! bWriteVectorGISFile(VECTOR_PLOT_NORMALS, &VECTOR_PLOT_NORMALS_TITLE))
+   if (!bWriteVectorGISFile(VECTOR_PLOT_NORMALS, &VECTOR_PLOT_NORMALS_TITLE))
       return false;
 
    if (m_bInvalidNormalsSave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_INVALID_NORMALS, &VECTOR_PLOT_INVALID_NORMALS_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_INVALID_NORMALS, &VECTOR_PLOT_INVALID_NORMALS_TITLE))
          return false;
    }
 
    if (m_bCoastCurvatureSave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_COAST_CURVATURE, &VECTOR_PLOT_COAST_CURVATURE_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_COAST_CURVATURE, &VECTOR_PLOT_COAST_CURVATURE_TITLE))
          return false;
    }
 
    if (m_bWaveAngleAndHeightSave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_WAVE_ANGLE_AND_HEIGHT_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_WAVE_ANGLE_AND_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bAvgWaveAngleAndHeightSave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_AVG_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_AVG_WAVE_ANGLE_AND_HEIGHT_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_AVG_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_AVG_WAVE_ANGLE_AND_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bWaveEnergySinceCollapseSave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE, &VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE, &VECTOR_PLOT_WAVE_ENERGY_SINCE_COLLAPSE_TITLE))
          return false;
    }
 
    if (m_bMeanWaveEnergySave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_MEAN_WAVE_ENERGY, &VECTOR_PLOT_MEAN_WAVE_ENERGY_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_MEAN_WAVE_ENERGY, &VECTOR_PLOT_MEAN_WAVE_ENERGY_TITLE))
          return false;
    }
 
    if (m_bBreakingWaveHeightSave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_BREAKING_WAVE_HEIGHT, &VECTOR_PLOT_BREAKING_WAVE_HEIGHT_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_BREAKING_WAVE_HEIGHT, &VECTOR_PLOT_BREAKING_WAVE_HEIGHT_TITLE))
          return false;
    }
 
    if (m_bPolygonNodeSave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_POLYGON_NODES, &VECTOR_PLOT_POLYGON_NODES_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_POLYGON_NODES, &VECTOR_PLOT_POLYGON_NODES_TITLE))
          return false;
    }
 
    if (m_bPolygonBoundarySave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_POLYGON_BOUNDARY, &VECTOR_PLOT_POLYGON_BOUNDARY_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_POLYGON_BOUNDARY, &VECTOR_PLOT_POLYGON_BOUNDARY_TITLE))
          return false;
    }
 
    if (m_bCliffNotchSave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_CLIFF_NOTCH_SIZE, &VECTOR_PLOT_CLIFF_NOTCH_SIZE_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_CLIFF_NOTCH_SIZE, &VECTOR_PLOT_CLIFF_NOTCH_SIZE_TITLE))
          return false;
    }
 
    if (m_bShadowBoundarySave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_SHADOW_BOUNDARY, &VECTOR_PLOT_SHADOW_BOUNDARY_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_SHADOW_BOUNDARY, &VECTOR_PLOT_SHADOW_BOUNDARY_TITLE))
          return false;
    }
 
    if (m_bShadowDowndriftBoundarySave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_DOWNDRIFT_BOUNDARY, &VECTOR_PLOT_DOWNDRIFT_BOUNDARY_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_DOWNDRIFT_BOUNDARY, &VECTOR_PLOT_DOWNDRIFT_BOUNDARY_TITLE))
          return false;
    }
 
    if (m_bDeepWaterWaveAngleAndHeightSave)
    {
-      if (! bWriteVectorGISFile(VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_TITLE))
+      if (!bWriteVectorGISFile(VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT, &VECTOR_PLOT_DEEP_WATER_WAVE_ANGLE_AND_HEIGHT_TITLE))
          return false;
    }
 
+   if (m_bWaveSetupSave)
+   {
+      if (!bWriteVectorGISFile(VECTOR_PLOT_WAVE_SETUP, &VECTOR_PLOT_WAVE_SETUP_TITLE))
+         return false;
+   }
+
+   if (m_bStormSurgeSave)
+   {
+      if (!bWriteVectorGISFile(VECTOR_PLOT_STORM_SURGE, &VECTOR_PLOT_STORM_SURGE_TITLE))
+         return false;
+   }
 
    return true;
 }
-
 
 /*==============================================================================================================================
 
  Finds the max and min values in order to scale raster output if we cannot write doubles
 
 ==============================================================================================================================*/
-void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, double& dMax, int const nLayer, double const dElev)
+void CSimulation::GetRasterOutputMinMax(int const nDataItem, double &dMin, double &dMax, int const nLayer, double const dElev)
 {
    // If this is a binary mask layer, we already know the max and min values
    if ((nDataItem == RASTER_PLOT_POTENTIAL_PLATFORM_EROSION_MASK) ||
@@ -1437,7 +1407,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             break;
 
          case (RASTER_PLOT_WAVE_HEIGHT):
-            if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
+            if (!m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
                dTmp = m_dMissingValue;
             else
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveHeight();
@@ -1448,7 +1418,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
             break;
 
          case (RASTER_PLOT_WAVE_ORIENTATION):
-            if (! m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
+            if (!m_pRasterGrid->m_Cell[nX][nY].bIsInContiguousSea())
                dTmp = m_dMissingValue;
             else
                dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetWaveAngle();
@@ -1461,7 +1431,7 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
          case (RASTER_PLOT_BEACH_PROTECTION):
             dTmp = m_pRasterGrid->m_Cell[nX][nY].dGetBeachProtectionFactor();
             if (dTmp != DBL_NODATA)
-               dTmp = 1 - dTmp;                 // Output the inverse, seems more intuitive
+               dTmp = 1 - dTmp; // Output the inverse, seems more intuitive
             break;
 
          case (RASTER_PLOT_POTENTIAL_PLATFORM_EROSION):
@@ -1589,7 +1559,6 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
    }
 }
 
-
 /*==============================================================================================================================
 
  Sets per-driver defaults for raster files created using GDAL
@@ -1598,18 +1567,16 @@ void CSimulation::GetRasterOutputMinMax(int const nDataItem, double& dMin, doubl
 void CSimulation::SetRasterFileCreationDefaults(void)
 {
    string
-      strDriver = strToLower(&m_strRasterGISOutFormat),
-      strComment =  "Created by " + PROGRAM_NAME + " for " + PLATFORM + " " + strGetBuild() + " running on " + strGetComputerName();
+       strDriver = strToLower(&m_strRasterGISOutFormat),
+       strComment = "Created by " + PROGRAM_NAME + " for " + PLATFORM + " " + strGetBuild() + " running on " + strGetComputerName();
 
    // TODO Do these for all commonly-used file types
    if (strDriver == "aaigrid")
    {
-
    }
 
    else if (strDriver == "bmp")
    {
-
    }
 
    else if (strDriver == "gtiff")
@@ -1617,11 +1584,11 @@ void CSimulation::SetRasterFileCreationDefaults(void)
       if (m_bWorldFile)
          m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "TFW", "YES");
 
-//       if (m_bCompressGTIFF)
-//       {
-//          m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "NUM_THREADS", "ALL_CPUS");
-//          m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "COMPRESS", "LZW");
-//       }
+      //       if (m_bCompressGTIFF)
+      //       {
+      //          m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "NUM_THREADS", "ALL_CPUS");
+      //          m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "COMPRESS", "LZW");
+      //       }
    }
 
    else if (strDriver == "hfa")
@@ -1640,24 +1607,21 @@ void CSimulation::SetRasterFileCreationDefaults(void)
       if (m_bWorldFile)
          m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "WORLDFILE", "YES");
 
-//       m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "TITLE", "This is the title");
-//       m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "DESCRIPTION", "This is a description");
-//       m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "COPYRIGHT", "This is some copyright statement");
+      //       m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "TITLE", "This is the title");
+      //       m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "DESCRIPTION", "This is a description");
+      //       m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "COPYRIGHT", "This is some copyright statement");
       m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "COMMENT", strComment.c_str());
       m_papszGDALRasterOptions = CSLSetNameValue(m_papszGDALRasterOptions, "NBITS", "4");
    }
 
    else if (strDriver == "rst")
    {
-
    }
 
-//    for (int i = 0; m_papszGDALRasterOptions[i] != NULL; i++)
-//       cout << m_papszGDALRasterOptions[i] << endl;
-//    cout << endl;
-
+   //    for (int i = 0; m_papszGDALRasterOptions[i] != NULL; i++)
+   //       cout << m_papszGDALRasterOptions[i] << endl;
+   //    cout << endl;
 }
-
 
 /*==============================================================================================================================
 
@@ -1672,48 +1636,47 @@ int CSimulation::nGetOppositeDirection(int const nDirection)
       return SOUTH;
 
    case NORTH_EAST:
-      return SOUTH-WEST;
+      return SOUTH - WEST;
 
    case EAST:
       return WEST;
 
    case SOUTH_EAST:
-      return NORTH-WEST;
+      return NORTH - WEST;
 
    case SOUTH:
       return NORTH;
 
    case SOUTH_WEST:
-      return NORTH-EAST;
+      return NORTH - EAST;
 
    case WEST:
       return EAST;
 
    case NORTH_WEST:
-      return SOUTH-EAST;
+      return SOUTH - EAST;
    }
 
    // Should never get here
    return NO_DIRECTION;
 }
 
-
 /*==============================================================================================================================
 
  Given two integer points, calculates the slope and intercept of the line passing through the points
 
 ===============================================================================================================================*/
-void CSimulation::GetSlopeAndInterceptFromPoints(CGeom2DIPoint const* pPti1, CGeom2DIPoint const* pPti2, double& dSlope, double& dIntercept)
+void CSimulation::GetSlopeAndInterceptFromPoints(CGeom2DIPoint const *pPti1, CGeom2DIPoint const *pPti2, double &dSlope, double &dIntercept)
 {
    int
-      nX1 = pPti1->nGetX(),
-      nY1 = pPti1->nGetY(),
-      nX2 = pPti2->nGetX(),
-      nY2 = pPti2->nGetY();
+       nX1 = pPti1->nGetX(),
+       nY1 = pPti1->nGetY(),
+       nX2 = pPti2->nGetX(),
+       nY2 = pPti2->nGetY();
 
    double
-      dXDiff = nX1 - nX2,
-      dYDiff = nY1 - nY2;
+       dXDiff = nX1 - nX2,
+       dYDiff = nY1 - nY2;
 
    if (bFPIsEqual(dXDiff, 0.0, TOLERANCE))
       dSlope = 0;
@@ -1722,7 +1685,6 @@ void CSimulation::GetSlopeAndInterceptFromPoints(CGeom2DIPoint const* pPti1, CGe
 
    dIntercept = nY1 - (dSlope * nX1);
 }
-
 
 /*==============================================================================================================================
 
@@ -1741,13 +1703,13 @@ CGeom2DIPoint CSimulation::PtiFindClosestCoastPoint(int const nX, int const nY)
       {
          // Get the coords of the grid cell marked as coastline for the coastal landform object
          int
-            nXCoast = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(j)->nGetX(),
-            nYCoast = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(j)->nGetY();
+             nXCoast = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(j)->nGetX(),
+             nYCoast = m_VCoast[nCoast].pPtiGetCellMarkedAsCoastline(j)->nGetY();
 
          // Calculate the squared distance between this point and the given point
          int
-            nXDist = nX - nXCoast,
-            nYDist = nY - nYCoast;
+             nXDist = nX - nXCoast,
+             nYDist = nY - nYCoast;
 
          unsigned int nSqDist = (nXDist * nXDist) + (nYDist * nYDist);
 
