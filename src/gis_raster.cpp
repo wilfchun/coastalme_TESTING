@@ -104,6 +104,14 @@ int CSimulation::nReadRasterBasementDEM(void)
       cerr << ERR << CPLGetLastErrorMsg() << " in " << m_strInitialBasementDEMFile << endl;
       return RTN_ERR_DEMFILE;
    }
+   
+   // CoastalME can only handle rasters that are oriented N-S and W-E. (If you need to work with a raster that is oriented differently,m then rotate it before running CoastalME). So here we check whether row rotation (m_dGeoTransform[2]) and column rotation (m_dGeoTransform[4]) are both zero. See https://gdal.org/tutorials/geotransforms_tut.html
+   if ((m_dGeoTransform[2] != 0.0) || (m_dGeoTransform[4] != 0.0))
+   {
+      // Error: not oriented NS and W-E
+      cerr << ERR << m_strInitialBasementDEMFile << " is not oriented N-S and W-E. Row rotation = " << m_dGeoTransform[2] << " and column rotation = " << m_dGeoTransform[4] << endl;
+      return (RTN_ERR_RASTER_FILE_READ);      
+   }
 
    // Get the X and Y cell sizes, in external CRS units. Note that while the cell is supposed to be square, it may not be exactly so due to oddities with some GIS calculations
    double dCellSideX = tAbs(m_dGeoTransform[1]);

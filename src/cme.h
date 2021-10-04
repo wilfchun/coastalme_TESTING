@@ -475,7 +475,7 @@ double const MAX_LAND_LENGTH_OF_SHADOW_ZONE_LINE = 5; // Used in shadow line tra
 
 double const DBL_NODATA = -9999;
 
-string const PROGRAM_NAME = "CoastalME 0.9.9 TESTING: 29 September 2021";
+string const PROGRAM_NAME = "CoastalME 0.9.9 TESTING: 4 October 2021";
 string const PROGRAM_NAME_SHORT = "CME";
 string const CME_INI = "cme.ini";
 
