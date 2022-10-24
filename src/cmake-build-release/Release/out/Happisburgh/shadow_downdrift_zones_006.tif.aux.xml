@@ -1,0 +1,9 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Downdrift of wave shadow zones at 14:36:36</Description>
+    <CategoryNames>
+      <Category>Not in shadow downdrift zone</Category>
+      <Category>In shadow downdrift zone</Category>
+    </CategoryNames>
+  </PAMRasterBand>
+</PAMDataset>

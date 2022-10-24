@@ -1,0 +1,9 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Active zone at 21:54:54</Description>
+    <CategoryNames>
+      <Category>Not in active zone</Category>
+      <Category>In active zone</Category>
+    </CategoryNames>
+  </PAMRasterBand>
+</PAMDataset>
