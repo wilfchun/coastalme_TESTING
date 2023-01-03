@@ -1,0 +1,19 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Landform class at 24:21:00</Description>
+    <CategoryNames>
+      <Category>None</Category>
+      <Category>Hinterland</Category>
+      <Category>Sea</Category>
+      <Category>Cliff</Category>
+      <Category>Drift</Category>
+      <Category>Intervention</Category>
+      <Category>Cliff on Coastline</Category>
+      <Category>Inland Cliff</Category>
+      <Category>Mixed Drift</Category>
+      <Category>Talus</Category>
+      <Category>Beach</Category>
+      <Category>Dunes</Category>
+    </CategoryNames>
+  </PAMRasterBand>
+</PAMDataset>

@@ -1,0 +1,7 @@
+/home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release/CMakeFiles/cme.dir
+/home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release/CMakeFiles/edit_cache.dir
+/home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release/CMakeFiles/rebuild_cache.dir
+/home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release/CMakeFiles/list_install_components.dir
+/home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release/CMakeFiles/install.dir
+/home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release/CMakeFiles/install/local.dir
+/home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release/CMakeFiles/install/strip.dir

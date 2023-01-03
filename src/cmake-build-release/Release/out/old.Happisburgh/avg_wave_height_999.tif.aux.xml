@@ -1,0 +1,5 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Average wave height at 25:02:00</Description>
+  </PAMRasterBand>
+</PAMDataset>
