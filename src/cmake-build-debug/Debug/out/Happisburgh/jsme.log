@@ -1,0 +1,420 @@
+CoastalME 0.9.9 TESTING: 4 October 2021 for Intel x86/GNU C++ (17:59:25 Oct 21 2022 DEBUG build) on wilf-virtualmachine
+
+jsme run started at 21:23:12 on Monday 02 January 2023
+
+Main output file                                          	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/out/Happisburgh/jsme.out.out
+Log file (this file)                                      	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/out/Happisburgh/jsme.out.log
+Level of Log detail                                       	: 1 (least detail)
+
+TIMESTEP 1 ================================================================================================
+
+TOTALS FOR TIMESTEP 1 (all m^3)
+Potential platform erosion = 0
+Actual fine platform erosion = 0
+Actual sand platform erosion = 0
+Actual coarse platform erosion = 0
+TOTAL actual platform erosion = 0
+
+Cliff collapse fine = 0
+Cliff collapse sand = 0
+Cliff collapse coarse = 0
+TOTAL cliff collapse = 0
+
+Deposition of unconsolidated sand talus due to cliff collapse = 0
+Deposition of unconsolidated coarse talus due to cliff collapse = 0
+Erosion of previously-deposited fine talus = 0
+Erosion of previously-deposited sand talus = 0
+Erosion of previously-deposited coarse talus = 0
+TOTAL change in talus from cliff collapse = +0
+
+Potential beach erosion = 0
+Actual fine beach erosion = 0
+Actual sand beach erosion = 0
+Actual coarse beach erosion = 0
+Sand beach deposition = 0
+Coarse beach deposition = 0
+Change in fine beach sediment = -0
+Change in sand beach sediment = 0
+Change in coarse beach sediment = 0
+TOTAL change in beach sediment = +0
+
+Fine sediment added via input events = +0
+Sand sediment added via input events = +0
+Coarse sediment added via input events = +0
+
+Beach sediment potentially lost from grid = 0
+Fine beach sediment actually lost from grid = 0
+Sand beach sediment actually lost from grid = 0
+Coarse beach sediment actually lost from grid = 0
+
+Sand sediment lost from grid due to cliff collapse = 0
+Coarse sediment lost from grid due to cliff collapse = 0
+TOTAL beach sediment actually lost from grid (all processes)  = 0
+
+Suspended sediment = 0
+
+
+TIMESTEP 2 ================================================================================================
+
+TOTALS FOR TIMESTEP 2 (all m^3)
+Potential platform erosion = 0
+Actual fine platform erosion = 0
+Actual sand platform erosion = 0
+Actual coarse platform erosion = 0
+TOTAL actual platform erosion = 0
+
+Cliff collapse fine = 0
+Cliff collapse sand = 0
+Cliff collapse coarse = 0
+TOTAL cliff collapse = 0
+
+Deposition of unconsolidated sand talus due to cliff collapse = 0
+Deposition of unconsolidated coarse talus due to cliff collapse = 0
+Erosion of previously-deposited fine talus = 0
+Erosion of previously-deposited sand talus = 0
+Erosion of previously-deposited coarse talus = 0
+TOTAL change in talus from cliff collapse = +0
+
+Potential beach erosion = 0
+Actual fine beach erosion = 0
+Actual sand beach erosion = 0
+Actual coarse beach erosion = 0
+Sand beach deposition = 0
+Coarse beach deposition = 0
+Change in fine beach sediment = -0
+Change in sand beach sediment = 0
+Change in coarse beach sediment = 0
+TOTAL change in beach sediment = +0
+
+Fine sediment added via input events = +0
+Sand sediment added via input events = +0
+Coarse sediment added via input events = +0
+
+Beach sediment potentially lost from grid = 0
+Fine beach sediment actually lost from grid = 0
+Sand beach sediment actually lost from grid = 0
+Coarse beach sediment actually lost from grid = 0
+
+Sand sediment lost from grid due to cliff collapse = 0
+Coarse sediment lost from grid due to cliff collapse = 0
+TOTAL beach sediment actually lost from grid (all processes)  = 0
+
+Suspended sediment = 0
+
+
+TIMESTEP 3 ================================================================================================
+
+TOTALS FOR TIMESTEP 3 (all m^3)
+Potential platform erosion = 0
+Actual fine platform erosion = 0
+Actual sand platform erosion = 0
+Actual coarse platform erosion = 0
+TOTAL actual platform erosion = 0
+
+Cliff collapse fine = 0
+Cliff collapse sand = 0
+Cliff collapse coarse = 0
+TOTAL cliff collapse = 0
+
+Deposition of unconsolidated sand talus due to cliff collapse = 0
+Deposition of unconsolidated coarse talus due to cliff collapse = 0
+Erosion of previously-deposited fine talus = 0
+Erosion of previously-deposited sand talus = 0
+Erosion of previously-deposited coarse talus = 0
+TOTAL change in talus from cliff collapse = +0
+
+Potential beach erosion = 0
+Actual fine beach erosion = 0
+Actual sand beach erosion = 0
+Actual coarse beach erosion = 0
+Sand beach deposition = 0
+Coarse beach deposition = 0
+Change in fine beach sediment = -0
+Change in sand beach sediment = 0
+Change in coarse beach sediment = 0
+TOTAL change in beach sediment = +0
+
+Fine sediment added via input events = +0
+Sand sediment added via input events = +0
+Coarse sediment added via input events = +0
+
+Beach sediment potentially lost from grid = 0
+Fine beach sediment actually lost from grid = 0
+Sand beach sediment actually lost from grid = 0
+Coarse beach sediment actually lost from grid = 0
+
+Sand sediment lost from grid due to cliff collapse = 0
+Coarse sediment lost from grid due to cliff collapse = 0
+TOTAL beach sediment actually lost from grid (all processes)  = 0
+
+Suspended sediment = 0
+
+
+TIMESTEP 4 ================================================================================================
+
+TOTALS FOR TIMESTEP 4 (all m^3)
+Potential platform erosion = 0
+Actual fine platform erosion = 0
+Actual sand platform erosion = 0
+Actual coarse platform erosion = 0
+TOTAL actual platform erosion = 0
+
+Cliff collapse fine = 0
+Cliff collapse sand = 0
+Cliff collapse coarse = 0
+TOTAL cliff collapse = 0
+
+Deposition of unconsolidated sand talus due to cliff collapse = 0
+Deposition of unconsolidated coarse talus due to cliff collapse = 0
+Erosion of previously-deposited fine talus = 0
+Erosion of previously-deposited sand talus = 0
+Erosion of previously-deposited coarse talus = 0
+TOTAL change in talus from cliff collapse = +0
+
+Potential beach erosion = 0
+Actual fine beach erosion = 0
+Actual sand beach erosion = 0
+Actual coarse beach erosion = 0
+Sand beach deposition = 0
+Coarse beach deposition = 0
+Change in fine beach sediment = -0
+Change in sand beach sediment = 0
+Change in coarse beach sediment = 0
+TOTAL change in beach sediment = +0
+
+Fine sediment added via input events = +0
+Sand sediment added via input events = +0
+Coarse sediment added via input events = +0
+
+Beach sediment potentially lost from grid = 0
+Fine beach sediment actually lost from grid = 0
+Sand beach sediment actually lost from grid = 0
+Coarse beach sediment actually lost from grid = 0
+
+Sand sediment lost from grid due to cliff collapse = 0
+Coarse sediment lost from grid due to cliff collapse = 0
+TOTAL beach sediment actually lost from grid (all processes)  = 0
+
+Suspended sediment = 0
+
+
+TIMESTEP 5 ================================================================================================
+
+TOTALS FOR TIMESTEP 5 (all m^3)
+Potential platform erosion = 0
+Actual fine platform erosion = 0
+Actual sand platform erosion = 0
+Actual coarse platform erosion = 0
+TOTAL actual platform erosion = 0
+
+Cliff collapse fine = 0
+Cliff collapse sand = 0
+Cliff collapse coarse = 0
+TOTAL cliff collapse = 0
+
+Deposition of unconsolidated sand talus due to cliff collapse = 0
+Deposition of unconsolidated coarse talus due to cliff collapse = 0
+Erosion of previously-deposited fine talus = 0
+Erosion of previously-deposited sand talus = 0
+Erosion of previously-deposited coarse talus = 0
+TOTAL change in talus from cliff collapse = +0
+
+Potential beach erosion = 0
+Actual fine beach erosion = 0
+Actual sand beach erosion = 0
+Actual coarse beach erosion = 0
+Sand beach deposition = 0
+Coarse beach deposition = 0
+Change in fine beach sediment = -0
+Change in sand beach sediment = 0
+Change in coarse beach sediment = 0
+TOTAL change in beach sediment = +0
+
+Fine sediment added via input events = +0
+Sand sediment added via input events = +0
+Coarse sediment added via input events = +0
+
+Beach sediment potentially lost from grid = 0
+Fine beach sediment actually lost from grid = 0
+Sand beach sediment actually lost from grid = 0
+Coarse beach sediment actually lost from grid = 0
+
+Sand sediment lost from grid due to cliff collapse = 0
+Coarse sediment lost from grid due to cliff collapse = 0
+TOTAL beach sediment actually lost from grid (all processes)  = 0
+
+Suspended sediment = 0
+
+
+TIMESTEP 6 ================================================================================================
+
+TOTALS FOR TIMESTEP 6 (all m^3)
+Potential platform erosion = 0
+Actual fine platform erosion = 0
+Actual sand platform erosion = 0
+Actual coarse platform erosion = 0
+TOTAL actual platform erosion = 0
+
+Cliff collapse fine = 0
+Cliff collapse sand = 0
+Cliff collapse coarse = 0
+TOTAL cliff collapse = 0
+
+Deposition of unconsolidated sand talus due to cliff collapse = 0
+Deposition of unconsolidated coarse talus due to cliff collapse = 0
+Erosion of previously-deposited fine talus = 0
+Erosion of previously-deposited sand talus = 0
+Erosion of previously-deposited coarse talus = 0
+TOTAL change in talus from cliff collapse = +0
+
+Potential beach erosion = 0
+Actual fine beach erosion = 0
+Actual sand beach erosion = 0
+Actual coarse beach erosion = 0
+Sand beach deposition = 0
+Coarse beach deposition = 0
+Change in fine beach sediment = -0
+Change in sand beach sediment = 0
+Change in coarse beach sediment = 0
+TOTAL change in beach sediment = +0
+
+Fine sediment added via input events = +0
+Sand sediment added via input events = +0
+Coarse sediment added via input events = +0
+
+Beach sediment potentially lost from grid = 0
+Fine beach sediment actually lost from grid = 0
+Sand beach sediment actually lost from grid = 0
+Coarse beach sediment actually lost from grid = 0
+
+Sand sediment lost from grid due to cliff collapse = 0
+Coarse sediment lost from grid due to cliff collapse = 0
+TOTAL beach sediment actually lost from grid (all processes)  = 0
+
+Suspended sediment = 0
+
+
+TIMESTEP 7 ================================================================================================
+
+TOTALS FOR TIMESTEP 7 (all m^3)
+Potential platform erosion = 0
+Actual fine platform erosion = 0
+Actual sand platform erosion = 0
+Actual coarse platform erosion = 0
+TOTAL actual platform erosion = 0
+
+Cliff collapse fine = 0
+Cliff collapse sand = 0
+Cliff collapse coarse = 0
+TOTAL cliff collapse = 0
+
+Deposition of unconsolidated sand talus due to cliff collapse = 0
+Deposition of unconsolidated coarse talus due to cliff collapse = 0
+Erosion of previously-deposited fine talus = 0
+Erosion of previously-deposited sand talus = 0
+Erosion of previously-deposited coarse talus = 0
+TOTAL change in talus from cliff collapse = +0
+
+Potential beach erosion = 0
+Actual fine beach erosion = 0
+Actual sand beach erosion = 0
+Actual coarse beach erosion = 0
+Sand beach deposition = 0
+Coarse beach deposition = 0
+Change in fine beach sediment = -0
+Change in sand beach sediment = 0
+Change in coarse beach sediment = 0
+TOTAL change in beach sediment = +0
+
+Fine sediment added via input events = +0
+Sand sediment added via input events = +0
+Coarse sediment added via input events = +0
+
+Beach sediment potentially lost from grid = 0
+Fine beach sediment actually lost from grid = 0
+Sand beach sediment actually lost from grid = 0
+Coarse beach sediment actually lost from grid = 0
+
+Sand sediment lost from grid due to cliff collapse = 0
+Coarse sediment lost from grid due to cliff collapse = 0
+TOTAL beach sediment actually lost from grid (all processes)  = 0
+
+Suspended sediment = 0
+
+
+TIMESTEP 8 ================================================================================================
+
+TOTALS FOR TIMESTEP 8 (all m^3)
+Potential platform erosion = 0
+Actual fine platform erosion = 0
+Actual sand platform erosion = 0
+Actual coarse platform erosion = 0
+TOTAL actual platform erosion = 0
+
+Cliff collapse fine = 0
+Cliff collapse sand = 0
+Cliff collapse coarse = 0
+TOTAL cliff collapse = 0
+
+Deposition of unconsolidated sand talus due to cliff collapse = 0
+Deposition of unconsolidated coarse talus due to cliff collapse = 0
+Erosion of previously-deposited fine talus = 0
+Erosion of previously-deposited sand talus = 0
+Erosion of previously-deposited coarse talus = 0
+TOTAL change in talus from cliff collapse = +0
+
+Potential beach erosion = 0
+Actual fine beach erosion = 0
+Actual sand beach erosion = 0
+Actual coarse beach erosion = 0
+Sand beach deposition = 0
+Coarse beach deposition = 0
+Change in fine beach sediment = -0
+Change in sand beach sediment = 0
+Change in coarse beach sediment = 0
+TOTAL change in beach sediment = +0
+
+Fine sediment added via input events = +0
+Sand sediment added via input events = +0
+Coarse sediment added via input events = +0
+
+Beach sediment potentially lost from grid = 0
+Fine beach sediment actually lost from grid = 0
+Sand beach sediment actually lost from grid = 0
+Coarse beach sediment actually lost from grid = 0
+
+Sand sediment lost from grid due to cliff collapse = 0
+Coarse sediment lost from grid due to cliff collapse = 0
+TOTAL beach sediment actually lost from grid (all processes)  = 0
+
+Suspended sediment = 0
+
+
+END OF RUN ================================================================================================
+
+ERRORS
+Erosion error = 0 m^3
+Deposition error = 0 m^3
+
+ALL-PROCESS TOTALS
+Total sediment added = 0 m^3
+Total sediment eroded (all processes) = 0 m^3
+Total sediment deposited and in suspension (all processes) = 0 m^3
+Total sediment lost from grid (all processes) = 0 m^3
+                                              = 0 m^3/hour
+                                              = 0.0000 m^3/sec
+
+NOTE grid edge option is OPEN, therefore values above are for all sediment size classes
+Eroded + lost = 0.00 m^3
+Deposited + suspension = 0.00 m^3
+
+
+On-profile average potential shore platform erosion = 0.00 mm (n = 0)
+Between-profile average potential shore platform erosion = 0.00 mm (n = 0)
+
+CPU time elapsed: 0:01:18.61 (8.7351 per timestep)
+In terms of CPU time, this is 412 x faster than reality
+Run time elapsed: 0:01:14 (8.2222 per timestep)
+In terms of run time, this is 437.838 x faster than reality
+
+END OF RUN

@@ -1,0 +1,10 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Intervention class at 0:09:36</Description>
+    <CategoryNames>
+      <Category>None</Category>
+      <Category>Structural</Category>
+      <Category>Non-Structural</Category>
+    </CategoryNames>
+  </PAMRasterBand>
+</PAMDataset>

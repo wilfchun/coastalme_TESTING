@@ -1,0 +1,9 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Rasterized normals to coastline at 0:00:03</Description>
+    <CategoryNames>
+      <Category>Not coastline-normal profile</Category>
+      <Category>Coastline-normal profile</Category>
+    </CategoryNames>
+  </PAMRasterBand>
+</PAMDataset>

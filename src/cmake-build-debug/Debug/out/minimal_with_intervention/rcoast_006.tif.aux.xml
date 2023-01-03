@@ -1,0 +1,9 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Rasterized coastline at 0:04:30</Description>
+    <CategoryNames>
+      <Category>Not coastline</Category>
+      <Category>Coastline</Category>
+    </CategoryNames>
+  </PAMRasterBand>
+</PAMDataset>

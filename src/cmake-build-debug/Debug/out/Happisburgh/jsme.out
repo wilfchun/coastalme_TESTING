@@ -1,0 +1,262 @@
+CoastalME 0.9.9 TESTING: 4 October 2021 for Intel x86/GNU C++ (17:59:25 Oct 21 2022 DEBUG build) on wilf-virtualmachine
+
+RUN DETAILS
+ Name                                                      	: jsme
+ Run started                                               	: 21:23:12 Monday 02 January 2023
+ Initialization file                                       	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/cme.ini
+ Input data read from                                      	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/jsme.dat
+ Main output file (this file)                              	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/out/Happisburgh/jsme.out.out
+ Log file                                                  	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/out/Happisburgh/jsme.out.log
+ Level of Log detail                                       	: 1 (least detail)
+ Simulation start date/time                                	: 00:00:00 01/01/1999
+ Duration of simulation                                    	: 0y 000d 09h
+ Saves at                                                  	: 0y 000d 01h, 0y 000d 02h, 0y 000d 03h, 0y 000d 04h, 0y 000d 05h, 0y 000d 06h, 0y 000d 07h, 0y 000d 08h, 0y 000d 09h, 0y 000d 10h, 0y 000d 11h, 0y 000d 12h, 0y 000d 13h, 0y 000d 14h, 0y 000d 15h, 0y 000d 16h, 0y 000d 17h, 0y 000d 18h, 0y 000d 19h, 0y 000d 20h, 0y 000d 21h, 0y 000d 22h, 0y 000d 23h, 0y 001d 00h, 0y 001d 06h, 0y 002d 12h, 0y 003d 18h, 0y 005d 00h, 0y 006d 06h, 0y 007d 12h, 0y 008d 18h, 0y 009d 14h, 0y 010d 20h, 0y 012d 02h, 0y 012d 22h, 0y 014d 04h, 0y 015d 00h, 0y 000d 09h
+ Random number seeds                                       	: 280764	280764	
+*First random numbers generated                            	: 3192399198	3192399198
+ Raster GIS output format                                  	: GeoTIFF
+ Raster output values scaled (if needed)                   	: Y
+ Raster world files created (if needed)                    	: Y
+ Raster GIS files saved                                    	: all raster GIS files
+ Vector GIS output format                                  	: ESRI Shapefile
+ Vector GIS files saved                                    	: all vector GIS files
+ Output file (this file)                                   	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/out/Happisburgh/jsme.out
+ Log file                                                  	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/out/Happisburgh/jsme.log
+ Optional time series files saved                          	: sea_area, water_level, platform_erosion, cliff_collapse_erosion, cliff_collapse_deposition, cliff_collapse_net, beach_erosion, beach_deposition, beach_change_net, suspended
+ Coastline vector smoothing algorithm                      	: running mean
+ Grid edge(s) to omit when searching for coastline         	: S
+ Size of coastline vector smoothing window                 	: 31
+ Size of profile slope smoothing window                    	: 0
+ Max local slope on profile (m/m)                          	: 1.180000
+ Vertical tolerance for beach to be included in smoothing  	: 0.000000 m
+
+Raster GIS Input Files
+ Basement DEM file                                         	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/HappisburghBasement.asc
+ Basement DEM driver code                                  	: AAIGrid
+ GDAL basement DEM driver description                      	: Arc/Info ASCII Grid
+ GDAL basement DEM projection                              	: 
+ GDAL basement DEM data type                               	: Float32
+ Grid size (X by Y)                                        	: 513 by 927
+*Coordinates of NW corner of grid (external CRS)           	: 637452.2, 334269.0
+*Coordinates of SE corner of grid (external CRS)           	: 640022.2, 329629.0
+*Cell size                                                 	: 5.0 m
+*Grid area                                                 	: 283174867252246.4 m^2
+*Grid area                                                 	: 283174867.25 km^2
+ Intervention Class file                                   	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/DefenceType.asc
+ GDAL Intervention Class file driver code                  	: AAIGrid
+ GDAL Intervention Class file driver description           	: Arc/Info ASCII Grid
+ GDAL Intervention Class file projection                   	: 
+ GDAL Intervention Class file data type                    	: Int32
+
+ Intervention Height file                                  	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/DefenceElev.asc
+ GDAL Intervention Height file driver code                 	: AAIGrid
+ GDAL Intervention Height file driver description          	: Arc/Info ASCII Grid
+ GDAL Intervention Height file projection                  	: 
+ GDAL Intervention Height file data type                   	: Int32
+
+ Only one layer
+    Initial Fine Uncons Sediment file                      	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/1_U_F.asc
+    GDAL Initial Fine Uncons Sediment file driver code     	: AAIGrid
+    GDAL Initial Fine Uncons Sediment file driver desc     	: Arc/Info ASCII Grid
+    GDAL Initial Fine Uncons Sediment file projection      	: 
+    GDAL Initial Fine Uncons Sediment file data type       	: Float32
+
+    Initial Sand Uncons Sediment file                      	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/1_U_S.asc
+    GDAL Initial Sand Uncons Sediment file driver code     	: AAIGrid
+    GDAL Initial Sand Uncons Sediment file driver desc     	: Arc/Info ASCII Grid
+    GDAL Initial Sand Uncons Sediment file projection      	: 
+    GDAL Initial Sand Uncons Sediment file data type       	: Float32
+
+    Initial Coarse Uncons Sediment file                    	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/1_U_G.asc
+    GDAL Initial Coarse Uncons Sediment file driver code   	: AAIGrid
+    GDAL Initial Coarse Uncons Sediment file driver desc   	: Arc/Info ASCII Grid
+    GDAL Initial Coarse Uncons Sediment file projection    	: 
+    GDAL Initial Coarse Uncons Sediment file data type     	: Float32
+
+    Initial Fine Cons Sediment file                        	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/1_C_F.asc
+    GDAL Initial Fine Cons Sediment file driver code       	: AAIGrid
+    GDAL Initial Fine Cons Sediment file driver desc       	: Arc/Info ASCII Grid
+    GDAL Initial Fine Cons Sediment file projection        	: 
+    GDAL Initial Fine Cons Sediment file data type         	: Float32
+
+    Initial Sand Cons Sediment file                        	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/1_C_S.asc
+    GDAL Initial Sand Cons Sediment file driver code       	: AAIGrid
+    GDAL Initial Sand Cons Sediment file driver desc       	: Arc/Info ASCII Grid
+    GDAL Initial Sand Cons Sediment file projection        	: 
+    GDAL Initial Sand Cons Sediment file data type         	: Float32
+
+    Initial Coarse Cons Sediment file                      	: /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/in/Happisburgh/1_C_G.asc
+    GDAL Initial Coarse Cons Sediment file driver code     	: AAIGrid
+    GDAL Initial Coarse Cons Sediment file driver desc     	: Arc/Info ASCII Grid
+    GDAL Initial Coarse Cons Sediment file projection      	: 
+    GDAL Initial Coarse Cons Sediment file data type       	: Float32
+
+Vector GIS Input Files
+ None
+
+Other Input Data
+ Wave propagation model                                    	: CShore
+ Density of sea water                                     	: 1029 kg/m^3
+ Initial still water level                                 	: 40.0 m
+ Final still water level                                   	: 40.0 m
+ Deep water wave height                                    	: 0.0 m
+ Deep water wave orientation                               	: 0.0 degrees
+ Wave period                                               	: 0.0 s
+ Start depth for wave calcs (*deep water wave height)      	: 30.0
+*Depth of closure                                          	: 0.000 m
+ Do coast platform erosion?                                	: Y
+ R value                                                   	: 8000000.00
+ Do beach sediment transport?                              	: Y
+ Handling of beach sediment at grid edges                  	: open
+ Beach potential erosion/deposition equation               	: CERC
+ Median particle size of fine sediment                     	: 0.06 mm
+ Median particle size of sand sediment                     	: 0.42 mm
+ Median particle size of coarse sediment                   	: 19.00 mm
+ Beach sediment density                                    	: 2650.00 kg/m^3
+ Beach sediment porosity                                   	: 0.40
+ Fine-sized sediment relative erodibility                  	: 1.0
+ Sand-sized sediment relative erodibility                  	: 0.7
+ Coarse-sized sediment relative erodibility                	: 0.3
+ Transport parameter KLS for CERC equation                 	: 0.790
+ Height of Dean profile start above SWL                    	: 0.5 m
+ Sediment input at a point                                 	: N
+ Do cliff collapse?                                        	: Y
+ Cliff erodibility                                         	: 8000000.0
+ Notch overhang to initiate collapse                       	: 0.1 m
+ Notch base below SWL                                      	: 0.3 m
+ Scale parameter A for cliff deposition                    	: auto
+ Planview width of cliff deposition talus                  	: 0.0 m
+ Planview length of cliff deposition talus                 	: 50.0 m
+ Height of talus at land end (fraction of cliff elevation) 	: 0.0
+ Gravitational acceleration                                	: 9.8 m^2/s
+ Minimum spacing of coastline normals                      	: 100.0 m
+ Random factor for spacing of normals                      	: 0.0
+ Length of coastline normals                               	: 800.0 m
+ Maximum number of 'cape' normals                          	: 6
+
+Testing only
+ Output profile data?                                      	: N
+ Profile numbers to be saved                               	: 
+ Timesteps when profiles are saved                         	: 
+ Output parallel profile data?                             	: N
+ Output erosion potential look-up data?                    	: Y (see /home/wilfc/github/coastalme_TESTING/src/cmake-build-debug/Debug/out/Happisburgh/ErosionPotential.csv)
+ Erode coast in alternate directions?                      	: N
+
+
+PER-ITERATION RESULTS =========================================================================================================================================================================
+Sea depth in metres. All erosion and deposition values in millimetres
+GISn = GIS files saved as <filename>n.
+
+<-----ELAPSED----><-SEA-><----POTENTIAL---><----------ACTUAL-----------><----POTENTIAL----><------------ACTUAL------------><-----------ACTUAL-----------><-SEDIMENT-><--CLIFF COLLAPSE--><SUSP>
+       TIME        DEPTH  PLATFORM EROSION        PLATFORM EROSION          BEACH EROSION            BEACH EROSION                BEACH DEPOSITION        INPUT EVENT  EROSION DEPOSITION  SED
+Time  Hours  Years   Avg  % Sea   All  Erod % Sea   All Erod <-sea avg->  % Sea   All  Erod  % Sea   All Erodng <-sea avg->  % Sea   All  Deposit <-sea->            <-coast avg><--sea->
+Step                       Area   Sea  Area  Area   Sea Area   F   S   C   Area   Sea  Area   Area   Sea   Area   F   S   C   Area   Sea     Area   S   C   F   S   C   F   S   C   S   C    F
+                                  Avg   Avg         Avg  Avg                            Avg          Avg    Avg                      Avg      Avg
+   1      1      0 10.55    0.0   0.0         0.0   0.0                     0.0     0          0.0   0.0                       0.0   0.0                                                         GIS1
+   2      2      0 11.09    0.0   0.0         0.0   0.0                     0.0     0          0.0   0.0                       0.0   0.0                                                         GIS2
+   3      3      0 11.64    0.0   0.0         0.0   0.0                     0.0     0          0.0   0.0                       0.0   0.0                                                         GIS3
+   4      4      0 12.20    0.0   0.0         0.0   0.0                     0.0     0          0.0   0.0                       0.0   0.0                                                         GIS4
+   5      5      0 12.74    0.0   0.0         0.0   0.0                     0.0     0          0.0   0.0                       0.0   0.0                                                         GIS5
+   6      6      0 13.27    0.0   0.0         0.0   0.0                     0.0     0          0.0   0.0                       0.0   0.0                                                         GIS6
+   7      7      0 13.84    0.0   0.0         0.0   0.0                     0.0     0          0.0   0.0                       0.0   0.0                                                         GIS7
+   8      8      0 14.41    0.0   0.0         0.0   0.0                     0.0     0          0.0   0.0                       0.0   0.0                                                         GIS8
+ GIS9
+<-----ELAPSED----><-SEA-><----POTENTIAL---><----------ACTUAL-----------><----POTENTIAL----><------------ACTUAL------------><-----------ACTUAL-----------><-SEDIMENT-><--CLIFF COLLAPSE--><SUSP>
+       TIME        DEPTH  PLATFORM EROSION        PLATFORM EROSION          BEACH EROSION            BEACH EROSION                BEACH DEPOSITION        INPUT EVENT  EROSION DEPOSITION  SED
+Time  Hours  Years   Avg  % Sea   All  Erod % Sea   All Erod <-sea avg->  % Sea   All  Erod  % Sea   All Erodng <-sea avg->  % Sea   All  Deposit <-sea->            <-coast avg><--sea->
+Step                       Area   Sea  Area  Area   Sea Area   F   S   C   Area   Sea  Area   Area   Sea   Area   F   S   C   Area   Sea     Area   S   C   F   S   C   F   S   C   S   C    F
+                                  Avg   Avg         Avg  Avg                            Avg          Avg    Avg                      Avg      Avg
+
+
+END OF SIMULATION: HYDROLOGY ==================================================================================================================================================================
+Minimum still water level = 37.77
+Maximum still water level = 42.00
+
+END OF SIMULATION: SEDIMENT MOVEMENT ==========================================================================================================================================================
+
+PLATFORM EROSION
+Total potential platform erosion = 0.00 m^3
+
+Total actual platform erosion = 0.00 m^3
+Total fine actual platform erosion = 0.00 m^3
+Total sand actual platform erosion = 0.00 m^3
+Total coarse actual platform erosion = 0.00 m^3
+
+CLIFF COLLAPSE
+Total cliff collapse = 0.00 m^3
+Total fine cliff collapse = 0.00 m^3
+Total sand cliff collapse = 0.00 m^3
+Total coarse cliff collapse = 0.00 m^3
+
+DEPOSITION OF CLIFF COLLAPSE TALUS
+Total cliff collapse talus deposition = 0.00 m^3
+Total sand cliff collapse talus deposition = 0.00 m^3
+Total coarse cliff collapse talus deposition = 0.00 m^3
+
+EROSION OF CLIFF COLLAPSE TALUS
+Total erosion of cliff collapse talus = 0.00 m^3
+Total fine erosion of cliff collapse talus = 0.00 m^3
+Total sand erosion of cliff collapse talus = 0.00 m^3
+Total coarse erosion of cliff collapse talus = 0.00 m^3
+
+BEACH EROSION
+Total potential beach erosion = 0.00 m^3
+
+Total actual beach erosion = 0.00 m^3
+Total actual fine beach erosion = 0.00 m^3
+Total actual sand beach erosion = 0.00 m^3
+Total actual coarse beach erosion = 0.00 m^3
+
+BEACH DEPOSITION
+Total beach deposition = 0.00 m^3
+Total sand beach deposition = 0.00 m^3
+Total coarse beach deposition = 0.00 m^3
+
+SEDIMENT INPUT EVENTS
+Total fine sediment for sediment input events = 0.00 m^3
+Total sand sediment for sediment input events = 0.00 m^3
+Total coarse sediment for sediment input events = 0.00 m^3
+
+SUSPENDED SEDIMENT
+Suspended fine sediment = 0.00 m^3
+
+LOST FROM GRID
+Total potential sediment lost from grid due to beach erosion = 0.00 m^3
+
+Total actual fine sediment lost from grid due to beach erosion = 0.00 m^3
+Total actual sand sediment lost from grid due to beach erosion = 0.00 m^3
+Total actual coarse sediment lost from grid due to beach erosion = 0.00 m^3
+
+Total sand sediment lost from grid due to cliff collapse = 0.00 m^3
+Total coarse sediment lost from grid due to cliff collapse = 0.00 m^3
+
+ALL-PROCESS TOTALS
+Total sediment eroded (all processes) = 0.00 m^3
+Total sediment deposited and in suspension (all processes) = 0.00 m^3
+Total sediment lost from grid (all processes) = 0.00 m^3
+                                              = 0.00 m^3/hour
+                                              = 0.0000 m^3/sec
+
+NOTE grid edge option is OPEN, therefore values above are for all sediment size classes
+Eroded + lost = 0.00 m^3
+Deposited + suspension = 0.00 m^3
+
+
+END OF SIMULATION: PERFORMANCE ================================================================================================================================================================
+Run ended at 21:24:26 on Monday 02 January 2023
+Time simulated: 0y 000d 09h
+
+CPU time elapsed: 0:01:18.61 (8.7351 per timestep)
+In terms of CPU time, this is 412 x faster than reality
+Run time elapsed: 0:01:14 (8.2222 per timestep)
+In terms of run time, this is 437.838 x faster than reality
+
+Process statistics
+------------------
+Time spent executing user code               	: 0:00:58.00
+Time spent executing kernel code             	: 0:00:20.00
+No. of page faults not requiring physical I/O	: 167818
+No. of page faults requiring physical I/O    	: 7
+No. of voluntary context switches            	: 4159
+No. of involuntary context switches          	: 1694
+
+END OF RUN

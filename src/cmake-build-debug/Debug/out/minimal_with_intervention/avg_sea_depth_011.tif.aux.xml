@@ -1,0 +1,5 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Average sea depth at 0:12:00</Description>
+  </PAMRasterBand>
+</PAMDataset>

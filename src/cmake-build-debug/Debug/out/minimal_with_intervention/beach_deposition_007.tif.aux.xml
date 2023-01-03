@@ -1,0 +1,5 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Beach deposition depth at 0:05:00</Description>
+  </PAMRasterBand>
+</PAMDataset>
