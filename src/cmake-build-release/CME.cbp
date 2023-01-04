@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="CME"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\cmake\Modules\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="cme">
+				<Option output="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Release/cme" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/mnt/e/GitHub/coastalme_TESTING/src"/>
+					<Add directory="/mnt/e/GitHub/coastalme_TESTING/src/inc"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 cme"/>
+					<CompileFile command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="cme/fast">
+				<Option output="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Release/cme" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/mnt/e/GitHub/coastalme_TESTING/src"/>
+					<Add directory="/mnt/e/GitHub/coastalme_TESTING/src/inc"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 cme/fast"/>
+					<CompileFile command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/sbin/make -j12 -f &quot;/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/2d_point.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/2d_point.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/2d_shape.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/2d_shape.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/2di_point.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/2di_point.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/2di_shape.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/2di_shape.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/assign_landforms.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/calc_curvature.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/calc_external_forcing.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/calc_shadow_zones.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/calc_waves.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cell.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cell.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cell_landform.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cell_landform.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cell_layer.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cell_layer.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cell_sediment.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cell_sediment.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cliff.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cliff.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cme.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cme.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/coast.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/coast.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/coast_landform.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/coast_landform.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/coast_polygon.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/coast_polygon.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/create_polygons.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/create_profiles.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/do_beach_actual_sediment_movement.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/do_beach_estimate_actual_erosion.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/do_beach_potential_erosion.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/do_beach_within_polygon.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/do_cliff_collapse.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/do_intervention.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/do_sediment_input_event.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/drift.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/drift.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/gis_raster.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/gis_utils.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/gis_vector.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/hermite_cubic.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/hermite_cubic.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/i_line.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/i_line.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/init_grid.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/interpolate.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/interpolate.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/intervention.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/intervention.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/line.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/line.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/linearinterp.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/linearinterp.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/locate_coast.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/locate_estuaries.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/multi_line.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/multi_line.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/profile.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/profile.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/random_numbers.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/raster_grid.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/raster_grid.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/read_input.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/sediment_input_event.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/sediment_input_event.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/shore_platform.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/simulation.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/simulation.h">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/smooth_line.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/update_grid.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/utils.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/utils_global.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/write_output.cpp">
+			<Option target="cme"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/mnt/e/GitHub/coastalme_TESTING/src/cmake/Modules/FindCShoreLib.cmake">
+			<Option virtualFolder="CMake Files\cmake\Modules\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

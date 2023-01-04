@@ -1,25 +1,37 @@
-/home/wilfc/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=/home/wilfc/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/ninja/linux/ninja -G Ninja -S /home/wilfc/Documents/github/coastalme_TESTING/src -B /home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release
+C:\windows\system32\wsl.exe --distribution Arch --exec /bin/bash -c "export CMAKE_COLOR_DIAGNOSTICS=ON && export CLION_IDE=TRUE && export JETBRAINS_IDE=TRUE && cd /mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release && /usr/bin/cmake -DCMAKE_BUILD_TYPE=Release -G 'CodeBlocks - Unix Makefiles' -S /mnt/e/GitHub/coastalme_TESTING/src -B /mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release"
 Creating Linux-Unix Makefile for CoastalME
 
+-- The C compiler identification is GNU 11.2.0
+-- The CXX compiler identification is GNU 11.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/sbin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/sbin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
 Checking compiler
 C++ compiler is GNU g++ 11.2.0
 
 Finding libraries
--- Found GDAL: /usr/lib/libgdal.so (found version "3.4.1") 
-STATUS,CSHORELIB_INCLUDE_DIR=/home/wilfc/Documents/github/coastalme_TESTING/src/inc
-STATUS,CSHORELIB_DIR=/home/wilfc/Documents/github/coastalme_TESTING/src/lib/libcshore.so
--- Found CShoreLib: /home/wilfc/Documents/github/coastalme_TESTING/src/lib/libcshore.so  
+-- Found GDAL: /usr/lib/libgdal.so (found version "3.4.0") 
+STATUS,CSHORELIB_INCLUDE_DIR=/mnt/e/GitHub/coastalme_TESTING/src/inc
+STATUS,CSHORELIB_DIR=/mnt/e/GitHub/coastalme_TESTING/src/lib/libcshore.so
+-- Found CShoreLib: /mnt/e/GitHub/coastalme_TESTING/src/lib/libcshore.so  
 STATUS,CShoreLib_FOUND=TRUE
--- Found libcshore.so at /home/wilfc/Documents/github/coastalme_TESTING/src/lib/libcshore.so
+-- Found libcshore.so at /mnt/e/GitHub/coastalme_TESTING/src/lib/libcshore.so
 
-Writing Makefile
 -- CMAKE_BUILD_TYPE=Release
 -- CMAKE_CXX_FLAGS=-O3 -DNDEBUG  -std=c++0x -DCPU -Dx86 -march=native -DCSHORE_ARG_INOUT
 -- CMAKE_EXE_LINKER_FLAGS=-Wl,--as-needed -Wl,--no-undefined
--- CMAKE_SOURCE_DIR = /home/wilfc/Documents/github/coastalme_TESTING/src
--- CMAKE_INSTALL_DIR = /home/wilfc/Documents/github/coastalme_TESTING/src/..
--- LIBS=/usr/lib/libgdal.so;/home/wilfc/Documents/github/coastalme_TESTING/src/lib/libcshore.so
--- CMAKE_INSTALL_RPATH=$ORIGIN/src/lib:$$ORIGIN/src/lib:/home/wilfc/Documents/github/coastalme_TESTING/src/lib:/usr/local/lib
+-- CMAKE_SOURCE_DIR = /mnt/e/GitHub/coastalme_TESTING/src
+-- CMAKE_INSTALL_DIR = /mnt/e/GitHub/coastalme_TESTING/src/..
+-- LIBS=/usr/lib/libgdal.so;/mnt/e/GitHub/coastalme_TESTING/src/lib/libcshore.so
+Writing Makefile
+-- CMAKE_INSTALL_RPATH=$ORIGIN/src/lib:$$ORIGIN/src/lib:/mnt/e/GitHub/coastalme_TESTING/src/lib:/usr/local/lib
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release
+-- Build files have been written to: /mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release

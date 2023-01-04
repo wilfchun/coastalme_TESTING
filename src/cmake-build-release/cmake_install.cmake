@@ -1,4 +1,4 @@
-# Install script for directory: /home/wilfc/Documents/github/coastalme_TESTING/src
+# Install script for directory: /mnt/e/GitHub/coastalme_TESTING/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -29,7 +29,7 @@ endif()
 
 # Install shared libraries without execute permission?
 if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
-  set(CMAKE_INSTALL_SO_NO_EXE "1")
+  set(CMAKE_INSTALL_SO_NO_EXE "0")
 endif()
 
 # Is this installation the result of a crosscompile?
@@ -39,33 +39,33 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/usr/bin/objdump")
+  set(CMAKE_OBJDUMP "/usr/sbin/objdump")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  if(EXISTS "$ENV{DESTDIR}/home/wilfc/Documents/github/coastalme_TESTING/src/../cme" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/home/wilfc/Documents/github/coastalme_TESTING/src/../cme")
+  if(EXISTS "$ENV{DESTDIR}/mnt/e/GitHub/coastalme_TESTING/src/../cme" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/mnt/e/GitHub/coastalme_TESTING/src/../cme")
     file(RPATH_CHECK
-         FILE "$ENV{DESTDIR}/home/wilfc/Documents/github/coastalme_TESTING/src/../cme"
-         RPATH "$ORIGIN/src/lib:$$ORIGIN/src/lib:/home/wilfc/Documents/github/coastalme_TESTING/src/lib:/usr/local/lib")
+         FILE "$ENV{DESTDIR}/mnt/e/GitHub/coastalme_TESTING/src/../cme"
+         RPATH "$ORIGIN/src/lib:$$ORIGIN/src/lib:/mnt/e/GitHub/coastalme_TESTING/src/lib:/usr/local/lib")
   endif()
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/wilfc/Documents/github/coastalme_TESTING/src/../cme")
+   "/mnt/e/GitHub/coastalme_TESTING/src/../cme")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/wilfc/Documents/github/coastalme_TESTING/src/.." TYPE EXECUTABLE FILES "/home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release/Release/cme")
-  if(EXISTS "$ENV{DESTDIR}/home/wilfc/Documents/github/coastalme_TESTING/src/../cme" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/home/wilfc/Documents/github/coastalme_TESTING/src/../cme")
+  file(INSTALL DESTINATION "/mnt/e/GitHub/coastalme_TESTING/src/.." TYPE EXECUTABLE FILES "/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/Release/cme")
+  if(EXISTS "$ENV{DESTDIR}/mnt/e/GitHub/coastalme_TESTING/src/../cme" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/mnt/e/GitHub/coastalme_TESTING/src/../cme")
     file(RPATH_CHANGE
-         FILE "$ENV{DESTDIR}/home/wilfc/Documents/github/coastalme_TESTING/src/../cme"
-         OLD_RPATH "/home/wilfc/Documents/github/coastalme_TESTING/src/lib::::::::::::::::::::::::::::::::::::::::::::::::"
-         NEW_RPATH "$ORIGIN/src/lib:$$ORIGIN/src/lib:/home/wilfc/Documents/github/coastalme_TESTING/src/lib:/usr/local/lib")
+         FILE "$ENV{DESTDIR}/mnt/e/GitHub/coastalme_TESTING/src/../cme"
+         OLD_RPATH "/mnt/e/GitHub/coastalme_TESTING/src/lib::::::::::::::::::::::::::::::::::::::::::::::::"
+         NEW_RPATH "$ORIGIN/src/lib:$$ORIGIN/src/lib:/mnt/e/GitHub/coastalme_TESTING/src/lib:/usr/local/lib")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}/home/wilfc/Documents/github/coastalme_TESTING/src/../cme")
+      execute_process(COMMAND "/usr/sbin/strip" "$ENV{DESTDIR}/mnt/e/GitHub/coastalme_TESTING/src/../cme")
     endif()
   endif()
 endif()
@@ -78,5 +78,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/wilfc/Documents/github/coastalme_TESTING/src/cmake-build-release/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/mnt/e/GitHub/coastalme_TESTING/src/cmake-build-release/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -27,14 +27,14 @@ Content of log file                     [1 = least detail, 3 = most detail]: 1
 Simulation start date and time                        [hh-mm-ss dd/mm/yyyy]: 00-00-00 01/01/1999
 Duration of simulation                         [hours, days, months, years]: 30 days
 Timestep (hours or days)                                                   : 6 hours
-Save times                                     [hours, days, months, years]: 6 12 30 60 200 270 300 400 500 600  hours
+Save times                                     [hours, days, months, years]: 6 12 30 60 200 270 300 400 500 600 days
 
 Random number seed(s)                                                      : 280764
 
 GIS raster files to output                                  [see codes.txt]: all
 GIS raster output format                          [blank=same as DEM input]: gtiff                    ; gdal-config --formats for others
-   If needed, also output GIS raster world file?                      [y/n]: y
-   If needed, scale GIS raster output values?                         [y/n]: y
+   If needed, also output GIS raster world file?                      [y/n]: n
+   If needed, scale GIS raster output values?                         [y/n]: n
 GIS raster 'slice' elevation(s) (m)                                        :
 GIS vector files to output                                  [see codes.txt]: all
 GIS vector output format                                                   : ESRI Shapefile           ; ogrinfo --formats for others

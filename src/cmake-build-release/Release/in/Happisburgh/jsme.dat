@@ -24,20 +24,20 @@ Main output/log file names                                          [omit path a
 Content of log file                                       [1 = least detail, 3 = most detail]: 1
 
 Simulation start date and time                                          [hh-mm-ss dd/mm/yyyy]: 00-00-00 01/01/1999
-Duration of simulation                                           [hours, days, months, years]: 20 years                  ; *** LAST 3 days
+Duration of simulation                                           [hours, days, months, years]: 2 day ; *** LAST 3 days
 Timestep (hours or days)                                                                     : 1 hours
-Save times (after simulation start)                             [hours, days, months, years ]: 1 2 3 4 5 6 7 8 9 10 12 13 14 15 16 17 years
+Save times (after simulation start)                             [hours, days, months, years ]: 1 2 3 4 5 6 7 8 9 10 12 13 14 15 16 17 hour
 
 Random number seed(s)                                                                        : 280764
 
 GIS raster files to output                                                    [see codes.txt]: all
-GIS raster output format                                            [blank=same as DEM input]: gtiff                    ; gdal-config --formats for others
+GIS raster output format                                            [blank=same as DEM input]: AAIGrid ; gdal-config --formats for others
    If needed, also output GIS raster world file?                                        [y/n]: y
    If needed, scale GIS raster output values?                                           [y/n]: y
 GIS raster 'slice' elevation(s) (m)                                                          :
-GIS vector files to output                                                    [see codes.txt]: all
+GIS vector files to output                                                    [see codes.txt]: normals
 GIS vector output format                                                                     : ESRI Shapefile           ; ogrinfo --formats for others
-Time series files to output                                                   [see codes.txt]: all
+Time series files to output                                                   [see codes.txt]: suspended
 
 Coastline smoothing                                [0=none, 1=running mean, 2=Savitsky-Golay]: 1
 Coastline smoothing window size                                                 [must be odd]: 31                       ; was 55 for S-G

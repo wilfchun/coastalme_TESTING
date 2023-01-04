@@ -1,9 +1,0 @@
-<PAMDataset>
-  <PAMRasterBand band="1">
-    <Description>Polygon updrift or downdrift movement of unconsolidated sediment at 4:52:12</Description>
-    <CategoryNames>
-      <Category>Updrift movement of unconsolidated sediment </Category>
-      <Category>Downdrift movement of unconsolidated sediment</Category>
-    </CategoryNames>
-  </PAMRasterBand>
-</PAMDataset>
